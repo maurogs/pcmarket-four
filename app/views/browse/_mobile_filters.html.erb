@@ -1,0 +1,24 @@
+<%# Slide-over filter drawer for small screens. Locals: category, result. %>
+<div id="mobile-filters" class="fixed inset-0 z-50 hidden lg:hidden" data-drawer-target="panel"
+     role="dialog" aria-modal="true" aria-label="<%= t("browse.filters.title") %>">
+  <button type="button" class="absolute inset-0 bg-black/40" tabindex="-1"
+          data-action="drawer#close" aria-label="<%= t("accessibility.close") %>"></button>
+
+  <div class="absolute inset-y-0 left-0 flex w-80 max-w-[85vw] flex-col bg-surface shadow-xl">
+    <div class="flex items-center justify-between border-b border-line p-4">
+      <span class="font-display text-lg font-semibold"><%= t("browse.filters.title") %></span>
+      <button type="button" class="btn-ghost p-2" data-action="drawer#close"
+              aria-label="<%= t("accessibility.close") %>"><%= icon "close" %></button>
+    </div>
+    <div class="flex-1 overflow-y-auto px-4 pb-6">
+      <form action="<%= request.path %>" method="get" data-controller="filters"
+            data-turbo-frame="browse_results" data-turbo-action="advance"
+            aria-label="<%= t("browse.filters.title") %>">
+        <input type="hidden" name="page" value="1">
+        <%= hidden_filter_fields(except: %w[q min_price max_price condition labels seller_tags specs]) %>
+        <%= render "browse/sidebar", category: category, result: result %>
+        <button type="submit" class="btn-primary mt-4 w-full"><%= t("browse.filters.apply") %></button>
+      </form>
+    </div>
+  </div>
+</div>

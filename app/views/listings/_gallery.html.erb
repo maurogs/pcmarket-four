@@ -1,0 +1,42 @@
+<%# Listing image gallery. Local: listing. %>
+<% images = listing.images %>
+<% if images.empty? %>
+  <div class="card aspect-[4/3] overflow-hidden"><%= listing_image_placeholder %></div>
+<% else %>
+  <div class="card overflow-hidden" data-controller="carousel">
+    <div class="relative aspect-[4/3] bg-cream-100 touch-pan-y dark:bg-cream-surface" tabindex="0" role="group"
+         aria-label="<%= t("listings.show.gallery_label") %>"
+         data-action="keydown->carousel#keydown touchstart->carousel#touchstart touchend->carousel#touchend">
+      <% images.each_with_index do |image, index| %>
+        <%= image_tag url_for(image.variant(**Listing::IMAGE_VARIANTS[:large], format: Listing::IMAGE_FORMAT)),
+              alt: listing.title, loading: index.zero? ? "eager" : "lazy",
+              class: "h-full w-full object-contain #{index.zero? ? "" : "hidden"}",
+              data: { carousel_target: "image" } %>
+      <% end %>
+
+      <% if images.size > 1 %>
+        <button type="button" class="btn-ghost absolute inset-y-0 left-2 my-auto h-9 w-9 bg-surface/90 p-0 text-body shadow-sm backdrop-blur"
+                data-action="carousel#prev" aria-label="<%= t("listings.show.prev_image") %>">
+          <%= icon "chevron-left", class: "h-5 w-5" %>
+        </button>
+        <button type="button" class="btn-ghost absolute inset-y-0 right-2 my-auto h-9 w-9 bg-surface/90 p-0 text-body shadow-sm backdrop-blur"
+                data-action="carousel#next" aria-label="<%= t("listings.show.next_image") %>">
+          <%= icon "chevron-right", class: "h-5 w-5" %>
+        </button>
+      <% end %>
+    </div>
+
+    <% if images.size > 1 %>
+      <div class="flex gap-2 overflow-x-auto p-3">
+        <% images.each_with_index do |image, index| %>
+          <button type="button" class="shrink-0 rounded-lg ring-offset-2 <%= index.zero? ? "ring-2 ring-primary-500" : "" %>"
+                  data-action="carousel#select" data-carousel-index-param="<%= index %>" data-carousel-target="thumb"
+                  aria-current="<%= index.zero? %>" aria-label="<%= t("listings.show.image_number", number: index + 1) %>">
+            <%= image_tag url_for(image.variant(resize_to_fill: [ 96, 96 ], format: Listing::IMAGE_FORMAT)),
+                  alt: "", loading: "lazy", class: "h-16 w-16 object-cover" %>
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,28 @@
+<% if pagy.pages > 1 %>
+  <nav class="mt-8 flex flex-wrap items-center justify-center gap-1 text-sm" aria-label="<%= t("browse.pagination.label") %>">
+    <% if pagy.page > 1 %>
+      <%= link_to browse_page_url(pagy.page - 1), data: { turbo_action: "advance" },
+            class: "btn-ghost gap-1 px-3", aria: { label: t("browse.pagination.prev") } do %>
+        <%= icon "chevron-left", class: "h-4 w-4" %><span class="hidden sm:inline"><%= t("browse.pagination.prev") %></span>
+      <% end %>
+    <% end %>
+
+    <% pagination_window(pagy).each do |item| %>
+      <% if item == :gap %>
+        <span class="px-2 text-muted" aria-hidden="true">…</span>
+      <% elsif item == pagy.page %>
+        <span class="btn-primary px-3" aria-current="page"><%= item %></span>
+      <% else %>
+        <%= link_to item, browse_page_url(item), data: { turbo_action: "advance" },
+              class: pagination_page_class(item), aria: { label: t("browse.pagination.page", page: item) } %>
+      <% end %>
+    <% end %>
+
+    <% if pagy.page < pagy.pages %>
+      <%= link_to browse_page_url(pagy.page + 1), data: { turbo_action: "advance" },
+            class: "btn-ghost gap-1 px-3", aria: { label: t("browse.pagination.next") } do %>
+        <span class="hidden sm:inline"><%= t("browse.pagination.next") %></span><%= icon "chevron-right", class: "h-4 w-4" %>
+      <% end %>
+    <% end %>
+  </nav>
+<% end %>

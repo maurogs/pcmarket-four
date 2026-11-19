@@ -1,0 +1,17 @@
+<details class="border-b border-line py-3 group" open>
+  <summary class="flex cursor-pointer list-none items-center justify-between gap-2 py-1 text-sm font-semibold [&::-webkit-details-marker]:hidden">
+    <%= t("browse.filters.price") %>
+    <%= icon "chevron-down", class: "h-4 w-4 shrink-0 text-muted transition-transform group-open:rotate-180" %>
+  </summary>
+  <div class="mt-2 flex items-center gap-2">
+    <input type="number" min="0" step="0.01" aria-label="<%= t("browse.filters.price_min_placeholder") %>"
+           placeholder="<%= t("browse.filters.price_min_placeholder") %>"
+           value="<%= euro_value(:min_price) %>" class="input-field min-w-0 text-sm"
+           data-filters-name="min_price" data-filters-target="euro" data-action="input->filters#euroInput">
+    <span aria-hidden="true" class="text-muted">–</span>
+    <input type="number" min="0" step="0.01" aria-label="<%= t("browse.filters.price_max_placeholder") %>"
+           placeholder="<%= t("browse.filters.price_max_placeholder") %>"
+           value="<%= euro_value(:max_price) %>" class="input-field min-w-0 text-sm"
+           data-filters-name="max_price" data-filters-target="euro" data-action="input->filters#euroInput">
+  </div>
+</details>

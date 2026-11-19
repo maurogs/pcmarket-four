@@ -11,7 +11,13 @@ module Listings
     MAX_PER_PAGE = 60
     CACHE_TTL = 5.minutes
 
-    Result = Struct.new(:listings, :pagy, :facets, :category, keyword_init: true)
+    # Sidebar groups rendered from these (own + inherited definitions).
+    DIMENSION_FACETS = %w[condition labels seller_tags].freeze
+
+    Result = Struct.new(
+      :listings, :pagy, :facets, :dimension_facets, :filter_definitions,
+      :selected_filter_options, :category, keyword_init: true
+    )
 
     def self.call(params)
       new(params).call
@@ -22,7 +28,11 @@ module Listings
     end
 
     def call
-      Result.new(listings: records, pagy: pagy, facets: facet_data, category: category)
+      Result.new(
+        listings: records, pagy: pagy, facets: facet_data,
+        dimension_facets: dimension_facet_data, filter_definitions: sidebar_definitions,
+        selected_filter_options: selected_filter_options, category: category
+      )
     end
 
     private
@@ -69,19 +79,27 @@ module Listings
     # The fully filtered relation (before pagination/sorting). Text search
     # runs straight against the trigger-maintained `searchable` column, so
     # counts and facet subqueries wrap cleanly (no pg_search rank subselect).
-    def base_scope(exclude_key: nil)
+    # `exclude` skips one facet dimension (a spec key or a DIMENSION_FACETS
+    # name) so counts include the options that are currently selected.
+    def base_scope(exclude: nil)
       scope = Listing.visible
       scope = scope.in_category(category) if category
       scope = scope.matching(query) if query
-      remaining = spec_filters.except(exclude_key.to_s)
+      remaining = spec_filters.except(exclude.to_s)
       scope = scope.with_specs(remaining) if remaining.any?
       scope = scope.price_between(params["min_price"], params["max_price"])
-      conditions = list_param("condition") & Listing.conditions.keys
-      scope = scope.condition_in(conditions) if conditions.any?
-      labels = list_param("labels")
-      scope = scope.with_labels(labels) if labels.any?
-      tags = list_param("seller_tags")
-      scope = scope.with_seller_tags(tags) if tags.any?
+      unless exclude == "condition"
+        conditions = list_param("condition") & Listing.conditions.keys
+        scope = scope.condition_in(conditions) if conditions.any?
+      end
+      unless exclude == "labels"
+        labels = list_param("labels")
+        scope = scope.with_labels(labels) if labels.any?
+      end
+      unless exclude == "seller_tags"
+        tags = list_param("seller_tags")
+        scope = scope.with_seller_tags(tags) if tags.any?
+      end
       scope
     end
 
@@ -126,16 +144,38 @@ module Listings
     # --- Facets ----------------------------------------------------------
 
     def sidebar_definitions
-      return [] unless category
-
-      category.effective_filter_definitions.select { |d| d.show_in_sidebar && d.selection_like? }
+      @sidebar_definitions ||= category ? category.effective_filter_definitions.select { |d| d.show_in_sidebar && d.selection_like? } : []
     end
 
-    # { "filter_key" => { "option_value" => published_count } }, cached for
-    # CACHE_TTL and keyed on params + data version so edits invalidate early.
+    # { "filter_key" => { "option_value" => published_count } } plus the
+    # fixed dimensions (condition/labels/seller_tags), cached for CACHE_TTL
+    # and keyed on params + data version so edits invalidate early.
     def facet_data
       Rails.cache.fetch(facets_cache_key, expires_in: CACHE_TTL) do
         sidebar_definitions.to_h { |definition| [ definition.key, facet_counts(definition) ] }
+      end
+    end
+
+    # Raw machine values only — display labels/translations resolve at render
+    # time, so the cache works for every locale.
+    def dimension_facet_data
+      Rails.cache.fetch("#{facets_cache_key}/dimensions", expires_in: CACHE_TTL) do
+        {
+          "condition" => condition_counts,
+          "labels" => slug_counts("labels"),
+          "seller_tags" => slug_counts("seller_tags")
+        }
+      end
+    end
+
+    # { "gpu_chipset" => { "nvidia" => "NVIDIA" } } — labels of the values
+    # currently selected in specs, for the active-filter pills.
+    def selected_filter_options
+      @selected_filter_options ||= spec_filters.to_h do |key, values|
+        options = FilterOption.joins(:filter_definition)
+                              .where(filter_definitions: { key: key }, value: values)
+                              .ordered
+        [ key, options.to_h { |option| [ option.value, option.label ] } ]
       end
     end
 
@@ -143,7 +183,7 @@ module Listings
     # LEFT JOINed against the search results *without that filter applied*,
     # counting jsonb array containment per option value.
     def facet_counts(definition)
-      results = base_scope(exclude_key: definition.key).select("listings.id, listings.specs").to_sql
+      results = base_scope(exclude: definition.key).select("listings.id, listings.specs").to_sql
       key = Listing.connection.quote(definition.key)
       sql = <<~SQL
         SELECT o.value, COUNT(s.id)
@@ -156,6 +196,20 @@ module Listings
       Listing.connection.select_all(sql).rows.to_h do |value, count|
         [ value.to_s, count.to_i ]
       end
+    end
+
+    # { "new_sealed" => 3, … } with the enum keys (column stores integers).
+    def condition_counts
+      base_scope(exclude: "condition").group(:condition).count(:id)
+        .transform_keys { |value| Listing.conditions.key(value.to_i) }
+    end
+
+    # { slug => count } for product labels / seller tags.
+    def slug_counts(dimension)
+      table = dimension == "labels" ? "product_labels" : "seller_tags"
+      base_scope(exclude: dimension)
+        .joins(dimension == "labels" ? :product_labels : :seller_tags)
+        .group("#{table}.slug").count(:id)
     end
 
     def facets_cache_key

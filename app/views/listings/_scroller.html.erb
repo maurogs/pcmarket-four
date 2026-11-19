@@ -1,0 +1,11 @@
+<%# Horizontal scroller of listing cards. Locals: heading, listings. %>
+<% if listings.any? %>
+  <section class="mt-10">
+    <h2 class="section-title text-xl sm:text-2xl"><%= heading %></h2>
+    <div class="mt-4 grid grid-flow-col auto-cols-[minmax(9.5rem,1fr)] gap-3 overflow-x-auto pb-2 sm:auto-cols-[13rem]">
+      <% listings.each do |listing| %>
+        <div class="min-w-0"><%= render "listings/card", listing: listing %></div>
+      <% end %>
+    </div>
+  </section>
+<% end %>

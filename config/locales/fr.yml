@@ -1,3 +1,5 @@
+# Localization for fr.
+---
 fr:
   accessibility:
     skip_to_content: Aller au contenu
@@ -20,14 +22,16 @@ fr:
     forbidden: Vous n'êtes pas autorisé à effectuer cette action.
     messages:
       must_exceed_price: doit être supérieur au prix
-      too_large_image: "Chaque image doit peser moins de %{max_megabytes} Mo"
-      too_many_images: "Vous pouvez téléverser au plus %{max} images"
+      too_large_image: Chaque image doit peser moins de %{max_megabytes} Mo
+      too_many_images: Vous pouvez téléverser au plus %{max} images
       unknown_filter_key: "%{key} n'est pas un filtre valide"
       unknown_filter_value: "« %{value} » n'est pas une valeur valide pour %{key}"
-      unsupported_content_type: "%{content_type} n'est pas un format d'image pris en charge"
+      unsupported_content_type: "%{content_type} n'est pas un format d'image pris
+        en charge"
     throttled: Trop de requêtes. Réessayez dans %{retry_after} secondes.
   footer:
-    tagline: La marketplace européenne pour acheter et vendre de la tech en toute confiance.
+    tagline: La marketplace européenne pour acheter et vendre de la tech en toute
+      confiance.
     rights: Tous droits réservés.
     links:
       about: À propos
@@ -47,10 +51,12 @@ fr:
     index:
       title: Achetez et vendez votre tech en confiance
       meta:
-        description: PCMarket est la marketplace européenne du matériel informatique neuf et d'occasion. Annonces gratuites, paiements sécurisés et retrait local.
+        description: PCMarket est la marketplace européenne du matériel informatique
+          neuf et d'occasion. Annonces gratuites, paiements sécurisés et retrait local.
       hero:
         title: La place de marché de votre tech
-        subtitle: Achetez et vendez ordinateurs, composants et gadgets près de chez vous.
+        subtitle: Achetez et vendez ordinateurs, composants et gadgets près de chez
+          vous.
         browse: Parcourir les catégories
       categories:
         title: Catégories populaires
@@ -98,6 +104,7 @@ fr:
       keyboards: Claviers
       mice: Souris
       headsets: Casques
+    home: Accueil
   newsletter:
     title: Newsletter
     description: Recevez les meilleures offres par e-mail.
@@ -120,16 +127,19 @@ fr:
     label: Rechercher
     placeholder: Recherchez un PC portable, une carte graphique…
     submit: Rechercher
-    coming_soon: Les résultats arriveront avec le catalogue complet.
+    hint: Recherchez dans les titres, descriptions et caractéristiques de toutes les
+      annonces.
   searches:
     show:
       title: Recherche
+      results_title: Résultats pour « %{query} »
   sell_to_us:
     show:
       title: Rachat
       intro: Obtenez un prix juste pour votre matériel en quelques étapes.
       meta:
-        description: Vendez vos ordinateurs et composants d'occasion à PCMarket à un prix garanti.
+        description: Vendez vos ordinateurs et composants d'occasion à PCMarket à
+          un prix garanti.
   activerecord:
     attributes:
       category:
@@ -247,16 +257,119 @@ fr:
   devise:
     registrations:
       edit:
-        edit: "Modifier %{resource}"
+        edit: Modifier %{resource}
         cancel_account: Supprimer le compte
-        cancel_account_confirmation: Cette action supprime définitivement votre compte et ses données.
+        cancel_account_confirmation: Cette action supprime définitivement votre compte
+          et ses données.
         leave_blank: laissez vide si vous ne souhaitez pas le modifier
-        we_need_password: nous avons besoin de votre mot de passe actuel pour valider les modifications
+        we_need_password: nous avons besoin de votre mot de passe actuel pour valider
+          les modifications
       new:
         password_characters: "(%{count} caractères minimum)"
     sessions:
       new:
         remember_me: Se souvenir de moi
     shared:
-      account_incomplete: Votre compte Google a besoin de quelques informations supplémentaires avant de terminer la connexion.
-      authentication_unsuccessful: Impossible de vous connecter avec ce fournisseur. Veuillez réessayer.
+      account_incomplete: Votre compte Google a besoin de quelques informations supplémentaires
+        avant de terminer la connexion.
+      authentication_unsuccessful: Impossible de vous connecter avec ce fournisseur.
+        Veuillez réessayer.
+  browse:
+    filters:
+      title: Filtres
+      refine: Affiner les résultats
+      price: Prix
+      price_min_placeholder: Min
+      price_max_placeholder: Max
+      price_between: "%{min} – %{max}"
+      price_min: À partir de %{price}
+      price_max: Jusqu'à %{price}
+      condition: État
+      labels: Labels
+      seller_tags: Style de boutique
+      show_more: Voir plus (%{count})
+      show_less: Voir moins
+      clear_all: Tout effacer
+      applied: Filtres appliqués
+      remove: Retirer le filtre
+      apply: Appliquer les filtres
+    sorts:
+      best_match: Meilleures correspondances
+      newest: Plus récentes
+      price_asc: 'Prix : croissant'
+      price_desc: 'Prix : décroissant'
+      most_watched: Les plus vues
+    results_count:
+      one: "%{count} résultat"
+      other: "%{count} résultats"
+    sort_label: Trier
+    subcategories: Sous-catégories
+    search_results_title: Résultats pour « %{query} »
+    search_subtitle: Tout ce qui correspond à votre recherche, en vedette et par nouveauté.
+    empty:
+      title: Aucun résultat
+      body: Essayez de retirer un filtre ou d'élargir votre recherche.
+      save_search: Enregistrer cette recherche
+    pagination:
+      label: Pagination
+      prev: Précédent
+      next: Suivant
+      page: Page %{page}
+  listings:
+    card:
+      save_badge: Économisez %{count}%
+      add_to_wishlist: Enregistrer pour plus tard
+      verified_seller: Vendeur vérifié
+    show:
+      breadcrumbs: Fil d'Ariane
+      preview_banner: 'Vous prévisualisez cette annonce (statut : %{status}).'
+      overview: Aperçu
+      condition_label: État
+      description_heading: Description
+      highlights_heading: Points forts
+      specs_heading: Caractéristiques
+      shipping:
+        title: Livraison et retours
+        free_shipping_note: Cette annonce bénéficie de la livraison gratuite
+        steps:
+          order:
+            title: Passez votre commande
+            body: Payez en toute sécurité avec la Protection Acheteur.
+          ship:
+            title: Le vendeur prépare et expédie
+            body: Expédié sous %{days} jours ouvrés.
+          receive:
+            title: Recevez votre commande
+            body: Arrivée entre le %{from} et le %{to}.
+        returns_note: Retours gratuits sous 14 jours si l'article ne correspond pas
+          à l'annonce.
+        free: Livraison gratuite
+        cost: 'Livraison : %{price}'
+        ships_in: Expédié sous %{days} jours
+        estimated: Livraison estimée entre le %{from} et le %{to}
+      save_badge: Économisez %{count}%
+      cta:
+        buy_now: Acheter
+        add_to_cart: Ajouter au panier
+        make_offer: Faire une offre
+        message_seller: Contacter le vendeur
+      protection:
+        title: Protection Acheteur
+        body: Remboursement intégral si l'article n'arrive pas comme décrit.
+      seller:
+        verified: Vendeur vérifié
+        ratings:
+          one: "%{count} évaluation"
+          other: "%{count} évaluations"
+        no_ratings: Pas encore d'évaluations
+        follow: Suivre
+      published: Publiée le %{date}
+      views:
+        one: "%{count} vue"
+        other: "%{count} vues"
+      similar_title: Annonces similaires
+      more_from_store_title: Plus de cette boutique
+      gallery_label: Galerie d'images
+      prev_image: Image précédente
+      next_image: Image suivante
+      image_number: Image %{number}

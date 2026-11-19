@@ -32,7 +32,9 @@ class Listing < ApplicationRecord
   # Currency symbol map for display_price (amounts are stored in cents).
   CURRENCY_UNITS = { "EUR" => "€", "GBP" => "£", "USD" => "$" }.freeze
 
-  belongs_to :store
+  # Saving the store (or (un)attaching images) bumps listing timestamps so
+  # fragment caches on cards go stale.
+  belongs_to :store, touch: true
   belongs_to :category
   belongs_to :country, optional: true
   belongs_to :reviewed_by, class_name: "User", optional: true
@@ -165,9 +167,10 @@ class Listing < ApplicationRecord
     ))
   }
 
-  # Search / browse eager-loads: store (+ logo blob) and image blobs without N+1s.
+  # Search / browse eager-loads: store (+ logo blob), badge labels and image
+  # blobs without N+1s.
   scope :with_includes, -> {
-    includes(store: { logo_attachment: :blob }, images_attachments: :blob)
+    includes(store: { logo_attachment: :blob }, product_labels: [], images_attachments: :blob)
   }
 
   # Slug lookups for canonical URLs, including historical slugs.
@@ -177,6 +180,31 @@ class Listing < ApplicationRecord
 
     slug = FriendlyId::Slug.where(slug: param.to_s, sluggable_type: name).order(id: :desc).first
     slug&.sluggable
+  end
+
+  RELATED_TTL = 10.minutes
+  ESTIMATED_TRANSIT_DAYS = 3
+
+  # Listings in the same category subtree, priced near `listing` (±50%).
+  # Candidate ids are cached for RELATED_TTL; the relation itself reloads
+  # associations so cards render without N+1s.
+  def self.similar_to(listing, limit: 8)
+    ids = Rails.cache.fetch("listings/similar_to/#{listing.id}", expires_in: RELATED_TTL) do
+      center = listing.price_cents
+      visible.in_category(listing.category).where.not(id: listing.id)
+        .price_between((center * 0.5).floor, (center * 1.5).ceil)
+        .best_match.limit(limit).pluck(:id)
+    end
+    where(id: ids).with_includes.reorder(id: :asc)
+  end
+
+  # The seller's other visible listings, ids cached the same way.
+  def self.more_from_store(listing, limit: 8)
+    ids = Rails.cache.fetch("listings/more_from_store/#{listing.store_id}-#{listing.id}", expires_in: RELATED_TTL) do
+      visible.for_store(listing.store).where.not(id: listing.id)
+        .best_match.limit(limit).pluck(:id)
+    end
+    where(id: ids).with_includes.reorder(id: :asc)
   end
 
   # @param filters [Hash] { "filter_key" => ["option_value", …] } — values are
@@ -201,6 +229,28 @@ class Listing < ApplicationRecord
     featured_until.present? && featured_until > Time.current
   end
 
+  # Publicly visible: approved and the seller is not on vacation.
+  def visible_to_public?
+    published? && !store.vacation_mode
+  end
+
+  # Owners and admins may preview drafts / pending / paused listings.
+  def viewable_by?(user)
+    return true if visible_to_public?
+    return false if user.nil?
+
+    user.admin? || user.id == store.user_id
+  end
+
+  # Earliest delivery: preparation days only; latest adds estimated transit.
+  def estimated_arrival_from
+    ships_within_days.days.from_now.to_date
+  end
+
+  def estimated_arrival_to
+    (ships_within_days + ESTIMATED_TRANSIT_DAYS).days.from_now.to_date
+  end
+
   def spain?
     country&.code == "ES"
   end
@@ -215,12 +265,22 @@ class Listing < ApplicationRecord
 
   # Locale-formatted amount with the listing currency's symbol.
   def display_price
-    unit = CURRENCY_UNITS.fetch(currency) { "#{currency} " }
-    number_to_currency(price_cents / 100.0, unit: unit)
+    number_to_currency(price_cents / 100.0, unit: currency_unit)
+  end
+
+  # Struck-through comparison price, or nil when there is none.
+  def display_original_price
+    return if original_price_cents.blank?
+
+    number_to_currency(original_price_cents / 100.0, unit: currency_unit)
   end
 
   def status_label
     I18n.t("activerecord.attributes.listing.statuses.#{status}", default: status.humanize)
+  end
+
+  def condition_label
+    I18n.t("activerecord.attributes.listing.condition.#{condition}")
   end
 
   # Human labels for the stored specs, for display and search indexing:
@@ -241,6 +301,10 @@ class Listing < ApplicationRecord
   end
 
   private
+
+  def currency_unit
+    CURRENCY_UNITS.fetch(currency) { "#{currency} " }
+  end
 
   def original_price_above_price
     return if original_price_cents.blank? || original_price_cents > price_cents

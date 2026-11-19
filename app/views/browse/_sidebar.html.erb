@@ -1,0 +1,49 @@
+<%# Locals: category, result. Rendered inside a browse filter form (desktop
+    aside and mobile drawer share it). %>
+<%
+  condition_options = Listing.conditions.keys.map do |key|
+    { value: key, label: t("activerecord.attributes.listing.condition.#{key}"),
+      featured: false, count: result.dimension_facets.fetch("condition", {}).fetch(key.to_s, 0) }
+  end
+  dimension_groups = %w[labels seller_tags].filter_map do |dimension|
+    labels = selectable_labels(dimension)
+    next if labels.empty?
+
+    counts = result.dimension_facets.fetch(dimension, {})
+    { title: t("browse.filters.#{dimension}"), name: "#{dimension}[]",
+      checked: Array(params[dimension]).map(&:to_s),
+      options: labels.map { |label| { value: label.slug, label: label.name, featured: false, count: counts.fetch(label.slug, 0) } } }
+  end
+  spec_groups = result.filter_definitions.map do |definition|
+    counts = result.facets.fetch(definition.key, {})
+    { title: definition.label, name: "specs[#{definition.key}][]",
+      checked: Array(params.dig(:specs, definition.key)).map(&:to_s),
+      options: definition.filter_options.active.featured_first.map do |option|
+        { value: option.value, label: option.label, featured: option.featured?, count: counts.fetch(option.value, 0) }
+      end }
+  end
+%>
+<div class="space-y-1">
+  <div class="relative pb-3">
+    <span class="pointer-events-none absolute inset-y-0 left-3.5 flex items-center pb-3 text-muted">
+      <%= icon "search", class: "h-4 w-4" %>
+    </span>
+    <input type="search" name="q" aria-label="<%= t("browse.filters.refine") %>"
+           value="<%= params[:q] %>" placeholder="<%= t("browse.filters.refine") %>" autocomplete="off"
+           class="input-field pl-10" data-action="input->filters#change">
+  </div>
+
+  <%= render "browse/price_filter" %>
+
+  <%= render "browse/facet_group",
+        title: t("browse.filters.condition"), name: "condition",
+        checked: Array(params[:condition]).map(&:to_s), options: condition_options %>
+
+  <% dimension_groups.each do |group| %>
+    <%= render "browse/facet_group", **group %>
+  <% end %>
+
+  <% spec_groups.each do |group| %>
+    <%= render "browse/facet_group", **group %>
+  <% end %>
+</div>

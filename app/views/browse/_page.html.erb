@@ -1,0 +1,22 @@
+<%# Shared browse page body. Locals: category (or nil for search), result, query. %>
+<div class="mx-auto max-w-7xl px-4 py-6">
+  <%= render "browse/band", category: category, query: query %>
+
+  <div class="mt-6 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-8">
+    <form action="<%= request.path %>" method="get" data-controller="filters"
+          data-turbo-frame="browse_results" data-turbo-action="advance" class="hidden lg:block"
+          aria-label="<%= t("browse.filters.title") %>">
+      <input type="hidden" name="page" value="1">
+      <%= hidden_filter_fields(except: %w[q min_price max_price condition labels seller_tags specs]) %>
+      <%= render "browse/sidebar", category: category, result: result %>
+    </form>
+
+    <div data-controller="drawer">
+      <%= render "browse/mobile_filters", category: category, result: result %>
+
+      <turbo-frame id="browse_results" data-turbo-action="advance">
+        <%= render "browse/results", result: result %>
+      </turbo-frame>
+    </div>
+  </div>
+</div>

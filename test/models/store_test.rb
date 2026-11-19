@@ -54,11 +54,15 @@ class StoreTest < ActiveSupport::TestCase
   end
 
   test "RefreshActiveListingsCount counts published listings only" do
+    # Sync the denormalized column with fixture data first, then measure a
+    # delta (browse fixtures add published listings to this store).
+    Stores::RefreshActiveListingsCount.call(stores(:confirmed_store))
+    before = stores(:confirmed_store).reload.active_listings_count
     publish(create_listing(title: "Kingston Fury Beast 16 GB DDR5"))
     create_listing(title: "Crucial P3 1 TB Draft")
 
     Stores::RefreshActiveListingsCount.call(stores(:confirmed_store))
 
-    assert_equal 1, stores(:confirmed_store).reload.active_listings_count
+    assert_equal before + 1, stores(:confirmed_store).reload.active_listings_count
   end
 end

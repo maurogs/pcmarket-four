@@ -118,3 +118,31 @@ Also fixed a latent gap found while deleting: the `listing_labels` /
 `with_labels`/`with_seller_tags` scopes would have raised NameError). Added
 `app/models/listing_label.rb`, `app/models/listing_seller_tag.rb` + a
 scope test. db:seed ×2 idempotent; 116 tests green; rubocop clean.
+
+## 2026-11-19 — Phase 1b-i: category browse, search UI & listing page (uncommitted)
+
+Storefront layer on the 1a model/service stack. Category pages
+(`/c/:slug`) and `/searches` share a Browseable concern + `app/views/browse/`
+partials (facet sidebar: condition/labels/seller_tags/specs + euro price
+inputs synced to cents by the `filters` Stimulus controller; active-filter
+pills; styled Pagy pagination; results in a `browse_results` Turbo frame;
+mobile filter drawer). Listing cards use a webp `<picture>` helper with
+per-request FilterDefinition memos (no N+1). `ListingsController#show`:
+gallery, spec table grouped by FilterDefinition group, shipping/estimated
+arrival, protection + AppSettings-gated CTA placeholders, similar/more-from-
+seller scrollers (ids cached 10 min), FriendlyId 301, ownership/admin
+preview gating, `fresh_when` etag, and `Listings::IncrementViewsCountJob`
+(1h dedupe per visitor). `Listing` gained `viewable_by?`, `estimated_arrival_*`,
+`similar_to`/`more_from_store`, `ancestors` (Category) and display helpers;
+`Listings::Search` gained dimension facets + selected-option labels.
+All strings in 6 locale files (parity test green).
+
+Gotchas solved: optional `(:locale)` route segment must not get a `defaults:`
+(shadows cookie/Accept-Language negotiation) — request paths carry the locale
+through `LocaleConcern#default_url_options` instead; listing fixtures would
+poison global-scope Search tests and skip tsvector triggers under COPY, so
+the browse catalog is a setup factory (`create_browse_catalog`); Ruby `do`
+blocks bind to the outer `render` call in ERB (use `{}` with render locals).
+
+`bin/rails test` 147 green; `bin/rubocop` clean; tailwind build OK. Not
+committed — awaiting user review.

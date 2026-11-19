@@ -1,19 +1,21 @@
-<% set_meta_tags title: t(".title") %>
+<% if @search_result %>
+  <% set_meta_tags title: t(".results_title", query: @query) %>
+  <%= render "browse/page", category: nil, result: @search_result, query: @query %>
+<% else %>
+  <% set_meta_tags title: t(".title") %>
 
-<div class="mx-auto max-w-3xl px-4 py-12">
-  <h1 class="section-title"><%= t(".title") %></h1>
+  <div class="mx-auto max-w-3xl px-4 py-12">
+    <h1 class="section-title"><%= t(".title") %></h1>
 
-  <form action="<%= search_path %>" method="get" role="search" class="mt-6">
-    <label for="search-q" class="sr-only"><%= t("search.label") %></label>
-    <div class="flex gap-2">
-      <input id="search-q" type="search" name="q" value="<%= @query %>"
-             placeholder="<%= t("search.placeholder") %>" class="input-field">
-      <%= submit_tag t("search.submit"), class: "btn-primary cursor-pointer" %>
-    </div>
-  </form>
+    <form action="<%= search_path %>" method="get" role="search" class="mt-6">
+      <label for="search-q" class="sr-only"><%= t("search.label") %></label>
+      <div class="flex gap-2">
+        <input id="search-q" type="search" name="q" value="<%= @query %>"
+               placeholder="<%= t("search.placeholder") %>" class="input-field">
+        <%= submit_tag t("search.submit"), class: "btn-primary cursor-pointer" %>
+      </div>
+    </form>
 
-  <div class="card mt-8 p-8 text-center">
-    <p class="font-semibold"><%= t("search.coming_soon") %></p>
-    <p class="mt-2 text-sm text-muted"><%= t("pages.placeholder") %></p>
+    <p class="mt-8 text-sm text-muted"><%= t("search.hint") %></p>
   </div>
-</div>
+<% end %>

@@ -10,6 +10,13 @@ module LocaleConcern
     helper_method :available_locales
   end
 
+  # Prefix generated paths with the request locale so links, redirects and
+  # Turbo frame URLs stay on the same locale (and so category_path(record)
+  # fills :slug positionally instead of leaking the record into :locale).
+  def default_url_options
+    { locale: I18n.locale }
+  end
+
   private
 
   # Priority: URL param > cookie > Accept-Language header > default locale.

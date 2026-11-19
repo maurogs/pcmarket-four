@@ -19,6 +19,7 @@ class FilterDefinition < ApplicationRecord
 
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:position, :id) }
+  scope :by_keys, ->(keys) { active.where(key: Array(keys).map(&:to_s)) }
   scope :in_sidebar, -> { active.where(show_in_sidebar: true) }
   scope :in_listing_form, -> { active.where(show_in_listing_form: true) }
   scope :searchable, -> { active.where(searchable: true) }

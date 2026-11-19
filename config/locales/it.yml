@@ -1,3 +1,5 @@
+# Localization for it.
+---
 it:
   accessibility:
     skip_to_content: Vai al contenuto
@@ -20,8 +22,8 @@ it:
     forbidden: Non sei autorizzato a eseguire questa azione.
     messages:
       must_exceed_price: deve essere superiore al prezzo
-      too_large_image: "Ogni immagine deve essere inferiore a %{max_megabytes} MB"
-      too_many_images: "Puoi caricare al massimo %{max} immagini"
+      too_large_image: Ogni immagine deve essere inferiore a %{max_megabytes} MB
+      too_many_images: Puoi caricare al massimo %{max} immagini
       unknown_filter_key: "%{key} non è un filtro valido"
       unknown_filter_value: "'%{value}' non è un valore valido per %{key}"
       unsupported_content_type: "%{content_type} non è un formato immagine supportato"
@@ -47,17 +49,20 @@ it:
     index:
       title: Compra e vendi tecnologia in sicurezza
       meta:
-        description: PCMarket è il marketplace europeo dell'informatica nuova e usata. Annunci gratuiti, pagamenti sicuri e ritiro locale.
+        description: PCMarket è il marketplace europeo dell'informatica nuova e usata.
+          Annunci gratuiti, pagamenti sicuri e ritiro locale.
       hero:
         title: Il marketplace della tua tecnologia
-        subtitle: Compra e vendi computer, componenti e gadget con le persone intorno a te.
+        subtitle: Compra e vendi computer, componenti e gadget con le persone intorno
+          a te.
         browse: Sfoglia le categorie
       categories:
         title: Categorie popolari
       values:
         trust:
           title: Venditori affidabili
-          description: Profili verificati, valutazioni e recensioni rendono ogni affare sicuro.
+          description: Profili verificati, valutazioni e recensioni rendono ogni affare
+            sicuro.
         quality:
           title: Prezzi giusti
           description: Confronta le offerte e chatta con i venditori prima di acquistare.
@@ -98,6 +103,7 @@ it:
       keyboards: Tastiere
       mice: Mouse
       headsets: Cuffie
+    home: Home
   newsletter:
     title: Newsletter
     description: Ricevi le migliori offerte via e-mail.
@@ -120,16 +126,18 @@ it:
     label: Cerca
     placeholder: Cerca laptop, schede video, telefoni…
     submit: Cerca
-    coming_soon: I risultati di ricerca arriveranno con il catalogo completo.
+    hint: Cerca tra titoli, descrizioni e specifiche di tutti gli annunci pubblicati.
   searches:
     show:
       title: Ricerca
+      results_title: Risultati per “%{query}”
   sell_to_us:
     show:
       title: Vendi a noi
       intro: Ottieni un prezzo equo per il tuo vecchio hardware in pochi passaggi.
       meta:
-        description: Vendi a PCMarket i tuoi computer e componenti usati a un prezzo garantito.
+        description: Vendi a PCMarket i tuoi computer e componenti usati a un prezzo
+          garantito.
   activerecord:
     attributes:
       category:
@@ -247,16 +255,120 @@ it:
   devise:
     registrations:
       edit:
-        edit: "Modifica %{resource}"
+        edit: Modifica %{resource}
         cancel_account: Elimina account
-        cancel_account_confirmation: Questa azione elimina definitivamente l'account e i suoi dati.
+        cancel_account_confirmation: Questa azione elimina definitivamente l'account
+          e i suoi dati.
         leave_blank: lascia invariato se non vuoi modificarlo
-        we_need_password: abbiamo bisogno della tua password attuale per confermare le modifiche
+        we_need_password: abbiamo bisogno della tua password attuale per confermare
+          le modifiche
       new:
         password_characters: "(minimo %{count} caratteri)"
     sessions:
       new:
         remember_me: Ricordami
     shared:
-      account_incomplete: Il tuo account Google ha bisogno di alcuni dati in più prima di completare l'accesso.
-      authentication_unsuccessful: Non è stato possibile accedere con quel provider. Riprova.
+      account_incomplete: Il tuo account Google ha bisogno di alcuni dati in più prima
+        di completare l'accesso.
+      authentication_unsuccessful: Non è stato possibile accedere con quel provider.
+        Riprova.
+  browse:
+    filters:
+      title: Filtri
+      refine: Affina i risultati
+      price: Prezzo
+      price_min_placeholder: Min
+      price_max_placeholder: Max
+      price_between: "%{min} – %{max}"
+      price_min: Da %{price}
+      price_max: Fino a %{price}
+      condition: Condizioni
+      labels: Etichette
+      seller_tags: Stile del negozio
+      show_more: Mostra di più (%{count})
+      show_less: Mostra meno
+      clear_all: Cancella tutto
+      applied: Filtri applicati
+      remove: Rimuovi filtro
+      apply: Applica filtri
+    sorts:
+      best_match: Migliore corrispondenza
+      newest: Più recenti
+      price_asc: 'Prezzo: dal più basso'
+      price_desc: 'Prezzo: dal più alto'
+      most_watched: Più visti
+    results_count:
+      one: "%{count} risultato"
+      other: "%{count} risultati"
+    sort_label: Ordina
+    subcategories: Sotto-categorie
+    search_results_title: Risultati per “%{query}”
+    search_subtitle: Tutto ciò che corrisponde alla ricerca, in primo piano e più
+      recenti.
+    empty:
+      title: Nessun risultato
+      body: Prova a rimuovere un filtro o ad ampliare la ricerca.
+      save_search: Salva questa ricerca
+    pagination:
+      label: Paginazione
+      prev: Precedente
+      next: Successivo
+      page: Pagina %{page}
+  listings:
+    card:
+      save_badge: Risparmia %{count}%
+      add_to_wishlist: Salva per dopo
+      verified_seller: Venditore verificato
+    show:
+      breadcrumbs: Percorso di navigazione
+      preview_banner: 'Stai anteprimendo questo annuncio (stato: %{status}).'
+      overview: Panoramica
+      condition_label: Condizioni
+      description_heading: Descrizione
+      highlights_heading: Punti di forza
+      specs_heading: Specifiche
+      shipping:
+        title: Spedizione e resi
+        free_shipping_note: Questo annuncio ha spedizione gratuita
+        steps:
+          order:
+            title: Effettua l'ordine
+            body: Paga in tutta sicurezza con la Protezione Acquirenti.
+          ship:
+            title: Il venditore prepara e spedisce
+            body: Spedito entro %{days} giorni lavorativi.
+          receive:
+            title: Ricevi l'ordine
+            body: Arriva tra il %{from} e il %{to}.
+        returns_note: Resi gratuiti entro 14 giorni se l'articolo non corrisponde
+          all'annuncio.
+        free: Spedizione gratuita
+        cost: 'Spedizione: %{price}'
+        ships_in: Spedito entro %{days} giorni
+        estimated: Consegna stimata tra il %{from} e il %{to}
+      save_badge: Risparmia %{count}%
+      cta:
+        buy_now: Acquista ora
+        add_to_cart: Aggiungi al carrello
+        make_offer: Fai un'offerta
+        message_seller: Scrivi al venditore
+      protection:
+        title: Protezione Acquirenti
+        body: Rimborso completo se l'articolo non arriva come descritto.
+      seller:
+        verified: Venditore verificato
+        ratings:
+          one: "%{count} valutazione"
+          other: "%{count} valutazioni"
+        no_ratings: Ancora nessuna valutazione
+        follow: Segui
+      published: Pubblicato il %{date}
+      views:
+        one: "%{count} visualizzazione"
+        other: "%{count} visualizzazioni"
+      similar_title: Annunci simili
+      more_from_store_title: Altro da questo negozio
+      gallery_label: Galleria di immagini
+      prev_image: Immagine precedente
+      next_image: Immagine successiva
+      image_number: Immagine %{number}

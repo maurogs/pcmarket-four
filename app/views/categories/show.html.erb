@@ -1,0 +1,3 @@
+<% set_meta_tags title: @category.seo_title.presence || @category.name,
+                description: @category.seo_description.presence || @category.description %>
+<%= render "browse/page", category: @category, result: @search_result, query: @query %>

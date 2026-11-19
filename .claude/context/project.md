@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (Phase 1a catalog data model complete, uncommitted)_
+_Last updated: 2026-11-19 (Phase 1b-i browse + listing pages complete, uncommitted)_
 
 ## What this is
 
@@ -141,13 +141,51 @@ FR/GB/DE/IT/PT seeded but disabled.
   `test/integration/seeds_idempotency_test.rb`, fixtures +
   `test/support/catalog_helpers.rb`.
 
+## Code map (Phase 1b-i — browse & listing pages)
+
+- Routes: `resources :categories, only: :show, path: "c", param: :slug` and
+  `resources :listings, only: :show, path: "l"` inside the locale scope.
+  Optional `(:locale)` segment has **no route default** (it would shadow
+  cookie/Accept-Language negotiation); request-time paths carry the locale via
+  `LocaleConcern#default_url_options` (`{ locale: I18n.locale }`), which also
+  lets `category_path(record)` fill `:slug` positionally.
+- `app/controllers/concerns/browseable.rb` — shared before_action that builds
+  `@result` (Listings::Search) + `@page_title` for categories/search pages;
+  `CategoriesController` and `SearchesController` both render
+  `app/views/browse/_page` (band + sidebar + results turbo-frame).
+- `Listings::Search::Result` gained `dimension_facets` (condition/labels/
+  seller_tags counts), `filter_definitions`, `selected_filter_options`
+  (pill labels, machine values cached locale-safely).
+- `BrowseHelper` — sort options, pagination window, hidden filter fields,
+  active-filter pills + removal/clear URLs, euro↔cents helpers; `ListingsHelper`
+  — webp `<picture>` card images (per-request FilterDefinition memo, no N+1),
+  spec chips/grouped table, location/shipping text; new icons in `IconHelper`.
+- Stimulus: `filters` (euro inputs → hidden cents, debounced auto-submit),
+  `show_more`, `carousel`, `wishlist` (placeholder).
+- `app/views/browse/*` (page, band, sidebar, price_filter, facet_group/option,
+  mobile_filters drawer, results, pagination), `app/views/listings/*` (show,
+  card, gallery, scroller), `app/views/categories/show`.
+- `ListingsController#show`: FriendlyId-history 301 on stale slugs, 404 unless
+  `Listing#viewable_by?` (public | owner | admin, with preview banner),
+  `fresh_when` (etag listing+locale, anonymous only), async
+  `Listings::IncrementViewsCountJob` (1h dedupe per session/IP via
+  Rails.cache), `@similar_listings`/`@more_from_store` (ids cached 10 min).
+- Browse test catalog: `create_browse_catalog` in
+  `test/support/catalog_helpers.rb` — created per test, **not fixtures**:
+  fixture listings land in every test DB and broke the global-scope
+  Search/count tests (also: fixture COPY skips INSERT triggers, so tsvector
+  would need a backfill).
+
 ## Testing
 
-- `bin/rails test` — **116 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **147 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
-  admin-edit survival), i18n parity.
+  admin-edit survival), i18n parity; Phase 1b-i adds category browse
+  (filters/sort/pagination/pills/404s), search page, listing show
+  (etag/304, preview gating, 301 old slugs, scrollers), views-counter job
+  and Listing browse-method tests.
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -156,9 +194,11 @@ FR/GB/DE/IT/PT seeded but disabled.
 
 ## Open items
 
-- Phase 1b: storefront views (category browse, listing detail, publish
-  flow, seller dashboard) on top of the 1a model/service layer.
-- Admin UI for categories/filters/labels/settings (seeds cover data now).
-- Wishlist/notifications/cart are `#` placeholders in the header.
+- Phase 1b-ii+: publish flow, seller dashboard, admin UI for
+  categories/filters/labels/settings (seeds cover data now).
+- Wishlist/cart/offers/chat buttons are `#` placeholders gated by
+  AppSettings flags (`checkout_enabled`, `payments_enabled`,
+  `offers_enabled`, `chat_enabled`) — Phases 5/6.
+- Mobile price filter loses values without JS (euro→cents sync is Stimulus).
 - CI not set up yet.
-- No commit made for Phase 1a (or 0) — awaiting user review.
+- No commit made for Phases 0/1a/1b-i — awaiting user review.

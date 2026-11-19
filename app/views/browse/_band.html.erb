@@ -1,0 +1,26 @@
+<%# Locals: category (or nil), query. %>
+<header class="rounded-2xl border border-line bg-cream-100 p-5 dark:bg-cream-surface sm:p-6">
+  <% if category %>
+    <h1 class="section-title"><%= category.name %></h1>
+    <% if category.description.present? %>
+      <p class="mt-1 max-w-2xl text-sm text-muted"><%= category.description %></p>
+    <% end %>
+    <% children = category.children.select(&:active?) %>
+    <% if children.any? %>
+      <nav class="mt-4 flex flex-wrap gap-2" aria-label="<%= t("browse.subcategories") %>">
+        <% children.each do |child| %>
+          <%= link_to category_path(child),
+                class: "rounded-full border border-line-strong bg-surface px-3.5 py-1.5 text-xs font-semibold transition-colors hover:border-primary-400 hover:text-primary-700 dark:hover:text-primary-300" do %>
+            <%= child.name %>
+            <% if child.listings_count.positive? %>
+              <span class="text-muted"><%= child.listings_count %></span>
+            <% end %>
+          <% end %>
+        <% end %>
+      </nav>
+    <% end %>
+  <% else %>
+    <h1 class="section-title"><%= t("browse.search_results_title", query: query) %></h1>
+    <p class="mt-1 max-w-2xl text-sm text-muted"><%= t("browse.search_subtitle") %></p>
+  <% end %>
+</header>

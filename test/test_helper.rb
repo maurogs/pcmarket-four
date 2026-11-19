@@ -18,3 +18,7 @@ module ActiveSupport
     setup { Rails.cache.clear }
   end
 end
+
+class ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+end

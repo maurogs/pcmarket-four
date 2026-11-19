@@ -27,6 +27,31 @@ module CatalogHelpers
     listing
   end
 
+  # A small browse catalog (two published GPUs in different price bands, a
+  # hidden GPU, a CPU in another subtree) shared by the Phase 1b browse tests.
+  # Built per test instead of fixtures so global-scope tests elsewhere keep
+  # asserting against their own data only.
+  def create_browse_catalog
+    gpu_rtx = publish(create_listing(
+      title: "NVIDIA GeForce RTX 3060 12GB", price_cents: 24_900, original_price_cents: 32_900,
+      condition: :used_like_new, free_shipping: true, allow_offers: true, ships_within_days: 2,
+      province: "madrid", city: "Madrid", highlights: [ "Original box", "Invoice included" ],
+      specs: { "gpu_chipset" => [ "nvidia" ] }
+    ), published_at: 3.days.ago)
+    gpu_rx = publish(create_listing(
+      title: "AMD Radeon RX 6600 8GB", price_cents: 15_900, condition: :used_good,
+      specs: { "gpu_chipset" => [ "amd" ] }
+    ), published_at: 2.days.ago)
+    gpu_hidden = create_listing(title: "Pending Graphics Card Should Not Show", price_cents: 44_900)
+    gpu_hidden.submit!
+    cpu_i5 = publish(create_listing(
+      title: "Intel Core i5-12400 Processor", category: categories(:cpus), price_cents: 12_900,
+      specs: { "cpu_brand" => [ "intel" ] }
+    ), published_at: 1.day.ago)
+
+    { gpu_rtx: gpu_rtx, gpu_rx: gpu_rx, gpu_pending: gpu_hidden, cpu_i5: cpu_i5 }
+  end
+
   # Boolean setting toggle that also resets the AppSettings cache.
   def set_setting(key, value, value_type: "boolean")
     setting = Setting.find_or_initialize_by(key: key.to_s)

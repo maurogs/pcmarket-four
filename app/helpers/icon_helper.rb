@@ -14,7 +14,18 @@ module IconHelper
     "chevron-down" => '<path d="m6 9 6 6 6-6"/>',
     "arrow-up" => '<path d="M12 20V4m0 0-6 6m6-6 6 6"/>',
     "plus" => '<path d="M12 5v14M5 12h14"/>',
-    "tag" => '<path d="M3 12V5a2 2 0 0 1 2-2h7l9 9-9 9-9-9Z"/><circle cx="8" cy="8" r="1.3"/>'
+    "tag" => '<path d="M3 12V5a2 2 0 0 1 2-2h7l9 9-9 9-9-9Z"/><circle cx="8" cy="8" r="1.3"/>',
+    "image" => '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m3 17 4.5-4 3.5 3 4-4L21 17"/>',
+    "map-pin" => '<path d="M12 21s-6.5-5.6-6.5-10.2a6.5 6.5 0 1 1 13 0C18.5 15.4 12 21 12 21Z"/><circle cx="12" cy="10.5" r="2.3"/>',
+    "eye" => '<path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.8"/>',
+    "verified" => '<path d="m12 2.8 2.2 1.6 2.7-.2.9 2.6 2.3 1.4-.8 2.6.8 2.6-2.3 1.4-.9 2.6-2.7-.2L12 21.4l-2.2-1.6-2.7.2-.9-2.6-2.3-1.4.8-2.6-.8-2.6 2.3-1.4.9-2.6 2.7.2L12 2.8Z"/><path d="m9 12 2 2 4-4"/>',
+    "shield" => '<path d="M12 3l8 3v5.5c0 4.6-3.2 8.2-8 9.5-4.8-1.3-8-4.9-8-9.5V6l8-3Z"/><path d="m9 12 2 2 4-4"/>',
+    "truck" => '<path d="M2 7h11v9H2zM13 10h4l3 3v3h-7"/><circle cx="6" cy="17.5" r="1.7"/><circle cx="16.5" cy="17.5" r="1.7"/>',
+    "clock" => '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/>',
+    "chevron-left" => '<path d="m15 5-7 7 7 7"/>',
+    "chevron-right" => '<path d="m9 5 7 7-7 7"/>',
+    "filter" => '<path d="M4 5h16l-6.2 7.2V18l-3.6 2v-7.8L4 5Z"/>',
+    "check" => '<path d="m5 13 4 4 10-10"/>'
   }.freeze
 
   SOCIAL_ICONS = {

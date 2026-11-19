@@ -1,0 +1,211 @@
+<% set_meta_tags title: @listing.title, description: truncate(@listing.description.to_s, length: 160) %>
+
+<div class="mx-auto max-w-7xl px-4 py-6">
+  <nav aria-label="<%= t(".breadcrumbs") %>" class="text-sm text-muted">
+    <ol class="flex flex-wrap items-center gap-1.5">
+      <li><%= link_to t("nav.home"), root_path, class: "hover:text-primary-700 dark:hover:text-primary-300" %></li>
+      <% (@listing.category.ancestors + [ @listing.category ]).each do |category| %>
+        <li class="flex items-center gap-1.5">
+          <span aria-hidden="true">/</span>
+          <%= link_to category.name, category_path(category), class: "font-medium text-body hover:text-primary-700 dark:hover:text-primary-300" %>
+        </li>
+      <% end %>
+    </ol>
+  </nav>
+
+  <% unless @listing.visible_to_public? %>
+    <p class="mt-4 rounded-2xl border border-cream-400 bg-cream-100 p-4 text-sm dark:border-cream-500 dark:bg-cream-surface">
+      <%= t(".preview_banner", status: @listing.status_label) %>
+    </p>
+  <% end %>
+
+  <div class="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-start">
+    <div class="min-w-0 space-y-6">
+      <%= render "listings/gallery", listing: @listing %>
+
+      <details open class="card group">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-2 p-5 font-display text-lg font-semibold [&::-webkit-details-marker]:hidden">
+          <%= t(".overview") %>
+          <%= icon "chevron-down", class: "h-5 w-5 shrink-0 text-muted transition-transform group-open:rotate-180" %>
+        </summary>
+        <div class="space-y-6 px-5 pb-5">
+          <div>
+            <h3 class="text-sm font-semibold"><%= t(".condition_label") %></h3>
+            <p class="mt-1 text-sm"><%= @listing.condition_label %></p>
+          </div>
+
+          <% if @listing.description.present? %>
+            <div>
+              <h3 class="text-sm font-semibold"><%= t(".description_heading") %></h3>
+              <div class="mt-1 text-sm leading-relaxed"><%= simple_format(sanitize(@listing.description)) %></div>
+            </div>
+          <% end %>
+
+          <% if @listing.highlights.present? %>
+            <div>
+              <h3 class="text-sm font-semibold"><%= t(".highlights_heading") %></h3>
+              <ul class="mt-2 grid gap-1.5 text-sm sm:grid-cols-2">
+                <% @listing.highlights.each do |highlight| %>
+                  <li class="flex items-start gap-2">
+                    <span class="mt-0.5 shrink-0 text-primary-600 dark:text-primary-400"><%= icon "check", class: "h-4 w-4" %></span>
+                    <span><%= highlight %></span>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <% spec_grouped(@listing).each do |group_label, rows| %>
+            <div>
+              <h3 class="text-sm font-semibold"><%= group_label.presence || t(".specs_heading") %></h3>
+              <table class="mt-1 w-full text-sm">
+                <tbody>
+                  <% rows.each do |label, values| %>
+                    <tr class="border-b border-line last:border-b-0">
+                      <th scope="row" class="w-2/5 py-2 pr-4 text-left font-normal text-muted"><%= label %></th>
+                      <td class="py-2 font-medium"><%= values %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% end %>
+        </div>
+      </details>
+
+      <section class="card p-5">
+        <h2 class="font-display text-lg font-semibold"><%= t(".shipping.title") %></h2>
+        <ol class="mt-4 space-y-5">
+          <li class="flex gap-3">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-100 text-sm font-bold text-primary-700 dark:bg-primary-900 dark:text-primary-200">1</span>
+            <div>
+              <p class="text-sm font-semibold"><%= t(".shipping.steps.order.title") %></p>
+              <p class="mt-0.5 text-sm text-muted"><%= t(".shipping.steps.order.body") %></p>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-100 text-sm font-bold text-primary-700 dark:bg-primary-900 dark:text-primary-200">2</span>
+            <div>
+              <p class="text-sm font-semibold"><%= t(".shipping.steps.ship.title") %></p>
+              <p class="mt-0.5 text-sm text-muted"><%= t(".shipping.steps.ship.body", days: @listing.ships_within_days) %></p>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-100 text-sm font-bold text-primary-700 dark:bg-primary-900 dark:text-primary-200">3</span>
+            <div>
+              <p class="text-sm font-semibold"><%= t(".shipping.steps.receive.title") %></p>
+              <p class="mt-0.5 text-sm text-muted"><%= t(".shipping.steps.receive.body", from: l(@listing.estimated_arrival_from, format: :long), to: l(@listing.estimated_arrival_to, format: :long)) %></p>
+            </div>
+          </li>
+        </ol>
+        <p class="mt-5 flex items-start gap-2 border-t border-line pt-4 text-sm text-muted">
+          <%= icon "shield", class: "mt-0.5 h-4 w-4 shrink-0" %>
+          <span><%= t(".shipping.returns_note") %></span>
+        </p>
+      </section>
+    </div>
+
+    <aside class="space-y-4 lg:sticky lg:top-24">
+      <div class="card p-5">
+        <h1 class="font-display text-xl font-semibold leading-snug sm:text-2xl"><%= @listing.title %></h1>
+
+        <div class="mt-3 flex flex-wrap items-baseline gap-2">
+          <span class="text-3xl font-bold tracking-tight"><%= @listing.display_price %></span>
+          <% if (original = @listing.display_original_price) %>
+            <span class="text-base text-muted line-through"><%= original %></span>
+          <% end %>
+          <% if (discount = @listing.discount_percent) %>
+            <span class="rounded-full bg-cream-500 px-2.5 py-1 text-xs font-extrabold text-primary-950" title="<%= t(".save_badge", count: discount) %>">-<%= discount %>%</span>
+          <% end %>
+        </div>
+
+        <ul class="mt-4 space-y-2 text-sm">
+          <li class="flex items-center gap-2">
+            <%= icon "tag", class: "h-4 w-4 shrink-0 text-muted" %>
+            <span><strong class="font-semibold"><%= @listing.condition_label %></strong></span>
+          </li>
+          <li class="flex items-start gap-2">
+            <%= icon "truck", class: "mt-0.5 h-4 w-4 shrink-0 text-muted" %>
+            <span>
+              <%= @listing.free_shipping? ? t(".shipping.free") : t(".shipping.cost", price: listing_display_shipping_price(@listing)) %>
+              · <%= t(".shipping.ships_in", days: @listing.ships_within_days) %>
+              <span class="block text-muted"><%= t(".shipping.estimated", from: l(@listing.estimated_arrival_from, format: :long), to: l(@listing.estimated_arrival_to, format: :long)) %></span>
+            </span>
+          </li>
+          <% if (location = listing_location(@listing)) %>
+            <li class="flex items-center gap-2">
+              <%= icon "map-pin", class: "h-4 w-4 shrink-0 text-muted" %>
+              <span><%= location %></span>
+            </li>
+          <% end %>
+        </ul>
+
+        <div class="mt-5 space-y-2">
+          <%# Checkout / cart / offers / chat CTAs ship in Phases 5 and 6 — %><%# hrefs stay "#" placeholders behind feature flags. %>
+          <% if AppSettings.enabled?("checkout_enabled") %>
+            <%= link_to t(".cta.buy_now"), "#", class: "btn-primary w-full" %>
+          <% end %>
+          <% if AppSettings.enabled?("payments_enabled") %>
+            <%= link_to t(".cta.add_to_cart"), "#", class: "btn-secondary w-full" %>
+          <% end %>
+          <% if AppSettings.enabled?("offers_enabled") && @listing.allow_offers? %>
+            <%= link_to t(".cta.make_offer"), "#", class: "btn-secondary w-full" %>
+          <% end %>
+          <% if AppSettings.enabled?("chat_enabled") %>
+            <%= link_to t(".cta.message_seller"), "#", class: "btn-secondary w-full" %>
+          <% end %>
+        </div>
+
+        <div class="mt-5 flex items-start gap-3 rounded-xl bg-cream-100 p-4 text-sm dark:bg-cream-surface">
+          <span class="shrink-0 text-primary-600 dark:text-primary-400"><%= icon "shield", class: "h-5 w-5" %></span>
+          <div>
+            <p class="font-semibold"><%= t(".protection.title") %></p>
+            <p class="mt-0.5 text-muted"><%= t(".protection.body") %></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-4">
+        <div class="flex items-center gap-3">
+          <% store = @listing.store %>
+          <% if store.logo.attached? %>
+            <%= image_tag url_for(store.logo.variant(resize_to_fill: [ 96, 96 ], format: Listing::IMAGE_FORMAT)),
+                  alt: "", loading: "lazy", class: "h-12 w-12 shrink-0 rounded-full object-cover" %>
+          <% else %>
+            <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-100 font-display text-lg font-bold text-primary-700 dark:bg-primary-900 dark:text-primary-200"><%= store.display_name.first %></span>
+          <% end %>
+          <div class="min-w-0 flex-1">
+            <%# Store profile pages land in Phase 2 — link stays a placeholder. %>
+            <p class="flex items-center gap-1 truncate font-semibold">
+              <%= link_to store.display_name, "#", class: "truncate hover:text-primary-700 dark:hover:text-primary-300" %>
+              <% if store.verified? %>
+                <span class="shrink-0 text-primary-600 dark:text-primary-400" title="<%= t(".seller.verified") %>"><%= icon "verified", class: "h-4 w-4" %></span>
+              <% end %>
+            </p>
+            <p class="text-xs text-muted">
+              <% if store.ratings_count.positive? %>
+                <span aria-hidden="true">★</span> <%= number_with_precision(store.rating_avg, precision: 1) %>
+                · <%= t(".seller.ratings", count: store.ratings_count) %>
+              <% else %>
+                <%= t(".seller.no_ratings") %>
+              <% end %>
+            </p>
+          </div>
+          <%# Follow buttons arrive with the social phase. %>
+          <button type="button" class="btn-secondary shrink-0 px-3 py-1.5 text-xs"><%= t(".seller.follow") %></button>
+        </div>
+      </div>
+
+      <p class="px-1 text-xs text-muted">
+        <% if @listing.published_at %>
+          <span><%= t(".published", date: l(@listing.published_at.to_date, format: :long)) %></span>
+          ·
+        <% end %>
+        <span class="inline-flex items-center gap-1"><%= icon "eye", class: "h-3.5 w-3.5" %><%= t(".views", count: @listing.views_count) %></span>
+      </p>
+    </aside>
+  </div>
+
+  <%= render "listings/scroller", heading: t(".similar_title"), listings: @similar_listings %>
+  <%= render "listings/scroller", heading: t(".more_from_store_title"), listings: @more_from_store %>
+</div>

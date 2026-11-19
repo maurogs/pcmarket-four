@@ -1,0 +1,8 @@
+<%# Locals: name, option, checked %>
+<label class="flex cursor-pointer items-center gap-2 rounded-lg px-1 py-1 text-sm transition-colors hover:bg-cream-100 dark:hover:bg-cream-surface <%= "opacity-50" if option[:count].to_i.zero? && !checked.include?(option[:value]) %>">
+  <%= check_box_tag name, option[:value], checked.include?(option[:value]),
+        class: "h-4 w-4 shrink-0 rounded border-line-strong text-primary-600 focus:outline-primary-500",
+        data: { action: "filters#change" } %>
+  <span class="flex-1 truncate"><%= option[:label] %></span>
+  <span class="text-xs tabular-nums text-muted"><%= option[:count] %></span>
+</label>

@@ -79,6 +79,20 @@ class Category < ApplicationRecord
     find_by(slug: param.to_s)
   end
 
+  # Root → parent chain (breadcrumbs). Walks the parent associations: at most
+  # a handful of indexed lookups, memoized per instance.
+  def ancestors
+    @ancestors ||= begin
+      chain = []
+      node = parent
+      while node
+        chain.unshift(node)
+        node = node.parent
+      end
+      chain
+    end
+  end
+
   # Counter cache helper — used by Categories::RefreshListingsCount only.
   def refresh_listings_count!
     update_column(:listings_count,

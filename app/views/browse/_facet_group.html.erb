@@ -1,0 +1,27 @@
+<%# Locals: title, name (input name), checked (array of values), options
+    ([{value:, label:, featured:, count:}], featured-first ordered). %>
+<% visible_options, extra_options = options.first(6), options.drop(6) %>
+<details class="border-b border-line py-3 group" open>
+  <summary class="flex cursor-pointer list-none items-center justify-between gap-2 py-1 text-sm font-semibold [&::-webkit-details-marker]:hidden">
+    <%= title %>
+    <%= icon "chevron-down", class: "h-4 w-4 shrink-0 text-muted transition-transform group-open:rotate-180" %>
+  </summary>
+  <div class="mt-1 space-y-0.5" data-controller="show-more">
+    <% visible_options.each do |option| %>
+      <%= render "browse/facet_option", name: name, option: option, checked: checked %>
+    <% end %>
+    <% if extra_options.any? %>
+      <div data-show-more-target="more" hidden>
+        <% extra_options.each do |option| %>
+          <%= render "browse/facet_option", name: name, option: option, checked: checked %>
+        <% end %>
+      </div>
+      <button type="button" class="mt-1 px-1 text-xs font-semibold text-primary-600 hover:underline dark:text-primary-400"
+              data-action="show-more#toggle" data-show-more-target="button"
+              data-collapsed-label="<%= t("browse.filters.show_more", count: extra_options.size) %>"
+              data-expanded-label="<%= t("browse.filters.show_less") %>">
+        <%= t("browse.filters.show_more", count: extra_options.size) %>
+      </button>
+    <% end %>
+  </div>
+</details>

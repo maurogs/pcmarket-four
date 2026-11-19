@@ -1,3 +1,5 @@
+# Localization for de.
+---
 de:
   accessibility:
     skip_to_content: Zum Inhalt springen
@@ -20,8 +22,8 @@ de:
     forbidden: Sie sind nicht berechtigt, diese Aktion auszuführen.
     messages:
       must_exceed_price: muss höher als der Preis sein
-      too_large_image: "Jedes Bild muss kleiner als %{max_megabytes} MB sein"
-      too_many_images: "Du kannst maximal %{max} Bilder hochladen"
+      too_large_image: Jedes Bild muss kleiner als %{max_megabytes} MB sein
+      too_many_images: Du kannst maximal %{max} Bilder hochladen
       unknown_filter_key: "%{key} ist kein gültiger Filter"
       unknown_filter_value: "„%{value}“ ist kein gültiger Wert für %{key}"
       unsupported_content_type: "%{content_type} wird als Bildformat nicht unterstützt"
@@ -47,17 +49,21 @@ de:
     index:
       title: Technik sicher kaufen und verkaufen
       meta:
-        description: PCMarket ist der europäische Marktplatz für neue und gebrauchte Computer und Komponenten. Kostenlose Anzeigen, sichere Zahlungen und Abholung vor Ort.
+        description: PCMarket ist der europäische Marktplatz für neue und gebrauchte
+          Computer und Komponenten. Kostenlose Anzeigen, sichere Zahlungen und Abholung
+          vor Ort.
       hero:
         title: Der Marktplatz für deine Technik
-        subtitle: Kaufe und verkaufe Computer, Komponenten und Gadgets von Menschen in deiner Nähe.
+        subtitle: Kaufe und verkaufe Computer, Komponenten und Gadgets von Menschen
+          in deiner Nähe.
         browse: Kategorien ansehen
       categories:
         title: Beliebte Kategorien
       values:
         trust:
           title: Vertrauenswürdige Verkäufer
-          description: Verifizierte Profile, Bewertungen und Rezensionen machen jeden Kauf sicher.
+          description: Verifizierte Profile, Bewertungen und Rezensionen machen jeden
+            Kauf sicher.
         quality:
           title: Faire Preise
           description: Vergleiche Angebote und chatte vor dem Kauf mit den Verkäufern.
@@ -98,6 +104,7 @@ de:
       keyboards: Tastaturen
       mice: Mäuse
       headsets: Headsets
+    home: Startseite
   newsletter:
     title: Newsletter
     description: Die besten Angebote direkt per E-Mail.
@@ -120,16 +127,18 @@ de:
     label: Suchen
     placeholder: Laptops, Grafikkarten, Handys suchen…
     submit: Suchen
-    coming_soon: Suchergebnisse gibt es mit dem vollständigen Katalog.
+    hint: Durchsuchen Sie Titel, Beschreibungen und Daten aller veröffentlichten Anzeigen.
   searches:
     show:
       title: Suche
+      results_title: Ergebnisse für „%{query}“
   sell_to_us:
     show:
       title: An uns verkaufen
       intro: Holen Sie einen fairen Preis für Ihre alte Hardware in wenigen Schritten.
       meta:
-        description: Verkaufen Sie Ihre gebrauchten Computer und Komponenten an PCMarket zum garantierten Preis.
+        description: Verkaufen Sie Ihre gebrauchten Computer und Komponenten an PCMarket
+          zum garantierten Preis.
   activerecord:
     attributes:
       category:
@@ -243,20 +252,124 @@ de:
       support_email: Support-E-Mail-Adresse
       listing_auto_approve: Schaltet neue Anzeigen ohne Moderation frei
       max_images_per_listing: Maximale Anzahl Bilder pro Anzeige
-      saved_search_alerts_enabled: Sende E-Mail-Benachrichtigungen für gespeicherte Suchen
+      saved_search_alerts_enabled: Sende E-Mail-Benachrichtigungen für gespeicherte
+        Suchen
   devise:
     registrations:
       edit:
         edit: "%{resource} bearbeiten"
         cancel_account: Konto löschen
-        cancel_account_confirmation: Damit werden Ihr Konto und alle Daten dauerhaft gelöscht.
+        cancel_account_confirmation: Damit werden Ihr Konto und alle Daten dauerhaft
+          gelöscht.
         leave_blank: leer lassen, wenn Sie es nicht ändern möchten
-        we_need_password: wir benötigen Ihr aktuelles Passwort, um die Änderungen zu bestätigen
+        we_need_password: wir benötigen Ihr aktuelles Passwort, um die Änderungen
+          zu bestätigen
       new:
         password_characters: "(mindestens %{count} Zeichen)"
     sessions:
       new:
         remember_me: Angemeldet bleiben
     shared:
-      account_incomplete: Ihr Google-Konto benötigt noch einige Angaben, bevor die Anmeldung abgeschlossen werden kann.
-      authentication_unsuccessful: Anmeldung mit diesem Anbieter fehlgeschlagen. Bitte erneut versuchen.
+      account_incomplete: Ihr Google-Konto benötigt noch einige Angaben, bevor die
+        Anmeldung abgeschlossen werden kann.
+      authentication_unsuccessful: Anmeldung mit diesem Anbieter fehlgeschlagen. Bitte
+        erneut versuchen.
+  browse:
+    filters:
+      title: Filter
+      refine: Ergebnisse verfeinern
+      price: Preis
+      price_min_placeholder: Min
+      price_max_placeholder: Max
+      price_between: "%{min} – %{max}"
+      price_min: Ab %{price}
+      price_max: Bis %{price}
+      condition: Zustand
+      labels: Labels
+      seller_tags: Shop-Stil
+      show_more: Mehr anzeigen (%{count})
+      show_less: Weniger anzeigen
+      clear_all: Alle löschen
+      applied: Angewendete Filter
+      remove: Filter entfernen
+      apply: Filter anwenden
+    sorts:
+      best_match: Beste Treffer
+      newest: Neueste
+      price_asc: 'Preis: aufsteigend'
+      price_desc: 'Preis: absteigend'
+      most_watched: Meist gesehen
+    results_count:
+      one: "%{count} Ergebnis"
+      other: "%{count} Ergebnisse"
+    sort_label: Sortieren
+    subcategories: Unterkategorien
+    search_results_title: Ergebnisse für „%{query}“
+    search_subtitle: Alle Treffer Ihrer Suche, zuerst empfohlene und neueste.
+    empty:
+      title: Keine Ergebnisse
+      body: Entfernen Sie einen Filter oder erweitern Sie Ihre Suche.
+      save_search: Diese Suche speichern
+    pagination:
+      label: Seitennummerierung
+      prev: Zurück
+      next: Weiter
+      page: Seite %{page}
+  listings:
+    card:
+      save_badge: "%{count}% sparen"
+      add_to_wishlist: Für später merken
+      verified_seller: Verifizierter Verkäufer
+    show:
+      breadcrumbs: Brotnavigation
+      preview_banner: 'Sie sehen eine Vorschau dieser Anzeige (Status: %{status}).'
+      overview: Überblick
+      condition_label: Zustand
+      description_heading: Beschreibung
+      highlights_heading: Highlights
+      specs_heading: Technische Daten
+      shipping:
+        title: Versand & Rückgabe
+        free_shipping_note: Dieser Artikel versandt kostenlos
+        steps:
+          order:
+            title: Bestellung aufgeben
+            body: Sicher bezahlen mit Käuferschutz.
+          ship:
+            title: Der Verkäufer verpackt und versendet
+            body: Versand innerhalb von %{days} Werktagen.
+          receive:
+            title: Bestellung erhalten
+            body: Ankunft zwischen dem %{from} und dem %{to}.
+        returns_note: Kostenlose Rückgabe innerhalb von 14 Tagen, wenn der Artikel
+          nicht zur Anzeige passt.
+        free: Kostenloser Versand
+        cost: 'Versand: %{price}'
+        ships_in: Versand innerhalb von %{days} Tagen
+        estimated: Voraussichtliche Lieferung zwischen dem %{from} und dem %{to}
+      save_badge: "%{count}% sparen"
+      cta:
+        buy_now: Jetzt kaufen
+        add_to_cart: In den Warenkorb
+        make_offer: Angebot machen
+        message_seller: Verkäufer schreiben
+      protection:
+        title: Käuferschutz
+        body: Volle Erstattung, wenn der Artikel nicht wie beschrieben ankommt.
+      seller:
+        verified: Verifizierter Verkäufer
+        ratings:
+          one: "%{count} Bewertung"
+          other: "%{count} Bewertungen"
+        no_ratings: Noch keine Bewertungen
+        follow: Folgen
+      published: Veröffentlicht am %{date}
+      views:
+        one: "%{count} Aufruf"
+        other: "%{count} Aufrufe"
+      similar_title: Ähnliche Anzeigen
+      more_from_store_title: Mehr von diesem Shop
+      gallery_label: Bildergalerie
+      prev_image: Vorheriges Bild
+      next_image: Nächstes Bild
+      image_number: Bild %{number}

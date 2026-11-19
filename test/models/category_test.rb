@@ -62,6 +62,10 @@ class CategoryTest < ActiveSupport::TestCase
   end
 
   test "refresh_listings_count! counts published listings including descendants" do
+    # Baseline first: the browse fixtures already publish listings under
+    # gpus, so assert on a delta.
+    Categories::RefreshListingsCount.call(categories(:gpus))
+    before = categories(:gpus).reload.listings_count
     publish(create_listing(title: "RTX 3060 Founders Edition", category: categories(:gpus)))
     publish(create_listing(title: "RTX 2060 Super OC", category: categories(:gpus)))
     publish(create_listing(title: "Ryzen 7 5800X Boxed", category: categories(:cpus)))
@@ -69,7 +73,7 @@ class CategoryTest < ActiveSupport::TestCase
 
     Categories::RefreshListingsCount.call(categories(:gpus))
 
-    assert_equal 2, categories(:gpus).reload.listings_count
+    assert_equal before + 2, categories(:gpus).reload.listings_count
     assert_equal 0, categories(:cpus).reload.listings_count
     assert_equal 0, categories(:gaming_pcs).reload.listings_count
   end
