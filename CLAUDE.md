@@ -26,6 +26,7 @@
 When you are the Claude Code orchestrator:
 - Your job is to plan, review and approve.
 - For any code implementation task (editing files, running tests), do NOT do it yourself.
-- Use the `opencode_execute` tool with the `build` agent and **do NOT pass the `model` parameter** (leave it unset so OpenCode automatically uses the default model configured in `opencode.json`).
-- If corrections are needed, use `opencode_reply` to continue the session.
+- Split large phases into small atomic tasks (2–4 files per call) so no execution approaches 30 minutes.
+- Use the `opencode_execute` tool with the `build` agent and **do NOT pass the `model` parameter** (leave it unset so OpenCode uses the default model configured in `opencode.json`).
+- Only use `opencode_reply` for minor fixes if the previous run executed tools cleanly; if OpenCode fails with a malformed tool call or invalid tool (like `exec`), start a fresh `opencode_execute` session instead.
 - Review the diff returned by the tool before giving your approval.
