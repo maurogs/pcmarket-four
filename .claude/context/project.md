@@ -1,6 +1,7 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (PC Finder step 4 — route, controller & views, uncommitted)_
+_Last updated: 2026-11-19 (PC Finder step 6 — controller tests, uncommitted;
+PC Finder feature complete)_
 
 ## What this is
 
@@ -268,9 +269,23 @@ FR/GB/DE/IT/PT seeded but disabled.
   promo (`NavigationMenu#promos` → `pc_finder_path(locale:)`) and home banner
   CTA → `pc_finder_path`.
 
+## Code map (Phase 1b-ii-c — PC Finder step 6: controller tests — DONE)
+
+- `test/controllers/pc_finders_controller_test.rb` (13 tests; Games and
+  gaming-PC listings created per test, no global listing fixtures): quiz
+  render without params (7 `data-quiz-target="step"` fieldsets, game tiles,
+  gamer-type tiles, no results block), results (matching listing shown,
+  below-required-score listing hidden, estimated FPS per game), invalid
+  params (`resolution=8k`/`fps=999`/`games[]=unknown`/`budget=foo`) fall
+  back to the quiz, `step=3` → `data-quiz-step-value`, `page=2` pagination
+  (25 equal-score PCs, budget keeps the setup builds out of the page), all
+  6 locales render without "translation missing" (quiz + results), mega-menu
+  promo and home banner CTA link to `/pc-finder`.
+- **PC Finder (steps 1–6) is done.** Remaining follow-ups are in Open items.
+
 ## Testing
 
-- `bin/rails test` — **201 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **214 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -285,7 +300,8 @@ FR/GB/DE/IT/PT seeded but disabled.
   PC Finder step 2 adds no new tests — the new seeds are covered by the
   idempotency test (its `>=` counts still hold); step 3 adds
   `test/services/pc_finder/{query,recommender}_test.rb` (28 tests, records
-  created per test).
+  created per test); step 6 adds
+  `test/controllers/pc_finders_controller_test.rb` (13 tests).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -294,6 +310,9 @@ FR/GB/DE/IT/PT seeded but disabled.
 
 ## Open items
 
+- PC Finder: admin CRUD for `Game` rows and listing `performance_score`
+  pending Phase 7 (admin UI); game tiles show initial-letter placeholders
+  until real game images are attached (`Game#image`, nothing seeded).
 - Phase 1b-ii+: publish flow, seller dashboard, admin UI for
   categories/filters/labels/settings (seeds cover data now).
 - Store page follow/message buttons + reviews tab summary are placeholders

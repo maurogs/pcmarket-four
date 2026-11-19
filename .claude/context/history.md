@@ -358,3 +358,22 @@ Finder placeholder (verified).
 
 Verified: `bin/rails test` 201 green; `bin/rubocop` clean (134 files);
 `bin/importmap json | grep quiz` shows the pinned controller. Not committed.
+
+## 2026-11-19 — PC Finder step 6: controller tests (feature done)
+
+Added `test/controllers/pc_finders_controller_test.rb` (13 tests, games +
+gaming-PC listings created per test — no new global listing fixtures):
+quiz render without params (7 `data-quiz-target="step"` fieldsets, game
+tiles, gamer-type tiles, no results block via absent sort select); results
+with `games[]=valorant&resolution=1440p&fps=144` (80-score PC shown, 40-score
+hidden, "192 FPS" = 144*80/60 in the performance block); invalid params
+(resolution=8k, fps=999, games[]=unknown, budget=foo) → 200 quiz fallback;
+`step=3` → `data-quiz-step-value="3"`; `page=2` pagination (25 equal-score
+PCs, budget=800_1200 keeps the setup builds out so page 2 holds the
+first-created PC); all 6 locales 200 with no "translation missing" (quiz +
+results); mega-menu promo and home banner CTA link to `/en/pc-finder`.
+
+No app bugs found — no app code changed. `project.md` updated: PC Finder
+marked done, open items list admin CRUD for games/performance scores
+(Phase 7) and real game images. Verified: `bin/rails test` 214 green;
+`bin/rubocop` clean (135 files). Not committed.
