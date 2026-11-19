@@ -221,6 +221,16 @@ es:
           attributes:
             store:
               reviewing_own_store: No puedes reseñar tu propia tienda
+        store:
+          attributes:
+            banner:
+              invalid_content_type: debe ser una imagen JPG, PNG o WebP
+              too_large: es demasiado grande (máximo 8 MB)
+            logo:
+              invalid_content_type: debe ser una imagen JPG, PNG o WebP
+              too_large: es demasiado grande (máximo 5 MB)
+            tax_id:
+              invalid: no es una identificación fiscal española válida (NIF, NIE o CIF)
         user:
           attributes:
             avatar:
@@ -276,9 +286,23 @@ es:
           rejected: Rechazado
           sold: Vendido
       store:
+        allow_offers_default: Permitir ofertas por defecto
+        banner: Banner
+        bio: Descripción
+        business_name: Razón social
+        city: Ciudad
         kind:
           business: Empresa
           individual: Particular
+        logo: Logo
+        name: Nombre de la tienda
+        postal_code: Código postal
+        province: Provincia
+        remove_banner: Quitar el banner actual
+        remove_logo: Quitar el logo actual
+        tax_id: Identificación fiscal
+        vacation_message: Mensaje de vacaciones
+        vacation_mode: Modo vacaciones
       user:
         avatar: Foto
         first_name: Nombre
@@ -651,6 +675,7 @@ es:
       security: Seguridad
       addresses: Direcciones
       notifications: Notificaciones
+      my_store: Mi tienda
       delete_account: Eliminar cuenta
     profiles:
       edit:
@@ -685,3 +710,34 @@ es:
         submit: Guardar preferencias
       update:
         success: Preferencias de notificación guardadas.
+  seller:
+    stores:
+      new:
+        title: Abre tu tienda
+        intro: Elige nombre y apariencia para tu escaparate; podrás cambiar
+          todo esto más adelante.
+      edit:
+        title: Ajustes de la tienda
+      form:
+        profile_title: Perfil de la tienda
+        logo_hint: PNG, JPG o WebP, máximo 5 MB.
+        banner_hint: PNG, JPG o WebP, máximo 8 MB.
+        bio_hint: Se muestra en la página pública de tu tienda.
+        business_title: Datos de la empresa
+        business_hint: Las cuentas de empresa deben mostrar su razón social e
+          identificación fiscal.
+        tax_id_hint: NIF, NIE o CIF español.
+        location_title: Ubicación
+        province_prompt: Selecciona una provincia
+        policies_title: Políticas
+        allow_offers_default: Permitir ofertas en mis anuncios por defecto
+        vacation_title: Modo vacaciones
+        vacation_mode: Pausar mi tienda
+        vacation_note: Con el modo vacaciones activado, tus anuncios se ocultan
+          del buscador y de tu página de tienda.
+        vacation_message_hint: Se muestra a los visitantes de tu tienda (máximo 280 caracteres).
+        submit: Guardar ajustes de la tienda
+      create:
+        success: Tu tienda ya está abierta.
+      update:
+        success: Ajustes de la tienda actualizados.

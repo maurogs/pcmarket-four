@@ -40,5 +40,12 @@ Rails.application.routes.draw do
         resource :default, only: :update, controller: "address_defaults"
       end
     end
+
+    # Seller area (Phase 2): "open your store" + store settings. Singular —
+    # a user owns at most one store, so the URL never carries an id and other
+    # sellers' stores are simply unreachable.
+    namespace :seller do
+      resource :store, only: %i[new create edit update]
+    end
   end
 end

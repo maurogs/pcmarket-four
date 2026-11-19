@@ -221,6 +221,16 @@ it:
           attributes:
             store:
               reviewing_own_store: Non puoi recensire il tuo stesso negozio
+        store:
+          attributes:
+            banner:
+              invalid_content_type: deve essere un'immagine JPG, PNG o WebP
+              too_large: è troppo grande (massimo 8 MB)
+            logo:
+              invalid_content_type: deve essere un'immagine JPG, PNG o WebP
+              too_large: è troppo grande (massimo 5 MB)
+            tax_id:
+              invalid: non è un identificativo fiscale spagnolo valido (NIF, NIE o CIF)
         user:
           attributes:
             avatar:
@@ -276,9 +286,23 @@ it:
           rejected: Rifiutato
           sold: Venduto
       store:
+        allow_offers_default: Consenti offerte per impostazione predefinita
+        banner: Banner
+        bio: Descrizione
+        business_name: Ragione sociale
+        city: Città
         kind:
           business: Azienda
           individual: Privato
+        logo: Logo
+        name: Nome del negozio
+        postal_code: CAP
+        province: Provincia
+        remove_banner: Rimuovi il banner attuale
+        remove_logo: Rimuovi il logo attuale
+        tax_id: Identificativo fiscale
+        vacation_message: Messaggio di vacanza
+        vacation_mode: Modalità vacanza
       user:
         avatar: Foto
         first_name: Nome
@@ -652,6 +676,7 @@ it:
       security: Sicurezza
       addresses: Indirizzi
       notifications: Notifiche
+      my_store: Il mio negozio
       delete_account: Elimina account
     profiles:
       edit:
@@ -686,3 +711,33 @@ it:
         submit: Salva preferenze
       update:
         success: Preferenze di notifica salvate.
+  seller:
+    stores:
+      new:
+        title: Apri il tuo negozio
+        intro: Scegli un nome e uno stile — potrai modificare tutto qui più tardi.
+      edit:
+        title: Impostazioni del negozio
+      form:
+        profile_title: Profilo del negozio
+        logo_hint: PNG, JPG o WebP, massimo 5 MB.
+        banner_hint: PNG, JPG o WebP, massimo 8 MB.
+        bio_hint: Mostrato sulla pagina pubblica del tuo negozio.
+        business_title: Dati aziendali
+        business_hint: I conti aziendali devono mostrare ragione sociale e
+          identificativo fiscale.
+        tax_id_hint: NIF, NIE o CIF spagnolo.
+        location_title: Luogo
+        province_prompt: Seleziona una provincia
+        policies_title: Politiche
+        allow_offers_default: Consenti offerte sui miei annunci per impostazione predefinita
+        vacation_title: Modalità vacanza
+        vacation_mode: Metti in pausa il mio negozio
+        vacation_note: Con la modalità vacanza attiva, i tuoi annunci sono
+          nascosti dalla ricerca e dalla pagina del negozio.
+        vacation_message_hint: Mostrato ai visitatori del tuo negozio (massimo 280 caratteri).
+        submit: Salva impostazioni del negozio
+      create:
+        success: Il tuo negozio è aperto.
+      update:
+        success: Impostazioni del negozio aggiornate.

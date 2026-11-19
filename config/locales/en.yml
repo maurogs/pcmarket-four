@@ -220,6 +220,16 @@ en:
           attributes:
             store:
               reviewing_own_store: You can't review your own store
+        store:
+          attributes:
+            banner:
+              invalid_content_type: must be a JPG, PNG or WebP image
+              too_large: is too large (maximum 8 MB)
+            logo:
+              invalid_content_type: must be a JPG, PNG or WebP image
+              too_large: is too large (maximum 5 MB)
+            tax_id:
+              invalid: is not a valid Spanish tax ID (NIF, NIE or CIF)
         user:
           attributes:
             avatar:
@@ -275,9 +285,23 @@ en:
           rejected: Rejected
           sold: Sold
       store:
+        allow_offers_default: Allow offers by default
+        banner: Banner
+        bio: Description
+        business_name: Business name
+        city: City
         kind:
           business: Business
           individual: Individual
+        logo: Logo
+        name: Store name
+        postal_code: Postal code
+        province: Province
+        remove_banner: Remove current banner
+        remove_logo: Remove current logo
+        tax_id: Tax ID
+        vacation_message: Vacation message
+        vacation_mode: Vacation mode
       user:
         avatar: Photo
         first_name: First name
@@ -646,6 +670,7 @@ en:
       security: Security
       addresses: Addresses
       notifications: Notifications
+      my_store: My store
       delete_account: Delete account
     profiles:
       edit:
@@ -680,3 +705,33 @@ en:
         submit: Save preferences
       update:
         success: Notification preferences saved.
+  seller:
+    stores:
+      new:
+        title: Open your store
+        intro: Pick a name and a look for your storefront — you can change
+          everything here later.
+      edit:
+        title: Store settings
+      form:
+        profile_title: Store profile
+        logo_hint: PNG, JPG or WebP, up to 5 MB.
+        banner_hint: PNG, JPG or WebP, up to 8 MB.
+        bio_hint: Shown on your public store page.
+        business_title: Business details
+        business_hint: Business accounts must show their legal name and tax ID.
+        tax_id_hint: Spanish NIF, NIE or CIF.
+        location_title: Location
+        province_prompt: Select a province
+        policies_title: Policies
+        allow_offers_default: Allow offers on my listings by default
+        vacation_title: Vacation mode
+        vacation_mode: Pause my store
+        vacation_note: While vacation mode is on, your listings are hidden
+          from search and your store page.
+        vacation_message_hint: Shown to visitors of your store (max 280 characters).
+        submit: Save store settings
+      create:
+        success: Your store is open.
+      update:
+        success: Store settings updated.

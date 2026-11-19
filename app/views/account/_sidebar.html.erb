@@ -5,7 +5,8 @@
     [ "profiles", t(".profile"), edit_account_profile_path ],
     [ "passwords", t(".security"), edit_account_password_path ],
     [ "addresses", t(".addresses"), account_addresses_path ],
-    [ "notifications", t(".notifications"), edit_account_notifications_path ]
+    [ "notifications", t(".notifications"), edit_account_notifications_path ],
+    [ "stores", t(".my_store"), current_user.store ? edit_seller_store_path : new_seller_store_path ]
   ]
   active = controller.controller_name == "address_defaults" ? "addresses" : controller.controller_name
 %>

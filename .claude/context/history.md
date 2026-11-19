@@ -539,3 +539,53 @@ it mid-test invalidates the warm session (sign_in again); `f.check_box
 
 Verified: `bin/rails test` 285 green; `bin/rubocop` clean (156 files).
 Not committed.
+
+## 2026-11-19 — Phase 2 step 3: seller store settings (uncommitted)
+
+Routes: `namespace :seller { resource :store, only: %i[new create edit update] }`
+inside the locale scope. Singular on purpose — one store per user, so the URL
+never carries an id and other sellers' stores are unreachable by design.
+
+`Seller::StoresController` (skinny): authenticate_user! + `set_store`
+(`current_user.store`); new/create bounce to edit when a store exists,
+edit/update bounce to new when it doesn't. All writes go through
+`Store#assign_settings` + save; 422 re-render on invalid.
+
+Store model: name now `length: { in: 2..60 }` + case-insensitive uniqueness;
+`vacation_message` ≤280; `tax_id` via new `SpanishTaxIdValidator`
+(app/validators/) — NIF/NIE mod-23 check letter recomputed, CIF format-only
+(type letter + 7 digits + digit/A–J control); `before_validation
+:normalize_tax_id` (strip spaces + upcase); logo/banner content-type
+(png/jpeg/webp) + size (5/8 MB) validations mirroring User#avatar.
+`assign_settings` consumes virtual `remove_logo`/`remove_banner` flags and
+purges the attachments. **Slug now regenerates on rename**
+(`should_generate_new_friendly_id?` → `name_changed? || super`); Store uses
+`:slugged` only — no `:history`, so old store URLs stop resolving after a
+rename (updated the old "slug stays stable" store_test accordingly).
+
+Views `seller/stores/{new,edit,_form}` use the account shell (`content_for
+:account_body`); sections Store profile / Business details / Location /
+Policies / Vacation mode. Business fields toggle via plain CSS `:has`
+(`.store-form:has(#store_kind_business:checked) .business-fields` in
+application.css — no JS, no inline style so CSP stays 'self'). Sidebar gained
+a "My store" entry (edit or new depending on `current_user.store`).
+**Gotcha:** on a 422 re-render the rejected upload is attached in memory —
+preview `image_tag` must be guarded by `attachment&.persisted?` + image
+content_type or the variant pipeline raises.
+
+i18n: `seller.stores.*`, `account.sidebar.my_store`,
+`activerecord.attributes.store.*` (incl. remove_logo/remove_banner labels for
+the virtual checkboxes), `activerecord.errors.models.store.attributes.*` in
+all 6 locales (edited as text).
+
+Tests (30 new): validator (12: NIF/NIE/CIF valid+invalid, case/space
+insensitivity, blank passes, Store integration) and
+seller/stores_controller (18: auth, open-once + redirect loop, 422s for short
+name / taken name / missing business identity / bad tax id, business accept,
+vacation toggle, logo/banner attach/reject/remove, ownership).
+**Gotcha:** Devise confirmable rejects `sign_in` for unconfirmed users — the
+:pending fixture can never sign in in controller tests; create a confirmed
+user instead. Session warm-up trick reused.
+
+Verified: `bin/rails test` 315 green; `bin/rubocop` clean (160 files).
+Not committed.

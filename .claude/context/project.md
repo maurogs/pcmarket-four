@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (Phase 2 step 2b — account settings area,
+_Last updated: 2026-11-19 (Phase 2 step 3 — seller store settings,
 uncommitted)_
 
 ## What this is
@@ -359,9 +359,35 @@ FR/GB/DE/IT/PT seeded but disabled.
   → `check_box_tag`; YAML plain scalars can't contain `": "` (quote those
   strings).
 
+## Code map (Phase 2 step 3 — seller store settings)
+
+- Routes: `namespace :seller { resource :store, only: %i[new create edit
+  update] }` (locale scope). Singular — one store per user, no id in the URL,
+  other sellers' stores unreachable by construction.
+- `Seller::StoresController` — authenticate_user!; new/create = "open your
+  store" (redirect to edit once a store exists), edit/update redirect to new
+  while there is none. All writes via `Store#assign_settings` (consumes
+  virtual `remove_logo`/`remove_banner` flags, purges attachments) — skinny
+  controller.
+- `app/validators/spanish_tax_id_validator.rb` — NIF/NIE mod-23 check letter
+  (TRWAGMYFPDXBNJZSQVHLCKE), CIF format-only (type letter + 7 digits + digit
+  or A–J control). Blank passes (presence is business-only).
+- Store: name 2..60 + case-insensitive uniqueness; vacation_message ≤280;
+  logo/banner png/jpeg/webp ≤5/8 MB; `normalize_tax_id` before_validation;
+  **slug regenerates on rename** (`should_generate_new_friendly_id?`) —
+  `:slugged` only, no `:history`, so old store URLs break on rename.
+- Views `seller/stores/{new,edit,_form}` use the account shell; business
+  fields toggle via CSS `:has` (`.store-form:has(#store_kind_business:checked)
+  .business-fields` in application.css — no JS, CSP-safe). Sidebar gained
+  "My store" (edit/new per `current_user.store`).
+- Gotchas: 422 re-render previews must check `attachment&.persisted?` (a
+  rejected upload is attached in memory → variant pipeline raises); Devise
+  confirmable rejects `sign_in` for unconfirmed users (`:pending` fixture
+  can't sign in — create a confirmed user in tests).
+
 ## Testing
 
-- `bin/rails test` — **285 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **315 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -387,7 +413,13 @@ FR/GB/DE/IT/PT seeded but disabled.
   `test/controllers/account/{profiles,passwords,notifications}_controller_test.rb`
   + `notify?`/avatar/marketing tests in `test/models/user_test.rb` (26 tests —
   auth, 422s, wrong current password, reconfirmation, avatar accept/reject,
-  prefs persisted, marketing timestamp).
+  prefs persisted, marketing timestamp); step 3 adds
+  `test/validators/spanish_tax_id_validator_test.rb` +
+  `test/controllers/seller/stores_controller_test.rb` (30 tests — NIF/NIE/CIF
+  accept/reject, auth, open-store-once, 422s for short/taken name, missing
+  business identity and bad tax id, vacation toggle, logo/banner
+  attach/reject/remove, ownership) and flips the store slug test to
+  rename-regenerates.
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command

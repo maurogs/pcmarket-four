@@ -222,6 +222,16 @@ de:
           attributes:
             store:
               reviewing_own_store: Du kannst deinen eigenen Shop nicht bewerten
+        store:
+          attributes:
+            banner:
+              invalid_content_type: muss ein JPG-, PNG- oder WebP-Bild sein
+              too_large: ist zu groß (maximal 8 MB)
+            logo:
+              invalid_content_type: muss ein JPG-, PNG- oder WebP-Bild sein
+              too_large: ist zu groß (maximal 5 MB)
+            tax_id:
+              invalid: ist keine gültige spanische Steuer-ID (NIF, NIE oder CIF)
         user:
           attributes:
             avatar:
@@ -277,9 +287,23 @@ de:
           rejected: Abgelehnt
           sold: Verkauft
       store:
+        allow_offers_default: Angebote standardmäßig erlauben
+        banner: Banner
+        bio: Beschreibung
+        business_name: Firmenname
+        city: Stadt
         kind:
           business: Unternehmen
           individual: Privatperson
+        logo: Logo
+        name: Shop-Name
+        postal_code: PLZ
+        province: Provinz
+        remove_banner: Aktuelles Banner entfernen
+        remove_logo: Aktuelles Logo entfernen
+        tax_id: Steuer-ID
+        vacation_message: Urlaubsnachricht
+        vacation_mode: Urlaubsmodus
       user:
         avatar: Foto
         first_name: Vorname
@@ -654,6 +678,7 @@ de:
       security: Sicherheit
       addresses: Adressen
       notifications: Benachrichtigungen
+      my_store: Mein Shop
       delete_account: Konto löschen
     profiles:
       edit:
@@ -688,3 +713,34 @@ de:
         submit: Einstellungen speichern
       update:
         success: Benachrichtigungseinstellungen gespeichert.
+  seller:
+    stores:
+      new:
+        title: Eröffne deinen Shop
+        intro: Wähle einen Namen und ein Aussehen — du kannst alles hier später
+          ändern.
+      edit:
+        title: Shop-Einstellungen
+      form:
+        profile_title: Shop-Profil
+        logo_hint: PNG, JPG oder WebP, maximal 5 MB.
+        banner_hint: PNG, JPG oder WebP, maximal 8 MB.
+        bio_hint: Wird auf der öffentlichen Shop-Seite angezeigt.
+        business_title: Unternehmensdaten
+        business_hint: Unternehmenskonten müssen Firmenname und Steuer-ID
+          anzeigen.
+        tax_id_hint: Spanische NIF, NIE oder CIF.
+        location_title: Standort
+        province_prompt: Provinz auswählen
+        policies_title: Richtlinien
+        allow_offers_default: Angebote für meine Anzeigen standardmäßig erlauben
+        vacation_title: Urlaubsmodus
+        vacation_mode: Meinen Shop pausieren
+        vacation_note: Im Urlaubsmodus sind deine Anzeigen in der Suche und auf
+          der Shop-Seite ausgeblendet.
+        vacation_message_hint: Wird Besuchern deines Shops angezeigt (maximal 280 Zeichen).
+        submit: Shop-Einstellungen speichern
+      create:
+        success: Dein Shop ist eröffnet.
+      update:
+        success: Shop-Einstellungen aktualisiert.

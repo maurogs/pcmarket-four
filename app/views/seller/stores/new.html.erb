@@ -1,0 +1,10 @@
+<% content_for :account_body do %>
+  <div class="card max-w-2xl p-8">
+    <h1 class="font-display text-2xl font-bold"><%= t(".title") %></h1>
+    <p class="mt-2 text-sm text-muted"><%= t(".intro") %></p>
+
+    <%= render "form", store: @store %>
+  </div>
+<% end %>
+
+<%= render "account/shell" %>

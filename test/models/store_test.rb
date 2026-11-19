@@ -12,14 +12,14 @@ class StoreTest < ActiveSupport::TestCase
     assert_equal 1, Store.where(user: user).count
   end
 
-  test "slug is generated once from the name and then stays stable" do
+  test "slug regenerates when the store is renamed" do
     store = stores(:confirmed_store)
 
     assert_equal "confirmed-store", store.slug
     store.update!(name: "Retro Corner")
 
-    assert_equal "confirmed-store", store.reload.slug
-    assert_equal store, Store.find_by_param("confirmed-store")
+    assert_equal "retro-corner", store.reload.slug
+    assert_equal store, Store.find_by_param("retro-corner")
   end
 
   test "business stores need identity details" do

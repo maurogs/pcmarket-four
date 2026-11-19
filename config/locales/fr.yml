@@ -223,6 +223,16 @@ fr:
           attributes:
             store:
               reviewing_own_store: Vous ne pouvez pas évaluer votre propre boutique
+        store:
+          attributes:
+            banner:
+              invalid_content_type: doit être une image JPG, PNG ou WebP
+              too_large: est trop volumineuse (8 Mo maximum)
+            logo:
+              invalid_content_type: doit être une image JPG, PNG ou WebP
+              too_large: est trop volumineux (5 Mo maximum)
+            tax_id:
+              invalid: n'est pas un identifiant fiscal espagnol valide (NIF, NIE ou CIF)
         user:
           attributes:
             avatar:
@@ -278,9 +288,23 @@ fr:
           rejected: Refusé
           sold: Vendu
       store:
+        allow_offers_default: Autoriser les offres par défaut
+        banner: Bannière
+        bio: Description
+        business_name: Raison sociale
+        city: Ville
         kind:
           business: Entreprise
           individual: Particulier
+        logo: Logo
+        name: Nom de la boutique
+        postal_code: Code postal
+        province: Province
+        remove_banner: Retirer la bannière actuelle
+        remove_logo: Retirer le logo actuel
+        tax_id: Identifiant fiscal
+        vacation_message: Message de vacances
+        vacation_mode: Mode vacances
       user:
         avatar: Photo
         first_name: Prénom
@@ -653,6 +677,7 @@ fr:
       security: Sécurité
       addresses: Adresses
       notifications: Notifications
+      my_store: Ma boutique
       delete_account: Supprimer le compte
     profiles:
       edit:
@@ -687,3 +712,34 @@ fr:
         submit: Enregistrer les préférences
       update:
         success: Préférences de notification enregistrées.
+  seller:
+    stores:
+      new:
+        title: Ouvrez votre boutique
+        intro: Choisissez un nom et une apparence — vous pourrez tout modifier
+          ici plus tard.
+      edit:
+        title: Réglages de la boutique
+      form:
+        profile_title: Profil de la boutique
+        logo_hint: PNG, JPG ou WebP, 5 Mo maximum.
+        banner_hint: PNG, JPG ou WebP, 8 Mo maximum.
+        bio_hint: Affiché sur la page publique de votre boutique.
+        business_title: Données de l'entreprise
+        business_hint: Les comptes entreprise doivent afficher leur raison
+          sociale et leur identifiant fiscal.
+        tax_id_hint: NIF, NIE ou CIF espagnol.
+        location_title: Emplacement
+        province_prompt: Sélectionnez une province
+        policies_title: Politiques
+        allow_offers_default: Autoriser les offres sur mes annonces par défaut
+        vacation_title: Mode vacances
+        vacation_mode: Mettre ma boutique en pause
+        vacation_note: En mode vacances, vos annonces sont masquées du
+          chercheur et de la page de votre boutique.
+        vacation_message_hint: Affiché aux visiteurs de votre boutique (280 caractères maximum).
+        submit: Enregistrer les réglages de la boutique
+      create:
+        success: Votre boutique est ouverte.
+      update:
+        success: Réglages de la boutique mis à jour.

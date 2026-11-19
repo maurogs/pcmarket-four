@@ -124,3 +124,13 @@
 @utility section-title {
   @apply font-display text-2xl font-semibold tracking-tight sm:text-3xl;
 }
+
+/* Seller store settings: business-only fields stay hidden until the
+   "business" kind radio is checked (CSS :has — works without JS). */
+.business-fields {
+  display: none;
+}
+
+.store-form:has(#store_kind_business:checked) .business-fields {
+  display: block;
+}

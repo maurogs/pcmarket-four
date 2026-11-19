@@ -1,0 +1,139 @@
+<%# Shared "open your store" / store settings form. The business-only fields
+    hide behind a CSS :has rule keyed on the kind radios (see application.css),
+    so the toggle works without JavaScript. Previews only render for persisted
+    attachments — an upload rejected by validation is attached in memory but
+    must not be sent through the image pipeline. %>
+<%
+  logo_preview = store.logo.attached? && store.logo.attachment&.persisted? &&
+                 store.logo.blob&.content_type&.start_with?("image/")
+  banner_preview = store.banner.attached? && store.banner.attachment&.persisted? &&
+                   store.banner.blob&.content_type&.start_with?("image/")
+%>
+<%= form_with model: store, url: seller_store_path, class: "store-form mt-6 space-y-8" do |f| %>
+  <%= render "devise/shared/error_messages", resource: store %>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".profile_title") %></h2>
+
+    <div class="mt-4 space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <%= f.label :logo, class: "block text-sm font-medium" %>
+          <p class="text-xs text-muted"><%= t(".logo_hint") %></p>
+          <% if logo_preview %>
+            <%= image_tag store.logo.variant(resize_to_limit: [ 160, 160 ]),
+                  class: "mt-2 h-16 w-16 rounded-xl object-cover", alt: "" %>
+            <div class="mt-2 flex items-center gap-2">
+              <%= f.check_box :remove_logo, class: "h-4 w-4 rounded border-line accent-primary-600" %>
+              <%= f.label :remove_logo, class: "text-sm font-medium" %>
+            </div>
+          <% end %>
+          <%= f.file_field :logo, accept: "image/png,image/jpeg,image/webp",
+                class: "mt-2 block w-full text-sm" %>
+        </div>
+        <div>
+          <%= f.label :banner, class: "block text-sm font-medium" %>
+          <p class="text-xs text-muted"><%= t(".banner_hint") %></p>
+          <% if banner_preview %>
+            <%= image_tag store.banner.variant(resize_to_limit: [ 320, 96 ]),
+                  class: "mt-2 h-12 w-full rounded-xl object-cover", alt: "" %>
+            <div class="mt-2 flex items-center gap-2">
+              <%= f.check_box :remove_banner, class: "h-4 w-4 rounded border-line accent-primary-600" %>
+              <%= f.label :remove_banner, class: "text-sm font-medium" %>
+            </div>
+          <% end %>
+          <%= f.file_field :banner, accept: "image/png,image/jpeg,image/webp",
+                class: "mt-2 block w-full text-sm" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :name, class: "block text-sm font-medium" %>
+        <%= f.text_field :name, required: true, maxlength: 60, class: "input-field mt-1" %>
+      </div>
+
+      <div>
+        <%= f.label :bio, class: "block text-sm font-medium" %>
+        <p class="text-xs text-muted"><%= t(".bio_hint") %></p>
+        <%= f.text_area :bio, rows: 4, class: "input-field mt-1 rounded-2xl" %>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".business_title") %></h2>
+    <p class="mt-1 text-xs text-muted"><%= t(".business_hint") %></p>
+
+    <div class="mt-4 space-y-4">
+      <div class="flex gap-6">
+        <% %i[individual business].each do |kind| %>
+          <div class="flex items-center gap-2">
+            <%= f.radio_button :kind, kind, class: "h-4 w-4 border-line accent-primary-600" %>
+            <%= f.label :kind, value: kind, class: "text-sm font-medium" %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="business-fields space-y-4">
+        <div>
+          <%= f.label :business_name, class: "block text-sm font-medium" %>
+          <%= f.text_field :business_name, class: "input-field mt-1" %>
+        </div>
+        <div>
+          <%= f.label :tax_id, class: "block text-sm font-medium" %>
+          <p class="text-xs text-muted"><%= t(".tax_id_hint") %></p>
+          <%= f.text_field :tax_id, class: "input-field mt-1" %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".location_title") %></h2>
+
+    <div class="mt-4 grid grid-cols-2 gap-3">
+      <div>
+        <%= f.label :province, class: "block text-sm font-medium" %>
+        <%= f.select :province, SpanishProvince.options, { include_blank: t(".province_prompt") },
+              class: "input-field mt-1" %>
+      </div>
+      <div>
+        <%= f.label :city, class: "block text-sm font-medium" %>
+        <%= f.text_field :city, autocomplete: "address-level2", class: "input-field mt-1" %>
+      </div>
+      <div>
+        <%= f.label :postal_code, class: "block text-sm font-medium" %>
+        <%= f.text_field :postal_code, autocomplete: "postal-code", class: "input-field mt-1" %>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".policies_title") %></h2>
+
+    <div class="mt-4 flex items-center gap-2">
+      <%= f.check_box :allow_offers_default, class: "h-4 w-4 rounded border-line accent-primary-600" %>
+      <%= f.label :allow_offers_default, class: "text-sm font-medium" %>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".vacation_title") %></h2>
+
+    <div class="mt-4 space-y-4">
+      <div class="flex items-center gap-2">
+        <%= f.check_box :vacation_mode, class: "h-4 w-4 rounded border-line accent-primary-600" %>
+        <%= f.label :vacation_mode, class: "text-sm font-medium" %>
+      </div>
+      <p class="text-xs text-muted"><%= t(".vacation_note") %></p>
+
+      <div>
+        <%= f.label :vacation_message, class: "block text-sm font-medium" %>
+        <p class="text-xs text-muted"><%= t(".vacation_message_hint") %></p>
+        <%= f.text_area :vacation_message, rows: 3, maxlength: 280, class: "input-field mt-1 rounded-2xl" %>
+      </div>
+    </div>
+  </section>
+
+  <%= f.submit t(".submit"), class: "btn-primary w-full cursor-pointer" %>
+<% end %>

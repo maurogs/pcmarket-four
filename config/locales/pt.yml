@@ -221,6 +221,16 @@ pt:
           attributes:
             store:
               reviewing_own_store: Não pode avaliar a sua própria loja
+        store:
+          attributes:
+            banner:
+              invalid_content_type: deve ser uma imagem JPG, PNG ou WebP
+              too_large: é demasiado grande (máximo 8 MB)
+            logo:
+              invalid_content_type: deve ser uma imagem JPG, PNG ou WebP
+              too_large: é demasiado grande (máximo 5 MB)
+            tax_id:
+              invalid: não é um identificativo fiscal espanhol válido (NIF, NIE ou CIF)
         user:
           attributes:
             avatar:
@@ -276,9 +286,23 @@ pt:
           rejected: Rejeitado
           sold: Vendido
       store:
+        allow_offers_default: Permitir ofertas por omissão
+        banner: Banner
+        bio: Descrição
+        business_name: Designação social
+        city: Cidade
         kind:
           business: Empresa
           individual: Particular
+        logo: Logótipo
+        name: Nome da loja
+        postal_code: Código postal
+        province: Distrito
+        remove_banner: Remover o banner atual
+        remove_logo: Remover o logótipo atual
+        tax_id: Identificativo fiscal
+        vacation_message: Mensagem de férias
+        vacation_mode: Modo de férias
       user:
         avatar: Foto
         first_name: Nome
@@ -651,6 +675,7 @@ pt:
       security: Segurança
       addresses: Moradas
       notifications: Notificações
+      my_store: A minha loja
       delete_account: Eliminar conta
     profiles:
       edit:
@@ -685,3 +710,33 @@ pt:
         submit: Guardar preferências
       update:
         success: Preferências de notificação guardadas.
+  seller:
+    stores:
+      new:
+        title: Abra a sua loja
+        intro: Escolha um nome e um visual — pode alterar tudo aqui mais tarde.
+      edit:
+        title: Definições da loja
+      form:
+        profile_title: Perfil da loja
+        logo_hint: PNG, JPG ou WebP, máximo 5 MB.
+        banner_hint: PNG, JPG ou WebP, máximo 8 MB.
+        bio_hint: Mostrado na página pública da sua loja.
+        business_title: Dados da empresa
+        business_hint: As contas de empresa devem mostrar a designação social e
+          o identificativo fiscal.
+        tax_id_hint: NIF, NIE ou CIF espanhol.
+        location_title: Localização
+        province_prompt: Selecione um distrito
+        policies_title: Políticas
+        allow_offers_default: Permitir ofertas nos meus anúncios por omissão
+        vacation_title: Modo de férias
+        vacation_mode: Pausar a minha loja
+        vacation_note: Com o modo de férias ativo, os seus anúncios ficam
+          ocultos da pesquisa e da página da loja.
+        vacation_message_hint: Mostrado aos visitantes da sua loja (máximo 280 caracteres).
+        submit: Guardar definições da loja
+      create:
+        success: A sua loja está aberta.
+      update:
+        success: Definições da loja atualizadas.
