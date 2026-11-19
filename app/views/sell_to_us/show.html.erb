@@ -1,0 +1,12 @@
+<% set_meta_tags title: t(".title"), description: t(".meta.description") %>
+
+<div class="mx-auto max-w-3xl px-4 py-12">
+  <h1 class="section-title"><%= t(".title") %></h1>
+  <p class="mt-4 text-lg text-muted"><%= t(".intro") %></p>
+
+  <div class="card mt-8 p-8 text-center">
+    <%= icon "tag", class: "mx-auto h-10 w-10 text-primary-500" %>
+    <p class="mt-4 font-semibold"><%= t("pages.coming_soon") %></p>
+    <p class="mt-2 text-sm text-muted"><%= t("pages.placeholder") %></p>
+  </div>
+</div>

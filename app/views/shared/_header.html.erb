@@ -1,0 +1,85 @@
+<% site_name = AppSettings.get(:site_name, "PCMarket") %>
+<header class="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur"
+        data-controller="drawer">
+  <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
+    <button type="button" class="btn-ghost -ml-2 p-2 lg:hidden"
+            aria-controls="mobile-drawer" aria-expanded="false"
+            data-drawer-target="toggle" data-action="drawer#open">
+      <%= icon "menu" %>
+      <span class="sr-only"><%= t("accessibility.open_menu") %></span>
+    </button>
+
+    <%= link_to root_path, class: "flex items-baseline gap-0.5 font-display text-2xl font-bold tracking-tight", aria: { label: site_name } do %>
+      <span class="text-primary-600 dark:text-primary-400">PC</span><span class="text-body">Market</span>
+    <% end %>
+
+    <form action="<%= search_path %>" method="get" role="search"
+          class="order-last w-full lg:order-none lg:mx-4 lg:w-auto lg:max-w-xl lg:flex-1">
+      <label for="site-search" class="sr-only"><%= t("search.label") %></label>
+      <div class="relative">
+        <span class="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-muted">
+          <%= icon "search", class: "h-4 w-4" %>
+        </span>
+        <input id="site-search" type="search" name="q" placeholder="<%= t("search.placeholder") %>"
+               class="input-field pl-10" autocomplete="off">
+      </div>
+    </form>
+
+    <div class="ml-auto flex items-center gap-1 sm:gap-2">
+      <% if AppSettings.enabled?(:sell_to_us_enabled) %>
+        <%= link_to t("nav.sell_to_us"), sell_to_us_path, class: "btn-secondary hidden md:inline-flex" %>
+      <% end %>
+      <%= link_to root_path, class: "btn-primary" do %>
+        <%= icon "plus", class: "h-4 w-4" %><span class="hidden sm:inline"><%= t("nav.list_item") %></span>
+      <% end %>
+
+      <%= link_to "#", class: "btn-ghost p-2", aria: { label: t("nav.wishlist") } do %><%= icon "heart" %><% end %>
+      <%= link_to "#", class: "btn-ghost p-2", aria: { label: t("nav.notifications") } do %><%= icon "bell" %><% end %>
+      <%= link_to "#", class: "btn-ghost p-2", aria: { label: t("nav.cart") } do %><%= icon "cart" %><% end %>
+      <%= link_to user_signed_in? ? "#" : new_user_session_path,
+                  class: "btn-ghost p-2", aria: { label: t("nav.account") } do %><%= icon "user" %><% end %>
+
+      <div class="relative" data-controller="dropdown">
+        <button type="button" class="btn-ghost p-2" aria-expanded="false" data-dropdown-target="trigger"
+                data-action="dropdown#toggle"><%= icon "globe" %><span class="sr-only"><%= t("accessibility.change_language") %></span></button>
+        <div class="absolute right-0 z-50 mt-2 hidden w-40 card py-1" data-dropdown-target="menu">
+          <% I18n.available_locales.each do |locale| %>
+            <%= link_to locale_label(locale), locale_link(locale),
+                  class: "block px-4 py-2 text-sm hover:bg-cream-100 dark:hover:bg-cream-surface #{locale == I18n.locale ? "font-bold text-primary-700 dark:text-primary-300" : "text-body"}" %>
+          <% end %>
+        </div>
+      </div>
+
+      <button type="button" class="btn-ghost p-2" data-controller="theme_toggle"
+              data-action="theme_toggle#toggle" aria-label="<%= t("accessibility.toggle_theme") %>">
+        <span class="dark:hidden"><%= icon "moon" %></span>
+        <span class="hidden dark:inline"><%= icon "sun" %></span>
+      </button>
+    </div>
+  </div>
+
+  <%# Desktop main navigation with mega-menu dropdowns. %>
+  <nav class="mx-auto hidden max-w-7xl items-center gap-1 px-4 pb-2 lg:flex" aria-label="<%= t("accessibility.main_navigation") %>">
+    <% nav_categories.each do |category| %>
+      <% if category[:children] %>
+        <div class="relative" data-controller="dropdown">
+          <button type="button" class="btn-ghost px-3 py-1.5 text-sm font-medium"
+                  aria-expanded="false" data-dropdown-target="trigger" data-action="dropdown#toggle">
+            <%= category_label(category[:slug]) %><%= icon "chevron-down", class: "h-3.5 w-3.5" %>
+          </button>
+          <div class="absolute left-0 z-50 mt-2 hidden min-w-52 card p-2" data-dropdown-target="menu">
+            <% category[:children].each do |child| %>
+              <%= link_to category_label(child), category_path(child),
+                    class: "block rounded-full px-4 py-2 text-sm text-body hover:bg-cream-100 hover:text-primary-800 dark:hover:bg-cream-surface dark:hover:text-primary-200" %>
+            <% end %>
+          </div>
+        </div>
+      <% else %>
+        <%= link_to category_label(category[:slug]), category_path(category[:slug]),
+              class: "btn-ghost px-3 py-1.5 text-sm font-medium" %>
+      <% end %>
+    <% end %>
+  </nav>
+
+  <%= render "shared/mobile_drawer", site_name: site_name %>
+</header>

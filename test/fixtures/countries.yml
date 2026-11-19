@@ -1,0 +1,24 @@
+es:
+  code: ES
+  name_key: countries.es
+  currency: EUR
+  default_locale: es
+  enabled: true
+  launched_at: 2026-01-15 00:00:00
+  vat_rate: 21.00
+
+fr:
+  code: FR
+  name_key: countries.fr
+  currency: EUR
+  default_locale: fr
+  enabled: false
+  vat_rate: 20.00
+
+gb:
+  code: GB
+  name_key: countries.gb
+  currency: GBP
+  default_locale: en
+  enabled: false
+  vat_rate: 20.00

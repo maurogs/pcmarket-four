@@ -1,0 +1,161 @@
+it:
+  accessibility:
+    skip_to_content: Vai al contenuto
+    open_menu: Apri il menu
+    close_menu: Chiudi il menu
+    menu: Menu di %{site_name}
+    change_language: Cambia lingua
+    toggle_theme: Passa dal tema chiaro a quello scuro
+    main_navigation: Navigazione principale
+    back_to_top: Torna su
+    close: Chiudi
+  countries:
+    es: Spagna
+    fr: Francia
+    gb: Regno Unito
+    de: Germania
+    it: Italia
+    pt: Portogallo
+  errors:
+    forbidden: Non sei autorizzato a eseguire questa azione.
+    throttled: Troppe richieste. Riprova tra %{retry_after} secondi.
+  footer:
+    tagline: Il marketplace europeo per comprare e vendere tecnologia in tutta sicurezza.
+    rights: Tutti i diritti riservati.
+    links:
+      about: Chi siamo
+      help: Centro assistenza
+      buying: Comprare e vendere
+      selling: Guida alla vendita
+      academy: Academy dei venditori
+      terms: Termini di utilizzo
+      privacy: Informativa sulla privacy
+      cookies: Cookie policy
+    social:
+      x: Seguici su X
+      instagram: Seguici su Instagram
+      youtube: Guardaci su YouTube
+      discord: Unisciti al nostro Discord
+  home:
+    index:
+      title: Compra e vendi tecnologia in sicurezza
+      meta:
+        description: PCMarket è il marketplace europeo dell'informatica nuova e usata. Annunci gratuiti, pagamenti sicuri e ritiro locale.
+      hero:
+        title: Il marketplace della tua tecnologia
+        subtitle: Compra e vendi computer, componenti e gadget con le persone intorno a te.
+        browse: Sfoglia le categorie
+      categories:
+        title: Categorie popolari
+      values:
+        trust:
+          title: Venditori affidabili
+          description: Profili verificati, valutazioni e recensioni rendono ogni affare sicuro.
+        quality:
+          title: Prezzi giusti
+          description: Confronta le offerte e chatta con i venditori prima di acquistare.
+        support:
+          title: Locale ed europeo
+          description: Ritiro nelle vicinanze o spedizione in tutta Europa.
+  locales:
+    en: English
+    es: Español
+    fr: Français
+    de: Deutsch
+    it: Italiano
+    pt: Português
+  nav:
+    sign_in: Accedi
+    sign_out: Esci
+    list_item: Pubblica un annuncio
+    sell_to_us: Vendi a noi
+    wishlist: Preferiti
+    notifications: Notifiche
+    cart: Carrello
+    account: Account
+    categories:
+      desktops: Desktop
+      laptops: Portatili
+      components: Componenti
+      peripherals: Periferiche
+      phones: Telefoni
+      tablets: Tablet
+      consoles: Console
+      gpus: Schede video
+      cpus: Processori
+      motherboards: Schede madri
+      memory: Memoria
+      storage: Archiviazione
+      cooling: Raffreddamento
+      monitors: Monitor
+      keyboards: Tastiere
+      mice: Mouse
+      headsets: Cuffie
+  newsletter:
+    title: Newsletter
+    description: Ricevi le migliori offerte via e-mail.
+    placeholder: Il tuo indirizzo e-mail
+    submit: Iscriviti
+    coming_soon: Grazie! L'iscrizione alla newsletter sarà presto disponibile.
+  pages:
+    coming_soon: Prossimamente
+    placeholder: Questa pagina avrà contenuti reali in una prossima fase.
+    titles:
+      about: Chi siamo
+      help: Centro assistenza
+      buying-selling: Comprare e vendere
+      selling: Guida alla vendita
+      seller-academy: Academy dei venditori
+      terms: Termini di utilizzo
+      privacy: Informativa sulla privacy
+      cookies: Cookie policy
+  search:
+    label: Cerca
+    placeholder: Cerca laptop, schede video, telefoni…
+    submit: Cerca
+    coming_soon: I risultati di ricerca arriveranno con il catalogo completo.
+  searches:
+    show:
+      title: Ricerca
+  sell_to_us:
+    show:
+      title: Vendi a noi
+      intro: Ottieni un prezzo equo per il tuo vecchio hardware in pochi passaggi.
+      meta:
+        description: Vendi a PCMarket i tuoi computer e componenti usati a un prezzo garantito.
+  settings:
+    descriptions:
+      sell_to_us_enabled: Mostra e attiva il flusso Vendi a noi
+      payments_enabled: Attiva i pagamenti online
+      commission_enabled: Applica una commissione sulle vendite completate
+      commission_percent: Percentuale di commissione sulle vendite
+      featured_listings_enabled: Consente annunci in evidenza a pagamento
+      offers_enabled: Consente agli acquirenti di inviare offerte
+      chat_enabled: Attiva la chat tra acquirenti e venditori
+      checkout_enabled: Attiva il pagamento immediato
+      guest_checkout_enabled: Consente l'acquisto senza account
+      registrations_enabled: Consente la registrazione di nuovi utenti
+      maintenance_mode: Mostra una pagina di manutenzione ai visitatori
+      announcement_bar_enabled: Mostra la barra delle comunicazioni nell'intestazione
+      announcement_bar_text: Messaggio localizzato della barra delle comunicazioni
+      site_name: Nome del sito mostrato nell'intestazione e nel piè di pagina
+      support_email: Indirizzo e-mail di supporto
+      listing_auto_approve: Pubblica i nuovi annunci senza moderazione
+      max_images_per_listing: Numero massimo di immagini per annuncio
+      saved_search_alerts_enabled: Invia avvisi e-mail per le ricerche salvate
+  devise:
+    registrations:
+      edit:
+        edit: "Modifica %{resource}"
+        cancel_account: Elimina account
+        cancel_account_confirmation: Questa azione elimina definitivamente l'account e i suoi dati.
+        leave_blank: lascia invariato se non vuoi modificarlo
+        we_need_password: abbiamo bisogno della tua password attuale per confermare le modifiche
+      new:
+        password_characters: "(minimo %{count} caratteri)"
+    sessions:
+      new:
+        remember_me: Ricordami
+    shared:
+      account_incomplete: Il tuo account Google ha bisogno di alcuni dati in più prima di completare l'accesso.
+      authentication_unsuccessful: Non è stato possibile accedere con quel provider. Riprova.

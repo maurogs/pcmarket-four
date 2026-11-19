@@ -1,0 +1,161 @@
+de:
+  accessibility:
+    skip_to_content: Zum Inhalt springen
+    open_menu: Menü öffnen
+    close_menu: Menü schließen
+    menu: Menü von %{site_name}
+    change_language: Sprache wechseln
+    toggle_theme: Zwischen hellem und dunklem Design wechseln
+    main_navigation: Hauptnavigation
+    back_to_top: Nach oben
+    close: Schließen
+  countries:
+    es: Spanien
+    fr: Frankreich
+    gb: Vereinigtes Königreich
+    de: Deutschland
+    it: Italien
+    pt: Portugal
+  errors:
+    forbidden: Sie sind nicht berechtigt, diese Aktion auszuführen.
+    throttled: Zu viele Anfragen. Bitte in %{retry_after} Sekunden erneut versuchen.
+  footer:
+    tagline: Der europäische Marktplatz, um Technik sicher zu kaufen und zu verkaufen.
+    rights: Alle Rechte vorbehalten.
+    links:
+      about: Über uns
+      help: Hilfe-Center
+      buying: Kaufen und verkaufen
+      selling: Verkäuferhandbuch
+      academy: Verkäuferakademie
+      terms: Nutzungsbedingungen
+      privacy: Datenschutz
+      cookies: Cookie-Richtlinie
+    social:
+      x: Folgen Sie uns auf X
+      instagram: Folgen Sie uns auf Instagram
+      youtube: Schauen Sie uns auf YouTube
+      discord: Treten Sie unserem Discord bei
+  home:
+    index:
+      title: Technik sicher kaufen und verkaufen
+      meta:
+        description: PCMarket ist der europäische Marktplatz für neue und gebrauchte Computer und Komponenten. Kostenlose Anzeigen, sichere Zahlungen und Abholung vor Ort.
+      hero:
+        title: Der Marktplatz für deine Technik
+        subtitle: Kaufe und verkaufe Computer, Komponenten und Gadgets von Menschen in deiner Nähe.
+        browse: Kategorien ansehen
+      categories:
+        title: Beliebte Kategorien
+      values:
+        trust:
+          title: Vertrauenswürdige Verkäufer
+          description: Verifizierte Profile, Bewertungen und Rezensionen machen jeden Kauf sicher.
+        quality:
+          title: Faire Preise
+          description: Vergleiche Angebote und chatte vor dem Kauf mit den Verkäufern.
+        support:
+          title: Lokal und europaweit
+          description: Abholung in der Nähe oder Lieferung durch ganz Europa.
+  locales:
+    en: English
+    es: Español
+    fr: Français
+    de: Deutsch
+    it: Italiano
+    pt: Português
+  nav:
+    sign_in: Anmelden
+    sign_out: Abmelden
+    list_item: Angebot erstellen
+    sell_to_us: An uns verkaufen
+    wishlist: Merkliste
+    notifications: Benachrichtigungen
+    cart: Warenkorb
+    account: Konto
+    categories:
+      desktops: Desktop-PCs
+      laptops: Laptops
+      components: Komponenten
+      peripherals: Peripherie
+      phones: Handys
+      tablets: Tablets
+      consoles: Konsolen
+      gpus: Grafikkarten
+      cpus: Prozessoren
+      motherboards: Mainboards
+      memory: Arbeitsspeicher
+      storage: Speicher
+      cooling: Kühlung
+      monitors: Monitore
+      keyboards: Tastaturen
+      mice: Mäuse
+      headsets: Headsets
+  newsletter:
+    title: Newsletter
+    description: Die besten Angebote direkt per E-Mail.
+    placeholder: Ihre E-Mail-Adresse
+    submit: Abonnieren
+    coming_soon: Danke! Die Newsletter-Anmeldung ist in Kürze verfügbar.
+  pages:
+    coming_soon: Demnächst
+    placeholder: Diese Seite erhält in einer kommenden Phase echte Inhalte.
+    titles:
+      about: Über uns
+      help: Hilfe-Center
+      buying-selling: Kaufen und verkaufen
+      selling: Verkäuferhandbuch
+      seller-academy: Verkäuferakademie
+      terms: Nutzungsbedingungen
+      privacy: Datenschutz
+      cookies: Cookie-Richtlinie
+  search:
+    label: Suchen
+    placeholder: Laptops, Grafikkarten, Handys suchen…
+    submit: Suchen
+    coming_soon: Suchergebnisse gibt es mit dem vollständigen Katalog.
+  searches:
+    show:
+      title: Suche
+  sell_to_us:
+    show:
+      title: An uns verkaufen
+      intro: Holen Sie einen fairen Preis für Ihre alte Hardware in wenigen Schritten.
+      meta:
+        description: Verkaufen Sie Ihre gebrauchten Computer und Komponenten an PCMarket zum garantierten Preis.
+  settings:
+    descriptions:
+      sell_to_us_enabled: Zeigt und aktiviert den Ankaufs-Flow
+      payments_enabled: Aktiviert die Online-Zahlungsverarbeitung
+      commission_enabled: Erhebt eine Provision auf abgeschlossene Verkäufe
+      commission_percent: Provisionssatz auf Verkäufe
+      featured_listings_enabled: Erlaubt kostenpflichtige Hervorhebungen von Anzeigen
+      offers_enabled: Erlaubt Käufern, Angebote zu senden
+      chat_enabled: Aktiviert den Chat zwischen Käufern und Verkäufern
+      checkout_enabled: Aktiviert den Sofortkauf-Kassenvorgang
+      guest_checkout_enabled: Erlaubt den Kauf ohne Konto
+      registrations_enabled: Erlaubt die Registrierung neuer Nutzer
+      maintenance_mode: Zeigt Besuchern eine Wartungsseite
+      announcement_bar_enabled: Zeigt die Ankündigungsleiste im Header
+      announcement_bar_text: Lokalisierter Text der Ankündigungsleiste
+      site_name: Name der Website in Header und Fußzeile
+      support_email: Support-E-Mail-Adresse
+      listing_auto_approve: Schaltet neue Anzeigen ohne Moderation frei
+      max_images_per_listing: Maximale Anzahl Bilder pro Anzeige
+      saved_search_alerts_enabled: Sende E-Mail-Benachrichtigungen für gespeicherte Suchen
+  devise:
+    registrations:
+      edit:
+        edit: "%{resource} bearbeiten"
+        cancel_account: Konto löschen
+        cancel_account_confirmation: Damit werden Ihr Konto und alle Daten dauerhaft gelöscht.
+        leave_blank: leer lassen, wenn Sie es nicht ändern möchten
+        we_need_password: wir benötigen Ihr aktuelles Passwort, um die Änderungen zu bestätigen
+      new:
+        password_characters: "(mindestens %{count} Zeichen)"
+    sessions:
+      new:
+        remember_me: Angemeldet bleiben
+    shared:
+      account_incomplete: Ihr Google-Konto benötigt noch einige Angaben, bevor die Anmeldung abgeschlossen werden kann.
+      authentication_unsuccessful: Anmeldung mit diesem Anbieter fehlgeschlagen. Bitte erneut versuchen.

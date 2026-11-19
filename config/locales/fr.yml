@@ -1,0 +1,161 @@
+fr:
+  accessibility:
+    skip_to_content: Aller au contenu
+    open_menu: Ouvrir le menu
+    close_menu: Fermer le menu
+    menu: Menu de %{site_name}
+    change_language: Changer de langue
+    toggle_theme: Basculer entre thème clair et sombre
+    main_navigation: Navigation principale
+    back_to_top: Retour en haut
+    close: Fermer
+  countries:
+    es: Espagne
+    fr: France
+    gb: Royaume-Uni
+    de: Allemagne
+    it: Italie
+    pt: Portugal
+  errors:
+    forbidden: Vous n'êtes pas autorisé à effectuer cette action.
+    throttled: Trop de requêtes. Réessayez dans %{retry_after} secondes.
+  footer:
+    tagline: La marketplace européenne pour acheter et vendre de la tech en toute confiance.
+    rights: Tous droits réservés.
+    links:
+      about: À propos
+      help: Centre d'aide
+      buying: Acheter et vendre
+      selling: Guide du vendeur
+      academy: Académie des vendeurs
+      terms: Conditions d'utilisation
+      privacy: Politique de confidentialité
+      cookies: Politique de cookies
+    social:
+      x: Suivez-nous sur X
+      instagram: Suivez-nous sur Instagram
+      youtube: Regardez-nous sur YouTube
+      discord: Rejoignez notre Discord
+  home:
+    index:
+      title: Achetez et vendez votre tech en confiance
+      meta:
+        description: PCMarket est la marketplace européenne du matériel informatique neuf et d'occasion. Annonces gratuites, paiements sécurisés et retrait local.
+      hero:
+        title: La place de marché de votre tech
+        subtitle: Achetez et vendez ordinateurs, composants et gadgets près de chez vous.
+        browse: Parcourir les catégories
+      categories:
+        title: Catégories populaires
+      values:
+        trust:
+          title: Vendeurs de confiance
+          description: Profils vérifiés, notes et avis pour des transactions sûres.
+        quality:
+          title: Prix justes
+          description: Comparez les offres et échangez avec le vendeur avant d'acheter.
+        support:
+          title: Local et européen
+          description: Retrait sur place ou livraison dans toute l'Europe.
+  locales:
+    en: English
+    es: Español
+    fr: Français
+    de: Deutsch
+    it: Italiano
+    pt: Português
+  nav:
+    sign_in: Se connecter
+    sign_out: Se déconnecter
+    list_item: Déposer une annonce
+    sell_to_us: Rachat
+    wishlist: Favoris
+    notifications: Notifications
+    cart: Panier
+    account: Compte
+    categories:
+      desktops: Ordinateurs de bureau
+      laptops: Ordinateurs portables
+      components: Composants
+      peripherals: Périphériques
+      phones: Téléphones
+      tablets: Tablettes
+      consoles: Consoles
+      gpus: Cartes graphiques
+      cpus: Processeurs
+      motherboards: Cartes mères
+      memory: Mémoire
+      storage: Stockage
+      cooling: Refroidissement
+      monitors: Écrans
+      keyboards: Claviers
+      mice: Souris
+      headsets: Casques
+  newsletter:
+    title: Newsletter
+    description: Recevez les meilleures offres par e-mail.
+    placeholder: Votre adresse e-mail
+    submit: S'abonner
+    coming_soon: Merci ! L'inscription à la newsletter sera bientôt disponible.
+  pages:
+    coming_soon: Bientôt disponible
+    placeholder: Cette page accueillera du contenu réel lors d'une prochaine phase.
+    titles:
+      about: À propos
+      help: Centre d'aide
+      buying-selling: Acheter et vendre
+      selling: Guide du vendeur
+      seller-academy: Académie des vendeurs
+      terms: Conditions d'utilisation
+      privacy: Politique de confidentialité
+      cookies: Politique de cookies
+  search:
+    label: Rechercher
+    placeholder: Recherchez un PC portable, une carte graphique…
+    submit: Rechercher
+    coming_soon: Les résultats arriveront avec le catalogue complet.
+  searches:
+    show:
+      title: Recherche
+  sell_to_us:
+    show:
+      title: Rachat
+      intro: Obtenez un prix juste pour votre matériel en quelques étapes.
+      meta:
+        description: Vendez vos ordinateurs et composants d'occasion à PCMarket à un prix garanti.
+  settings:
+    descriptions:
+      sell_to_us_enabled: Affiche et active le flux Rachat
+      payments_enabled: Active le paiement en ligne
+      commission_enabled: Applique une commission sur les ventes réalisées
+      commission_percent: Taux de commission appliqué aux ventes
+      featured_listings_enabled: Autorise les annonces mises en avant payantes
+      offers_enabled: Autorise les offres des acheteurs
+      chat_enabled: Active la messagerie entre acheteur et vendeur
+      checkout_enabled: Active le paiement immédiat
+      guest_checkout_enabled: Autorise l'achat sans compte
+      registrations_enabled: Autorise l'inscription de nouveaux utilisateurs
+      maintenance_mode: Affiche une page de maintenance aux visiteurs
+      announcement_bar_enabled: Affiche la barre d'annonce dans l'en-tête
+      announcement_bar_text: Message localisé de la barre d'annonce
+      site_name: Nom du site affiché dans l'en-tête et le pied de page
+      support_email: Adresse e-mail du support
+      listing_auto_approve: Publie les nouvelles annonces sans modération
+      max_images_per_listing: Nombre maximal d'images par annonce
+      saved_search_alerts_enabled: Envoie des alertes pour les recherches enregistrées
+  devise:
+    registrations:
+      edit:
+        edit: "Modifier %{resource}"
+        cancel_account: Supprimer le compte
+        cancel_account_confirmation: Cette action supprime définitivement votre compte et ses données.
+        leave_blank: laissez vide si vous ne souhaitez pas le modifier
+        we_need_password: nous avons besoin de votre mot de passe actuel pour valider les modifications
+      new:
+        password_characters: "(%{count} caractères minimum)"
+    sessions:
+      new:
+        remember_me: Se souvenir de moi
+    shared:
+      account_incomplete: Votre compte Google a besoin de quelques informations supplémentaires avant de terminer la connexion.
+      authentication_unsuccessful: Impossible de vous connecter avec ce fournisseur. Veuillez réessayer.

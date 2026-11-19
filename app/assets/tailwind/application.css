@@ -1,0 +1,126 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+/*
+ * PCMarket design system
+ *
+ * Original identity: primary indigo/violet accent on warm cream surfaces,
+ * Fraunces serif for display headings, Inter for UI/body text.
+ * Dark mode: class strategy toggled from localStorage (see theme_toggle_controller).
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Semantic surface tokens, swapped by .dark */
+:root {
+  --app-bg: #faf8f3;
+  --app-surface: #ffffff;
+  --app-cream: #f4ecdd;
+  --app-text: #221d2e;
+  --app-text-muted: #6d6680;
+  --app-line: #e6dfd2;
+  --app-line-strong: #cfc6b4;
+}
+
+.dark {
+  --app-bg: #14121c;
+  --app-surface: #1d1a28;
+  --app-cream: #2a2437;
+  --app-text: #f1eef7;
+  --app-text-muted: #a79fbc;
+  --app-line: #322c42;
+  --app-line-strong: #463d5c;
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
+
+  /* Primary: indigo → violet ramp */
+  --color-primary-50: #f3f2fd;
+  --color-primary-100: #e9e6fb;
+  --color-primary-200: #d4cff6;
+  --color-primary-300: #b4a9ee;
+  --color-primary-400: #907ee2;
+  --color-primary-500: #735ad5;
+  --color-primary-600: #6143c2;
+  --color-primary-700: #5237a5;
+  --color-primary-800: #452f86;
+  --color-primary-900: #3a296c;
+  --color-primary-950: #231846;
+
+  /* Warm cream secondary surfaces */
+  --color-cream-50: #fdfbf6;
+  --color-cream-100: #f8f1e4;
+  --color-cream-200: #f0e4cd;
+  --color-cream-300: #e3d1ab;
+  --color-cream-400: #d4b984;
+  --color-cream-500: #c8a465;
+}
+
+/* Semantic colors exposed as utilities (bg-surface, text-muted, ...).
+   `inline` so the runtime var chain below .dark keeps working. */
+@theme inline {
+  --color-app-bg: var(--app-bg);
+  --color-surface: var(--app-surface);
+  --color-cream-surface: var(--app-cream);
+  --color-body: var(--app-text);
+  --color-muted: var(--app-text-muted);
+  --color-line: var(--app-line);
+  --color-line-strong: var(--app-line-strong);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-app-bg font-sans text-body antialiased;
+  }
+
+  h1, h2, h3 {
+    @apply font-display;
+  }
+
+  /* Accessible focus rings on everything interactive */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500;
+  }
+}
+
+/* Component classes — small, purposeful set shared across the app */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2
+    text-sm font-semibold transition-colors select-none;
+}
+
+@utility btn-primary {
+  @apply btn bg-primary-600 text-white hover:bg-primary-700
+    active:bg-primary-800 dark:bg-primary-500 dark:hover:bg-primary-400;
+}
+
+@utility btn-secondary {
+  @apply btn border border-line-strong bg-surface text-body
+    hover:bg-cream-100 dark:hover:bg-cream-surface;
+}
+
+@utility btn-ghost {
+  @apply btn text-body hover:bg-cream-100 hover:text-primary-800
+    dark:hover:bg-cream-surface dark:hover:text-primary-200;
+}
+
+@utility input-field {
+  @apply w-full rounded-full border border-line bg-surface px-4 py-2
+    text-sm text-body placeholder:text-muted/70
+    focus:border-primary-500 focus:outline-2 focus:outline-primary-500
+    dark:focus:border-primary-400;
+}
+
+@utility card {
+  @apply rounded-2xl border border-line bg-surface shadow-sm;
+}
+
+@utility section-title {
+  @apply font-display text-2xl font-semibold tracking-tight sm:text-3xl;
+}

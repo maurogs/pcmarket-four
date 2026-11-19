@@ -1,14 +1,22 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  # OmniAuth callbacks cannot be nested under a dynamic segment, so they are
+  # routed outside the locale scope (the locale cookie still applies).
+  devise_for :users, only: :omniauth_callbacks,
+                     controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Public site, localized through an optional URL prefix (/es/pages/about, /de/...).
+  scope "(:locale)", locale: /en|es|fr|de|it|pt/ do
+    devise_for :users, skip: :omniauth_callbacks
+
+    root "home#index"
+
+    resources :pages, only: :show
+    resource :search, only: :show, controller: "searches"
+    resource :sell_to_us, only: :show
+
+    # Newsletter signup placeholder (persists nothing yet).
+    resources :newsletter_subscribers, only: :create
+  end
 end

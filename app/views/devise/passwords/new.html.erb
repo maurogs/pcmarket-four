@@ -1,0 +1,20 @@
+<div class="mx-auto max-w-md px-4 py-12">
+  <div class="card p-8">
+    <h1 class="text-center font-display text-2xl font-bold"><%= t(".forgot_your_password") %></h1>
+
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="mt-6 space-y-4">
+        <div>
+          <%= f.label :email, class: "block text-sm font-medium" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", required: true, class: "input-field mt-1" %>
+        </div>
+
+        <%= f.submit t(".send_me_reset_password_instructions"), class: "btn-primary w-full cursor-pointer" %>
+      </div>
+    <% end %>
+
+    <%= render "devise/shared/links" %>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<div id="mobile-drawer" class="fixed inset-0 z-50 hidden lg:hidden" data-drawer-target="panel" role="dialog" aria-modal="true"
+     aria-label="<%= t("accessibility.menu", site_name: site_name) %>">
+  <button type="button" class="absolute inset-0 bg-black/40" tabindex="-1"
+          data-action="drawer#close" aria-label="<%= t("accessibility.close_menu") %>"></button>
+
+  <nav class="absolute inset-y-0 left-0 flex w-80 max-w-[85vw] flex-col gap-1 overflow-y-auto bg-surface p-4 shadow-xl"
+       aria-label="<%= t("accessibility.main_navigation") %>">
+    <div class="mb-2 flex items-center justify-between">
+      <span class="font-display text-xl font-bold"><%= site_name %></span>
+      <button type="button" class="btn-ghost p-2" data-action="drawer#close"
+              aria-label="<%= t("accessibility.close_menu") %>"><%= icon "close" %></button>
+    </div>
+
+    <% nav_categories.each do |category| %>
+      <div>
+        <%= link_to category_label(category[:slug]), category_path(category[:slug]),
+              class: "block rounded-xl px-3 py-2 text-base font-medium hover:bg-cream-100 dark:hover:bg-cream-surface" %>
+        <% if category[:children] %>
+          <div class="ml-3 border-l border-line pl-3">
+            <% category[:children].each do |child| %>
+              <%= link_to category_label(child), category_path(child),
+                    class: "block rounded-lg px-2 py-1.5 text-sm text-muted hover:text-primary-700 dark:hover:text-primary-300" %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="mt-4 flex flex-col gap-2 border-t border-line pt-4">
+      <%= link_to t("nav.list_item"), root_path, class: "btn-primary" %>
+      <% if AppSettings.enabled?(:sell_to_us_enabled) %>
+        <%= link_to t("nav.sell_to_us"), sell_to_us_path, class: "btn-secondary" %>
+      <% end %>
+      <% if user_signed_in? %>
+        <%= button_to t("nav.sign_out"), destroy_user_session_path, method: :delete, class: "btn-ghost justify-start" %>
+      <% else %>
+        <%= link_to t("nav.sign_in"), new_user_session_path, class: "btn-ghost justify-start" %>
+      <% end %>
+    </div>
+  </nav>
+</div>

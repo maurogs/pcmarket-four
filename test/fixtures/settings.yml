@@ -1,0 +1,14 @@
+# The jsonb column casts these through ActiveSupport::JSON on insert.
+site_name:
+  key: site_name
+  value: PCMarket
+  value_type: string
+  group: general
+  description_key: settings.descriptions.site_name
+
+offers_enabled:
+  key: offers_enabled
+  value: true
+  value_type: boolean
+  group: listings
+  description_key: settings.descriptions.offers_enabled

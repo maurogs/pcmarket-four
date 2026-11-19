@@ -1,0 +1,60 @@
+<div class="mx-auto max-w-md px-4 py-12">
+  <div class="card p-8">
+    <h1 class="text-center font-display text-2xl font-bold"><%= t(".sign_up") %></h1>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="mt-6 space-y-4">
+        <div>
+          <%= f.label :username, class: "block text-sm font-medium" %>
+          <%= f.text_field :username, autofocus: true, autocomplete: "username", required: true, class: "input-field mt-1" %>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <%= f.label :first_name, class: "block text-sm font-medium" %>
+            <%= f.text_field :first_name, autocomplete: "given-name", class: "input-field mt-1" %>
+          </div>
+          <div>
+            <%= f.label :last_name, class: "block text-sm font-medium" %>
+            <%= f.text_field :last_name, autocomplete: "family-name", class: "input-field mt-1" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :email, class: "block text-sm font-medium" %>
+          <%= f.email_field :email, autocomplete: "email", required: true, class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :phone, class: "block text-sm font-medium" %>
+          <%= f.telephone_field :phone, autocomplete: "tel", class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :country_id, class: "block text-sm font-medium" %>
+          <%= f.collection_select :country_id, Country.enabled.ordered_by_code, :id, :name,
+                { include_blank: true }, class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :password, class: "block text-sm font-medium" %>
+          <% if @minimum_password_length %>
+            <span class="text-xs text-muted"><%= t(".password_characters", count: @minimum_password_length) %></span>
+          <% end %>
+          <%= f.password_field :password, autocomplete: "new-password", required: true, class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :password_confirmation, class: "block text-sm font-medium" %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true, class: "input-field mt-1" %>
+        </div>
+
+        <%= f.submit t(".sign_up"), class: "btn-primary w-full cursor-pointer" %>
+      </div>
+    <% end %>
+
+    <%= render "devise/shared/links" %>
+  </div>
+</div>

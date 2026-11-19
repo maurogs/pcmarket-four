@@ -1,31 +1,161 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  accessibility:
+    skip_to_content: Skip to content
+    open_menu: Open menu
+    close_menu: Close menu
+    menu: "%{site_name} menu"
+    change_language: Change language
+    toggle_theme: Toggle light and dark mode
+    main_navigation: Main navigation
+    back_to_top: Back to top
+    close: Close
+  countries:
+    es: Spain
+    fr: France
+    gb: United Kingdom
+    de: Germany
+    it: Italy
+    pt: Portugal
+  errors:
+    forbidden: You are not allowed to do that.
+    throttled: Too many requests. Please try again in %{retry_after} seconds.
+  footer:
+    tagline: The European marketplace to buy and sell tech with confidence.
+    rights: All rights reserved.
+    links:
+      about: About us
+      help: Help center
+      buying: Buying & selling
+      selling: Selling guide
+      academy: Seller academy
+      terms: Terms of use
+      privacy: Privacy policy
+      cookies: Cookie policy
+    social:
+      x: Follow us on X
+      instagram: Follow us on Instagram
+      youtube: Watch us on YouTube
+      discord: Join our Discord
+  home:
+    index:
+      title: Buy and sell tech with confidence
+      meta:
+        description: PCMarket is Europe's marketplace for new and used computers and components. Free listings, secure payments and local pickup.
+      hero:
+        title: The marketplace for your tech
+        subtitle: Buy and sell computers, components and gadgets with people near you.
+        browse: Browse categories
+      categories:
+        title: Popular categories
+      values:
+        trust:
+          title: Trusted sellers
+          description: Verified profiles, ratings and reviews keep every deal safe.
+        quality:
+          title: Fair prices
+          description: Compare offers and chat with sellers before you buy.
+        support:
+          title: Local and Europe-wide
+          description: Pick up nearby or have it shipped across Europe.
+  locales:
+    en: English
+    es: Español
+    fr: Français
+    de: Deutsch
+    it: Italiano
+    pt: Português
+  nav:
+    sign_in: Sign in
+    sign_out: Sign out
+    list_item: List an item
+    sell_to_us: Sell to us
+    wishlist: Wishlist
+    notifications: Notifications
+    cart: Cart
+    account: Account
+    categories:
+      desktops: Desktops
+      laptops: Laptops
+      components: Components
+      peripherals: Peripherals
+      phones: Phones
+      tablets: Tablets
+      consoles: Consoles
+      gpus: Graphics cards
+      cpus: CPUs
+      motherboards: Motherboards
+      memory: Memory
+      storage: Storage
+      cooling: Cooling
+      monitors: Monitors
+      keyboards: Keyboards
+      mice: Mice
+      headsets: Headsets
+  newsletter:
+    title: Newsletter
+    description: Get the best deals in your inbox.
+    placeholder: Your email address
+    submit: Subscribe
+    coming_soon: Thanks! Newsletter signup will be available soon.
+  pages:
+    coming_soon: Coming soon
+    placeholder: This page will hold real content in an upcoming phase.
+    titles:
+      about: About us
+      help: Help center
+      buying-selling: Buying & selling
+      selling: Selling guide
+      seller-academy: Seller academy
+      terms: Terms of use
+      privacy: Privacy policy
+      cookies: Cookie policy
+  search:
+    label: Search
+    placeholder: Search laptops, graphics cards, phones…
+    submit: Search
+    coming_soon: Search results arrive with the full catalog.
+  searches:
+    show:
+      title: Search
+  sell_to_us:
+    show:
+      title: Sell to us
+      intro: Get a fair price for your old hardware in a few steps.
+      meta:
+        description: Sell your used computers and components to PCMarket for a guaranteed price.
+  settings:
+    descriptions:
+      sell_to_us_enabled: Show and enable the Sell to us flow
+      payments_enabled: Enable online payment processing
+      commission_enabled: Charge a commission on completed sales
+      commission_percent: Commission percentage applied to sales
+      featured_listings_enabled: Allow paid featured listings
+      offers_enabled: Allow buyers to send offers on listings
+      chat_enabled: Enable buyer and seller chat
+      checkout_enabled: Enable the buy-now checkout flow
+      guest_checkout_enabled: Allow checkout without an account
+      registrations_enabled: Allow new users to sign up
+      maintenance_mode: Show a maintenance page to visitors
+      announcement_bar_enabled: Show the announcement bar in the header
+      announcement_bar_text: Localized announcement bar message
+      site_name: Site name shown in the header and footer
+      support_email: Support email address
+      listing_auto_approve: Publish new listings without moderation
+      max_images_per_listing: Maximum images per listing
+      saved_search_alerts_enabled: Send saved-search alert emails
+  devise:
+    registrations:
+      edit:
+        edit: "Edit %{resource}"
+        cancel_account: Cancel account
+        cancel_account_confirmation: This will permanently delete your account and its data.
+        leave_blank: leave blank if you don't want to change it
+        we_need_password: we need your current password to confirm your changes
+      new:
+        password_characters: "(minimum %{count} characters)"
+    sessions:
+      new:
+        remember_me: Remember me
+    shared:
+      account_incomplete: Your Google account needs a few more details before you can finish signing in.
+      authentication_unsuccessful: We could not sign you in with that provider. Please try again.

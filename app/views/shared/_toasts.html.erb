@@ -1,0 +1,13 @@
+<div id="toasts" class="fixed bottom-4 right-4 z-50 flex w-[calc(100vw-2rem)] max-w-sm flex-col gap-2"
+     aria-live="polite" aria-atomic="false">
+  <% flash.each do |type, message| %>
+    <% next if message.blank? %>
+    <% tone = type.to_s.in?(%w[alert error]) ? "border-rose-300 bg-rose-50 text-rose-900 dark:border-rose-800 dark:bg-rose-950 dark:text-rose-100" : "border-primary-200 bg-primary-50 text-primary-900 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-100" %>
+    <div class="card flex items-start gap-3 border p-4 shadow-lg transition-all duration-300 <%= tone %>"
+         data-controller="toast">
+      <p class="flex-1 text-sm"><%= message %></p>
+      <button type="button" class="opacity-60 hover:opacity-100" data-action="toast#dismiss"
+              aria-label="<%= t("accessibility.close") %>"><%= icon "close", class: "h-4 w-4" %></button>
+    </div>
+  <% end %>
+</div>

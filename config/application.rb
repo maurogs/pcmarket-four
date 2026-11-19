@@ -23,5 +23,12 @@ module PcmarketFour
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Internationalization: Spanish market first, English fallback for
+    # untranslated strings.
+    config.i18n.available_locales = [ :en, :es, :fr, :de, :it, :pt ]
+    config.i18n.default_locale = :es
+    # Non-Spanish locales fall back straight to :en (never leak :es).
+    config.i18n.fallbacks = { es: [ :es ], en: [ :en ], fr: [ :en ], de: [ :en ], it: [ :en ], pt: [ :en ] }
   end
 end

@@ -1,0 +1,22 @@
+<div class="mx-auto max-w-md px-4 py-12">
+  <div class="card p-8">
+    <h1 class="text-center font-display text-2xl font-bold"><%= t(".resend_confirmation_instructions") %></h1>
+
+    <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="mt-6 space-y-4">
+        <div>
+          <%= f.label :email, class: "block text-sm font-medium" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", required: true,
+                value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email),
+                class: "input-field mt-1" %>
+        </div>
+
+        <%= f.submit t(".resend_confirmation_instructions"), class: "btn-primary w-full cursor-pointer" %>
+      </div>
+    <% end %>
+
+    <%= render "devise/shared/links" %>
+  </div>
+</div>

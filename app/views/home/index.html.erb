@@ -1,0 +1,39 @@
+<% set_meta_tags title: t(".title"), description: t(".meta.description") %>
+
+<div class="mx-auto max-w-7xl px-4">
+  <section class="py-12 text-center sm:py-20">
+    <h1 class="mx-auto max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
+      <%= t(".hero.title") %>
+    </h1>
+    <p class="mx-auto mt-4 max-w-xl text-lg text-muted"><%= t(".hero.subtitle") %></p>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <%= link_to t(".hero.browse"), category_path("desktops"), class: "btn-primary px-6 py-3 text-base" %>
+      <% if @sell_to_us_enabled %>
+        <%= link_to t("nav.sell_to_us"), sell_to_us_path, class: "btn-secondary px-6 py-3 text-base" %>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="pb-16" aria-labelledby="categories-heading">
+    <h2 id="categories-heading" class="section-title"><%= t(".categories.title") %></h2>
+    <div class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+      <% nav_categories.each do |category| %>
+        <%= link_to category_path(category[:slug]), class: "card flex flex-col items-center gap-3 p-6 text-center hover:border-primary-300 hover:shadow-md dark:hover:border-primary-700" do %>
+          <span class="flex h-12 w-12 items-center justify-center rounded-full bg-cream-100 text-primary-600 dark:bg-cream-surface dark:text-primary-300">
+            <%= icon "tag" %>
+          </span>
+          <span class="font-semibold"><%= category_label(category[:slug]) %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="grid gap-6 pb-20 md:grid-cols-3">
+    <% %w[trust quality support].each do |point| %>
+      <div class="card p-6">
+        <h3 class="font-display text-lg font-semibold"><%= t(".values.#{point}.title") %></h3>
+        <p class="mt-2 text-sm text-muted"><%= t(".values.#{point}.description") %></p>
+      </div>
+    <% end %>
+  </section>
+</div>

@@ -1,0 +1,80 @@
+<div class="mx-auto max-w-md px-4 py-12">
+  <div class="card p-8">
+    <h1 class="text-center font-display text-2xl font-bold"><%= t(".edit", resource: resource.class.model_name.human.downcase) %></h1>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="mt-6 space-y-4">
+        <% if resource.avatar.attached? %>
+          <%= image_tag resource.avatar.variant(resize_to_limit: [128, 128]), class: "h-20 w-20 rounded-full", alt: "" %>
+        <% end %>
+        <div>
+          <%= f.label :avatar, class: "block text-sm font-medium" %>
+          <%= f.file_field :avatar, accept: "image/*", class: "mt-1 block w-full text-sm" %>
+        </div>
+
+        <div>
+          <%= f.label :username, class: "block text-sm font-medium" %>
+          <%= f.text_field :username, class: "input-field mt-1" %>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <%= f.label :first_name, class: "block text-sm font-medium" %>
+            <%= f.text_field :first_name, class: "input-field mt-1" %>
+          </div>
+          <div>
+            <%= f.label :last_name, class: "block text-sm font-medium" %>
+            <%= f.text_field :last_name, class: "input-field mt-1" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :email, class: "block text-sm font-medium" %>
+          <%= f.email_field :email, autocomplete: "email", class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :phone, class: "block text-sm font-medium" %>
+          <%= f.telephone_field :phone, class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :country_id, class: "block text-sm font-medium" %>
+          <%= f.collection_select :country_id, Country.enabled.ordered_by_code, :id, :name,
+                { include_blank: true }, class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :password, class: "block text-sm font-medium" %>
+          <span class="text-xs text-muted"><%= t(".leave_blank") %></span>
+          <%= f.password_field :password, autocomplete: "new-password", class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :password_confirmation, class: "block text-sm font-medium" %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :current_password, class: "block text-sm font-medium" %>
+          <span class="text-xs text-muted"><%= t(".we_need_password") %></span>
+          <%= f.password_field :current_password, autocomplete: "current-password", class: "input-field mt-1" %>
+        </div>
+
+        <%= f.submit t(".update"), class: "btn-primary w-full cursor-pointer" %>
+      </div>
+    <% end %>
+
+    <div class="mt-8 border-t border-line pt-6">
+      <h2 class="font-display text-lg font-semibold text-rose-700 dark:text-rose-300"><%= t(".cancel_account") %></h2>
+      <p class="mt-1 text-sm text-muted"><%= t(".cancel_account_confirmation") %></p>
+      <%= button_to t(".cancel_my_account"), registration_path(resource_name),
+            data: { turbo_confirm: t(".are_you_sure") }, method: :delete,
+            class: "mt-3 cursor-pointer rounded-full border border-rose-300 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-50 dark:border-rose-700 dark:text-rose-300 dark:hover:bg-rose-950" %>
+    </div>
+
+    <%= render "devise/shared/links" %>
+  </div>
+</div>

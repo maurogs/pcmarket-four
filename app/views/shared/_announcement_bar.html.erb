@@ -1,0 +1,6 @@
+<% if AppSettings.enabled?(:announcement_bar_enabled) && AppSettings.localized("announcement_bar_text").present? %>
+  <div class="bg-primary-700 px-4 py-2 text-center text-sm font-medium text-white dark:bg-primary-600"
+       role="status">
+    <%= AppSettings.localized("announcement_bar_text") %>
+  </div>
+<% end %>
