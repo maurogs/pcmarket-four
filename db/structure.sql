@@ -993,7 +993,10 @@ CREATE TABLE public.users (
     provider character varying,
     uid character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    notification_preferences jsonb DEFAULT '{}'::jsonb NOT NULL,
+    marketing_opt_in boolean DEFAULT false NOT NULL,
+    marketing_opt_in_at timestamp(6) without time zone
 );
 
 
@@ -2058,6 +2061,7 @@ ALTER TABLE ONLY public.listing_labels
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261119180004'),
 ('20261119180003'),
 ('20261119180002'),
 ('20261119180001'),

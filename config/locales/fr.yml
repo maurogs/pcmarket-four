@@ -223,6 +223,11 @@ fr:
           attributes:
             store:
               reviewing_own_store: Vous ne pouvez pas évaluer votre propre boutique
+        user:
+          attributes:
+            avatar:
+              invalid_content_type: doit être une image JPG, PNG, GIF ou WebP
+              too_large: est trop volumineux (5 Mo maximum)
     attributes:
       address:
         city: Ville
@@ -276,6 +281,13 @@ fr:
         kind:
           business: Entreprise
           individual: Particulier
+      user:
+        avatar: Photo
+        first_name: Prénom
+        last_name: Nom
+        locale: Langue
+        phone: Téléphone
+        username: Nom d'utilisateur
   spanish_provinces:
     a_coruna: A Coruña
     alava: Álava
@@ -635,3 +647,43 @@ fr:
     address_defaults:
       update:
         success: Adresse de livraison par défaut mise à jour.
+    sidebar:
+      title: Mon compte
+      profile: Profil
+      security: Sécurité
+      addresses: Adresses
+      notifications: Notifications
+      delete_account: Supprimer le compte
+    profiles:
+      edit:
+        title: Profil
+        avatar_hint: JPG, PNG, GIF ou WebP, 5 Mo maximum.
+        email_hint: 'Changer votre e-mail nécessite une reconfirmation : nous vous
+          enverrons un nouveau lien de confirmation.'
+        submit: Enregistrer les modifications
+      update:
+        success: Profil mis à jour.
+    passwords:
+      edit:
+        title: Mot de passe
+        submit: Mettre à jour le mot de passe
+      update:
+        success: Mot de passe mis à jour.
+    notifications:
+      edit:
+        title: Notifications
+        preferences_title: Notifications par e-mail
+        preferences:
+          order_updates: Suivi des commandes
+          messages: Messages
+          offers: Offres
+          price_drops: Baisse de prix
+          saved_search_alerts: Alertes de recherches enregistrées
+          followed_store_listings: Nouvelles annonces des boutiques suivies
+          newsletter: Newsletter
+        marketing_opt_in: E-mails marketing
+        marketing_opt_in_hint: Offres et nouveautés de temps en temps. Vous pouvez
+          vous désabonner à tout moment.
+        submit: Enregistrer les préférences
+      update:
+        success: Préférences de notification enregistrées.

@@ -221,6 +221,11 @@ pt:
           attributes:
             store:
               reviewing_own_store: Não pode avaliar a sua própria loja
+        user:
+          attributes:
+            avatar:
+              invalid_content_type: deve ser uma imagem JPG, PNG, GIF ou WebP
+              too_large: é demasiado grande (máximo 5 MB)
     attributes:
       address:
         city: Cidade
@@ -274,6 +279,13 @@ pt:
         kind:
           business: Empresa
           individual: Particular
+      user:
+        avatar: Foto
+        first_name: Nome
+        last_name: Apelido
+        locale: Idioma
+        phone: Telefone
+        username: Nome de utilizador
   spanish_provinces:
     a_coruna: A Coruña
     alava: Álava
@@ -633,3 +645,43 @@ pt:
     address_defaults:
       update:
         success: Morada de envio predefinida atualizada.
+    sidebar:
+      title: A minha conta
+      profile: Perfil
+      security: Segurança
+      addresses: Moradas
+      notifications: Notificações
+      delete_account: Eliminar conta
+    profiles:
+      edit:
+        title: Perfil
+        avatar_hint: JPG, PNG, GIF ou WebP, máximo 5 MB.
+        email_hint: 'Alterar o e-mail requer reconferência: enviaremos um novo link
+          de confirmação.'
+        submit: Guardar alterações
+      update:
+        success: Perfil atualizado.
+    passwords:
+      edit:
+        title: Palavra-passe
+        submit: Atualizar palavra-passe
+      update:
+        success: Palavra-passe atualizada.
+    notifications:
+      edit:
+        title: Notificações
+        preferences_title: Notificações por e-mail
+        preferences:
+          order_updates: Atualizações das encomendas
+          messages: Mensagens
+          offers: Ofertas
+          price_drops: Quedas de preço
+          saved_search_alerts: Alertas de pesquisas guardadas
+          followed_store_listings: Novos anúncios das lojas seguidas
+          newsletter: Newsletter
+        marketing_opt_in: E-mails de marketing
+        marketing_opt_in_hint: Ofertas e novidades de vez em quando. Pode cancelar
+          a subscrição a qualquer momento.
+        submit: Guardar preferências
+      update:
+        success: Preferências de notificação guardadas.

@@ -30,6 +30,10 @@ Rails.application.routes.draw do
 
     # Signed-in account area (Phase 2).
     namespace :account do
+      resource :profile, only: %i[edit update]
+      resource :password, only: %i[edit update]
+      resource :notifications, only: %i[edit update]
+
       resources :addresses, except: :show do
         # Singular nested resource: PATCH /account/addresses/:address_id/default
         # promotes that address to the user's default.

@@ -220,6 +220,11 @@ en:
           attributes:
             store:
               reviewing_own_store: You can't review your own store
+        user:
+          attributes:
+            avatar:
+              invalid_content_type: must be a JPG, PNG, GIF or WebP image
+              too_large: is too large (maximum 5 MB)
     attributes:
       address:
         city: City
@@ -273,6 +278,13 @@ en:
         kind:
           business: Business
           individual: Individual
+      user:
+        avatar: Photo
+        first_name: First name
+        last_name: Last name
+        locale: Language
+        phone: Phone
+        username: Username
   spanish_provinces:
     a_coruna: A Coruña
     alava: Álava
@@ -628,3 +640,43 @@ en:
     address_defaults:
       update:
         success: Default shipping address updated.
+    sidebar:
+      title: My account
+      profile: Profile
+      security: Security
+      addresses: Addresses
+      notifications: Notifications
+      delete_account: Delete account
+    profiles:
+      edit:
+        title: Profile
+        avatar_hint: JPG, PNG, GIF or WebP, up to 5 MB.
+        email_hint: Changing your email requires re-confirmation — we'll send you
+          a new confirmation link.
+        submit: Save changes
+      update:
+        success: Profile updated.
+    passwords:
+      edit:
+        title: Password
+        submit: Update password
+      update:
+        success: Password updated.
+    notifications:
+      edit:
+        title: Notifications
+        preferences_title: Email notifications
+        preferences:
+          order_updates: Order updates
+          messages: Messages
+          offers: Offers
+          price_drops: Price drops
+          saved_search_alerts: Saved search alerts
+          followed_store_listings: New listings from stores you follow
+          newsletter: Newsletter
+        marketing_opt_in: Marketing emails
+        marketing_opt_in_hint: Occasional deals and news. You can opt out at any
+          time.
+        submit: Save preferences
+      update:
+        success: Notification preferences saved.

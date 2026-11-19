@@ -1,0 +1,33 @@
+<% content_for :account_body do %>
+  <div class="card max-w-md p-8">
+    <h1 class="font-display text-2xl font-bold"><%= t(".title") %></h1>
+
+    <%= form_with model: current_user, url: account_password_path do |f| %>
+      <%= render "devise/shared/error_messages", resource: current_user %>
+
+      <div class="mt-6 space-y-4">
+        <div>
+          <%= f.label :current_password, class: "block text-sm font-medium" %>
+          <%= f.password_field :current_password, autocomplete: "current-password",
+                required: true, class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :password, class: "block text-sm font-medium" %>
+          <%= f.password_field :password, autocomplete: "new-password", required: true,
+                minlength: Devise.password_length.min, class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :password_confirmation, class: "block text-sm font-medium" %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password",
+                required: true, class: "input-field mt-1" %>
+        </div>
+
+        <%= f.submit t(".submit"), class: "btn-primary w-full cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render "account/shell" %>

@@ -1,0 +1,38 @@
+<% content_for :account_body do %>
+  <div class="card p-8">
+    <h1 class="font-display text-2xl font-bold"><%= t(".title") %></h1>
+
+    <%= form_with model: current_user, url: account_notifications_path do |f| %>
+      <%= render "devise/shared/error_messages", resource: current_user %>
+
+      <div class="mt-6 space-y-6">
+        <fieldset>
+          <legend class="font-semibold"><%= t(".preferences_title") %></legend>
+          <div class="mt-3 space-y-2">
+            <% User::NOTIFICATION_KEYS.each do |key| %>
+              <div class="flex items-center gap-2">
+                <%= check_box_tag "user[notification_preferences][#{key}]", "1",
+                      current_user.notify?(key), id: "user_notification_preferences_#{key}",
+                      class: "h-4 w-4 rounded border-line accent-primary-600" %>
+                <%= label_tag "user_notification_preferences_#{key}", t(".preferences.#{key}"),
+                      class: "text-sm font-medium" %>
+              </div>
+            <% end %>
+          </div>
+        </fieldset>
+
+        <div>
+          <div class="flex items-center gap-2">
+            <%= f.check_box :marketing_opt_in, class: "h-4 w-4 rounded border-line accent-primary-600" %>
+            <%= f.label :marketing_opt_in, class: "text-sm font-medium" %>
+          </div>
+          <p class="mt-1 text-xs text-muted"><%= t(".marketing_opt_in_hint") %></p>
+        </div>
+
+        <%= f.submit t(".submit"), class: "btn-primary w-full cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render "account/shell" %>

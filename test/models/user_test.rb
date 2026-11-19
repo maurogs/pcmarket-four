@@ -50,4 +50,56 @@ class UserTest < ActiveSupport::TestCase
     # Second call finds the same record.
     assert_equal user.id, User.from_omniauth(auth).id
   end
+
+  test "notify? defaults transactional keys on and the rest off" do
+    user = users(:confirmed)
+    assert_empty user.notification_preferences
+
+    %w[order_updates messages offers].each { |key| assert user.notify?(key), "#{key} should default on" }
+    %w[price_drops saved_search_alerts followed_store_listings newsletter]
+      .each { |key| assert_not user.notify?(key), "#{key} should default off" }
+  end
+
+  test "notify? reads stored preferences over the defaults" do
+    user = users(:confirmed)
+    user.update!(notification_preferences: { "order_updates" => false, "newsletter" => true })
+
+    assert_not user.notify?("order_updates")
+    assert user.notify?("newsletter")
+  end
+
+  test "notify? prefers per-channel settings over the flat map" do
+    user = User.new(notification_preferences: { "offers" => { "email" => false },
+                                               "newsletter" => { "email" => true } })
+
+    assert_not user.notify?("offers")
+    assert user.notify?("newsletter", :email)
+    assert_not user.notify?("newsletter", :sms)
+  end
+
+  test "notification_preferences rejects unknown keys" do
+    user = users(:confirmed)
+    user.notification_preferences = { "bogus" => true }
+
+    assert_not user.valid?
+    assert_includes user.errors[:notification_preferences], "is invalid"
+  end
+
+  test "marketing_opt_in_at follows marketing_opt_in" do
+    user = users(:pending)
+    user.update!(marketing_opt_in: true)
+    assert_not_nil user.marketing_opt_in_at
+
+    user.update!(marketing_opt_in: false)
+    assert_nil user.marketing_opt_in_at
+  end
+
+  test "avatar rejects images over 5 MB" do
+    user = users(:confirmed)
+    user.avatar.attach(io: StringIO.new("x" * (6 * 1024 * 1024)),
+                       filename: "big.png", content_type: "image/png")
+
+    assert_not user.valid?
+    assert_includes user.errors[:avatar], "is too large (maximum 5 MB)"
+  end
 end

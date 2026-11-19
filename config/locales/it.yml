@@ -221,6 +221,11 @@ it:
           attributes:
             store:
               reviewing_own_store: Non puoi recensire il tuo stesso negozio
+        user:
+          attributes:
+            avatar:
+              invalid_content_type: deve essere un'immagine JPG, PNG, GIF o WebP
+              too_large: è troppo grande (massimo 5 MB)
     attributes:
       address:
         city: Città
@@ -274,6 +279,13 @@ it:
         kind:
           business: Azienda
           individual: Privato
+      user:
+        avatar: Foto
+        first_name: Nome
+        last_name: Cognome
+        locale: Lingua
+        phone: Telefono
+        username: Nome utente
   spanish_provinces:
     a_coruna: A Coruña
     alava: Álava
@@ -634,3 +646,43 @@ it:
     address_defaults:
       update:
         success: Indirizzo di spedizione predefinito aggiornato.
+    sidebar:
+      title: Il mio account
+      profile: Profilo
+      security: Sicurezza
+      addresses: Indirizzi
+      notifications: Notifiche
+      delete_account: Elimina account
+    profiles:
+      edit:
+        title: Profilo
+        avatar_hint: JPG, PNG, GIF o WebP, massimo 5 MB.
+        email_hint: 'La modifica dell''e-mail richiede la riconferma: invieremo un
+          nuovo link di conferma.'
+        submit: Salva modifiche
+      update:
+        success: Profilo aggiornato.
+    passwords:
+      edit:
+        title: Password
+        submit: Aggiorna password
+      update:
+        success: Password aggiornata.
+    notifications:
+      edit:
+        title: Notifiche
+        preferences_title: Notifiche via e-mail
+        preferences:
+          order_updates: Aggiornamenti sugli ordini
+          messages: Messaggi
+          offers: Offerte
+          price_drops: Ribassamenti di prezzo
+          saved_search_alerts: Avvisi sulle ricerche salvate
+          followed_store_listings: Nuovi annunci dei negozi seguiti
+          newsletter: Newsletter
+        marketing_opt_in: E-mail di marketing
+        marketing_opt_in_hint: Offerte e novità ogni tanto. Puoi disiscriverti in
+          qualsiasi momento.
+        submit: Salva preferenze
+      update:
+        success: Preferenze di notifica salvate.

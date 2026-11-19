@@ -475,3 +475,67 @@ against HTML (`&#39;`) — use `assert_select` with `text:`.
 
 Verified: `bin/rails test` 259 green; `bin/rubocop` clean (149 files).
 Not committed.
+
+## 2026-11-19 — Phase 2 step 2b: account settings area (uncommitted)
+
+Migration `20261119180004_add_notification_settings_to_users.rb`: users gains
+`notification_preferences` jsonb NOT NULL default `{}` (Ruby-literal default),
+`marketing_opt_in` boolean NOT NULL default false, `marketing_opt_in_at`
+datetime. Reversible `change`; migrate/rollback/migrate cycle verified,
+structure.sql regenerated.
+
+User model: `NOTIFICATION_KEYS` (order_updates, messages, offers, price_drops,
+saved_search_alerts, followed_store_listings, newsletter) +
+`TRANSACTIONAL_NOTIFICATION_KEYS` (first three). `notify?(key, channel =
+:email)` reads `{ key => { channel => bool } }` first, then the flat
+`{ key => bool }` the form writes, else the default (transactional on, rest
+off). **Gotcha:** `Hash#dig(key, channel)` raises TypeError when the stored
+value is a plain boolean — read `prefs[key]` then index it only when it is a
+Hash. `omniauth_only?` (provider present + encrypted_password blank) hides the
+profile email field; `sync_marketing_opt_in_at` before_save stamps/clears the
+timestamp; avatar validated (content type ∈ png/jpeg/jpg/webp/gif, ≤5 MB via
+`AVATAR_MAX_SIZE`) + `notification_preferences` shape validated.
+
+Routes (locale scope, `namespace :account`): `resource :profile/:password/
+:notifications, only: %i[edit update]` (singular RESTful resources, no custom
+actions). Controllers: Profiles uses `update_without_password` (email change →
+Devise confirmable reconfirmation, `unconfirmed_email`), permits `:email` only
+when not omniauth-only; Passwords uses `update_with_password` +
+`bypass_sign_in` (session survives rotation); Notifications casts the
+checkbox map to real booleans (`ActiveModel::Type::Boolean`) so the jsonb
+stays clean — unchecked boxes simply arrive missing (check_box_tag has no
+hidden "0"). All skinny: strong params via `params.expect`, 422 re-render.
+
+Account layout: `app/views/account/_sidebar.html.erb` (Profile/Security/
+Addresses/Notifications + Delete-account placeholder →
+`edit_user_registration_path`; active item from `controller.controller_name`,
+address_defaults folds into Addresses; mobile = horizontal scrollable tabs via
+`flex overflow-x-auto lg:flex-col`) + `_shell.html.erb` frame. **Gotcha:**
+`render("partial") do ... end` + `yield` inside the partial evaluates the
+block with the PARTIAL's virtual path — lazy `t(".key")` broke
+(`en.account.shell.*` translation missing). Shell instead renders
+`yield :account_body`; pages wrap content in `content_for :account_body`
+(captured in the page's own context). Addresses index/new/edit wrapped the
+same way.
+
+i18n: `account.{sidebar,profiles,passwords,notifications}.*`,
+`activerecord.attributes.user.{avatar,first_name,last_name,locale,phone,
+username}` (email/password labels come from devise-i18n) and
+`activerecord.errors.models.user.attributes.avatar.*` in all 6 locales.
+Strings containing ": " must be quoted in YAML (plain scalars can't hold
+colon+space).
+
+Tests (26 new): profiles (9: auth, form, omniauth-only hides email, update
+ok/422/username-taken, reconfirmation via `unconfirmed_email`, avatar accept/
+reject via `Rack::Test::UploadedFile.new(StringIO…)`), passwords (5: incl.
+wrong current password rejected + still-signed-in after update), notifications
+(6: checkbox per key, pre-checked transactional keys, booleans persisted,
+notify? after update, marketing timestamp), user model (6: notify? defaults/
+stored/channel-overrides, prefs shape, marketing timestamp, >5 MB avatar).
+**Gotchas:** Devise's session salt derives from encrypted_password — clearing
+it mid-test invalidates the warm session (sign_in again); `f.check_box
+"notification_preferences[key]"` produces `user[notification_preferences[key]]`
+(broken nesting) — use `check_box_tag` + explicit id/label.
+
+Verified: `bin/rails test` 285 green; `bin/rubocop` clean (156 files).
+Not committed.

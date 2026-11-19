@@ -221,6 +221,11 @@ es:
           attributes:
             store:
               reviewing_own_store: No puedes reseñar tu propia tienda
+        user:
+          attributes:
+            avatar:
+              invalid_content_type: debe ser una imagen JPG, PNG, GIF o WebP
+              too_large: es demasiado grande (máximo 5 MB)
     attributes:
       address:
         city: Ciudad
@@ -274,6 +279,13 @@ es:
         kind:
           business: Empresa
           individual: Particular
+      user:
+        avatar: Foto
+        first_name: Nombre
+        last_name: Apellidos
+        locale: Idioma
+        phone: Teléfono
+        username: Nombre de usuario
   spanish_provinces:
     a_coruna: A Coruña
     alava: Álava
@@ -633,3 +645,43 @@ es:
     address_defaults:
       update:
         success: Dirección de envío predeterminada actualizada.
+    sidebar:
+      title: Mi cuenta
+      profile: Perfil
+      security: Seguridad
+      addresses: Direcciones
+      notifications: Notificaciones
+      delete_account: Eliminar cuenta
+    profiles:
+      edit:
+        title: Perfil
+        avatar_hint: JPG, PNG, GIF o WebP, máximo 5 MB.
+        email_hint: "Cambiar tu correo requiere reconfirmación: te enviaremos un
+          nuevo enlace de confirmación."
+        submit: Guardar cambios
+      update:
+        success: Perfil actualizado.
+    passwords:
+      edit:
+        title: Contraseña
+        submit: Actualizar contraseña
+      update:
+        success: Contraseña actualizada.
+    notifications:
+      edit:
+        title: Notificaciones
+        preferences_title: Notificaciones por correo
+        preferences:
+          order_updates: Actualizaciones de los pedidos
+          messages: Mensajes
+          offers: Ofertas
+          price_drops: Bajadas de precio
+          saved_search_alerts: Alertas de búsquedas guardadas
+          followed_store_listings: Nuevos anuncios de las tiendas que sigues
+          newsletter: Boletín
+        marketing_opt_in: Correos de marketing
+        marketing_opt_in_hint: Ofertas y novedades de vez en cuando. Puedes darte
+          de baja cuando quieras.
+        submit: Guardar preferencias
+      update:
+        success: Preferencias de notificación guardadas.

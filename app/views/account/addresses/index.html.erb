@@ -1,4 +1,4 @@
-<div class="mx-auto max-w-3xl px-4 py-12">
+<% content_for :account_body do %>
   <div class="flex flex-wrap items-center justify-between gap-4">
     <h1 class="section-title"><%= t(".title") %></h1>
     <%= link_to t(".add_new"), new_account_address_path, class: "btn-primary" %>
@@ -39,4 +39,6 @@
       <%= link_to t(".add_new"), new_account_address_path, class: "btn-primary mt-4" %>
     </div>
   <% end %>
-</div>
+<% end %>
+
+<%= render "account/shell" %>

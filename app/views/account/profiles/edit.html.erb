@@ -1,0 +1,61 @@
+<% content_for :account_body do %>
+  <div class="card p-8">
+    <h1 class="font-display text-2xl font-bold"><%= t(".title") %></h1>
+
+    <%= form_with model: current_user, url: account_profile_path do |f| %>
+      <%= render "devise/shared/error_messages", resource: current_user %>
+
+      <div class="mt-6 space-y-4">
+        <% if current_user.avatar.attached? && current_user.avatar.blob&.content_type&.start_with?("image/") %>
+          <%= image_tag current_user.avatar.variant(resize_to_limit: [ 128, 128 ]),
+                class: "h-20 w-20 rounded-full", alt: "" %>
+        <% end %>
+        <div>
+          <%= f.label :avatar, class: "block text-sm font-medium" %>
+          <p class="text-xs text-muted"><%= t(".avatar_hint") %></p>
+          <%= f.file_field :avatar, accept: "image/png,image/jpeg,image/webp,image/gif",
+                class: "mt-1 block w-full text-sm" %>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <%= f.label :first_name, class: "block text-sm font-medium" %>
+            <%= f.text_field :first_name, autocomplete: "given-name", class: "input-field mt-1" %>
+          </div>
+          <div>
+            <%= f.label :last_name, class: "block text-sm font-medium" %>
+            <%= f.text_field :last_name, autocomplete: "family-name", class: "input-field mt-1" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :username, class: "block text-sm font-medium" %>
+          <%= f.text_field :username, autocomplete: "username", class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :phone, class: "block text-sm font-medium" %>
+          <%= f.telephone_field :phone, autocomplete: "tel", class: "input-field mt-1" %>
+        </div>
+
+        <div>
+          <%= f.label :locale, class: "block text-sm font-medium" %>
+          <%= f.select :locale, I18n.available_locales.map { |code| [ t("locales.#{code}"), code ] },
+                { include_blank: true }, class: "input-field mt-1" %>
+        </div>
+
+        <% unless current_user.omniauth_only? %>
+          <div>
+            <%= f.label :email, class: "block text-sm font-medium" %>
+            <%= f.email_field :email, autocomplete: "email", class: "input-field mt-1" %>
+            <p class="mt-1 text-xs text-muted"><%= t(".email_hint") %></p>
+          </div>
+        <% end %>
+
+        <%= f.submit t(".submit"), class: "btn-primary w-full cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render "account/shell" %>

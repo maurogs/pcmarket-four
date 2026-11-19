@@ -222,6 +222,11 @@ de:
           attributes:
             store:
               reviewing_own_store: Du kannst deinen eigenen Shop nicht bewerten
+        user:
+          attributes:
+            avatar:
+              invalid_content_type: muss ein JPG-, PNG-, GIF- oder WebP-Bild sein
+              too_large: ist zu groß (max. 5 MB)
     attributes:
       address:
         city: Stadt
@@ -275,6 +280,13 @@ de:
         kind:
           business: Unternehmen
           individual: Privatperson
+      user:
+        avatar: Foto
+        first_name: Vorname
+        last_name: Nachname
+        locale: Sprache
+        phone: Telefon
+        username: Benutzername
   spanish_provinces:
     a_coruna: A Coruña
     alava: Álava
@@ -636,3 +648,43 @@ de:
     address_defaults:
       update:
         success: Standard-Lieferadresse aktualisiert.
+    sidebar:
+      title: Mein Konto
+      profile: Profil
+      security: Sicherheit
+      addresses: Adressen
+      notifications: Benachrichtigungen
+      delete_account: Konto löschen
+    profiles:
+      edit:
+        title: Profil
+        avatar_hint: JPG, PNG, GIF oder WebP, max. 5 MB.
+        email_hint: Eine Änderung Ihrer E-Mail-Adresse erfordert eine erneute Bestätigung
+          – wir senden Ihnen einen neuen Bestätigungslink.
+        submit: Änderungen speichern
+      update:
+        success: Profil aktualisiert.
+    passwords:
+      edit:
+        title: Passwort
+        submit: Passwort aktualisieren
+      update:
+        success: Passwort aktualisiert.
+    notifications:
+      edit:
+        title: Benachrichtigungen
+        preferences_title: E-Mail-Benachrichtigungen
+        preferences:
+          order_updates: Bestell-Updates
+          messages: Nachrichten
+          offers: Angebote
+          price_drops: Preisreduzierungen
+          saved_search_alerts: Alerts für gespeicherte Suchen
+          followed_store_listings: Neue Anzeigen von beobachteten Shops
+          newsletter: Newsletter
+        marketing_opt_in: Marketing-E-Mails
+        marketing_opt_in_hint: Gelegentlich Angebote und Neuigkeiten. Sie können
+          sich jederzeit abmelden.
+        submit: Einstellungen speichern
+      update:
+        success: Benachrichtigungseinstellungen gespeichert.

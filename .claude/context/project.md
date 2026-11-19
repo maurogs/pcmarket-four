@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (Phase 2 step 2a — shipping addresses,
+_Last updated: 2026-11-19 (Phase 2 step 2b — account settings area,
 uncommitted)_
 
 ## What this is
@@ -331,9 +331,37 @@ FR/GB/DE/IT/PT seeded but disabled.
   successful GET. `assert_match` fails on translated text containing `'`
   (HTML `&#39;`) — use `assert_select text:`.
 
+## Code map (Phase 2 step 2b — account settings area)
+
+- `db/migrate/20261119180004_add_notification_settings_to_users.rb` — users
+  `notification_preferences` jsonb (not null, `{}`), `marketing_opt_in`
+  boolean, `marketing_opt_in_at` datetime.
+- `User`: `NOTIFICATION_KEYS` / `TRANSACTIONAL_NOTIFICATION_KEYS`,
+  `notify?(key, channel = :email)` (per-channel map → flat map → default;
+  transactional keys default on), `omniauth_only?`, avatar content-type/≤5 MB
+  validation, `notification_preferences` shape validation,
+  `sync_marketing_opt_in_at` before_save.
+- Routes (`namespace :account`): singular `resource :profile/:password/
+  :notifications, only: %i[edit update]`. `Account::ProfilesController`
+  (`update_without_password` → email change = confirmable reconfirmation;
+  email field/param only when not omniauth-only), `Account::PasswordsController`
+  (`update_with_password` + `bypass_sign_in`), `Account::NotificationsController`
+  (checkbox map → real booleans via `ActiveModel::Type::Boolean`).
+- Account frame: `app/views/account/_sidebar.html.erb` (active item from
+  controller_name; mobile = horizontal scroll tabs) + `_shell.html.erb`
+  rendering `yield :account_body` — pages wrap content in
+  `content_for :account_body` because a `render do` block would evaluate lazy
+  `t(".key")` against the shell partial's virtual path. Addresses views use
+  the same frame.
+- Gotchas: `Hash#dig(key, channel)` raises on plain-boolean values; Devise's
+  session salt derives from `encrypted_password` (clearing it invalidates the
+  session — re-`sign_in` in tests); `f.check_box "a[b]"` nests names wrongly
+  → `check_box_tag`; YAML plain scalars can't contain `": "` (quote those
+  strings).
+
 ## Testing
 
-- `bin/rails test` — **259 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **285 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -355,7 +383,11 @@ FR/GB/DE/IT/PT seeded but disabled.
   created per test); Phase 2 step 2a adds `test/models/address_test.rb` and
   `test/controllers/account/addresses_controller_test.rb` (30 tests — ES
   postal/province rules, default-address logic, auth, ownership 404s, 422
-  re-render, PATCH default).
+  re-render, PATCH default); step 2b adds
+  `test/controllers/account/{profiles,passwords,notifications}_controller_test.rb`
+  + `notify?`/avatar/marketing tests in `test/models/user_test.rb` (26 tests —
+  auth, 422s, wrong current password, reconfirmation, avatar accept/reject,
+  prefs persisted, marketing timestamp).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -383,4 +415,9 @@ FR/GB/DE/IT/PT seeded but disabled.
 - CI not set up yet.
 - Address book is account-only for now — checkout/sell-flow pickup of
   `User#default_address` lands with Phase 5 (orders).
-- No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a — awaiting user review.
+- Notification preferences are stored but nothing sends them yet — mailer
+  wiring per `User#notify?` lands with the features that emit them (orders,
+  messages, offers, saved searches). Delete-account is a sidebar link to the
+  Devise registration page until a dedicated flow lands.
+- No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a/2.2b — awaiting user
+  review.

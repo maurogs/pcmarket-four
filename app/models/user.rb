@@ -1,5 +1,13 @@
 class User < ApplicationRecord
   AVATAR_SIZES = { thumb: [ 100, 100 ], medium: [ 300, 300 ] }.freeze
+  AVATAR_CONTENT_TYPES = %w[image/png image/jpeg image/jpg image/webp image/gif].freeze
+  AVATAR_MAX_SIZE = 5.megabytes
+
+  # Every notification topic the account settings page offers a toggle for.
+  NOTIFICATION_KEYS = %w[order_updates messages offers price_drops saved_search_alerts
+                         followed_store_listings newsletter].freeze
+  # These are on unless the user switches them off; the rest are opt-in.
+  TRANSACTIONAL_NOTIFICATION_KEYS = %w[order_updates messages offers].freeze
 
   # Include default devise modules.
   devise :database_authenticatable, :registerable, :recoverable, :rememberable,
@@ -23,6 +31,28 @@ class User < ApplicationRecord
   validates :first_name, :last_name, length: { maximum: 100 }, allow_nil: true
   validates :phone, length: { maximum: 30 }, allow_nil: true
   validates :locale, inclusion: { in: proc { I18n.available_locales.map(&:to_s) } }, allow_nil: true
+
+  validate :avatar_is_a_small_enough_image, if: -> { avatar.attached? }
+  validate :notification_preferences_are_valid
+  before_save :sync_marketing_opt_in_at
+
+  # True when the user wants `key` sent over `channel`. A per-channel map
+  # ({ "newsletter" => { "email" => true } }) wins over the flat one the
+  # settings form writes; anything unset falls back to the default above.
+  def notify?(key, channel = :email)
+    key = key.to_s
+    stored = notification_preferences[key]
+    stored = stored[channel.to_s] if stored.is_a?(Hash)
+    return stored if [ true, false ].include?(stored)
+
+    TRANSACTIONAL_NOTIFICATION_KEYS.include?(key)
+  end
+
+  # Google-only accounts have no usable password, so the profile form hides
+  # the email field (changing it would strand them without a confirmation).
+  def omniauth_only?
+    provider.present? && encrypted_password.blank?
+  end
 
   def full_name
     [ first_name, last_name ].compact_blank.join(" ").presence || username
@@ -64,5 +94,40 @@ class User < ApplicationRecord
     candidate = base
     candidate = "#{base}_#{SecureRandom.hex(3)}" while where(username: candidate).exists?
     candidate
+  end
+
+  private
+
+  def avatar_is_a_small_enough_image
+    return unless avatar.blob
+
+    unless AVATAR_CONTENT_TYPES.include?(avatar.blob.content_type)
+      errors.add(:avatar, :invalid_content_type)
+    end
+    errors.add(:avatar, :too_large) if avatar.blob.byte_size > AVATAR_MAX_SIZE
+  end
+
+  # Accepts the flat form the settings form writes (key => boolean) and the
+  # per-channel form notify? understands (key => { channel => boolean }).
+  def notification_preferences_are_valid
+    return if notification_preferences.is_a?(Hash) &&
+              notification_preferences.all? { |key, value| valid_notification_value?(key, value) }
+
+    errors.add(:notification_preferences, :invalid)
+  end
+
+  def valid_notification_value?(key, value)
+    return false unless NOTIFICATION_KEYS.include?(key)
+    return true if [ true, false ].include?(value)
+
+    value.is_a?(Hash) && value.values.all? { |enabled| [ true, false ].include?(enabled) }
+  end
+
+  def sync_marketing_opt_in_at
+    if marketing_opt_in
+      self.marketing_opt_in_at ||= Time.current
+    else
+      self.marketing_opt_in_at = nil
+    end
   end
 end
