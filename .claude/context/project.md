@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (PC Finder step 1 — games + performance scores, uncommitted)_
+_Last updated: 2026-11-19 (PC Finder step 2 — score + game seeds, uncommitted)_
 
 ## What this is
 
@@ -78,7 +78,7 @@ FR/GB/DE/IT/PT seeded but disabled.
 - **Counters**: `Category#listings_count`, `Store#active_listings_count`
   refreshed by services (`Categories::RefreshListingsCount`,
   `Stores::RefreshActiveListingsCount`) from after-commit jobs.
-- **Seeds**: `db/seeds/*.rb` (11 files, numeric prefix order via
+- **Seeds**: `db/seeds/*.rb` (14 files, numeric prefix order via
   `db/seeds.rb`), all upserts by natural key (`seed_record`) — idempotent,
   admin edits survive re-seed; obsolete slugs are deleted by slug. Summary
   `puts` is silenced under `Rails.env.test?`.
@@ -221,9 +221,21 @@ FR/GB/DE/IT/PT seeded but disabled.
   (nil without a scored GPU); `Listing` assigns it in `before_save` when
   specs change.
 
+## Code map (Phase 1b-ii-b — PC Finder step 2: score + game seeds)
+
+- `db/seeds/11_performance_scores.rb` — `GPU_SCORES` slug→tier map (only
+  written when the option's score is nil; covers unseeded 50-series/GTX
+  slugs), `cpu_model` FilterDefinition (sidebar off, sell form on) + 29
+  scored CPU options, CategoryFilter → gaming-pcs/workstations/cpus.
+- `db/seeds/12_games.rb` — 10 Game rows, `demand` on the 0–100 GPU scale
+  (>100 = unattainable target). `db/seeds/13_backfill_performance_scores.rb`
+  — `update_column` backfill via the scorer.
+- `db/seeds/development/demo.rb` — gaming PCs/workstations always get
+  `gpu_model` + `cpu_model` specs (`system_spec_values` pre-computed).
+
 ## Testing
 
-- `bin/rails test` — **163 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **173 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -235,6 +247,8 @@ FR/GB/DE/IT/PT seeded but disabled.
   NavigationMenu service (items, chipset hrefs, cache stamp), store show
   (own listings only + sold-last, about/reviews tabs, vacation banner,
   404) and a test that `DEMO=1` seed data never loads outside development.
+  PC Finder step 2 adds no new tests — the new seeds are covered by the
+  idempotency test (its `>=` counts still hold).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command

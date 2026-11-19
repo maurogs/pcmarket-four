@@ -230,3 +230,26 @@ Gotcha: `:1080p` is not a valid Ruby symbol (starts with a digit) — use
 Verified: migrate → rollback STEP=2 → migrate clean (both reversible);
 new tests 10 green; listing/search regression tests 50 green; rubocop
 clean on touched files. Not committed.
+
+## 2026-11-19 — PC Finder step 2: score + game seeds (uncommitted)
+
+Seeds for the step-1 machinery. `db/seeds/11_performance_scores.rb`:
+relative 0–100 tiers on `gpu_model` FilterOptions (only written when nil,
+so admin edits survive; map also covers not-yet-seeded 50-series/GTX
+slugs, unknown options stay nil) + new `cpu_model` filter definition
+(multi_select, group CPU, sidebar off, sell form on, position 36) with
+29 scored CPU options (9800X3D=95 … i7-6700=22) mapped to gaming-pcs,
+workstations and cpus. `db/seeds/12_games.rb`: 10 Game rows (fortnite …
+marvel-rivals) with `demand` hashes on the same 0–100 scale (4K/240
+targets >100 = unattainable). `db/seeds/13_backfill_performance_scores.rb`:
+`update_column` backfill of `listings.performance_score` via
+`Listings::PerformanceScorer` (skips validations/re-review, deterministic).
+`db/seeds/development/demo.rb`: gaming PCs and workstations now always
+carry `gpu_model` + `cpu_model` specs (pre-computed option value lists).
+`db/seeds.rb` untouched (sorted glob picks 11–13 up); seeds idempotency
+test untouched (its `>=` counts still hold).
+
+Verified: `db:seed` ×2 clean (36 defs, 252 options); runner check
+`Game.count=10`, 49 scored filter options (20 GPU + 29 CPU), 60 scored
+listings (28..95); demo merge path exercised in runner; `bin/rails test`
+**173 green**; `bin/rubocop` clean. Not committed.

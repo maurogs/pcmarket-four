@@ -29,6 +29,12 @@ else
   labels_by_slug = ProductLabel.active.index_by(&:slug)
   theme_tags = SellerTag.active.where(slug: %w[anime minimalist rgb]).index_by(&:slug)
   category_filters = Category.includes(filter_definitions: :filter_options).index_by(&:slug)
+  # PC Finder scores full systems from their GPU (blended with the CPU), so
+  # gaming PCs and workstations always carry both specs.
+  system_spec_values = %w[gpu_model cpu_model].index_with do |key|
+    definition = FilterDefinition.active.find_by(key: key)
+    definition ? definition.filter_options.active.pluck(:value) : []
+  end
 
   pick_specs = lambda do |category|
     specs = {}
@@ -118,6 +124,12 @@ else
       price = base_price + [ money.(-15_000, 15_000), 0 ].sample
       price = 500 if price < 500
       discounted = rand < 0.35
+      specs = pick_specs.call(category)
+      if %w[gaming-pcs workstations].include?(slug)
+        system_spec_values.each do |key, values|
+          specs[key] ||= [ values.sample ] if values.any?
+        end
+      end
       listing = Listing.create!(
         store: store,
         category: category,
@@ -133,7 +145,7 @@ else
         ships_within_days: rand(1..7),
         allow_offers: rand < 0.6,
         quantity: rand(1..3),
-        specs: pick_specs.call(category),
+        specs: specs,
         highlights: rand < 0.5 ? pick.call(%w[Invoice Original\ box Warranty], rand(1..2)) : [],
         country: es,
         province: code,
