@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (Phase 2 step 5 — header account menu,
+_Last updated: 2026-11-19 (Phase 2 step 6 — GDPR deletion + data export,
 uncommitted)_
 
 ## What this is
@@ -450,9 +450,40 @@ FR/GB/DE/IT/PT seeded but disabled.
 - Tests: `test/integration/header_account_menu_test.rb` (9). Header + drawer
   are both in the DOM, so negative assertions must hold across both copies.
 
+## Code map (Phase 2 step 6 — GDPR account deletion + data export)
+
+- Routes (`namespace :account`): singular `resource :data_export, only:
+  %i[show create]` + `resource :deletion, only: %i[show destroy]`.
+- **Export**: `Accounts::DataExporter` builds the JSON (profile, addresses,
+  notification prefs, store + its listings, follows, reviews written),
+  attaches `User#data_export` (`has_one_attached`) and stamps
+  `data_export_generated_at`; `Account::DataExportJob` runs it async. Show
+  page: request `button_to` + `rails_blob_path(disposition: "attachment")`
+  download link once ready. Throttle once per 24h
+  (`User::EXPORT_THROTTLE` / `#data_export_throttled?`), checked in the
+  controller before enqueueing (flash alert otherwise). Email notification
+  TODO Phase 6.
+- **Deletion**: not Devise registration#destroy (would orphan reviews).
+  Show = warning page + confirmation challenge (current password; username
+  for `omniauth_only?` accounts, `secure_compare`); wrong/blank → 422.
+  `Accounts::Deleter` transaction: AASM `archive!` listings, store
+  `vacation_mode: true` (unpublishes — public scopes exclude vacation
+  stores), destroy addresses, anonymize in place (email →
+  `deleted-<id>@deleted.invalid` via `skip_reconfirmation!`, username →
+  `deleted_user_<id>` — hyphens fail the username format validation —,
+  names/phone/unconfirmed_email nil, prefs `{}`, marketing off, avatar +
+  data_export purged), stamp `deleted_at`. Reviews kept; `stores/_review`
+  shows `stores.review.deleted_user` for `author.deleted?`.
+- `User#active_for_authentication?` false when deleted (blocks sign-in form
+  **and** remember-me); `inactive_message` → `:deleted` →
+  `devise.failure.deleted` (devise-i18n merges the extra key).
+- Sidebar: "Download my data" item; "Delete account" → `account_deletion_path`.
+- Gotcha: `ActiveStorage::Blob#download` returns ASCII-8BIT — `force_encoding
+  ("UTF-8")` before comparing non-ASCII JSON in tests.
+
 ## Testing
 
-- `bin/rails test` — **333 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **371 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -488,7 +519,12 @@ FR/GB/DE/IT/PT seeded but disabled.
   `test/controllers/stores/follows_controller_test.rb` (14 tests — auth HTML +
   turbo, turbo_stream button/count swaps, self-follow, HTML fallbacks, 404)
   plus stores_controller 301/reviews-tab tests and a FriendlyId-history
-  store test.
+  store test; step 5 adds `test/integration/header_account_menu_test.rb`
+  (9); step 6 adds `test/services/accounts/{data_exporter,deleter}_test.rb`
+  + `test/controllers/account/{data_exports,deletions}_controller_test.rb`
+  + deleted/throttle user-model tests (29 tests — export JSON shape, throttle
+  flash + disabled button, download link, 422 wrong password, sign-out +
+  root redirect, deleted user refused at sign_in).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -529,7 +565,8 @@ FR/GB/DE/IT/PT seeded but disabled.
   `User#default_address` lands with Phase 5 (orders).
 - Notification preferences are stored but nothing sends them yet — mailer
   wiring per `User#notify?` lands with the features that emit them (orders,
-  messages, offers, saved searches). Delete-account is a sidebar link to the
-  Devise registration page until a dedicated flow lands.
-- No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a/2.2b/2.3/2.4 — awaiting
-  user review.
+  messages, offers, saved searches). GDPR deletion + data export ship
+  (Phase 2 step 6); the export-ready **email notification** is still TODO
+  (Phase 6 mailer wiring).
+- No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a/2.2b/2.3/2.4/2.5/2.6 —
+  awaiting user review.

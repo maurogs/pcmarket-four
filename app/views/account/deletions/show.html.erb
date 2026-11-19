@@ -1,0 +1,33 @@
+<% content_for :account_body do %>
+  <div class="card border-rose-200 p-8 dark:border-rose-900">
+    <h1 class="font-display text-2xl font-bold text-rose-700 dark:text-rose-400"><%= t(".title") %></h1>
+    <p class="mt-2 text-sm leading-relaxed text-body"><%= t(".intro") %></p>
+
+    <h2 class="mt-6 font-semibold"><%= t(".consequences_title") %></h2>
+    <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-body">
+      <% %i[listings store reviews addresses account].each do |item| %>
+        <li><%= t(".consequences.#{item}") %></li>
+      <% end %>
+    </ul>
+
+    <%= form_with url: account_deletion_path, method: :delete do %>
+      <div class="mt-6">
+        <%= label_tag :user_confirmation,
+              current_user.omniauth_only? ? t(".username_label") : t(".password_label"),
+              class: "block text-sm font-semibold" %>
+        <% if current_user.omniauth_only? %>
+          <%= text_field_tag "user[confirmation]", nil, required: true, autocomplete: "off",
+                class: "input-field mt-1" %>
+        <% else %>
+          <%= password_field_tag "user[confirmation]", nil, required: true,
+                autocomplete: "current-password", class: "input-field mt-1" %>
+        <% end %>
+      </div>
+
+      <%= submit_tag t(".submit"),
+            class: "mt-6 cursor-pointer rounded-full border border-rose-300 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-50 dark:border-rose-700 dark:text-rose-300 dark:hover:bg-rose-950" %>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render "account/shell" %>

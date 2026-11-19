@@ -996,7 +996,9 @@ CREATE TABLE public.users (
     updated_at timestamp(6) without time zone NOT NULL,
     notification_preferences jsonb DEFAULT '{}'::jsonb NOT NULL,
     marketing_opt_in boolean DEFAULT false NOT NULL,
-    marketing_opt_in_at timestamp(6) without time zone
+    marketing_opt_in_at timestamp(6) without time zone,
+    data_export_generated_at timestamp(6) without time zone,
+    deleted_at timestamp(6) without time zone
 );
 
 
@@ -1821,6 +1823,13 @@ CREATE INDEX index_users_on_country_id ON public.users USING btree (country_id);
 
 
 --
+-- Name: index_users_on_deleted_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_deleted_at ON public.users USING btree (deleted_at);
+
+
+--
 -- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2061,6 +2070,8 @@ ALTER TABLE ONLY public.listing_labels
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261119190002'),
+('20261119190001'),
 ('20261119180004'),
 ('20261119180003'),
 ('20261119180002'),

@@ -102,4 +102,27 @@ class UserTest < ActiveSupport::TestCase
     assert_not user.valid?
     assert_includes user.errors[:avatar], "is too large (maximum 5 MB)"
   end
+
+  test "deleted users are never active for authentication" do
+    user = users(:confirmed)
+    assert user.active_for_authentication?
+    assert_equal :inactive, user.inactive_message
+
+    user.update!(deleted_at: Time.current)
+
+    assert_predicate user, :deleted?
+    assert_not user.active_for_authentication?
+    assert_equal :deleted, user.inactive_message
+  end
+
+  test "data_export_throttled? follows the 24h window" do
+    user = users(:confirmed)
+    assert_not_predicate user, :data_export_throttled?
+
+    user.data_export_generated_at = 25.hours.ago
+    assert_not_predicate user, :data_export_throttled?
+
+    user.data_export_generated_at = 23.hours.ago
+    assert_predicate user, :data_export_throttled?
+  end
 end

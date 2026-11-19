@@ -400,6 +400,8 @@ es:
       max_images_per_listing: Número máximo de imágenes por anuncio
       saved_search_alerts_enabled: Envía alertas de búsquedas guardadas
   devise:
+    failure:
+      deleted: Esta cuenta ha sido eliminada.
     registrations:
       edit:
         edit: Editar %{resource}
@@ -551,6 +553,7 @@ es:
       destroy:
         success: Has dejado de seguir a %{store}.
     review:
+      deleted_user: Usuario eliminado
       stars: "%{rating} de 5 estrellas"
       verified_purchase: Compra verificada
       seller_reply: Respuesta del vendedor
@@ -706,6 +709,7 @@ es:
       addresses: Direcciones
       notifications: Notificaciones
       my_store: Mi tienda
+      download_data: Descargar mis datos
       delete_account: Eliminar cuenta
     profiles:
       edit:
@@ -740,6 +744,47 @@ es:
         submit: Guardar preferencias
       update:
         success: Preferencias de notificación guardadas.
+    data_exports:
+      show:
+        title: Descargar mis datos
+        intro: Solicita una copia legible por máquina de los datos personales que
+          tenemos sobre ti. La generamos en segundo plano y la mantenemos
+          disponible para descargar en esta página.
+        contents_title: La copia incluye
+        contents:
+          profile: Los datos de tu perfil (nombre, correo, usuario, historial de accesos)
+          addresses: Tus direcciones de envío
+          notifications: Tus preferencias de notificaciones y marketing
+          store: Tu tienda y sus anuncios
+          follows: Las tiendas que sigues
+          reviews: Las reseñas que has escrito
+        generated_at: "Última copia generada el %{time}."
+        download: Descargar copia (JSON)
+        request: Solicitar una nueva copia
+        throttle_hint: Puedes solicitar una copia una vez cada 24 horas.
+      create:
+        requested: Estamos generando tu copia. Recarga esta página en un momento
+          para descargarla.
+        throttled: Has solicitado una copia recientemente. Vuelve a intentarlo en
+          24 horas.
+    deletions:
+      show:
+        title: Eliminar cuenta
+        intro: Esto elimina tu cuenta definitivamente. No se puede deshacer; lee
+          primero qué pasa con tus datos.
+        consequences_title: Qué ocurre
+        consequences:
+          listings: Todos tus anuncios se archivan y dejan de aparecer en el sitio.
+          store: Tu tienda entra en modo vacaciones y sus anuncios se despublican.
+          reviews: 'Tus reseñas se mantienen, pero su autor pasa a ser «Usuario eliminado».'
+          addresses: Tus direcciones de envío se eliminan permanentemente.
+          account: Tu perfil se anonimiza y no podrás volver a iniciar sesión.
+        password_label: Escribe tu contraseña actual para confirmar
+        username_label: Escribe tu nombre de usuario para confirmar
+        submit: Eliminar mi cuenta
+      destroy:
+        invalid_confirmation: Esa contraseña o nombre de usuario no es correcto.
+        success: Tu cuenta se ha eliminado.
   seller:
     stores:
       new:

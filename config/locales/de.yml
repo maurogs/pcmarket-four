@@ -402,6 +402,8 @@ de:
       saved_search_alerts_enabled: Sende E-Mail-Benachrichtigungen für gespeicherte
         Suchen
   devise:
+    failure:
+      deleted: Dieses Konto wurde gelöscht.
     registrations:
       edit:
         edit: "%{resource} bearbeiten"
@@ -554,6 +556,7 @@ de:
       destroy:
         success: Du folgst %{store} nicht mehr.
     review:
+      deleted_user: Gelöschter Benutzer
       stars: "%{rating} von 5 Sternen"
       verified_purchase: Verifizierter Kauf
       seller_reply: Antwort des Verkäufers
@@ -709,6 +712,7 @@ de:
       addresses: Adressen
       notifications: Benachrichtigungen
       my_store: Mein Shop
+      download_data: Meine Daten herunterladen
       delete_account: Konto löschen
     profiles:
       edit:
@@ -743,6 +747,47 @@ de:
         submit: Einstellungen speichern
       update:
         success: Benachrichtigungseinstellungen gespeichert.
+    data_exports:
+      show:
+        title: Meine Daten herunterladen
+        intro: Fordern Sie eine maschinenlesbare Kopie der personenbezogenen Daten
+          an, die wir über Sie speichern. Wir erstellen sie im Hintergrund und
+          stellen sie auf dieser Seite zum Download bereit.
+        contents_title: Die Kopie enthält
+        contents:
+          profile: Ihre Profildaten (Name, E-Mail, Benutzername, Anmeldeverlauf)
+          addresses: Ihre Lieferadressen
+          notifications: Ihre Benachrichtigungs- und Marketing-Einstellungen
+          store: Ihr Shop und dessen Anzeigen
+          follows: Die Shops, denen Sie folgen
+          reviews: Die von Ihnen geschriebenen Bewertungen
+        generated_at: "Letzte Kopie erstellt am %{time}."
+        download: Kopie herunterladen (JSON)
+        request: Neue Kopie anfordern
+        throttle_hint: Sie können alle 24 Stunden eine Kopie anfordern.
+      create:
+        requested: Ihre Kopie wird im Hintergrund erstellt. Laden Sie diese Seite
+          gleich neu, um sie herunterzuladen.
+        throttled: Sie haben kürzlich bereits eine Kopie angefordert. Versuchen Sie
+          es in 24 Stunden erneut.
+    deletions:
+      show:
+        title: Konto löschen
+        intro: Damit wird Ihr Konto endgültig gelöscht. Das lässt sich nicht
+          rückgängig machen — lesen Sie zuerst, was mit Ihren Daten geschieht.
+        consequences_title: Was passiert
+        consequences:
+          listings: Alle Ihre Anzeigen werden archiviert und verschwinden von der Seite.
+          store: Ihr Shop geht in den Urlaubsmodus und seine Anzeigen werden deaktiviert.
+          reviews: 'Ihre Bewertungen bleiben, ihr Autor wird zu „Gelöschter Benutzer“.'
+          addresses: Ihre Lieferadressen werden endgültig gelöscht.
+          account: Ihr Profil wird anonymisiert und Sie können sich nicht wieder anmelden.
+        password_label: Zum Bestätigen Ihr aktuelles Passwort eingeben
+        username_label: Zum Bestätigen Ihren Benutzernamen eingeben
+        submit: Mein Konto löschen
+      destroy:
+        invalid_confirmation: Dieses Passwort oder dieser Benutzername ist nicht korrekt.
+        success: Ihr Konto wurde gelöscht.
   seller:
     stores:
       new:

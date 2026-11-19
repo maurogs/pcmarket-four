@@ -709,3 +709,67 @@ Uncommitted files (`git status --short`):
 ?? app/views/shared/_account_menu.html.erb
 ?? test/integration/header_account_menu_test.rb
 ```
+
+## 2026-11-19 — Phase 2 step 6: GDPR account deletion + data export (uncommitted)
+
+Shipped the two GDPR flows in the account area.
+
+- Migrations `20261119190001` (users `data_export_generated_at`) and
+  `20261119190002` (users `deleted_at` + index); `db:rollback STEP=2` +
+  `db:migrate` round-trip verified, `db/structure.sql` regenerated.
+- **Data export**: routes `account/data_export` (show/create, singular).
+  `Accounts::DataExporter` builds the JSON (profile, addresses, notification
+  prefs, store + its listings, follows, reviews written), attaches it as
+  `User#data_export` (`has_one_attached`) and stamps
+  `data_export_generated_at`; `Account::DataExportJob` runs it async. Show
+  page explains the export, request `button_to` (disabled while throttled)
+  and a `rails_blob_path(…, disposition: "attachment")` download link once
+  ready. Throttle = once per 24h via `User::EXPORT_THROTTLE` /
+  `User#data_export_throttled?`, checked in the controller before enqueueing
+  (flash alert otherwise). Email notification is TODO Phase 6.
+- **Account deletion**: routes `account/deletion` (show/destroy, singular —
+  deliberately not Devise's registration#destroy, which would delete the row
+  and orphan reviews). Show = warning page + confirmation challenge: current
+  password, or the username for `omniauth_only?` accounts (constant-time
+  compare). Wrong/blank → 422 re-render, account untouched.
+  `Accounts::Deleter` in one transaction: AASM `archive!` every non-archived
+  listing, store `vacation_mode: true` (unpublishes — all public listing
+  scopes exclude vacation stores), destroy addresses, anonymize (email →
+  `deleted-<id>@deleted.invalid` with `skip_reconfirmation!`, username →
+  `deleted_user_<id>` — hyphens are rejected by the username format
+  validation, so the separator is an underscore —, names/phone/
+  unconfirmed_email nil, prefs `{}`, marketing off, avatar + data_export
+  purged), stamp `deleted_at`. Reviews stay; `stores/_review` renders the
+  author as `t("stores.review.deleted_user")` when `author.deleted?`.
+- `User`: `deleted?`, `active_for_authentication?` (false when deleted —
+  blocks form sign-in and remember-me alike), `inactive_message` → `:deleted`
+  (new `devise.failure.deleted` key in all 6 locales).
+- Sidebar: "Download my data" section + "Delete account" now points at
+  `account_deletion_path` (was the Devise registration placeholder).
+- I18n: `account.data_exports.*`, `account.deletions.*`,
+  `account.sidebar.download_data`, `devise.failure.deleted`,
+  `stores.review.deleted_user` in all 6 locales (text edits).
+- Tests: `test/services/accounts/{data_exporter,deleter}_test.rb` (12),
+  `test/controllers/account/{data_exports,deletions}_controller_test.rb`
+  (15, incl. throttle flash, download link, 422 wrong password, signed-out
+  redirect, deleted user refused at sign_in with the `devise.failure.deleted`
+  alert), 2 new `user_test.rb` tests (inactive message, throttle window).
+
+Verified: `bin/rails test` 371 green; `bin/rubocop` clean (175 files).
+Uncommitted files (`git status --short`):
+```
+ M app/models/user.rb
+ M app/views/account/_sidebar.html.erb
+ M app/views/stores/_review.html.erb
+ M config/locales/{de,en,es,fr,it,pt}.yml
+ M config/routes.rb
+ M db/structure.sql
+ M test/models/user_test.rb
+?? app/controllers/account/{data_exports,deletions}_controller.rb
+?? app/jobs/account/data_export_job.rb
+?? app/services/accounts/
+?? app/views/account/{data_exports,deletions}/
+?? db/migrate/2026111919000{1,2}_*.rb
+?? test/controllers/account/{data_exports,deletions}_controller_test.rb
+?? test/services/accounts/
+```

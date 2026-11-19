@@ -1,18 +1,22 @@
 <%# One published store review: author, stars, title/body, verified-purchase
-    badge and the seller reply block. %>
+    badge and the seller reply block. Deleted authors stay visible as
+    "Deleted user" (GDPR deletion anonymizes, it never removes reviews). %>
 <%# locals: (review:) %>
+<% deleted_author = review.author.deleted? %>
 <article class="card p-5">
   <div class="flex items-start gap-3">
     <span class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-100 font-display text-sm font-bold text-primary-700 dark:bg-primary-900 dark:text-primary-200">
       <% if review.author.avatar.attached? %>
         <%= image_tag url_for(review.author.avatar.variant(resize_to_fill: [ 80, 80 ], format: Listing::IMAGE_FORMAT)),
               alt: "", loading: "lazy", class: "h-full w-full object-cover" %>
+      <% elsif deleted_author %>
+        ?
       <% else %>
         <%= review.author.username.first.upcase %>
       <% end %>
     </span>
     <div class="min-w-0 flex-1">
-      <p class="truncate font-semibold"><%= review.author.username %></p>
+      <p class="truncate font-semibold"><%= deleted_author ? t(".deleted_user") : review.author.username %></p>
       <time class="block text-xs text-muted" datetime="<%= review.created_at.iso8601 %>"><%= l(review.created_at.to_date) %></time>
     </div>
     <div class="shrink-0"><%= review_stars(review.rating) %></div>

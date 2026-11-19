@@ -6,7 +6,8 @@
     [ "passwords", t(".security"), edit_account_password_path ],
     [ "addresses", t(".addresses"), account_addresses_path ],
     [ "notifications", t(".notifications"), edit_account_notifications_path ],
-    [ "stores", t(".my_store"), current_user.store ? edit_seller_store_path : new_seller_store_path ]
+    [ "stores", t(".my_store"), current_user.store ? edit_seller_store_path : new_seller_store_path ],
+    [ "data_exports", t(".download_data"), account_data_export_path ]
   ]
   active = controller.controller_name == "address_defaults" ? "addresses" : controller.controller_name
 %>
@@ -24,10 +25,13 @@
       </li>
     <% end %>
     <li class="shrink-0 lg:mt-4 lg:w-full">
-      <%# Placeholder until a dedicated delete flow lands — the registration
-          page holds the "cancel my account" button. %>
-      <%= link_to t(".delete_account"), edit_user_registration_path,
-            class: "block whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950" %>
+      <%= link_to t(".delete_account"), account_deletion_path,
+            aria: { current: ("page" if active == "deletions") },
+            class: class_names(
+              "block whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold",
+              "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-200" => active == "deletions",
+              "text-rose-700 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950" => active != "deletions"
+            ) %>
     </li>
   </ul>
 </nav>

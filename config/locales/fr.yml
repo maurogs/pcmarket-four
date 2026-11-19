@@ -402,6 +402,8 @@ fr:
       max_images_per_listing: Nombre maximal d'images par annonce
       saved_search_alerts_enabled: Envoie des alertes pour les recherches enregistrées
   devise:
+    failure:
+      deleted: Ce compte a été supprimé.
     registrations:
       edit:
         edit: Modifier %{resource}
@@ -553,6 +555,7 @@ fr:
       destroy:
         success: Vous ne suivez plus %{store}.
     review:
+      deleted_user: Utilisateur supprimé
       stars: "%{rating} étoiles sur 5"
       verified_purchase: Achat vérifié
       seller_reply: Réponse du vendeur
@@ -708,6 +711,7 @@ fr:
       addresses: Adresses
       notifications: Notifications
       my_store: Ma boutique
+      download_data: Télécharger mes données
       delete_account: Supprimer le compte
     profiles:
       edit:
@@ -742,6 +746,47 @@ fr:
         submit: Enregistrer les préférences
       update:
         success: Préférences de notification enregistrées.
+    data_exports:
+      show:
+        title: Télécharger mes données
+        intro: Demandez une copie lisible par machine des données personnelles que
+          nous détenons à votre sujet. Nous la générons en arrière-plan et la
+          rendons disponible au téléchargement sur cette page.
+        contents_title: La copie contient
+        contents:
+          profile: Vos informations de profil (nom, e-mail, identifiant, historique de connexions)
+          addresses: Vos adresses de livraison
+          notifications: Vos préférences de notifications et de marketing
+          store: Votre boutique et ses annonces
+          follows: Les boutiques que vous suivez
+          reviews: Les avis que vous avez écrits
+        generated_at: "Dernière copie générée le %{time}."
+        download: Télécharger la copie (JSON)
+        request: Demander une nouvelle copie
+        throttle_hint: Vous pouvez demander une copie une fois toutes les 24 heures.
+      create:
+        requested: Votre copie est en cours de génération. Rechargez cette page
+          dans un instant pour la télécharger.
+        throttled: Vous avez déjà demandé une copie récemment. Réessayez dans
+          24 heures.
+    deletions:
+      show:
+        title: Supprimer le compte
+        intro: Cela supprime définitivement votre compte. Action irréversible —
+          lisez d'abord ce qui arrive à vos données.
+        consequences_title: Ce qui se passe
+        consequences:
+          listings: Toutes vos annonces sont archivées et disparaissent du site.
+          store: Votre boutique passe en mode vacances et ses annonces sont dépubliées.
+          reviews: 'Vos avis restent, mais leur auteur devient « Utilisateur supprimé ».'
+          addresses: Vos adresses de livraison sont définitivement supprimées.
+          account: Votre profil est anonymisé et vous ne pourrez plus vous connecter.
+        password_label: Saisissez votre mot de passe actuel pour confirmer
+        username_label: Saisissez votre identifiant pour confirmer
+        submit: Supprimer mon compte
+      destroy:
+        invalid_confirmation: Ce mot de passe ou cet identifiant est incorrect.
+        success: Votre compte a été supprimé.
   seller:
     stores:
       new:

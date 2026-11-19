@@ -43,6 +43,11 @@ Rails.application.routes.draw do
         # promotes that address to the user's default.
         resource :default, only: :update, controller: "address_defaults"
       end
+
+      # GDPR (Phase 2 step 6). Singular — one export / one deletion per
+      # signed-in user, so the URL never carries an id.
+      resource :data_export, only: %i[show create]
+      resource :deletion, only: %i[show destroy]
     end
 
     # Seller area (Phase 2): "open your store" + store settings. Singular —

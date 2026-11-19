@@ -399,6 +399,8 @@ en:
       max_images_per_listing: Maximum images per listing
       saved_search_alerts_enabled: Send saved-search alert emails
   devise:
+    failure:
+      deleted: This account has been deleted.
     registrations:
       edit:
         edit: Edit %{resource}
@@ -548,6 +550,7 @@ en:
       destroy:
         success: You stopped following %{store}.
     review:
+      deleted_user: Deleted user
       stars: "%{rating} out of 5 stars"
       verified_purchase: Verified purchase
       seller_reply: Seller's reply
@@ -701,6 +704,7 @@ en:
       addresses: Addresses
       notifications: Notifications
       my_store: My store
+      download_data: Download my data
       delete_account: Delete account
     profiles:
       edit:
@@ -735,6 +739,47 @@ en:
         submit: Save preferences
       update:
         success: Notification preferences saved.
+    data_exports:
+      show:
+        title: Download my data
+        intro: Request a machine-readable copy of the personal data we hold about
+          you. We generate it in the background and keep it available for
+          download from this page.
+        contents_title: The export contains
+        contents:
+          profile: Your profile details (name, email, username, sign-in history)
+          addresses: Your shipping addresses
+          notifications: Your notification and marketing preferences
+          store: Your store and its listings
+          follows: The stores you follow
+          reviews: The reviews you have written
+        generated_at: "Last export generated on %{time}."
+        download: Download export (JSON)
+        request: Request a new export
+        throttle_hint: You can request an export once every 24 hours.
+      create:
+        requested: Your export is being generated. Reload this page in a moment to
+          download it.
+        throttled: You requested an export recently. Please try again in 24 hours.
+    deletions:
+      show:
+        title: Delete account
+        intro: This deletes your account for good. It cannot be undone — read what
+          happens to your data first.
+        consequences_title: What happens
+        consequences:
+          listings: All your listings are archived and stop appearing on the site.
+          store: Your store goes on vacation and its listings are unpublished.
+          reviews: 'Your reviews stay, but their author becomes "Deleted user".'
+          addresses: Your shipping addresses are permanently deleted.
+          account: Your profile is anonymized and you will not be able to sign in
+            again.
+        password_label: Type your current password to confirm
+        username_label: Type your username to confirm
+        submit: Delete my account
+      destroy:
+        invalid_confirmation: That password or username is not correct.
+        success: Your account has been deleted.
   seller:
     stores:
       new:

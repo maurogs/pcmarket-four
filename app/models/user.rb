@@ -9,6 +9,9 @@ class User < ApplicationRecord
   # These are on unless the user switches them off; the rest are opt-in.
   TRANSACTIONAL_NOTIFICATION_KEYS = %w[order_updates messages offers].freeze
 
+  # GDPR data exports can be requested at most once per this window.
+  EXPORT_THROTTLE = 24.hours
+
   # Include default devise modules.
   devise :database_authenticatable, :registerable, :recoverable, :rememberable,
          :validatable, :confirmable, :lockable, :trackable,
@@ -22,6 +25,7 @@ class User < ApplicationRecord
   has_many :addresses, dependent: :destroy
   has_one :default_address, -> { where(default_shipping: true) }, class_name: "Address"
   has_one_attached :avatar
+  has_one_attached :data_export
 
   enum :role, { user: 0, admin: 1, moderator: 2 }, default: :user
 
@@ -64,6 +68,30 @@ class User < ApplicationRecord
 
   def following?(store)
     store.present? && follows.exists?(store_id: store.id)
+  end
+
+  # --- GDPR (Phase 2 step 6) ---------------------------------------------------
+
+  # Accounts::Deleter anonymizes the row instead of destroying it (reviews keep
+  # their author FK), so "deleted" is a timestamp, not a missing record.
+  def deleted?
+    deleted_at.present?
+  end
+
+  # Deleted accounts must never get a session back — not through the sign-in
+  # form, not through a remember-me cookie.
+  def active_for_authentication?
+    super && !deleted?
+  end
+
+  # Mapped to devise.failure.deleted in every locale by Warden's failure app.
+  def inactive_message
+    deleted? ? :deleted : super
+  end
+
+  # True while the once-per-EXPORT_THROTTLE window is still running.
+  def data_export_throttled?
+    data_export_generated_at.present? && data_export_generated_at > EXPORT_THROTTLE.ago
   end
 
   # Creates or finds a user from a Google OAuth identity.

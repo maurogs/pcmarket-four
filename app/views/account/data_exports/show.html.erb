@@ -1,0 +1,33 @@
+<% content_for :account_body do %>
+  <div class="card p-8">
+    <h1 class="font-display text-2xl font-bold"><%= t(".title") %></h1>
+    <p class="mt-2 text-sm leading-relaxed text-body"><%= t(".intro") %></p>
+
+    <h2 class="mt-6 font-semibold"><%= t(".contents_title") %></h2>
+    <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-body">
+      <% %i[profile addresses notifications store follows reviews].each do |item| %>
+        <li><%= t(".contents.#{item}") %></li>
+      <% end %>
+    </ul>
+
+    <% if current_user.data_export.attached? %>
+      <div class="mt-6 rounded-xl border border-line bg-cream-100 p-4 dark:bg-cream-surface">
+        <p class="text-sm text-muted">
+          <%= t(".generated_at", time: l(current_user.data_export_generated_at, format: :long)) %>
+        </p>
+        <%= link_to t(".download"),
+              rails_blob_path(current_user.data_export, disposition: "attachment"),
+              class: "btn-primary mt-3" %>
+      </div>
+    <% end %>
+
+    <div class="mt-6">
+      <%= button_to t(".request"), account_data_export_path,
+            disabled: current_user.data_export_throttled?,
+            class: "btn-secondary cursor-pointer disabled:cursor-not-allowed disabled:opacity-50" %>
+      <p class="mt-2 text-xs text-muted"><%= t(".throttle_hint") %></p>
+    </div>
+  </div>
+<% end %>
+
+<%= render "account/shell" %>
