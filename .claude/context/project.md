@@ -259,8 +259,14 @@ FR/GB/DE/IT/PT seeded but disabled.
   reuse, per-card FPS block (green ≥ target / amber below); no-params
   tiles → gaming-pcs `seller_tags` browse + `pc_finder_path(games:)`.
   I18n under `pc_finders.show.*` in all 6 locales (quoted `800_1200`-style
-  YAML keys — Psych would parse them as ints otherwise). `quiz` Stimulus
-  controller ships in step 5.
+  YAML keys — Psych would parse them as ints otherwise).
+- `app/javascript/controllers/quiz_controller.js` (step 5): steps through the
+  fieldsets (1-based `step` value → zero-based index), dot/aria-current
+  styling, Back/Next/Submit visibility, Next gated on a selection, games
+  capped at 3 checkboxes, Enter advances, legend focus (`tabindex="-1"` in
+  `_step.html.erb`); form submits normally. PC Finder links wired: mega-menu
+  promo (`NavigationMenu#promos` → `pc_finder_path(locale:)`) and home banner
+  CTA → `pc_finder_path`.
 
 ## Testing
 

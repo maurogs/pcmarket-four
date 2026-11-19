@@ -74,7 +74,7 @@ class NavigationMenu
       column(t(".popular_builds"), category: category, seller_tags: THEME_TAGS)
     ].compact
     Item.new(key: "gaming_pcs", label: category.name, href: category_path(category, locale: locale),
-             columns: columns, promos: promos(category))
+             columns: columns, promos: promos)
   end
 
   def gpus_item
@@ -86,7 +86,7 @@ class NavigationMenu
       column(t(".by_budget"), category: category, labels: BUDGET_LABELS["gpus"])
     ].compact
     Item.new(key: "gpus", label: category.name, href: category_path(category, locale: locale),
-             columns: columns, promos: promos(category))
+             columns: columns, promos: promos)
   end
 
   def simple_category_item(slug)
@@ -106,7 +106,7 @@ class NavigationMenu
       Column.new(links: links.last(links.size.fdiv(2).floor)) ] : [ Column.new(links: links) ]
     Item.new(key: slug.tr("-", "_"), label: category.name,
              href: category_path(category, locale: locale),
-             columns: columns.select { |c| c.links.any? }, promos: promos(category))
+             columns: columns.select { |c| c.links.any? }, promos: promos)
   end
 
   def other_systems_item
@@ -181,10 +181,10 @@ class NavigationMenu
     Link.new(label: category.name, href: category_path(category, locale: locale))
   end
 
-  def promos(category)
+  def promos
     list = [
       Promo.new(key: "pc_finder", title: t(".pc_finder.title"), body: t(".pc_finder.body"),
-                href: category ? category_path(category, locale: locale) : search_path(locale: locale))
+                href: pc_finder_path(locale: locale))
     ]
     if AppSettings.enabled?(:sell_to_us_enabled)
       list << Promo.new(key: "sell_to_us", title: t(".sell_to_us.title"), body: t(".sell_to_us.body"),

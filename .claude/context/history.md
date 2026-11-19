@@ -331,3 +331,30 @@ ActionDispatch::TestRequest.create)` — Application-controller render hits
 `application/_quiz` prefix + Devise warden in the layout, so render the
 concrete controller without layout: no-result page 50 KB with 7 steps/7
 dots/1 submit, result page with 4 cards + 4 green FPS rows. Not committed.
+
+## 2026-11-19 — PC Finder step 5: quiz Stimulus controller + nav links (uncommitted)
+
+JS: new `app/javascript/controllers/quiz_controller.js` (auto-registered via
+`pin_all_from` + `eagerLoadControllersFrom`). Matches the view's attributes
+exactly: targets step/dot/next/back/submit, actions quiz#next/quiz#back,
+value `step` (1-based from `?step=`, NaN/empty falls back to index 0). On
+connect hides all steps but the current one; per render: dots swap
+bg-cream-300/dark:bg-cream-surface ↔ bg-primary-300 (done) ↔ bg-primary-600
+(active, aria-current="step"); Back hidden on first step, Next hidden /
+Submit shown on last; Next disabled until the step has ≥1 checked input;
+games step caps at 3 checkboxes (disables the unchecked ones when full);
+Enter on a step advances (preventDefault only when it actually advances, so
+the form still submits normally on the last step); legend focused on change
+and on step change; delegated change/keydown listeners removed on
+disconnect.
+
+Views: `_step.html.erb` legend gets `tabindex="-1"` so it can receive focus.
+`_quiz.html.erb` unchanged (already had `data-quiz-step-value`).
+
+Links: `NavigationMenu#promos` pc_finder promo now `pc_finder_path(locale:)`
+(dropped the now-unused `category` arg + call sites); home banner CTA
+`nav_entry_path("gaming_pcs")` → `pc_finder_path`. Header top bar has no PC
+Finder placeholder (verified).
+
+Verified: `bin/rails test` 201 green; `bin/rubocop` clean (134 files);
+`bin/importmap json | grep quiz` shows the pinned controller. Not committed.
