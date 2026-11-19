@@ -253,3 +253,39 @@ Verified: `db:seed` ×2 clean (36 defs, 252 options); runner check
 `Game.count=10`, 49 scored filter options (20 GPU + 29 CPU), 60 scored
 listings (28..95); demo merge path exercised in runner; `bin/rails test`
 **173 green**; `bin/rubocop` clean. Not committed.
+
+## 2026-11-19 — PC Finder step 3: Query + Recommender services (uncommitted)
+
+PC Finder steps 3 of 6: the pure-service layer the future controller/views
+will sit on. `app/services/pc_finder/query.rb`: `PcFinder::Query` value
+object — raw params (incl. ActionController::Parameters) in, safe selections
+out: games (≤3 existing active Game slugs, request order, array or
+comma-string), resolution (1080p/1440p/2160p), fps (60/144/240), budget
+(slug → min/max cents via BUDGETS), case_pref (any/white/black/compact),
+cooling (any/air/aio), vibe (existing active SellerTag slug or nil), sort
+(best_match/price_asc/price_desc/performance), page (≥1). Invalid values
+silently fall back to defaults; `present?` = at least one game;
+`to_params` emits a normalized URL hash (drops blanks and page 1).
+
+`app/services/pc_finder/recommender.rb`: `PcFinder::Recommender.new(query)
+.call` (also accepts raw params) → `Result` Struct (listings, pagy,
+required_score, games, resolution, fps) with `estimated_fps(listing, game)`
+= (fps × score / required).round capped at 360, nil-safe. Base scope:
+`Listing.visible.in_category(gaming-pcs)` + `performance_score >=` the max
+`Game#required_score(resolution, fps)` over the chosen games (nil-safe);
+hard filters: budget `price_between`, cooling via `cpu_cooler_type` specs
+(`air`/`aio-liquid` seed slugs), compact via `case_form_factor`
+(`mini-itx-sff`/`micro-atx`/`mini-tower`). Soft prefs (vibe tag EXISTS,
+`case_color` jsonb containment) only boost best_match: match count DESC,
+then headroom-per-euro `((score - required) * 1000.0 / GREATEST(price, 1))`
+DESC (sanitized SQL, no N+1), `with_includes`, Pagy::Offset limit 24 —
+mirrors Listings::Search. Empty query → `Listing.none` + count-0 pagy.
+
+Tests: `test/services/pc_finder/{query,recommender}_test.rb` (28 tests) —
+param sanitization/defaults/round-trip, required = max over games, budget,
+cooling, compact, vibe/color soft ordering, headroom ranking, sort variants,
+estimated_fps (scale/cap/nil), pagination, empty-when-no-games. Records
+created per test (spec FilterDefinitions included), no new fixtures.
+
+Verified: `bin/rails test` **201 green** (173 + 28); `bin/rubocop` clean
+(133 files). Not committed.

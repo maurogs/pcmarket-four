@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (PC Finder step 2 — score + game seeds, uncommitted)_
+_Last updated: 2026-11-19 (PC Finder step 3 — Query + Recommender services, uncommitted)_
 
 ## What this is
 
@@ -233,9 +233,24 @@ FR/GB/DE/IT/PT seeded but disabled.
 - `db/seeds/development/demo.rb` — gaming PCs/workstations always get
   `gpu_model` + `cpu_model` specs (`system_spec_values` pre-computed).
 
+## Code map (Phase 1b-ii-c — PC Finder step 3: query + recommender services)
+
+- `app/services/pc_finder/query.rb` — `PcFinder::Query` value object:
+  sanitized selections (≤3 active games, resolution/fps/budget/case_pref/
+  cooling/vibe/sort/page allowlists, silent default fallbacks),
+  `budget_price_range` cents, `present?`, `to_params` for URLs.
+- `app/services/pc_finder/recommender.rb` — `PcFinder::Recommender`:
+  visible gaming-pcs subtree with `performance_score >=` max game
+  `required_score`; hard filters budget / `cpu_cooler_type`
+  (`air`,`aio-liquid`) / compact `case_form_factor`
+  (`mini-itx-sff`,`micro-atx`,`mini-tower`); soft vibe + `case_color`
+  boosts in best_match SQL (matches DESC, headroom-per-euro DESC);
+  Pagy::Offset limit 24; `Result#estimated_fps` capped at 360.
+  No controller/views yet (step 4+).
+
 ## Testing
 
-- `bin/rails test` — **173 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **201 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -248,7 +263,9 @@ FR/GB/DE/IT/PT seeded but disabled.
   (own listings only + sold-last, about/reviews tabs, vacation banner,
   404) and a test that `DEMO=1` seed data never loads outside development.
   PC Finder step 2 adds no new tests — the new seeds are covered by the
-  idempotency test (its `>=` counts still hold).
+  idempotency test (its `>=` counts still hold); step 3 adds
+  `test/services/pc_finder/{query,recommender}_test.rb` (28 tests, records
+  created per test).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
