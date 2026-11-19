@@ -48,9 +48,13 @@
         <%= link_to t("nav.sell_to_us"), sell_to_us_path, class: "btn-secondary" %>
       <% end %>
       <% if user_signed_in? %>
-        <%= button_to t("nav.sign_out"), destroy_user_session_path, method: :delete, class: "btn-ghost justify-start" %>
+        <p class="px-3 pt-1 text-sm font-bold"><%= current_user.display_name %></p>
+        <%= render "shared/account_links", variant: "drawer" %>
       <% else %>
         <%= link_to t("nav.sign_in"), new_user_session_path, class: "btn-ghost justify-start" %>
+        <% if AppSettings.enabled?(:registrations_enabled) %>
+          <%= link_to t("nav.sign_up"), new_user_registration_path, class: "btn-ghost justify-start" %>
+        <% end %>
       <% end %>
     </div>
   </nav>

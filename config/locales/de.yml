@@ -142,8 +142,24 @@ de:
     de: Deutsch
     it: Italiano
     pt: Português
+  account_menu:
+    buying: Einkäufe
+    my_orders: Meine Bestellungen
+    messages_offers: Nachrichten & Angebote
+    wishlist: Merkliste
+    account_settings: Kontoeinstellungen
+    my_store: Mein Shop
+    public_profile: Öffentliches Profil
+    seller_dashboard: Verkäufer-Dashboard
+    my_listings: Meine Anzeigen
+    store_settings: Shop-Einstellungen
+    open_store: Shop eröffnen
+    admin: Verwaltung
+    admin_panel: Admin-Bereich
+    soon: Demnächst
   nav:
     sign_in: Anmelden
+    sign_up: Registrieren
     sign_out: Abmelden
     list_item: Angebot erstellen
     sell_to_us: An uns verkaufen

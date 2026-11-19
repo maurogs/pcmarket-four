@@ -668,3 +668,44 @@ Uncommitted files (`git status --short`):
 ?? app/views/stores/follows/
 ?? test/controllers/stores/
 ```
+
+## 2026-11-19 — Phase 2 step 5: header account menu (uncommitted)
+
+Replaced the header's dead account-icon link with a real account area.
+
+- `shared/_account_menu`: signed out → Sign in + Sign up (sign up only when
+  `AppSettings.enabled?(:registrations_enabled)` — the setting defaults to
+  off, so it is hidden unless explicitly enabled). Signed in → avatar button
+  (thumb `resize_to_fill` variant, initials circle fallback) opening the
+  existing `dropdown` Stimulus controller's menu, with a name/email header.
+- `shared/_account_links` (NEW, shared with the mobile drawer via
+  `variant:` local): "Buying" (orders/messages/wishlist = `#` placeholders
+  rendered as `aria-disabled` spans with a "Soon" pill — TODO Phases 5/6 —
+  plus Account settings), "My store" (owner: Public profile / Seller
+  dashboard (soon) / My listings (soon) / Store settings; else Open your
+  store), Admin panel (soon, TODO Phase 7) for admin/moderator only, and the
+  sign-out `button_to`. Condition uses `current_user.store&.persisted?` —
+  the seller form builds an unsaved store on `current_user`, which would
+  otherwise crash `store_path` with a nil slug (caught by the seller tests).
+- `dropdown_controller.js`: added ArrowUp/ArrowDown roving focus (wraps) —
+  the shared controller already had click toggle, outside-click/Esc close,
+  aria-expanded and focus-first-item.
+- Mobile drawer: signed-in branch now renders `_account_links` (replacing the
+  lone sign-out button); signed-out branch gained the Sign up link.
+- I18n: new `account_menu.*` section + `nav.sign_up` in all 6 locales.
+- Tests: `test/integration/header_account_menu_test.rb` (9 tests: signed-out
+  links, registrations-disabled hides sign up, buying links + sign-out form,
+  placeholders not links, store owner vs non-owner items, admin/moderator
+  see admin item, regular user doesn't).
+
+Verified: `bin/rails test` 342 green; `bin/rubocop` clean (164 files).
+Uncommitted files (`git status --short`):
+```
+ M app/javascript/controllers/dropdown_controller.js
+ M app/views/shared/_header.html.erb
+ M app/views/shared/_mobile_drawer.html.erb
+ M config/locales/{de,en,es,fr,it,pt}.yml
+?? app/views/shared/_account_links.html.erb
+?? app/views/shared/_account_menu.html.erb
+?? test/integration/header_account_menu_test.rb
+```

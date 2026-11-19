@@ -1,0 +1,30 @@
+<% if user_signed_in? %>
+  <div class="relative" data-controller="dropdown">
+    <button type="button" class="btn-ghost p-1" aria-expanded="false" aria-controls="account-menu"
+            aria-label="<%= t("nav.account") %>"
+            data-dropdown-target="trigger" data-action="dropdown#toggle">
+      <% if current_user.avatar.attached? && current_user.avatar.blob&.content_type&.start_with?("image/") %>
+        <%= image_tag current_user.avatar.variant(resize_to_fill: User::AVATAR_SIZES[:thumb], format: Listing::IMAGE_FORMAT),
+              class: "h-7 w-7 rounded-full object-cover", alt: "" %>
+      <% else %>
+        <% initials = current_user.display_name.split(/[\s_-]+/).first(2).map { |part| part[0] }.join.upcase %>
+        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-primary-100 text-xs font-bold text-primary-800 dark:bg-primary-900 dark:text-primary-100"
+              aria-hidden="true"><%= initials %></span>
+      <% end %>
+    </button>
+    <div id="account-menu" class="absolute right-0 z-50 mt-2 hidden w-64 card py-1" data-dropdown-target="menu">
+      <div class="border-b border-line px-3 py-2">
+        <p class="truncate text-sm font-bold"><%= current_user.display_name %></p>
+        <p class="truncate text-xs text-muted"><%= current_user.email %></p>
+      </div>
+      <%= render "shared/account_links" %>
+    </div>
+  </div>
+<% else %>
+  <div class="flex items-center gap-1">
+    <%= link_to t("nav.sign_in"), new_user_session_path, class: "btn-ghost px-2 text-sm" %>
+    <% if AppSettings.enabled?(:registrations_enabled) %>
+      <%= link_to t("nav.sign_up"), new_user_registration_path, class: "btn-primary px-3 py-1.5 text-sm" %>
+    <% end %>
+  </div>
+<% end %>

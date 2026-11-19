@@ -141,8 +141,24 @@ it:
     de: Deutsch
     it: Italiano
     pt: Português
+  account_menu:
+    buying: Acquisti
+    my_orders: I miei ordini
+    messages_offers: Messaggi e offerte
+    wishlist: Preferiti
+    account_settings: Impostazioni dell'account
+    my_store: Il mio negozio
+    public_profile: Profilo pubblico
+    seller_dashboard: Pannello del venditore
+    my_listings: I miei annunci
+    store_settings: Impostazioni del negozio
+    open_store: Apri il tuo negozio
+    admin: Amministrazione
+    admin_panel: Pannello di amministrazione
+    soon: Prossimamente
   nav:
     sign_in: Accedi
+    sign_up: Registrati
     sign_out: Esci
     list_item: Pubblica un annuncio
     sell_to_us: Vendi a noi

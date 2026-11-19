@@ -141,8 +141,24 @@ pt:
     de: Deutsch
     it: Italiano
     pt: Português
+  account_menu:
+    buying: Compras
+    my_orders: Os meus pedidos
+    messages_offers: Mensagens e ofertas
+    wishlist: Favoritos
+    account_settings: Definições da conta
+    my_store: A minha loja
+    public_profile: Perfil público
+    seller_dashboard: Painel do vendedor
+    my_listings: Os meus anúncios
+    store_settings: Definições da loja
+    open_store: Abra a sua loja
+    admin: Administração
+    admin_panel: Painel de administração
+    soon: Em breve
   nav:
     sign_in: Entrar
+    sign_up: Criar conta
     sign_out: Sair
     list_item: Publicar anúncio
     sell_to_us: Venda-nos

@@ -140,8 +140,24 @@ en:
     de: Deutsch
     it: Italiano
     pt: Português
+  account_menu:
+    buying: Buying
+    my_orders: My orders
+    messages_offers: Messages & offers
+    wishlist: Wishlist
+    account_settings: Account settings
+    my_store: My store
+    public_profile: Public profile
+    seller_dashboard: Seller dashboard
+    my_listings: My listings
+    store_settings: Store settings
+    open_store: Open your store
+    admin: Admin
+    admin_panel: Admin panel
+    soon: Soon
   nav:
     sign_in: Sign in
+    sign_up: Sign up
     sign_out: Sign out
     list_item: List an item
     sell_to_us: Sell to us

@@ -1,7 +1,7 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (Phase 2 step 4 — store slug history, follow
-button + reviews tab, uncommitted)_
+_Last updated: 2026-11-19 (Phase 2 step 5 — header account menu,
+uncommitted)_
 
 ## What this is
 
@@ -421,6 +421,35 @@ FR/GB/DE/IT/PT seeded but disabled.
   model-created store); Devise 5 treats turbo_stream as navigational →
   unauthenticated follow POSTs 302 to sign-in, not 401.
 
+## Code map (Phase 2 step 5 — header account menu)
+
+- `shared/_account_menu` (rendered by `shared/_header` in place of the old
+  account-icon placeholder): signed out → Sign in + Sign up (`nav.sign_up`,
+  sign up gated on `AppSettings.enabled?(:registrations_enabled)`, which
+  defaults to off); signed in → avatar button (attached-image check +
+  `User::AVATAR_SIZES[:thumb]` `resize_to_fill` variant, initials-circle
+  fallback) + name/email header + `shared/_account_links`, inside the
+  existing `dropdown` Stimulus controller.
+- `shared/_account_links` (single source for header dropdown **and** mobile
+  drawer; `variant:` local only tweaks the sign-out button class): Buying
+  (My orders TODO Phase 5, Messages & offers + Wishlist TODO Phase 6 — all
+  `#` placeholders rendered as `aria-disabled` spans with a "Soon" pill,
+  never dead links — plus Account settings → `edit_account_profile_path`);
+  My store (owner: Public profile → `store_path`, Seller dashboard + My
+  listings soon (Phase 4), Store settings → `edit_seller_store_path`; else
+  Open your store → `new_seller_store_path`); Admin panel soon (Phase 7)
+  for `admin?`/`moderator?` only; sign-out `button_to`.
+- Gotcha: the owner branch checks `current_user.store&.persisted?` — the
+  seller form builds an unsaved store on `current_user`, so a bare truthy
+  check crashes `store_path` (nil slug) while rendering the header.
+- `dropdown_controller.js`: gained ArrowUp/ArrowDown roving focus (wraps at
+  both ends) on top of click toggle / outside-click + Esc close /
+  aria-expanded / focus-first-item; placeholders are spans so keyboard
+  focus skips them naturally.
+- I18n: `account_menu.*` (14 keys) + `nav.sign_up` in all 6 locales.
+- Tests: `test/integration/header_account_menu_test.rb` (9). Header + drawer
+  are both in the DOM, so negative assertions must hold across both copies.
+
 ## Testing
 
 - `bin/rails test` — **333 tests green**: all Phase 0 checks plus model
@@ -490,7 +519,10 @@ FR/GB/DE/IT/PT seeded but disabled.
   `DEMO=1 bin/rails db:seed` fills everything).
 - Wishlist/cart/offers/chat buttons are `#` placeholders gated by
   AppSettings flags (`checkout_enabled`, `payments_enabled`,
-  `offers_enabled`, `chat_enabled`) — Phases 5/6.
+  `offers_enabled`, `chat_enabled`) — Phases 5/6. The account menu's
+  orders/messages/wishlist/seller-dashboard/my-listings/admin-panel items
+  are "Soon" pills until those pages land (Phases 4–7) — swap them for real
+  links there.
 - Mobile price filter loses values without JS (euro→cents sync is Stimulus).
 - CI not set up yet.
 - Address book is account-only for now — checkout/sell-flow pickup of

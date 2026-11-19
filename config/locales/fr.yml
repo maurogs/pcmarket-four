@@ -142,8 +142,24 @@ fr:
     de: Deutsch
     it: Italiano
     pt: Português
+  account_menu:
+    buying: Achats
+    my_orders: Mes commandes
+    messages_offers: Messages et offres
+    wishlist: Favoris
+    account_settings: Paramètres du compte
+    my_store: Ma boutique
+    public_profile: Profil public
+    seller_dashboard: Tableau de bord vendeur
+    my_listings: Mes annonces
+    store_settings: Paramètres de la boutique
+    open_store: Ouvrir votre boutique
+    admin: Administration
+    admin_panel: Panneau d'administration
+    soon: Bientôt
   nav:
     sign_in: Se connecter
+    sign_up: Créer un compte
     sign_out: Se déconnecter
     list_item: Déposer une annonce
     sell_to_us: Rachat

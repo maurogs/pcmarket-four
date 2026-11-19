@@ -36,8 +36,7 @@
       <%= link_to "#", class: "btn-ghost p-2", aria: { label: t("nav.wishlist") } do %><%= icon "heart" %><% end %>
       <%= link_to "#", class: "btn-ghost p-2", aria: { label: t("nav.notifications") } do %><%= icon "bell" %><% end %>
       <%= link_to "#", class: "btn-ghost p-2", aria: { label: t("nav.cart") } do %><%= icon "cart" %><% end %>
-      <%= link_to user_signed_in? ? "#" : new_user_session_path,
-                  class: "btn-ghost p-2", aria: { label: t("nav.account") } do %><%= icon "user" %><% end %>
+      <%= render "shared/account_menu" %>
 
       <div class="relative" data-controller="dropdown">
         <button type="button" class="btn-ghost p-2" aria-expanded="false" data-dropdown-target="trigger"

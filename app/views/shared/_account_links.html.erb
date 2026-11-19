@@ -1,0 +1,54 @@
+<%
+  # Account links shared by the header dropdown (_account_menu) and the mobile
+  # drawer so both surfaces stay in sync. `variant` only tweaks the sign-out
+  # button styling. Unbuilt destinations render as aria-disabled items with a
+  # "Soon" pill — never as dead links.
+  variant = local_assigns.fetch(:variant, "dropdown")
+  row_class = "flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-start text-sm text-body hover:bg-cream-100 hover:text-primary-700 dark:hover:bg-cream-surface dark:hover:text-primary-200"
+  heading_class = "px-3 pb-1 pt-3 text-xs font-bold uppercase tracking-wide text-muted"
+  soon_pill_class = "shrink-0 rounded-full bg-cream-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted dark:bg-cream-surface"
+  soon_item = lambda do |label|
+    tag.span(class: class_names(row_class, "cursor-default opacity-60"), aria: { disabled: true }) do
+      safe_join([ tag.span(label), tag.span(t("account_menu.soon"), class: soon_pill_class) ])
+    end
+  end
+%>
+<p class="<%= heading_class %>"><%= t("account_menu.buying") %></p>
+<ul>
+  <%# TODO Phase 5: point at the orders index once it exists. %>
+  <li><%= soon_item.call(t("account_menu.my_orders")) %></li>
+  <%# TODO Phase 6: point at messages once they exist. %>
+  <li><%= soon_item.call(t("account_menu.messages_offers")) %></li>
+  <%# TODO Phase 6: point at the wishlist page once it exists. %>
+  <li><%= soon_item.call(t("account_menu.wishlist")) %></li>
+  <li><%= link_to t("account_menu.account_settings"), edit_account_profile_path, class: row_class %></li>
+</ul>
+
+<p class="<%= heading_class %>"><%= t("account_menu.my_store") %></p>
+<ul>
+  <%# persisted?: the seller form builds an unsaved store on current_user,
+      which would otherwise render as a store owner with a nil slug. %>
+  <% if current_user.store&.persisted? %>
+    <li><%= link_to t("account_menu.public_profile"), store_path(current_user.store), class: row_class %></li>
+    <%# TODO Phase 4: point at the seller dashboard once it exists. %>
+    <li><%= soon_item.call(t("account_menu.seller_dashboard")) %></li>
+    <%# TODO Phase 4: point at the seller listings index once it exists. %>
+    <li><%= soon_item.call(t("account_menu.my_listings")) %></li>
+    <li><%= link_to t("account_menu.store_settings"), edit_seller_store_path, class: row_class %></li>
+  <% else %>
+    <li><%= link_to t("account_menu.open_store"), new_seller_store_path, class: row_class %></li>
+  <% end %>
+</ul>
+
+<% if current_user.admin? || current_user.moderator? %>
+  <p class="<%= heading_class %>"><%= t("account_menu.admin") %></p>
+  <ul>
+    <%# TODO Phase 7: point at the admin panel once it exists. %>
+    <li><%= soon_item.call(t("account_menu.admin_panel")) %></li>
+  </ul>
+<% end %>
+
+<div class="mt-1 border-t border-line pt-1">
+  <%= button_to t("nav.sign_out"), destroy_user_session_path, method: :delete,
+        class: variant == "drawer" ? "btn-ghost w-full justify-start" : row_class %>
+</div>
