@@ -70,6 +70,71 @@ fr:
         support:
           title: Local et européen
           description: Retrait sur place ou livraison dans toute l'Europe.
+      deals:
+        title: Meilleures offres
+        badge: Bonne affaire de la semaine
+        cta: Voir l'offre
+        prev: Offre précédente
+        next: Offre suivante
+        slide: Aller à l'offre %{number}
+      tiles:
+        title: Promotions
+        most_wanted:
+          title: Les plus regardés
+          body: Les annonces que tout le monde consulte en ce moment.
+        ready_to_ship:
+          title: PC prêts à expédier
+          body: Des configs neuves ou open box expédiées en quelques jours.
+        deals:
+          title: Bonnes affaires
+          body: Des baisses de prix à ne pas manquer.
+      pc_finder:
+        title: Passez votre setup au niveau supérieur
+        body: Répondez à quelques questions sur vos jeux et votre budget, et PC Finder
+          sélectionne la machine parfaite pour vous.
+        cta: Essayer PC Finder
+      themes:
+        title: PC par style
+        cta: configs
+      scrollers:
+        latest_gpus: Dernières GPU
+        most_watched: Les plus vus cette semaine
+        on_sale: En promotion
+        recently_sold: Vendus récemment
+      sell_cta:
+        title: Vendez votre matériel en quelques minutes
+        body: Photographiez, décrivez, publiez. Annonces gratuites, vous ne payez
+          qu'à la vente.
+        primary: Déposer une annonce
+      testimonials:
+        title: Adopté par les joueurs et les geeks
+        items:
+          one:
+            quote: Mon ancienne GPU vendue en deux jours, le virement le lendemain.
+              D'une simplicité folle.
+            name: Laura G.
+            role: Vendeuse, Madrid
+          two:
+            quote: Une RTX impeccable à bon prix chez un vendeur vérifié. Reçue le
+              lendemain, bien emballée.
+            name: Tom H.
+            role: Acheteur, Manchester
+          three:
+            quote: Les styles de config aident à trouver un PC qui colle vraiment
+              à mon bureau.
+            name: Lea M.
+            role: Acheteuse, Lyon
+      trust:
+        title: Achetez en toute confiance
+        buyer_protection:
+          title: Protection acheteur
+          body: Remboursement intégral si l'article ne correspond pas à l'annonce.
+        secure_payments:
+          title: Paiements sécurisés
+          body: Le paiement reste protégé jusqu'à la confirmation de la livraison.
+        verified_sellers:
+          title: Vendeurs vérifiés
+          body: Profils, notes et avis avant d'acheter.
   locales:
     en: English
     es: Español
@@ -123,6 +188,7 @@ fr:
       terms: Conditions d'utilisation
       privacy: Politique de confidentialité
       cookies: Politique de cookies
+      trust: Protection de l'acheteur et confiance
   search:
     label: Rechercher
     placeholder: Recherchez un PC portable, une carte graphique…
@@ -320,6 +386,7 @@ fr:
       save_badge: Économisez %{count}%
       add_to_wishlist: Enregistrer pour plus tard
       verified_seller: Vendeur vérifié
+      sold: Vendu
     show:
       breadcrumbs: Fil d'Ariane
       preview_banner: 'Vous prévisualisez cette annonce (statut : %{status}).'
@@ -373,3 +440,56 @@ fr:
       prev_image: Image précédente
       next_image: Image suivante
       image_number: Image %{number}
+  navigation_menu:
+    new: Nouveautés
+    by_budget: Par budget
+    by_brand: Par marque
+    popular_builds: Configs populaires
+    laptops_column: PC portables
+    mobile_column: Mobile
+    gaming_systems_column: Systèmes gaming
+    other_systems: Autres systèmes
+    accessories_column: Accessoires
+    games_software_column: Jeux et logiciels
+    more: Plus
+    pc_finder:
+      title: Composez le PC de vos rêves
+      body: Dites-nous vos jeux et votre budget, on vous trouve la machine idéale.
+    sell_to_us:
+      title: Vendez-nous votre matériel
+      body: Une offre juste et immédiate pour votre vieux matériel.
+    promos:
+      pc_finder:
+        cta: Ouvrir PC Finder
+      sell_to_us:
+        cta: Obtenir une offre
+  stores:
+    show:
+      vacation:
+        title: Boutique en congés
+        body: Ce vendeur est en congés. Les annonces restent visibles mais les expéditions
+          sont suspendues.
+      verified: Vendeur vérifié
+      ratings:
+        one: "%{count} note"
+        other: "%{count} notes"
+      no_ratings: Pas encore de note
+      member_since: Membre depuis le %{date}
+      stats:
+        followers: Abonnés
+        for_sale: En vente
+        sold: Vendus
+      follow: Suivre
+      message: Message
+      tabs:
+        label: Sections de la boutique
+        listings: Annonces
+        about: À propos
+        reviews: Avis
+      about:
+        title: À propos de cette boutique
+        no_bio: Ce vendeur n'a pas encore écrit de description de boutique.
+      reviews:
+        title: Avis
+        placeholder: Les avis s'ouvrent dès que ce vendeur complète sa première commande
+          protégée.

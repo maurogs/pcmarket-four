@@ -68,6 +68,71 @@ en:
         support:
           title: Local and Europe-wide
           description: Pick up nearby or have it shipped across Europe.
+      deals:
+        title: Top deals
+        badge: Deal of the week
+        cta: View deal
+        prev: Previous deal
+        next: Next deal
+        slide: Go to deal %{number}
+      tiles:
+        title: Promotions
+        most_wanted:
+          title: Most wanted
+          body: The listings everyone is watching right now.
+        ready_to_ship:
+          title: Ready-to-ship PCs
+          body: New and open-box builds dispatched within days.
+        deals:
+          title: Deals
+          body: Price drops you do not want to miss.
+      pc_finder:
+        title: Level up your setup
+        body: Answer a few questions about the games you play and your budget, and
+          PC Finder shortlists the perfect machine for you.
+        cta: Try PC Finder
+      themes:
+        title: Shop PCs by theme
+        cta: builds
+      scrollers:
+        latest_gpus: Latest GPUs
+        most_watched: Most watched this week
+        on_sale: On sale
+        recently_sold: Recently sold
+      sell_cta:
+        title: Sell your gear in minutes
+        body: Photograph it, describe it, post it. Free listings, and you only pay
+          when your item sells.
+        primary: List an item
+      testimonials:
+        title: Loved by gamers and geeks
+        items:
+          one:
+            quote: Sold my old GPU in two days and the payout landed the next morning.
+              Ridiculously easy.
+            name: Laura G.
+            role: Seller, Madrid
+          two:
+            quote: Found a clean RTX at a fair price from a verified seller. Arrived
+              next day, well packed.
+            name: Tom H.
+            role: Buyer, Manchester
+          three:
+            quote: The build themes make it easy to find a PC that actually matches
+              my desk setup.
+            name: Lea M.
+            role: Buyer, Lyon
+      trust:
+        title: Why you can shop with confidence
+        buyer_protection:
+          title: Buyer protection
+          body: Full refund if your item doesn't arrive as described.
+        secure_payments:
+          title: Secure payments
+          body: Payments stay protected until you confirm delivery.
+        verified_sellers:
+          title: Verified sellers
+          body: Profiles, ratings and reviews before you buy.
   locales:
     en: English
     es: Español
@@ -121,6 +186,7 @@ en:
       terms: Terms of use
       privacy: Privacy policy
       cookies: Cookie policy
+      trust: Buyer protection & trust
   search:
     label: Search
     placeholder: Search laptops, graphics cards, phones…
@@ -316,6 +382,7 @@ en:
       save_badge: Save %{count}%
       add_to_wishlist: Save for later
       verified_seller: Verified seller
+      sold: Sold
     show:
       breadcrumbs: Breadcrumbs
       preview_banner: 'You are previewing this listing (status: %{status}).'
@@ -368,3 +435,55 @@ en:
       prev_image: Previous image
       next_image: Next image
       image_number: Image %{number}
+  navigation_menu:
+    new: New
+    by_budget: By budget
+    by_brand: By brand
+    popular_builds: Popular builds
+    laptops_column: Laptops
+    mobile_column: Mobile
+    gaming_systems_column: Gaming systems
+    other_systems: Other systems
+    accessories_column: Accessories
+    games_software_column: Games & Software
+    more: More
+    pc_finder:
+      title: Build your dream PC
+      body: Tell us your games and budget and we match you the perfect rig.
+    sell_to_us:
+      title: Sell to us
+      body: Get a fair instant quote for your old hardware.
+    promos:
+      pc_finder:
+        cta: Open PC Finder
+      sell_to_us:
+        cta: Get a quote
+  stores:
+    show:
+      vacation:
+        title: Store on vacation
+        body: This seller is on vacation. Listings stay visible but shipping is paused.
+      verified: Verified seller
+      ratings:
+        one: "%{count} rating"
+        other: "%{count} ratings"
+      no_ratings: No ratings yet
+      member_since: Member since %{date}
+      stats:
+        followers: Followers
+        for_sale: For sale
+        sold: Sold
+      follow: Follow
+      message: Message
+      tabs:
+        label: Store sections
+        listings: Listings
+        about: About
+        reviews: Reviews
+      about:
+        title: About this store
+        no_bio: This seller hasn't written a store description yet.
+      reviews:
+        title: Reviews
+        placeholder: Reviews open as soon as this seller completes their first protected
+          order.

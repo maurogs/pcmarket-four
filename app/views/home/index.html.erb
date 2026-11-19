@@ -1,39 +1,171 @@
 <% set_meta_tags title: t(".title"), description: t(".meta.description") %>
+<% ready_ship = @home.ready_to_ship_category %>
 
 <div class="mx-auto max-w-7xl px-4">
-  <section class="py-12 text-center sm:py-20">
-    <h1 class="mx-auto max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
-      <%= t(".hero.title") %>
-    </h1>
-    <p class="mx-auto mt-4 max-w-xl text-lg text-muted"><%= t(".hero.subtitle") %></p>
-    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-      <%= link_to t(".hero.browse"), category_path("desktops"), class: "btn-primary px-6 py-3 text-base" %>
+  <%# Hero: carousel of the best deals (original_price > price). %>
+  <% deals = @home.listings(@home.deals) %>
+  <% if deals.any? %>
+    <% cache ["home/deals", @home.data_version, I18n.locale] do %>
+      <section class="pt-6" aria-label="<%= t(".deals.title") %>" data-controller="hero-carousel"
+               data-action="keydown->hero-carousel#keydown mouseenter->hero-carousel#pause mouseleave->hero-carousel#resume focusin->hero-carousel#pause"
+               data-hero-carousel-index-value="0">
+        <div class="relative overflow-hidden rounded-3xl border border-line bg-cream-100 dark:bg-cream-surface">
+          <% deals.each_with_index do |listing, index| %>
+            <%= link_to listing_path(listing), class: "grid gap-4 p-5 sm:grid-cols-[1fr_1.1fr] sm:items-center sm:p-8 #{index.zero? ? "" : "hidden"}",
+                  data: { hero_carousel_target: "slide" }, aria: { hidden: index.positive? } do %>
+              <div class="relative mx-auto w-full max-w-sm overflow-hidden rounded-2xl bg-surface">
+                <%= listing_picture(listing) %>
+                <% if (discount = listing.discount_percent) %>
+                  <span class="absolute left-3 top-3 rounded-full bg-cream-500 px-3 py-1 text-sm font-extrabold text-primary-950 shadow">-<%= discount %>%</span>
+                <% end %>
+              </div>
+              <div class="text-center sm:text-left">
+                <p class="text-xs font-extrabold uppercase tracking-widest text-primary-600 dark:text-primary-400"><%= t(".deals.badge") %></p>
+                <h1 class="mt-2 font-display text-2xl font-bold leading-tight tracking-tight sm:text-4xl"><%= listing.title %></h1>
+                <p class="mt-3 flex flex-wrap items-baseline justify-center gap-x-3 sm:justify-start">
+                  <span class="text-3xl font-bold tracking-tight"><%= listing.display_price %></span>
+                  <% if (original = listing.display_original_price) %>
+                    <span class="text-base text-muted line-through"><%= original %></span>
+                  <% end %>
+                </p>
+                <span class="btn-primary mt-5 px-6 py-3 text-base"><%= t(".deals.cta") %><%= icon "chevron-right", class: "h-4 w-4" %></span>
+              </div>
+            <% end %>
+          <% end %>
+
+          <div class="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-3">
+            <button type="button" class="btn-ghost bg-surface/90 p-1.5 shadow backdrop-blur" data-action="hero-carousel#prev"
+                    aria-label="<%= t(".deals.prev") %>"><%= icon "chevron-left", class: "h-4 w-4" %></button>
+            <% deals.each_with_index do |_deal, index| %>
+              <button type="button" class="h-2.5 w-2.5 rounded-full bg-cream-300" data-hero-carousel-target="dot"
+                      data-action="hero-carousel#select" data-hero-carousel-index-param="<%= index %>"
+                      aria-label="<%= t(".deals.slide", number: index + 1) %>"></button>
+            <% end %>
+            <button type="button" class="btn-ghost bg-surface/90 p-1.5 shadow backdrop-blur" data-action="hero-carousel#next"
+                    aria-label="<%= t(".deals.next") %>"><%= icon "chevron-right", class: "h-4 w-4" %></button>
+          </div>
+        </div>
+      </section>
+    <% end %>
+  <% else %>
+    <section class="py-12 text-center sm:py-16">
+      <h1 class="mx-auto max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl"><%= t(".hero.title") %></h1>
+      <p class="mx-auto mt-4 max-w-xl text-lg text-muted"><%= t(".hero.subtitle") %></p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <%= link_to t(".hero.browse"), nav_entry_path("new"), class: "btn-primary px-6 py-3 text-base" %>
+        <% if @sell_to_us_enabled %>
+          <%= link_to t("nav.sell_to_us"), sell_to_us_path, class: "btn-secondary px-6 py-3 text-base" %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <%# Promo tiles. %>
+  <section class="mt-10 grid gap-4 sm:grid-cols-3" aria-label="<%= t(".tiles.title") %>">
+    <%= link_to search_path(sort: "most_watched"), class: "card group flex items-center gap-4 p-5 hover:border-primary-300 hover:shadow-md dark:hover:border-primary-700" do %>
+      <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300"><%= icon "eye" %></span>
+      <span>
+        <span class="block font-bold"><%= t(".tiles.most_wanted.title") %></span>
+        <span class="mt-0.5 block text-sm text-muted"><%= t(".tiles.most_wanted.body") %></span>
+      </span>
+    <% end %>
+    <%= link_to ready_ship ? category_path(ready_ship, labels: [ "free_shipping" ]) : search_path(condition: [ "new_sealed" ]),
+          class: "card group flex items-center gap-4 p-5 hover:border-primary-300 hover:shadow-md dark:hover:border-primary-700" do %>
+      <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300"><%= icon "truck" %></span>
+      <span>
+        <span class="block font-bold"><%= t(".tiles.ready_to_ship.title") %></span>
+        <span class="mt-0.5 block text-sm text-muted"><%= t(".tiles.ready_to_ship.body") %></span>
+      </span>
+    <% end %>
+    <a href="#home-on-sale" class="card group flex items-center gap-4 p-5 hover:border-primary-300 hover:shadow-md dark:hover:border-primary-700">
+      <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300"><%= icon "tag" %></span>
+      <span>
+        <span class="block font-bold"><%= t(".tiles.deals.title") %></span>
+        <span class="mt-0.5 block text-sm text-muted"><%= t(".tiles.deals.body") %></span>
+      </span>
+    </a>
+  </section>
+
+  <%# PC Finder promo banner. %>
+  <section class="mt-10 overflow-hidden rounded-3xl bg-primary-700 px-6 py-8 text-white sm:px-10" aria-labelledby="pc-finder-heading">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="max-w-2xl">
+        <h2 id="pc-finder-heading" class="font-display text-2xl font-bold tracking-tight sm:text-3xl"><%= t(".pc_finder.title") %></h2>
+        <p class="mt-2 text-sm text-primary-100 sm:text-base"><%= t(".pc_finder.body") %></p>
+      </div>
+      <%= link_to t(".pc_finder.cta"), nav_entry_path("gaming_pcs"), class: "btn bg-cream-50 text-primary-800 hover:bg-cream-100 px-6 py-3" %>
+    </div>
+  </section>
+
+  <%# Shop by theme (seller tags). %>
+  <% themes = @home.theme_tag_records %>
+  <% if themes.any? %>
+    <% cache ["home/themes", @home.data_version, I18n.locale] do %>
+      <section class="mt-10" aria-labelledby="themes-heading">
+        <h2 id="themes-heading" class="section-title text-xl sm:text-2xl"><%= t(".themes.title") %></h2>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <% themes.each do |tag| %>
+            <%= link_to search_path(seller_tags: [ tag.slug ]),
+                  class: "rounded-full border border-line-strong bg-surface px-5 py-2.5 text-sm font-semibold transition-colors hover:border-primary-400 hover:text-primary-700 dark:hover:text-primary-300" do %>
+              <%= tag.name %>
+              <span class="text-xs text-muted"><%= t(".themes.cta") %></span>
+            <% end %>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+  <% end %>
+
+  <%# Horizontal scrollers (each hidden when empty). %>
+  <% [ [ "latest_gpus", @home.latest_gpus ], [ "most_watched", @home.most_watched ],
+       [ "on_sale", @home.on_sale ], [ "recently_sold", @home.recently_sold ] ].each do |key, ids| %>
+    <% next if ids.empty? %>
+    <% cache ["home/scroller/#{key}", @home.data_version, I18n.locale] do %>
+      <div id="home-<%= key.tr("_", "-") %>">
+        <%= render "listings/scroller", heading: t(".scrollers.#{key}"), listings: @home.listings(ids) %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%# Sell your gear CTA band. %>
+  <section class="mt-12 rounded-3xl border border-line bg-cream-100 p-6 text-center dark:bg-cream-surface sm:p-10" aria-labelledby="sell-cta-heading">
+    <h2 id="sell-cta-heading" class="font-display text-2xl font-bold tracking-tight sm:text-3xl"><%= t(".sell_cta.title") %></h2>
+    <p class="mx-auto mt-2 max-w-xl text-sm text-muted sm:text-base"><%= t(".sell_cta.body") %></p>
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+      <%= link_to t(".sell_cta.primary"), root_path, class: "btn-primary px-6 py-3 text-base" %>
       <% if @sell_to_us_enabled %>
         <%= link_to t("nav.sell_to_us"), sell_to_us_path, class: "btn-secondary px-6 py-3 text-base" %>
       <% end %>
     </div>
   </section>
 
-  <section class="pb-16" aria-labelledby="categories-heading">
-    <h2 id="categories-heading" class="section-title"><%= t(".categories.title") %></h2>
-    <div class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-      <% nav_categories.each do |category| %>
-        <%= link_to category_path(category[:slug]), class: "card flex flex-col items-center gap-3 p-6 text-center hover:border-primary-300 hover:shadow-md dark:hover:border-primary-700" do %>
-          <span class="flex h-12 w-12 items-center justify-center rounded-full bg-cream-100 text-primary-600 dark:bg-cream-surface dark:text-primary-300">
-            <%= icon "tag" %>
-          </span>
-          <span class="font-semibold"><%= category_label(category[:slug]) %></span>
-        <% end %>
+  <%# Testimonials (static). %>
+  <section class="mt-12" aria-labelledby="testimonials-heading">
+    <h2 id="testimonials-heading" class="section-title text-xl sm:text-2xl"><%= t(".testimonials.title") %></h2>
+    <div class="mt-4 grid gap-4 md:grid-cols-3">
+      <% %w[one two three].each do |item| %>
+        <figure class="card flex h-full flex-col justify-between p-6">
+          <blockquote class="text-sm leading-relaxed text-body">“<%= t(".testimonials.items.#{item}.quote") %>”</blockquote>
+          <figcaption class="mt-4">
+            <span class="block font-bold"><%= t(".testimonials.items.#{item}.name") %></span>
+            <span class="block text-xs text-muted"><%= t(".testimonials.items.#{item}.role") %></span>
+          </figcaption>
+        </figure>
       <% end %>
     </div>
   </section>
 
-  <section class="grid gap-6 pb-20 md:grid-cols-3">
-    <% %w[trust quality support].each do |point| %>
-      <div class="card p-6">
-        <h3 class="font-display text-lg font-semibold"><%= t(".values.#{point}.title") %></h3>
-        <p class="mt-2 text-sm text-muted"><%= t(".values.#{point}.description") %></p>
-      </div>
+  <%# Trust strip. %>
+  <section class="my-12 grid gap-4 rounded-3xl border border-line p-6 sm:grid-cols-3" aria-labelledby="trust-heading">
+    <h2 id="trust-heading" class="sr-only"><%= t(".trust.title") %></h2>
+    <% { "buyer_protection" => "shield", "secure_payments" => "lock", "verified_sellers" => "verified" }.each do |key, icon_name| %>
+      <%= link_to page_path(:trust), class: "flex items-start gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-cream-100 dark:hover:bg-cream-surface" do %>
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300"><%= icon icon_name %></span>
+        <span>
+          <span class="block font-bold"><%= t(".trust.#{key}.title") %></span>
+          <span class="mt-0.5 block text-sm text-muted"><%= t(".trust.#{key}.body") %></span>
+        </span>
+      <% end %>
     <% end %>
   </section>
 </div>

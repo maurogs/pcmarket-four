@@ -1,4 +1,4 @@
-<% cache [listing, I18n.locale, "card"] do %>
+<% cache [listing, I18n.locale, "card/v2"] do %>
   <article class="card relative flex flex-col overflow-hidden transition-shadow hover:shadow-md">
     <%= link_to listing_path(listing), class: "relative block aspect-square overflow-hidden bg-cream-100 dark:bg-cream-surface", tabindex: "-1" do %>
       <%= listing_picture(listing) %>
@@ -8,6 +8,12 @@
       <% if (discount = listing.discount_percent) %>
         <span class="absolute bottom-2 left-2 rounded-full bg-cream-500 px-2.5 py-1 text-xs font-extrabold text-primary-950 shadow-sm" title="<%= t(".save_badge", count: discount) %>">-<%= discount %>%</span>
       <% end %>
+    <% end %>
+
+    <% if listing.sold? %>
+      <span class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-[inherit] bg-primary-950/45">
+        <span class="rounded-full bg-cream-50 px-4 py-1.5 text-sm font-extrabold uppercase tracking-wide text-primary-950 shadow"><%= t(".sold") %></span>
+      </span>
     <% end %>
 
     <%# Placeholder until the wishlist phase wires this up. %>
@@ -27,7 +33,8 @@
         <% end %>
       </div>
       <p class="flex items-center gap-1 text-xs text-muted">
-        <span class="truncate"><%= listing.store.display_name %></span>
+        <%= link_to listing.store.display_name, store_path(listing.store),
+              class: "truncate hover:text-primary-700 hover:underline dark:hover:text-primary-300" %>
         <% if listing.store.verified? %>
           <span class="shrink-0 text-primary-600 dark:text-primary-400" title="<%= t(".verified_seller") %>"><%= icon "verified", class: "h-3.5 w-3.5" %></span>
         <% end %>

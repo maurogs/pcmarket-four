@@ -69,6 +69,71 @@ pt:
         support:
           title: Local e em toda a Europa
           description: Levante na sua zona ou receba em qualquer ponto da Europa.
+      deals:
+        title: Melhores ofertas
+        badge: Oferta da semana
+        cta: Ver oferta
+        prev: Oferta anterior
+        next: Oferta seguinte
+        slide: Ir para a oferta %{number}
+      tiles:
+        title: Promoções
+        most_wanted:
+          title: Mais desejados
+          body: Os anúncios que toda a gente está a ver agora.
+        ready_to_ship:
+          title: PCs prontos a enviar
+          body: Builds novas e open box enviadas em poucos dias.
+        deals:
+          title: Ofertas
+          body: Quedas de preço que não queres perder.
+      pc_finder:
+        title: Melhora o teu setup
+        body: Responde a algumas perguntas sobre os jogos que jogas e o teu orçamento,
+          e o PC Finder escolhe a máquina perfeita para ti.
+        cta: Experimentar o PC Finder
+      themes:
+        title: PCs por estilo
+        cta: builds
+      scrollers:
+        latest_gpus: Últimas GPUs
+        most_watched: Mais vistos esta semana
+        on_sale: Em promoção
+        recently_sold: Vendidos recentemente
+      sell_cta:
+        title: Vende o teu equipamento em minutos
+        body: 'Fotografa, descreve e publica. Anúncios grátis: só pagas quando for
+          vendido.'
+        primary: Publicar anúncio
+      testimonials:
+        title: Adorado por gamers e geeks
+        items:
+          one:
+            quote: Vendi a minha GPU antiga em dois dias e o pagamento caiu na manhã
+              seguinte. Facilíssimo.
+            name: Laura G.
+            role: Vendedora, Madrid
+          two:
+            quote: Encontrei uma RTX impecável a bom preço de um vendedor verificado.
+              Chegou no dia seguinte, bem embalada.
+            name: Tom H.
+            role: Comprador, Manchester
+          three:
+            quote: Os estilos de build facilitam encontrar um PC que combina mesmo
+              com a minha secretária.
+            name: Lea M.
+            role: Compradora, Lyon
+      trust:
+        title: Porque podes comprar com confiança
+        buyer_protection:
+          title: Proteção ao comprador
+          body: Reembolso total se o artigo não chegar como descrito.
+        secure_payments:
+          title: Pagamentos seguros
+          body: O pagamento fica protegido até confirmares a entrega.
+        verified_sellers:
+          title: Vendedores verificados
+          body: Perfis, avaliações e críticas antes de comprar.
   locales:
     en: English
     es: Español
@@ -122,6 +187,7 @@ pt:
       terms: Termos de utilização
       privacy: Política de privacidade
       cookies: Política de cookies
+      trust: Proteção ao comprador e confiança
   search:
     label: Pesquisar
     placeholder: Pesquise portáteis, placas gráficas, telemóveis…
@@ -319,6 +385,7 @@ pt:
       save_badge: Poupe %{count}%
       add_to_wishlist: Guardar para depois
       verified_seller: Vendedor verificado
+      sold: Vendido
     show:
       breadcrumbs: Trilha de navegação
       preview_banner: 'Está a pré-visualizar este anúncio (estado: %{status}).'
@@ -372,3 +439,56 @@ pt:
       prev_image: Imagem anterior
       next_image: Próxima imagem
       image_number: Imagem %{number}
+  navigation_menu:
+    new: Novidades
+    by_budget: Por orçamento
+    by_brand: Por marca
+    popular_builds: Builds populares
+    laptops_column: Portáteis
+    mobile_column: Móveis
+    gaming_systems_column: Sistemas gaming
+    other_systems: Outros sistemas
+    accessories_column: Acessórios
+    games_software_column: Jogos e software
+    more: Mais
+    pc_finder:
+      title: Constrói o PC dos teus sonhos
+      body: Diz-nos os teus jogos e o teu orçamento e encontramos a máquina perfeita.
+    sell_to_us:
+      title: Vende-nos o teu hardware
+      body: Uma proposta justa e imediata pelo teu hardware antigo.
+    promos:
+      pc_finder:
+        cta: Abrir PC Finder
+      sell_to_us:
+        cta: Pedir proposta
+  stores:
+    show:
+      vacation:
+        title: Loja em férias
+        body: Este vendedor está de férias. Os anúncios continuam visíveis mas os
+          envios estão em pausa.
+      verified: Vendedor verificado
+      ratings:
+        one: "%{count} avaliação"
+        other: "%{count} avaliações"
+      no_ratings: Ainda sem avaliações
+      member_since: Membro desde %{date}
+      stats:
+        followers: Seguidores
+        for_sale: À venda
+        sold: Vendidos
+      follow: Seguir
+      message: Mensagem
+      tabs:
+        label: Secções da loja
+        listings: Anúncios
+        about: Sobre
+        reviews: Críticas
+      about:
+        title: Sobre esta loja
+        no_bio: Este vendedor ainda não escreveu a descrição da loja.
+      reviews:
+        title: Críticas
+        placeholder: As críticas abrem quando este vendedor concluir a primeira encomenda
+          protegida.

@@ -146,3 +146,60 @@ blocks bind to the outer `render` call in ERB (use `{}` with render locals).
 
 `bin/rails test` 147 green; `bin/rubocop` clean; tailwind build OK. Not
 committed — awaiting user review.
+
+## 2026-11-19 — Phase 1b-ii-a: mega menu, home page, store pages, demo seed (uncommitted)
+
+Data-driven navigation + marketing pages on top of the 1b-i browse stack.
+`NavigationMenu` service builds the header menu (8 top items) from the
+Category tree + curated merchandising links (budget ProductLabels, GPU
+chipset FilterOptions, theme SellerTags); missing records are skipped
+silently so a partial catalog still renders. Items are Marshal-safe Structs
+cached per locale on a `cache_stamp` (category timestamps + sell-to-us
+flag); the header/drawer fragment-cache on the same stamp. Desktop dropdowns
+use the `mega_menu` Stimulus controller (hover-intent, Esc/arrow keys,
+aria-expanded); the mobile drawer uses `<details>` accordions. New item →
+`search_path(sort: "newest")`; chipset links → `/c/gpus?specs[gpu_chipset][]=…`.
+
+Home page rewritten around a new `HomePage` service: section id-lists cached
+~6 min keyed on a data_version (`Listing.maximum(:updated_at)` + locale),
+views reload with `with_includes`/`in_order_of`. Sections: deals hero
+carousel (`hero_carousel` Stimulus controller; static hero fallback), 3
+category tiles, PC Finder banner, theme tiles (seller tags), 4 listing
+scrollers (newest/discounts/featured/recently-sold — each hidden when
+empty), sell CTA, testimonials, trust strip → `/pages/trust` ("trust" added
+to `PagesController::PAGES` + i18n keys).
+
+Storefront: `resources :stores, only: :show, path: "s", param: :slug`.
+`StoresController` (skinny; `tab` param listings|about|reviews inside one
+`turbo-frame#browse_results` reusing the browse sidebar/results partials;
+404 via `render_not_found`). `Listings::Search` extended with `params["store"]`
+and `include_sold` (sold sorted last via a `sold_last_sql` CASE, also
+applied on the relevance path); `Browseable#run_search(store:)` opts in.
+Header: banner/logo/verified badge/stats/follow+message CTAs; vacation-mode
+banner shows `store.vacation_message` or the localized fallback. Listing
+cards gained a SOLD overlay + store link (cache key bumped to `card/v2`).
+
+Demo seed: `db/seeds/development/demo.rb` loaded by `db/seeds.rb` only when
+`Rails.env.development? && ENV["DEMO"]=="1"` (documented in README). Creates
+~30 Faker ES users (`@demo.example.com`), 8 stores (3 business, 1
+vacation-mode) and ~240 listings built from real categories, filter
+definitions/options, labels and theme tags — discounts, featured slots,
+sold history, some pending_review, ES provinces. Skips itself once ≥200
+demo listings exist (idempotent). `DEMO=1 bin/rails db:seed` ×2 verified.
+
+Gotchas solved: the Psych-based locale merge left a stray top-level
+`:unicode: true` key in all 6 yml files — under i18n this crashed every
+`I18n.t` with `no implicit conversion of true into Hash` (removed); store
+view strings must live under `stores.show` (lazy scope from
+`views/stores/show`), not `store.show` — missing keys surfaced as
+translation_missing spans in tests, keys renamed in all 6 files; one ERB tag
+in stores/show had corrupted bytes (`%>` written as `}}`) — only caught when
+the view first rendered in a test. Faker 3.8 keyword nits: `Internet.username(separators:)`,
+`Lorem.paragraphs(number:)`. `Faker::Internet` fails under the app's i18n
+config while `:unicode` junk is present — keep locale roots clean.
+
+Tests: +16 (home empty/with-data ×2 locales, mega-menu curated+chipset
+links, sell-to-us promo flag gating, NavigationMenu service ×4, store show
+sold-last ordering/scoping/tabs/vacation/404, demo seed never loaded in
+test env). `bin/rails test` **163 green**; `bin/rubocop` clean; tailwind
+build OK. Not committed — awaiting user review.

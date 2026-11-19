@@ -2,7 +2,7 @@ class PagesController < ApplicationController
   # Static information pages rendered from the locale files. RESTful show
   # action; the id is the page key and must be allowlisted.
   PAGES = %w[about help buying-selling selling seller-academy
-             terms privacy cookies].freeze
+             terms privacy cookies trust].freeze
 
   before_action :set_page
 

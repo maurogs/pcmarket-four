@@ -1,0 +1,11 @@
+<%# Mega-menu promo card. Local: promo (NavigationMenu::Promo). %>
+<%= link_to promo.href, class: "group flex h-full flex-col rounded-2xl p-4 text-sm shadow-sm transition-transform hover:-translate-y-0.5 #{promo.key == "pc_finder" ? "bg-primary-600 text-white hover:bg-primary-700" : "border border-line bg-cream-100 text-body dark:bg-cream-surface"}" do %>
+  <span class="flex h-8 w-8 items-center justify-center rounded-full <%= promo.key == "pc_finder" ? "bg-white/15" : "bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-200" %>">
+    <%= icon(promo.key == "pc_finder" ? "search" : "tag", class: "h-4 w-4") %>
+  </span>
+  <p class="mt-2.5 font-bold leading-snug"><%= promo.title %></p>
+  <p class="mt-1 flex-1 text-xs leading-relaxed opacity-90"><%= promo.body %></p>
+  <span class="mt-3 inline-flex items-center gap-1 text-xs font-extrabold uppercase tracking-wide">
+    <%= t("navigation_menu.promos.#{promo.key}.cta") %><%= icon "chevron-right", class: "h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" %>
+  </span>
+<% end %>

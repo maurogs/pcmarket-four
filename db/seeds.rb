@@ -22,6 +22,12 @@ end
 
 Dir[Rails.root.join("db/seeds/*.rb")].sort.each { |file| load(file) }
 
+# Opt-in demo data for local development only: `DEMO=1 bin/rails db:seed`.
+# Files in db/seeds/development/ are never loaded in test or production.
+if Rails.env.development? && ENV["DEMO"] == "1"
+  Dir[Rails.root.join("db/seeds/development/*.rb")].sort.each { |file| load(file) }
+end
+
 # Sample data for local development (never in production, never duplicated).
 if Rails.env.development? && Country.enabled.any? && ENV.fetch("SEED_SAMPLE", "1") != "0"
   Country.enabled.each do |country|

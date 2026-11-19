@@ -2,9 +2,10 @@ module Listings
   # Browse/search query object: one place that turns search-params into a
   # paginated, filtered, sorted listing page plus sidebar facet counts.
   #
-  # Params: :q, :category (slug), :specs ({"key" => ["value", …]}), :min_price /
-  # :max_price (cents), :condition (enum names), :labels, :seller_tags, :sort,
-  # :page, :per_page.
+  # Params: :q, :category (slug), :store (slug), :specs ({"key" => ["value", …]}),
+  # :min_price / :max_price (cents), :condition (enum names), :labels,
+  # :seller_tags, :sort, :page, :per_page. :include_sold keeps a store's sold
+  # listings in the results (sorted after the active ones) for storefronts.
   class Search
     SORTS = %w[relevance best_match newest price_asc price_desc most_watched].freeze
     DEFAULT_PER_PAGE = 24
@@ -52,6 +53,12 @@ module Listings
       @category = params["category"].presence && Category.find_by_param(params["category"])
     end
 
+    def store
+      return @store if defined?(@store)
+
+      @store = params["store"].presence && Store.find_by_param(params["store"])
+    end
+
     def query
       params["q"].to_s.strip.presence
     end
@@ -81,8 +88,12 @@ module Listings
     # counts and facet subqueries wrap cleanly (no pg_search rank subselect).
     # `exclude` skips one facet dimension (a spec key or a DIMENSION_FACETS
     # name) so counts include the options that are currently selected.
-    def base_scope(exclude: nil)
-      scope = Listing.visible
+    def base_scope(exclude: nil, include_sold: sold_last?)
+      scope = if store
+        scope = Listing.for_store(store).where(status: include_sold ? %w[published sold] : %w[published])
+      else
+        Listing.visible
+      end
       scope = scope.in_category(category) if category
       scope = scope.matching(query) if query
       remaining = spec_filters.except(exclude.to_s)
@@ -103,21 +114,35 @@ module Listings
       scope
     end
 
+    # Sold listings (storefronts via :include_sold) sort after the active ones.
+    def sold_last?
+      store.present? && params["include_sold"].present?
+    end
+
+    def sold_last_sql
+      "CASE WHEN listings.status = 'sold' THEN 1 ELSE 0 END"
+    end
+
     def sorted_scope(scope)
-      case sort
-      when "price_asc" then scope.reorder(price_cents: :asc, id: :asc)
-      when "price_desc" then scope.reorder(price_cents: :desc, id: :asc)
-      when "newest" then scope.reorder(published_at: :desc, id: :desc)
-      when "most_watched" then scope.reorder(watchers_count: :desc, published_at: :desc, id: :desc)
-      else scope.reorder(best_match_order)
-      end
+      orders = [ sold_last_sql ] if sold_last?
+      orders = orders || []
+      orders <<
+        case sort
+        when "price_asc" then "listings.price_cents ASC, listings.id ASC"
+        when "price_desc" then "listings.price_cents DESC, listings.id ASC"
+        when "newest" then "listings.published_at DESC NULLS LAST, listings.id DESC"
+        when "most_watched" then "listings.watchers_count DESC, listings.published_at DESC NULLS LAST, listings.id DESC"
+        else best_match_order
+        end
+      scope.reorder(Arel.sql(orders.join(", ")))
     end
 
     def best_match_order
-      Arel.sql(
-        "CASE WHEN listings.featured_until > NOW() THEN 0 ELSE 1 END, " \
-        "COALESCE(listings.published_at, listings.created_at) DESC, listings.id DESC"
-      )
+      [
+        "CASE WHEN listings.featured_until > NOW() THEN 0 ELSE 1 END",
+        "COALESCE(listings.published_at, listings.created_at) DESC",
+        "listings.id DESC"
+      ].join(", ")
     end
 
     # --- Pagination ------------------------------------------------------
@@ -137,7 +162,14 @@ module Listings
 
     def records
       scope = base_scope
-      scope = query && sort == "relevance" ? scope.by_relevance(query) : sorted_scope(scope)
+      scope = if query && sort == "relevance"
+        rank = "ts_rank(listings.searchable, websearch_to_tsquery('listings_unaccented', " \
+               "#{Listing.connection.quote(query)})) DESC, listings.id DESC"
+        orders = sold_last? ? [ sold_last_sql, rank ] : [ rank ]
+        scope.reorder(Arel.sql(orders.join(", ")))
+      else
+        sorted_scope(scope)
+      end
       scope.with_includes.offset(pagy.offset).limit(pagy.limit)
     end
 
@@ -183,7 +215,7 @@ module Listings
     # LEFT JOINed against the search results *without that filter applied*,
     # counting jsonb array containment per option value.
     def facet_counts(definition)
-      results = base_scope(exclude: definition.key).select("listings.id, listings.specs").to_sql
+      results = base_scope(exclude: definition.key, include_sold: false).select("listings.id, listings.specs").to_sql
       key = Listing.connection.quote(definition.key)
       sql = <<~SQL
         SELECT o.value, COUNT(s.id)
@@ -200,14 +232,14 @@ module Listings
 
     # { "new_sealed" => 3, … } with the enum keys (column stores integers).
     def condition_counts
-      base_scope(exclude: "condition").group(:condition).count(:id)
+      base_scope(exclude: "condition", include_sold: false).group(:condition).count(:id)
         .transform_keys { |value| Listing.conditions.key(value.to_i) }
     end
 
     # { slug => count } for product labels / seller tags.
     def slug_counts(dimension)
       table = dimension == "labels" ? "product_labels" : "seller_tags"
-      base_scope(exclude: dimension)
+      base_scope(exclude: dimension, include_sold: false)
         .joins(dimension == "labels" ? :product_labels : :seller_tags)
         .group("#{table}.slug").count(:id)
     end

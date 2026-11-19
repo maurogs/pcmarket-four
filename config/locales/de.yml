@@ -70,6 +70,71 @@ de:
         support:
           title: Lokal und europaweit
           description: Abholung in der Nähe oder Lieferung durch ganz Europa.
+      deals:
+        title: Top-Angebote
+        badge: Schnäppchen der Woche
+        cta: Angebot ansehen
+        prev: Vorheriges Angebot
+        next: Nächstes Angebot
+        slide: Zum Angebot %{number}
+      tiles:
+        title: Aktionen
+        most_wanted:
+          title: Am beliebtesten
+          body: Die Anzeigen, die gerade alle ansehen.
+        ready_to_ship:
+          title: Sofort versandfertige PCs
+          body: Neue und open-box Builds, in Tagen geliefert.
+        deals:
+          title: Schnäppchen
+          body: Preisstürze, die du nicht verpassen solltest.
+      pc_finder:
+        title: Level dein Setup auf
+        body: Beantworte ein paar Fragen zu deinen Spielen und deinem Budget – PC
+          Finder wählt die passende Maschine für dich aus.
+        cta: PC Finder testen
+      themes:
+        title: PCs nach Stil
+        cta: Builds
+      scrollers:
+        latest_gpus: Neueste GPUs
+        most_watched: Meistgesehen diese Woche
+        on_sale: Im Angebot
+        recently_sold: Kürzlich verkauft
+      sell_cta:
+        title: Verkaufe dein Equipment in Minuten
+        body: Fotografieren, beschreiben, posten. Kostenlose Anzeigen – du zahlst
+          erst bei erfolgreichem Verkauf.
+        primary: Anzeige aufgeben
+      testimonials:
+        title: Bei Gamern und Geeks beliebt
+        items:
+          one:
+            quote: Meine alte GPU in zwei Tagen verkauft, die Auszahlung am nächsten
+              Morgen. Unglaublich einfach.
+            name: Laura G.
+            role: Verkäuferin, Madrid
+          two:
+            quote: Saubere RTX zu gutem Preis von einem verifizierten Verkäufer. Am
+              nächsten Tag gut verpackt angekommen.
+            name: Tom H.
+            role: Käufer, Manchester
+          three:
+            quote: Die Build-Stile helfen, einen PC zu finden, der wirklich zu meinem
+              Schreibtisch passt.
+            name: Lea M.
+            role: Käuferin, Lyon
+      trust:
+        title: Warum du bedenkenlos kaufen kannst
+        buyer_protection:
+          title: Käuferschutz
+          body: Volle Erstattung, wenn der Artikel nicht wie beschrieben ankommt.
+        secure_payments:
+          title: Sichere Zahlungen
+          body: Die Zahlung bleibt geschützt, bis du die Lieferung bestätigst.
+        verified_sellers:
+          title: Verifizierte Verkäufer
+          body: Profile, Bewertungen und Rezensionen vor dem Kauf.
   locales:
     en: English
     es: Español
@@ -123,6 +188,7 @@ de:
       terms: Nutzungsbedingungen
       privacy: Datenschutz
       cookies: Cookie-Richtlinie
+      trust: Käuferschutz und Vertrauen
   search:
     label: Suchen
     placeholder: Laptops, Grafikkarten, Handys suchen…
@@ -320,6 +386,7 @@ de:
       save_badge: "%{count}% sparen"
       add_to_wishlist: Für später merken
       verified_seller: Verifizierter Verkäufer
+      sold: Verkauft
     show:
       breadcrumbs: Brotnavigation
       preview_banner: 'Sie sehen eine Vorschau dieser Anzeige (Status: %{status}).'
@@ -373,3 +440,57 @@ de:
       prev_image: Vorheriges Bild
       next_image: Nächstes Bild
       image_number: Bild %{number}
+  navigation_menu:
+    new: Neu
+    by_budget: Nach Budget
+    by_brand: Nach Marke
+    popular_builds: Beliebte Builds
+    laptops_column: Notebooks
+    mobile_column: Mobil
+    gaming_systems_column: Gaming-Systeme
+    other_systems: Andere Systeme
+    accessories_column: Zubehör
+    games_software_column: Spiele & Software
+    more: Mehr
+    pc_finder:
+      title: Baue deinen Traum-PC
+      body: Sag uns deine Spiele und dein Budget – wir finden das perfekte System
+        für dich.
+    sell_to_us:
+      title: Verkauf uns deine Hardware
+      body: Faire Sofortangebote für deine alte Hardware.
+    promos:
+      pc_finder:
+        cta: PC Finder öffnen
+      sell_to_us:
+        cta: Angebot holen
+  stores:
+    show:
+      vacation:
+        title: Shop im Urlaub
+        body: Dieser Verkäufer macht Urlaub. Anzeigen bleiben sichtbar, der Versand
+          pausiert.
+      verified: Verifizierter Verkäufer
+      ratings:
+        one: "%{count} Bewertung"
+        other: "%{count} Bewertungen"
+      no_ratings: Noch keine Bewertungen
+      member_since: Mitglied seit %{date}
+      stats:
+        followers: Follower
+        for_sale: Im Angebot
+        sold: Verkauft
+      follow: Folgen
+      message: Nachricht
+      tabs:
+        label: Shop-Bereiche
+        listings: Anzeigen
+        about: Über
+        reviews: Bewertungen
+      about:
+        title: Über diesen Shop
+        no_bio: Dieser Verkäufer hat noch keine Shop-Beschreibung geschrieben.
+      reviews:
+        title: Bewertungen
+        placeholder: Bewertungen erscheinen, sobald dieser Verkäufer seine erste geschützte
+          Bestellung abschließt.

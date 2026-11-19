@@ -11,19 +11,35 @@
               aria-label="<%= t("accessibility.close_menu") %>"><%= icon "close" %></button>
     </div>
 
-    <% nav_categories.each do |category| %>
-      <div>
-        <%= link_to category_label(category[:slug]), category_path(category[:slug]),
-              class: "block rounded-xl px-3 py-2 text-base font-medium hover:bg-cream-100 dark:hover:bg-cream-surface" %>
-        <% if category[:children] %>
-          <div class="ml-3 border-l border-line pl-3">
-            <% category[:children].each do |child| %>
-              <%= link_to category_label(child), category_path(child),
-                    class: "block rounded-lg px-2 py-1.5 text-sm text-muted hover:text-primary-700 dark:hover:text-primary-300" %>
-            <% end %>
-          </div>
+    <% cache "#{NavigationMenu.cache_stamp}/drawer" do %>
+      <% NavigationMenu.items.each do |item| %>
+        <% if item.columns&.any? %>
+          <details class="group">
+            <summary class="flex cursor-pointer list-none items-center justify-between rounded-xl px-3 py-2 text-base font-medium hover:bg-cream-100 dark:hover:bg-cream-surface">
+              <%= item.label %><%= icon "chevron-down", class: "h-4 w-4 text-muted transition-transform group-open:rotate-180" %>
+            </summary>
+            <div class="mb-1 ml-3 border-l border-line pl-3">
+              <% item.columns.each do |column| %>
+                <% if column.title %>
+                  <p class="mt-2 px-2 text-xs font-bold uppercase tracking-wide text-muted"><%= column.title %></p>
+                <% end %>
+                <% column.links.each do |link| %>
+                  <%= link_to link.label, link.href,
+                        class: "block rounded-lg px-2 py-1.5 text-sm text-muted hover:text-primary-700 dark:hover:text-primary-300" %>
+                <% end %>
+              <% end %>
+              <% if item.promos.present? %>
+                <div class="mt-3 space-y-2">
+                  <%= safe_join(item.promos.map { |promo| render("shared/mega_menu_promo", promo: promo) }) %>
+                </div>
+              <% end %>
+            </div>
+          </details>
+        <% else %>
+          <%= link_to item.label, item.href,
+                class: "block rounded-xl px-3 py-2 text-base font-medium hover:bg-cream-100 dark:hover:bg-cream-surface" %>
         <% end %>
-      </div>
+      <% end %>
     <% end %>
 
     <div class="mt-4 flex flex-col gap-2 border-t border-line pt-4">

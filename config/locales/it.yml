@@ -69,6 +69,71 @@ it:
         support:
           title: Locale ed europeo
           description: Ritiro nelle vicinanze o spedizione in tutta Europa.
+      deals:
+        title: Offerte migliori
+        badge: Affare della settimana
+        cta: Vedi offerta
+        prev: Offerta precedente
+        next: Offerta successiva
+        slide: Vai all'offerta %{number}
+      tiles:
+        title: Promozioni
+        most_wanted:
+          title: I più desiderati
+          body: Gli annunci che tutti stanno guardando adesso.
+        ready_to_ship:
+          title: PC pronti alla spedizione
+          body: Build nuove o open box spedite in pochi giorni.
+        deals:
+          title: Offerte
+          body: Ribassoni da non perdere.
+      pc_finder:
+        title: Migliora il tuo setup
+        body: 'Rispondi ad alcune domande sui giochi che usi e sul tuo budget: PC
+          Finder seleziona la macchina perfetta per te.'
+        cta: Prova PC Finder
+      themes:
+        title: PC per stile
+        cta: build
+      scrollers:
+        latest_gpus: Ultime GPU
+        most_watched: I più visti della settimana
+        on_sale: In offerta
+        recently_sold: Venduti di recente
+      sell_cta:
+        title: Vendi la tua attrezzatura in pochi minuti
+        body: 'Fotografala, descrivila, pubblicala. Annunci gratuiti: paghi solo alla
+          vendita.'
+        primary: Pubblica un annuncio
+      testimonials:
+        title: Amato da gamer e geek
+        items:
+          one:
+            quote: Venduta la mia vecchia GPU in due giorni e pagamento arrivato la
+              mattina dopo. Facilissimo.
+            name: Laura G.
+            role: Venditrice, Madrid
+          two:
+            quote: Trovata una RTX perfetta a buon prezzo da un venditore verificato.
+              Arrivata il giorno dopo, ben imballata.
+            name: Tom H.
+            role: Acquirente, Manchester
+          three:
+            quote: Gli stili di build aiutano a trovare un PC davvero in stile con
+              la mia scrivania.
+            name: Lea M.
+            role: Acquirente, Lione
+      trust:
+        title: Perché puoi acquistare in tutta sicurezza
+        buyer_protection:
+          title: Protezione acquisti
+          body: Rimborso completo se l'oggetto non arriva come descritto.
+        secure_payments:
+          title: Pagamenti sicuri
+          body: Il pagamento resta protetto finché non confermi la consegna.
+        verified_sellers:
+          title: Venditori verificati
+          body: Profili, valutazioni e recensioni prima di comprare.
   locales:
     en: English
     es: Español
@@ -122,6 +187,7 @@ it:
       terms: Termini di utilizzo
       privacy: Informativa sulla privacy
       cookies: Cookie policy
+      trust: Protezione dell'acquirente e fiducia
   search:
     label: Cerca
     placeholder: Cerca laptop, schede video, telefoni…
@@ -319,6 +385,7 @@ it:
       save_badge: Risparmia %{count}%
       add_to_wishlist: Salva per dopo
       verified_seller: Venditore verificato
+      sold: Venduto
     show:
       breadcrumbs: Percorso di navigazione
       preview_banner: 'Stai anteprimendo questo annuncio (stato: %{status}).'
@@ -372,3 +439,56 @@ it:
       prev_image: Immagine precedente
       next_image: Immagine successiva
       image_number: Immagine %{number}
+  navigation_menu:
+    new: Novità
+    by_budget: Per budget
+    by_brand: Per marca
+    popular_builds: Build popolari
+    laptops_column: Portatili
+    mobile_column: Mobile
+    gaming_systems_column: Sistemi gaming
+    other_systems: Altri sistemi
+    accessories_column: Accessori
+    games_software_column: Giochi e software
+    more: Altro
+    pc_finder:
+      title: Costruisci il PC dei tuoi sogni
+      body: 'Dicci i tuoi giochi e il tuo budget: ti abbiniamo la macchina perfetta.'
+    sell_to_us:
+      title: Vendi a noi
+      body: Un'offerta giusta e immediata per il tuo vecchio hardware.
+    promos:
+      pc_finder:
+        cta: Apri PC Finder
+      sell_to_us:
+        cta: Richiedi un'offerta
+  stores:
+    show:
+      vacation:
+        title: Negozio in vacanza
+        body: Questo venditore è in vacanza. Gli annunci restano visibili ma le spedizioni
+          sono in pausa.
+      verified: Venditore verificato
+      ratings:
+        one: "%{count} valutazione"
+        other: "%{count} valutazioni"
+      no_ratings: Ancora nessuna valutazione
+      member_since: Membro dal %{date}
+      stats:
+        followers: Follower
+        for_sale: In vendita
+        sold: Venduti
+      follow: Segui
+      message: Messaggio
+      tabs:
+        label: Sezioni del negozio
+        listings: Annunci
+        about: Chi siamo
+        reviews: Recensioni
+      about:
+        title: Su questo negozio
+        no_bio: Questo venditore non ha ancora scritto una descrizione del negozio.
+      reviews:
+        title: Recensioni
+        placeholder: Le recensioni si aprono quando questo venditore completa il primo
+          ordine protetto.

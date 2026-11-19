@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     # Catalog storefront (Phase 1b).
     resources :categories, only: :show, path: "c", param: :slug
     resources :listings, only: :show, path: "l"
+    resources :stores, only: :show, path: "s", param: :slug
 
     resource :search, only: :show, controller: "searches"
     resource :sell_to_us, only: :show

@@ -43,6 +43,21 @@ All seed files (`db/seeds/*.rb`, loaded in order by `db/seeds.rb`) are
 idempotent: re-running `bin/rails db:seed` updates in place and preserves
 admin edits. In development it also creates a handful of sample users.
 
+### Demo data (development only)
+
+For a populated storefront while developing, run the opt-in demo seed:
+
+```bash
+DEMO=1 bin/rails db:seed
+```
+
+It loads `db/seeds/development/demo.rb` (development environment only, never
+in test or production) and creates ~30 Spanish demo users (`@demo.example.com`
+emails), 8 stores and ~240 published listings built from the real catalog —
+including discounts, featured slots, seller tags and sold history — so the
+mega menu, home page, search filters and store pages all have content. The run
+is skipped once demo listings exist, so repeated `db:seed` runs are cheap.
+
 ### Bundler platform note
 
 `tailwindcss-ruby` ships precompiled binaries per platform. If your shell

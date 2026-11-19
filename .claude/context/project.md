@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (Phase 1b-i browse + listing pages complete, uncommitted)_
+_Last updated: 2026-11-19 (Phase 1b-ii-a mega menu + home + store pages + demo seed complete, uncommitted)_
 
 ## What this is
 
@@ -176,16 +176,53 @@ FR/GB/DE/IT/PT seeded but disabled.
   Search/count tests (also: fixture COPY skips INSERT triggers, so tsvector
   would need a backfill).
 
+## Code map (Phase 1b-ii-a — mega menu, home, stores, demo seed)
+
+- `app/services/navigation_menu.rb` — mega-menu builder (Struct
+  Item/Column/Promo/Link, Marshal-safe) from Category tree + curated links
+  (`BUDGET_LABELS` ProductLabel slugs, gpu_chipset FilterOptions,
+  `THEME_TAGS`); cached per locale on `cache_stamp`
+  (locale/Category#updated_at/sell-to-us flag); header + mobile drawer
+  fragment-cache on the same stamp. `ApplicationHelper#nav_entry_path`
+  replaced the old `nav_categories`/`category_label` taxonomy helpers.
+- `app/services/home_page.rb` — home section id-lists (deals/newest/
+  featured/recently-sold + tiles) cached ~6 min keyed on
+  `Listing.maximum(:updated_at)` + locale; views reload via `#listings(ids)`
+  (`with_includes`, `in_order_of`). `HomeController` exposes `@home` +
+  `@sell_to_us_enabled`; `app/views/home/index.html.erb` renders carousel
+  hero (static fallback), tiles, PC Finder banner, scrollers (`_scroller`
+  partial), sell CTA, testimonials, trust strip → `/pages/trust` (new entry
+  in `PagesController::PAGES` + `pages.titles.trust` in 6 locales).
+- Stores: route `resources :stores, only: :show, path: "s", param: :slug` →
+  `StoresController` (`tab` param listings|about|reviews, `render_not_found`
+  on unknown slug) + `app/views/stores/show.html.erb` (header, stats,
+  vacation banner w/ `store.vacation_message`, tabs inside
+  `turbo-frame#browse_results` reusing browse partials). `Listings::Search`
+  accepts `params["store"]` + `params["include_sold"]` (sold-last CASE in
+  both sort paths); `Browseable#run_search(store:)` passes `include_sold: "1"`.
+  `listings/_card` shows SOLD overlay + seller link (cache key `card/v2`).
+- Stimulus: `mega_menu` (hover-intent open/close, Esc/arrows,
+  aria-expanded), `hero_carousel` (autoplay, pause on hover/focus, dots,
+  keyboard).
+- `db/seeds.rb` loads `db/seeds/development/*.rb` **only** when
+  `Rails.env.development? && ENV["DEMO"] == "1"` (README "Demo data"
+  section); `db/seeds/development/demo.rb` self-skips once ≥200 demo
+  listings exist. Demo emails are `%@demo.example.com`.
+
 ## Testing
 
-- `bin/rails test` — **147 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **163 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
   admin-edit survival), i18n parity; Phase 1b-i adds category browse
   (filters/sort/pagination/pills/404s), search page, listing show
   (etag/304, preview gating, 301 old slugs, scrollers), views-counter job
-  and Listing browse-method tests.
+  and Listing browse-method tests; Phase 1b-ii-a adds home (empty +
+  populated, en/es), mega-menu links + sell-to-us promo flag gating,
+  NavigationMenu service (items, chipset hrefs, cache stamp), store show
+  (own listings only + sold-last, about/reviews tabs, vacation banner,
+  404) and a test that `DEMO=1` seed data never loads outside development.
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -196,9 +233,14 @@ FR/GB/DE/IT/PT seeded but disabled.
 
 - Phase 1b-ii+: publish flow, seller dashboard, admin UI for
   categories/filters/labels/settings (seeds cover data now).
+- Store page follow/message buttons + reviews tab summary are placeholders
+  (store ratings come from `stores.rating_avg/ratings_count` only).
+- Mega-menu budget/theme links need ProductLabel/SellerTag rows (seeds ship
+  them; a bare fixture catalog silently drops those columns — demo seed
+  `DEMO=1 bin/rails db:seed` fills everything).
 - Wishlist/cart/offers/chat buttons are `#` placeholders gated by
   AppSettings flags (`checkout_enabled`, `payments_enabled`,
   `offers_enabled`, `chat_enabled`) — Phases 5/6.
 - Mobile price filter loses values without JS (euro→cents sync is Stimulus).
 - CI not set up yet.
-- No commit made for Phases 0/1a/1b-i — awaiting user review.
+- No commit made for Phases 0/1a/1b-i/1b-ii-a — awaiting user review.

@@ -58,28 +58,55 @@
     </div>
   </div>
 
-  <%# Desktop main navigation with mega-menu dropdowns. %>
-  <nav class="mx-auto hidden max-w-7xl items-center gap-1 px-4 pb-2 lg:flex" aria-label="<%= t("accessibility.main_navigation") %>">
-    <% nav_categories.each do |category| %>
-      <% if category[:children] %>
-        <div class="relative" data-controller="dropdown">
-          <button type="button" class="btn-ghost px-3 py-1.5 text-sm font-medium"
-                  aria-expanded="false" data-dropdown-target="trigger" data-action="dropdown#toggle">
-            <%= category_label(category[:slug]) %><%= icon "chevron-down", class: "h-3.5 w-3.5" %>
-          </button>
-          <div class="absolute left-0 z-50 mt-2 hidden min-w-52 card p-2" data-dropdown-target="menu">
-            <% category[:children].each do |child| %>
-              <%= link_to category_label(child), category_path(child),
-                    class: "block rounded-full px-4 py-2 text-sm text-body hover:bg-cream-100 hover:text-primary-800 dark:hover:bg-cream-surface dark:hover:text-primary-200" %>
-            <% end %>
-          </div>
+  <%# Desktop mega menu: Category tree + curated links, cached per locale. %>
+  <% cache NavigationMenu.cache_stamp do %>
+    <nav class="mx-auto hidden max-w-7xl items-center gap-1 px-4 pb-2 lg:flex"
+         aria-label="<%= t("accessibility.main_navigation") %>" data-controller="mega-menu"
+         data-action="keydown->mega-menu#keydown">
+      <% NavigationMenu.items.each do |item| %>
+        <div class="relative" data-mega-menu-target="item">
+          <% if item.columns&.any? %>
+            <button type="button" id="mega-trigger-<%= item.key %>"
+                    class="btn-ghost gap-1 px-3 py-1.5 text-sm font-medium aria-expanded:bg-cream-100 aria-expanded:text-primary-800 dark:aria-expanded:bg-cream-surface dark:aria-expanded:text-primary-200"
+                    aria-expanded="false" aria-controls="mega-panel-<%= item.key %>"
+                    data-mega-menu-target="trigger"
+                    data-action="mouseenter->mega-menu#enter mouseleave->mega-menu#leave click->mega-menu#toggle">
+              <%= item.label %><%= icon "chevron-down", class: "h-3.5 w-3.5" %>
+            </button>
+            <div id="mega-panel-<%= item.key %>" role="group" aria-labelledby="mega-trigger-<%= item.key %>"
+                 class="absolute top-full z-50 mt-1 hidden w-max max-w-[calc(100vw-2rem)] card p-5 shadow-lg <%= %w[more other_systems].include?(item.key) ? "right-0" : "left-0" %>"
+                 data-mega-menu-target="panel"
+                 data-action="mouseenter->mega-menu#enter mouseleave->mega-menu#leave">
+              <div class="flex items-stretch gap-6">
+                <div class="grid grid-flow-col auto-cols-min gap-x-6">
+                  <% item.columns.each do |column| %>
+                    <div class="min-w-44">
+                      <% if column.title %>
+                        <p class="mb-1.5 px-2 text-xs font-bold uppercase tracking-wide text-muted"><%= column.title %></p>
+                      <% end %>
+                      <ul class="space-y-0.5">
+                        <% column.links.each do |link| %>
+                          <li><%= link_to link.label, link.href,
+                                class: "block rounded-lg px-2 py-1.5 text-sm text-body hover:bg-cream-100 hover:text-primary-700 dark:hover:bg-cream-surface dark:hover:text-primary-200" %></li>
+                        <% end %>
+                      </ul>
+                    </div>
+                  <% end %>
+                </div>
+                <% if item.promos.present? %>
+                  <div class="flex w-60 flex-col gap-3 border-l border-line pl-5">
+                    <%= safe_join(item.promos.map { |promo| render("shared/mega_menu_promo", promo: promo) }) %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% else %>
+            <%= link_to item.label, item.href, class: "btn-ghost px-3 py-1.5 text-sm font-medium" %>
+          <% end %>
         </div>
-      <% else %>
-        <%= link_to category_label(category[:slug]), category_path(category[:slug]),
-              class: "btn-ghost px-3 py-1.5 text-sm font-medium" %>
       <% end %>
-    <% end %>
-  </nav>
+    </nav>
+  <% end %>
 
   <%= render "shared/mobile_drawer", site_name: site_name %>
 </header>

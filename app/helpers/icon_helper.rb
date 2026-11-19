@@ -25,7 +25,8 @@ module IconHelper
     "chevron-left" => '<path d="m15 5-7 7 7 7"/>',
     "chevron-right" => '<path d="m9 5 7 7-7 7"/>',
     "filter" => '<path d="M4 5h16l-6.2 7.2V18l-3.6 2v-7.8L4 5Z"/>',
-    "check" => '<path d="m5 13 4 4 10-10"/>'
+    "check" => '<path d="m5 13 4 4 10-10"/>',
+    "lock" => '<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>'
   }.freeze
 
   SOCIAL_ICONS = {

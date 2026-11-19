@@ -1,0 +1,112 @@
+<% store = @store %>
+<% set_meta_tags title: store.display_name, description: store.bio.presence %>
+
+<div class="mx-auto max-w-7xl px-4 py-6">
+  <% if store.vacation_mode %>
+    <p class="mb-4 flex items-center gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm font-medium text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100" role="status">
+      <%= icon "clock", class: "h-5 w-5 shrink-0" %>
+      <span><strong><%= t(".vacation.title") %></strong> · <%= store.vacation_message.presence || t(".vacation.body") %></span>
+    </p>
+  <% end %>
+
+  <header class="overflow-hidden rounded-3xl border border-line">
+    <div class="h-28 bg-gradient-to-r from-primary-700 to-primary-500 sm:h-36">
+      <% if store.banner.attached? %>
+        <%= image_tag url_for(store.banner.variant(resize_to_fill: [ 1600, 300 ], format: Listing::IMAGE_FORMAT)),
+              alt: "", class: "h-full w-full object-cover" %>
+      <% end %>
+    </div>
+    <div class="flex flex-wrap items-end gap-x-6 gap-y-4 bg-surface px-5 pb-5 sm:px-8">
+      <span class="-mt-10 flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-4 border-surface bg-primary-100 font-display text-2xl font-bold text-primary-700 shadow sm:-mt-12 sm:h-24 sm:w-24 dark:bg-primary-900 dark:text-primary-200">
+        <% if store.logo.attached? %>
+          <%= image_tag url_for(store.logo.variant(resize_to_fill: [ 192, 192 ], format: Listing::IMAGE_FORMAT)),
+                alt: "", class: "h-full w-full object-cover" %>
+        <% else %>
+          <%= store.display_name.first.upcase %>
+        <% end %>
+      </span>
+
+      <div class="min-w-0 flex-1">
+        <h1 class="flex flex-wrap items-center gap-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+          <span class="truncate"><%= store.display_name %></span>
+          <% if store.verified? %>
+            <span class="text-primary-600 dark:text-primary-400" title="<%= t(".verified") %>"><%= icon "verified", class: "h-6 w-6" %></span>
+          <% end %>
+        </h1>
+        <div class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
+          <% if store.ratings_count.positive? %>
+            <span class="inline-flex items-center gap-1" title="<%= t(".ratings", count: store.ratings_count) %>">
+              <span aria-hidden="true" class="text-amber-500">★</span>
+              <strong class="text-body"><%= number_with_precision(store.rating_avg, precision: 1) %></strong>
+              <%= t(".ratings", count: store.ratings_count) %>
+            </span>
+          <% else %>
+            <span><%= t(".no_ratings") %></span>
+          <% end %>
+          <time datetime="<%= store.created_at.iso8601 %>"><%= t(".member_since", date: l(store.created_at.to_date)) %></time>
+          <% if store.country %>
+            <span class="inline-flex items-center gap-1"><%= icon "map-pin", class: "h-4 w-4" %><%= t("countries.#{store.country.code.downcase}") %></span>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 text-center text-sm">
+        <% { "followers" => store.followers_count, "for_sale" => store.active_listings_count, "sold" => store.sales_count }.each do |key, count| %>
+          <span>
+            <strong class="block text-lg font-bold leading-tight tracking-tight"><%= number_with_delimiter(count) %></strong>
+            <span class="text-xs text-muted"><%= t(".stats.#{key}") %></span>
+          </span>
+        <% end %>
+      </div>
+
+      <div class="flex w-full gap-2 sm:ml-auto sm:w-auto">
+        <%= link_to t(".follow"), "#", class: "btn-primary flex-1 sm:flex-none" %>
+        <%= link_to t(".message"), "#", class: "btn-secondary flex-1 sm:flex-none" %>
+      </div>
+    </div>
+  </header>
+
+  <%# Tabs share one Turbo frame so switching (and filtering) stays in-page. %>
+  <turbo-frame id="browse_results" data-turbo-action="advance">
+    <nav class="mt-6 flex gap-1 border-b border-line" aria-label="<%= t(".tabs.label") %>">
+      <% %w[listings about reviews].each do |tab| %>
+        <%= link_to t(".tabs.#{tab}"), store_path(store, tab: tab),
+              data: { turbo_frame: "browse_results" }, aria: { current: (@tab == tab ? "page" : nil) },
+              class: "rounded-t-xl px-4 py-2.5 text-sm font-semibold transition-colors #{@tab == tab ? "border-b-2 border-primary-600 text-primary-700 dark:text-primary-300" : "text-muted hover:text-body"}" %>
+      <% end %>
+    </nav>
+
+    <% case @tab %>
+    <% when "listings" %>
+      <div class="mt-6 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-8">
+        <form action="<%= store_path(store) %>" method="get" data-controller="filters"
+              data-turbo-frame="browse_results" data-turbo-action="advance" class="hidden lg:block"
+              aria-label="<%= t("browse.filters.title") %>">
+          <input type="hidden" name="page" value="1">
+          <input type="hidden" name="tab" value="listings">
+          <%= hidden_filter_fields(except: %w[q min_price max_price condition labels seller_tags specs]) %>
+          <%= render "browse/sidebar", category: nil, result: @search_result %>
+        </form>
+
+        <div data-controller="drawer">
+          <%= render "browse/mobile_filters", category: nil, result: @search_result %>
+          <%= render "browse/results", result: @search_result %>
+        </div>
+      </div>
+    <% when "about" %>
+      <section class="mx-auto mt-6 max-w-3xl">
+        <h2 class="section-title text-xl"><%= t(".about.title") %></h2>
+        <% if store.bio.present? %>
+          <p class="mt-3 whitespace-pre-line text-sm leading-relaxed text-body"><%= store.bio %></p>
+        <% else %>
+          <p class="mt-3 text-sm text-muted"><%= t(".about.no_bio") %></p>
+        <% end %>
+      </section>
+    <% else %>
+      <section class="mx-auto mt-6 max-w-3xl text-center">
+        <h2 class="section-title text-xl"><%= t(".reviews.title") %></h2>
+        <p class="mt-3 text-sm text-muted"><%= t(".reviews.placeholder") %></p>
+      </section>
+    <% end %>
+  </turbo-frame>
+</div>

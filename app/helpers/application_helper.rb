@@ -1,24 +1,8 @@
 module ApplicationHelper
-  # Placeholder taxonomy until the catalog phase ships real categories.
-  # Every entry links to the (placeholder) search with the category slug.
-  def nav_categories
-    [
-      { slug: "desktops" },
-      { slug: "laptops" },
-      { slug: "components", children: %w[gpus cpus motherboards memory storage cooling] },
-      { slug: "peripherals", children: %w[monitors keyboards mice headsets] },
-      { slug: "phones" },
-      { slug: "tablets" },
-      { slug: "consoles" }
-    ]
-  end
-
-  def category_label(slug)
-    t("nav.categories.#{slug}")
-  end
-
-  def category_path(slug)
-    search_path(q: slug)
+  # href of a curated mega-menu entry, with a search fallback (home links).
+  def nav_entry_path(key, fallback = nil)
+    NavigationMenu.items.find { |item| item.key == key.to_s }&.href ||
+      fallback || search_path
   end
 
   def locale_label(locale)

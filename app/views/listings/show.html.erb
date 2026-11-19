@@ -177,7 +177,7 @@
           <div class="min-w-0 flex-1">
             <%# Store profile pages land in Phase 2 — link stays a placeholder. %>
             <p class="flex items-center gap-1 truncate font-semibold">
-              <%= link_to store.display_name, "#", class: "truncate hover:text-primary-700 dark:hover:text-primary-300" %>
+              <%= link_to store.display_name, store_path(store), class: "truncate hover:text-primary-700 hover:underline dark:hover:text-primary-300" %>
               <% if store.verified? %>
                 <span class="shrink-0 text-primary-600 dark:text-primary-400" title="<%= t(".seller.verified") %>"><%= icon "verified", class: "h-4 w-4" %></span>
               <% end %>
