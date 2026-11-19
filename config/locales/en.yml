@@ -487,3 +487,87 @@ en:
         title: Reviews
         placeholder: Reviews open as soon as this seller completes their first protected
           order.
+  pc_finders:
+    show:
+      title: Find the gaming PC that runs your games
+      eyebrow: PC Finder
+      intro: Answer seven quick questions and we'll match you gaming PCs that hit
+        your target frame rate in the games you actually play.
+      meta:
+        description: Find a gaming PC that runs your favourite games at your resolution
+          and frame-rate target, within your budget.
+      quiz_label: PC Finder quiz
+      steps:
+        progress: Step %{number} of %{total}
+        games:
+          title: Which games do you want to play?
+          hint: Pick up to three.
+        resolution:
+          title: What resolution will you play at?
+        fps:
+          title: Target frame rate
+        budget:
+          title: What's your budget?
+        case:
+          title: Case style
+        cooling:
+          title: Cooling
+        vibe:
+          title: Pick a vibe
+          hint: Optional — we'll boost builds that match.
+      back: Back
+      next: Next
+      submit: See results
+      resolutions:
+        1080p: 1080p Full HD
+        1440p: 1440p QHD
+        2160p: 2160p 4K
+      fps_label: "%{fps} FPS"
+      budgets:
+        any: Any budget
+        under_800: "Under €800"
+        "800_1200": "€800 – €1,200"
+        "1200_2000": "€1,200 – €2,000"
+        over_2000: "Over €2,000"
+      cases:
+        any: No preference
+        white: White build
+        black: Black build
+        compact: Compact build
+      cooling:
+        any: No preference
+        air: Air cooling
+        aio: Liquid cooling
+      no_preference: No preference
+      summary:
+        label: Your answers
+      sort_label: Sort
+      sorts:
+        best_match: Best match
+        price_asc: 'Price: low to high'
+        price_desc: 'Price: high to low'
+        performance: Top performance
+      results_count:
+        one: "%{count} PC can run your games"
+        other: "%{count} PCs can run your games"
+      empty:
+        title: No PCs match those answers
+        body: Try raising your budget or picking a lower resolution or frame rate.
+      performance:
+        label: Estimated performance
+        fps: "%{fps} FPS"
+        unknown: Not measured
+      gamer_types:
+        title: PCs by gamer type
+        anime:
+          title: Anime
+          body: Pastel palettes and anime-themed builds.
+        minimalist:
+          title: Minimalist
+          body: Clean lines and no flashing lights.
+        rgb:
+          title: RGB
+          body: Full-spectrum lighting shows.
+      best_games:
+        title: Best PCs for a game
+        cta: Best PCs for %{game}

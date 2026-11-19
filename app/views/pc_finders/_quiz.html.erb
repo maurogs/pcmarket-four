@@ -1,0 +1,52 @@
+<%# Locals: query (PcFinder::Query), games (active Game records). One GET form:
+    the quiz Stimulus controller steps through the fieldsets; without JS they
+    all stay visible and the form still submits (progressive enhancement). %>
+<% vibes = selectable_labels("seller_tags") %>
+<form action="<%= pc_finder_path %>" method="get" class="card mt-8 p-5 sm:p-8"
+      aria-label="<%= t("pc_finders.show.quiz_label") %>" data-controller="quiz"
+      data-quiz-step-value="<%= params[:step] %>">
+  <input type="hidden" name="page" value="1">
+  <%= hidden_field_tag :sort, query.sort %>
+
+  <%# Progress dots (one per step), styled by the quiz controller. %>
+  <div class="flex items-center justify-center gap-2" aria-hidden="true">
+    <% 7.times do %>
+      <span class="h-2 w-2 rounded-full bg-cream-300 dark:bg-cream-surface" data-quiz-target="dot"></span>
+    <% end %>
+  </div>
+
+  <%= render "step", number: 1, title: t("pc_finders.show.steps.games.title"),
+        hint: t("pc_finders.show.steps.games.hint"), name: "games[]", type: "checkbox",
+        options: games.map { |game| [ game.slug, game.name ] }, selected: query.games.map(&:slug) %>
+
+  <%= render "step", number: 2, title: t("pc_finders.show.steps.resolution.title"),
+        name: "resolution", type: "radio",
+        options: PcFinder::Query::RESOLUTIONS.map { |value| [ value, t("pc_finders.show.resolutions.#{value}") ] },
+        selected: query.resolution %>
+
+  <%= render "step", number: 3, title: t("pc_finders.show.steps.fps.title"),
+        name: "fps", type: "radio",
+        options: PcFinder::Query::FPS_OPTIONS.map { |value| [ value, t("pc_finders.show.fps_label", fps: value) ] },
+        selected: query.fps %>
+
+  <%= render "step", number: 4, title: t("pc_finders.show.steps.budget.title"),
+        name: "budget", type: "radio",
+        options: PcFinder::Query::BUDGETS.keys.map { |value| [ value, t("pc_finders.show.budgets.#{value}") ] },
+        selected: query.budget %>
+
+  <%= render "step", number: 5, title: t("pc_finders.show.steps.case.title"),
+        name: "case_pref", type: "radio",
+        options: PcFinder::Query::CASE_PREFS.map { |value| [ value, t("pc_finders.show.cases.#{value}") ] },
+        selected: query.case_pref %>
+
+  <%= render "step", number: 6, title: t("pc_finders.show.steps.cooling.title"),
+        name: "cooling", type: "radio",
+        options: PcFinder::Query::COOLING_OPTIONS.map { |value| [ value, t("pc_finders.show.cooling.#{value}") ] },
+        selected: query.cooling %>
+
+  <%= render "step", number: 7, title: t("pc_finders.show.steps.vibe.title"),
+        hint: t("pc_finders.show.steps.vibe.hint"), name: "vibe", type: "radio",
+        options: [ [ "", t("pc_finders.show.no_preference") ] ] +
+                 vibes.map { |tag| [ tag.slug, tag.name ] },
+        selected: query.vibe %>
+</form>

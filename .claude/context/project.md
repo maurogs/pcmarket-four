@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (PC Finder step 3 — Query + Recommender services, uncommitted)_
+_Last updated: 2026-11-19 (PC Finder step 4 — route, controller & views, uncommitted)_
 
 ## What this is
 
@@ -246,7 +246,21 @@ FR/GB/DE/IT/PT seeded but disabled.
   (`mini-itx-sff`,`micro-atx`,`mini-tower`); soft vibe + `case_color`
   boosts in best_match SQL (matches DESC, headroom-per-euro DESC);
   Pagy::Offset limit 24; `Result#estimated_fps` capped at 360.
-  No controller/views yet (step 4+).
+
+## Code map (Phase 1b-ii-c — PC Finder step 4: route, controller & views)
+
+- Route `resource :pc_finder, only: :show, path: "pc-finder"` (locale
+  scope) → `PcFindersController#show` (`@query`/`@result`/`@games`).
+- `app/views/pc_finders/{show,_quiz,_step,_results,_performance}.html.erb`:
+  one GET quiz form (`data-controller="quiz"`, step/dot/back/next/submit
+  targets, `data-quiz-step-value` from `?step`, all fieldsets visible
+  without JS), results = summary chips (`to_params` + `step:`), sort form
+  reusing the `filters` controller, `listings/card` + `browse/pagination`
+  reuse, per-card FPS block (green ≥ target / amber below); no-params
+  tiles → gaming-pcs `seller_tags` browse + `pc_finder_path(games:)`.
+  I18n under `pc_finders.show.*` in all 6 locales (quoted `800_1200`-style
+  YAML keys — Psych would parse them as ints otherwise). `quiz` Stimulus
+  controller ships in step 5.
 
 ## Testing
 

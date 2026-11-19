@@ -289,3 +289,45 @@ created per test (spec FilterDefinitions included), no new fixtures.
 
 Verified: `bin/rails test` **201 green** (173 + 28); `bin/rubocop` clean
 (133 files). Not committed.
+
+## 2026-11-19 — PC Finder step 4: route, controller & views (uncommitted)
+
+PC Finder steps 4 of 6: the UI layer on top of Query/Recommender (no JS
+yet — the `quiz` Stimulus controller ships in step 5).
+
+Routes: `resource :pc_finder, only: :show, path: "pc-finder"` inside the
+locale scope → `GET /:locale/pc-finder`.
+
+`app/controllers/pc_finders_controller.rb`: skinny show — `@query =
+PcFinder::Query.new(params)`, `@result = PcFinder::Recommender.new(@query)
+.call if @query.present?`, `@games = Game.active.with_attached_image`.
+
+Views (`app/views/pc_finders/`): `show.html.erb` (meta-tags hero + quiz +
+results-or-discovery-tiles), `_quiz.html.erb` (ONE GET form to
+pc_finder_path, `data-controller="quiz"`, `data-quiz-step-value` from
+`?step`, hidden page=1 + sort, 7 progress dots `data-quiz-target="dot"`),
+`_step.html.erb` (one `<fieldset data-quiz-target="step">` per question:
+games checkboxes (`games[]`, ≤3), resolution/fps/budget/case_pref/cooling/
+vibe radios as peer-styled chips, Back/Next `data-action="quiz#back|next"`
+targets back/next, step 7 holds the `submit` target; without JS all
+fieldsets stay visible and the form submits), `_results.html.erb` (answer
+summary chips linking `query.to_params.merge("step" => N)`, count, sort
+form reusing the existing `filters` controller (`filters#submit` on
+change) with hidden fields replaying the query, `listings/card` grid +
+`browse/pagination` reuse, empty card), `_performance.html.erb` (per-card
+block: each chosen game with `result.estimated_fps`, green ≥ target fps /
+amber below / muted "not measured"). No params: "PCs by gamer type" tiles
+→ `category_path("gaming-pcs", seller_tags: [anime|minimalist|rgb])` and
+"Best PCs for <game>" tiles → `pc_finder_path(games: [slug])`.
+
+I18n: `pc_finders.show.*` block appended after `stores` in all 6 locale
+files (text edited as YAML; `800_1200`/`1200_2000` budget keys quoted so
+Psych keeps them strings). Game names from `Game#name` (untranslated).
+
+Verified: `bin/rails test` **201 green** (no new tests yet — step 6);
+`bin/rubocop` clean (134 files); bare render sanity via
+`PcFindersController.render(..., layout: false, request:
+ActionDispatch::TestRequest.create)` — Application-controller render hits
+`application/_quiz` prefix + Devise warden in the layout, so render the
+concrete controller without layout: no-result page 50 KB with 7 steps/7
+dots/1 submit, result page with 4 cards + 4 green FPS rows. Not committed.

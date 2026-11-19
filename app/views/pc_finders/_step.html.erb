@@ -1,0 +1,46 @@
+<%# Locals: number, title, hint (optional), name, type ("radio"|"checkbox"),
+    options ([value, label] pairs), selected (value or array of values). %>
+<% hint = local_assigns[:hint] %>
+<% chip = "inline-flex items-center rounded-full border border-line-strong bg-surface px-4 py-2 text-sm font-semibold transition-colors hover:border-primary-400 peer-checked:border-primary-600 peer-checked:bg-primary-50 peer-checked:text-primary-800 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-500 dark:bg-cream-surface dark:peer-checked:bg-primary-900 dark:peer-checked:text-primary-100" %>
+<fieldset data-quiz-target="step" class="mt-6 border-0 p-0">
+  <legend class="sr-only"><%= title %></legend>
+  <div class="flex items-baseline justify-between gap-3">
+    <h2 class="font-display text-lg font-bold sm:text-xl"><%= title %></h2>
+    <span class="shrink-0 text-xs font-semibold text-muted"><%= t("pc_finders.show.steps.progress", number: number, total: 7) %></span>
+  </div>
+  <% if hint.present? %>
+    <p class="mt-1 text-sm text-muted"><%= hint %></p>
+  <% end %>
+
+  <div class="mt-4 flex flex-wrap gap-2">
+    <% options.each do |value, label| %>
+      <label class="cursor-pointer">
+        <% if type == "checkbox" %>
+          <%= check_box_tag name, value, Array(selected).map(&:to_s).include?(value.to_s), class: "peer sr-only" %>
+        <% else %>
+          <%= radio_button_tag name, value, selected.to_s == value.to_s, class: "peer sr-only" %>
+        <% end %>
+        <span class="<%= chip %>"><%= label %></span>
+      </label>
+    <% end %>
+  </div>
+
+  <div class="mt-6 flex items-center justify-between">
+    <% if number > 1 %>
+      <button type="button" class="btn-secondary" data-quiz-target="back" data-action="quiz#back">
+        <%= icon "chevron-left", class: "h-4 w-4" %><%= t("pc_finders.show.back") %>
+      </button>
+    <% else %>
+      <span aria-hidden="true"></span>
+    <% end %>
+    <% if number < 7 %>
+      <button type="button" class="btn-primary" data-quiz-target="next" data-action="quiz#next">
+        <%= t("pc_finders.show.next") %><%= icon "chevron-right", class: "h-4 w-4" %>
+      </button>
+    <% else %>
+      <button type="submit" class="btn-primary" data-quiz-target="submit">
+        <%= t("pc_finders.show.submit") %><%= icon "chevron-right", class: "h-4 w-4" %>
+      </button>
+    <% end %>
+  </div>
+</fieldset>

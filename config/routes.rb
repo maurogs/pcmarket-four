@@ -23,6 +23,7 @@ Rails.application.routes.draw do
 
     resource :search, only: :show, controller: "searches"
     resource :sell_to_us, only: :show
+    resource :pc_finder, only: :show, path: "pc-finder"
 
     # Newsletter signup placeholder (persists nothing yet).
     resources :newsletter_subscribers, only: :create

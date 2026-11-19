@@ -492,3 +492,88 @@ it:
         title: Recensioni
         placeholder: Le recensioni si aprono quando questo venditore completa il primo
           ordine protetto.
+  pc_finders:
+    show:
+      title: Trova il PC che fa girare i tuoi giochi
+      eyebrow: PC Finder
+      intro: Rispondi a sette domande rapide e ti abbiniamo PC gaming che raggiungono
+        gli FPS obiettivo nei giochi che giochi davvero.
+      meta:
+        description: Trova un PC gaming che esegue i tuoi giochi preferiti alla tua
+          risoluzione e ai tuoi FPS obiettivo, entro il tuo budget.
+      quiz_label: Quiz PC Finder
+      steps:
+        progress: Passaggio %{number} di %{total}
+        games:
+          title: A quali giochi vuoi giocare?
+          hint: Scegline fino a tre.
+        resolution:
+          title: A quale risoluzione giocherai?
+        fps:
+          title: FPS obiettivo
+        budget:
+          title: Qual è il tuo budget?
+        case:
+          title: Stile del case
+        cooling:
+          title: Raffreddamento
+        vibe:
+          title: Scegli uno stile
+          hint: Facoltativo — mettiamo in risalto le build abbinate.
+      back: Indietro
+      next: Avanti
+      submit: Vedi i risultati
+      resolutions:
+        1080p: 1080p Full HD
+        1440p: 1440p QHD
+        2160p: 2160p 4K
+      fps_label: "%{fps} FPS"
+      budgets:
+        any: Senza limite
+        under_800: "Meno di 800 €"
+        "800_1200": "800 – 1.200 €"
+        "1200_2000": "1.200 – 2.000 €"
+        over_2000: "Oltre 2.000 €"
+      cases:
+        any: Nessuna preferenza
+        white: Build bianca
+        black: Build nera
+        compact: Build compatta
+      cooling:
+        any: Nessuna preferenza
+        air: Raffreddamento ad aria
+        aio: Raffreddamento a liquido
+      no_preference: Nessuna preferenza
+      summary:
+        label: Le tue risposte
+      sort_label: Ordina
+      sorts:
+        best_match: Miglior corrispondenza
+        price_asc: 'Prezzo: crescente'
+        price_desc: 'Prezzo: decrescente'
+        performance: Prestazioni massime
+      results_count:
+        one: "%{count} PC può eseguire i tuoi giochi"
+        other: "%{count} PC possono eseguire i tuoi giochi"
+      empty:
+        title: Nessun PC corrisponde alle tue risposte
+        body: Prova ad alzare il budget o a scegliere una risoluzione o degli FPS
+          più bassi.
+      performance:
+        label: Prestazioni stimate
+        fps: "%{fps} FPS"
+        unknown: Non misurato
+      gamer_types:
+        title: PC per tipo di gamer
+        anime:
+          title: Anime
+          body: Palette pastello e build a tema anime.
+        minimalist:
+          title: Minimalista
+          body: Linee pulite senza luci lampeggianti.
+        rgb:
+          title: RGB
+          body: Spettacoli di luci RGB.
+      best_games:
+        title: PC migliori per gioco
+        cta: PC migliori per %{game}

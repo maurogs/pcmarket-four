@@ -494,3 +494,88 @@ de:
         title: Bewertungen
         placeholder: Bewertungen erscheinen, sobald dieser Verkäufer seine erste geschützte
           Bestellung abschließt.
+  pc_finders:
+    show:
+      title: Finde den PC, der deine Spiele zum Laufen bringt
+      eyebrow: PC Finder
+      intro: Beantworte sieben kurze Fragen und wir zeigen dir Gaming-PCs, die deine
+        Ziel-FPS in den Spielen erreichen, die du wirklich spielst.
+      meta:
+        description: Finde einen Gaming-PC, der deine Lieblingsspiele in deiner Auflösung
+          und Ziel-FPS in deinem Budget ausführt.
+      quiz_label: PC-Finder-Quiz
+      steps:
+        progress: Schritt %{number} von %{total}
+        games:
+          title: Welche Spiele möchtest du spielen?
+          hint: Wähle bis zu drei aus.
+        resolution:
+          title: In welcher Auflösung spielst du?
+        fps:
+          title: Ziel-FPS
+        budget:
+          title: Was ist dein Budget?
+        case:
+          title: Gehäuse-Stil
+        cooling:
+          title: Kühlung
+        vibe:
+          title: Wähle einen Vibe
+          hint: Optional — passende Builds werden bevorzugt.
+      back: Zurück
+      next: Weiter
+      submit: Ergebnisse ansehen
+      resolutions:
+        1080p: 1080p Full HD
+        1440p: 1440p QHD
+        2160p: 2160p 4K
+      fps_label: "%{fps} FPS"
+      budgets:
+        any: Kein Limit
+        under_800: "Unter 800 €"
+        "800_1200": "800 – 1.200 €"
+        "1200_2000": "1.200 – 2.000 €"
+        over_2000: "Über 2.000 €"
+      cases:
+        any: Keine Präferenz
+        white: Weißer Build
+        black: Schwarzer Build
+        compact: Kompakter Build
+      cooling:
+        any: Keine Präferenz
+        air: Luftkühlung
+        aio: Wasserkühlung
+      no_preference: Keine Präferenz
+      summary:
+        label: Deine Antworten
+      sort_label: Sortieren
+      sorts:
+        best_match: Bester Treffer
+        price_asc: 'Preis: aufsteigend'
+        price_desc: 'Preis: absteigend'
+        performance: Beste Leistung
+      results_count:
+        one: "%{count} PC schafft deine Spiele"
+        other: "%{count} PCs schaffen deine Spiele"
+      empty:
+        title: Kein PC passt zu deinen Antworten
+        body: Erhöhe dein Budget oder wähle eine niedrigere Auflösung oder niedrigere
+          FPS.
+      performance:
+        label: Geschätzte Leistung
+        fps: "%{fps} FPS"
+        unknown: Nicht gemessen
+      gamer_types:
+        title: PCs nach Gamer-Typ
+        anime:
+          title: Anime
+          body: Pastellfarben und Anime-Builds.
+        minimalist:
+          title: Minimalistisch
+          body: Klare Linien ohne blinkende Lichter.
+        rgb:
+          title: RGB
+          body: RGB-Lichterspektakel.
+      best_games:
+        title: Beste PCs pro Spiel
+        cta: Beste PCs für %{game}

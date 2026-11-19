@@ -492,3 +492,87 @@ pt:
         title: Críticas
         placeholder: As críticas abrem quando este vendedor concluir a primeira encomenda
           protegida.
+  pc_finders:
+    show:
+      title: Encontra o PC que corre os teus jogos
+      eyebrow: PC Finder
+      intro: Responde a sete perguntas rápidas e emparelhamos-te PCs gaming que atingem
+        os FPS alvo nos jogos que jogas mesmo.
+      meta:
+        description: Encontra um PC gaming que execute os teus jogos favoritos à tua
+          resolução e FPS alvo, dentro do teu orçamento.
+      quiz_label: Questionário PC Finder
+      steps:
+        progress: Passo %{number} de %{total}
+        games:
+          title: A que jogos queres jogar?
+          hint: Escolhe até três.
+        resolution:
+          title: A que resolução vais jogar?
+        fps:
+          title: FPS alvo
+        budget:
+          title: Qual é o teu orçamento?
+        case:
+          title: Estilo da caixa
+        cooling:
+          title: Arrefecimento
+        vibe:
+          title: Escolhe um estilo
+          hint: Opcional — destacamos as builds correspondentes.
+      back: Anterior
+      next: Seguinte
+      submit: Ver resultados
+      resolutions:
+        1080p: 1080p Full HD
+        1440p: 1440p QHD
+        2160p: 2160p 4K
+      fps_label: "%{fps} FPS"
+      budgets:
+        any: Sem limite
+        under_800: "Menos de 800 €"
+        "800_1200": "800 – 1.200 €"
+        "1200_2000": "1.200 – 2.000 €"
+        over_2000: "Mais de 2.000 €"
+      cases:
+        any: Sem preferência
+        white: Build branca
+        black: Build preta
+        compact: Build compacta
+      cooling:
+        any: Sem preferência
+        air: Arrefecimento a ar
+        aio: Arrefecimento líquido
+      no_preference: Sem preferência
+      summary:
+        label: As tuas respostas
+      sort_label: Ordenar
+      sorts:
+        best_match: Melhor correspondência
+        price_asc: 'Preço: mais baixo primeiro'
+        price_desc: 'Preço: mais alto primeiro'
+        performance: Melhor desempenho
+      results_count:
+        one: "%{count} PC corre os teus jogos"
+        other: "%{count} PCs correm os teus jogos"
+      empty:
+        title: Nenhum PC corresponde às tuas respostas
+        body: Tenta aumentar o orçamento ou escolher uma resolução ou FPS mais baixos.
+      performance:
+        label: Desempenho estimado
+        fps: "%{fps} FPS"
+        unknown: Não medido
+      gamer_types:
+        title: PCs por tipo de gamer
+        anime:
+          title: Anime
+          body: Paletas pastel e builds de anime.
+        minimalist:
+          title: Minimalista
+          body: Linhas limpas sem luzes intermitentes.
+        rgb:
+          title: RGB
+          body: Espetáculos de luz RGB.
+      best_games:
+        title: Melhores PCs por jogo
+        cta: Melhores PCs para %{game}

@@ -491,3 +491,88 @@ es:
         title: Reseñas
         placeholder: Las reseñas se abren cuando este vendedor complete su primer
           pedido protegido.
+  pc_finders:
+    show:
+      title: Encuentra el PC que mueve tus juegos
+      eyebrow: PC Finder
+      intro: Responde siete preguntas rápidas y te emparejamos PCs gaming que alcanzan
+        los FPS objetivo en los juegos que juegas de verdad.
+      meta:
+        description: Encuentra un PC gaming que ejecute tus juegos favoritos a tu
+          resolución y tus FPS objetivo, dentro de tu presupuesto.
+      quiz_label: Cuestionario PC Finder
+      steps:
+        progress: Paso %{number} de %{total}
+        games:
+          title: "¿A qué juegos quieres jugar?"
+          hint: Elige hasta tres.
+        resolution:
+          title: "¿A qué resolución vas a jugar?"
+        fps:
+          title: FPS objetivo
+        budget:
+          title: "¿Cuál es tu presupuesto?"
+        case:
+          title: Estilo de la caja
+        cooling:
+          title: Refrigeración
+        vibe:
+          title: Elige un estilo
+          hint: Opcional — priorizamos las builds que encajen.
+      back: Atrás
+      next: Siguiente
+      submit: Ver resultados
+      resolutions:
+        1080p: 1080p Full HD
+        1440p: 1440p QHD
+        2160p: 2160p 4K
+      fps_label: "%{fps} FPS"
+      budgets:
+        any: Sin límite
+        under_800: "Menos de 800 €"
+        "800_1200": "800 – 1.200 €"
+        "1200_2000": "1.200 – 2.000 €"
+        over_2000: "Más de 2.000 €"
+      cases:
+        any: Sin preferencia
+        white: Build blanca
+        black: Build negra
+        compact: Build compacta
+      cooling:
+        any: Sin preferencia
+        air: Refrigeración por aire
+        aio: Refrigeración líquida
+      no_preference: Sin preferencia
+      summary:
+        label: Tus respuestas
+      sort_label: Ordenar
+      sorts:
+        best_match: Mejores coincidencias
+        price_asc: 'Precio: de menor a mayor'
+        price_desc: 'Precio: de mayor a menor'
+        performance: Máximo rendimiento
+      results_count:
+        one: "%{count} PC puede con tus juegos"
+        other: "%{count} PCs pueden con tus juegos"
+      empty:
+        title: Ningún PC coincide con tus respuestas
+        body: Prueba a subir el presupuesto o a elegir una resolución o unos FPS más
+          bajos.
+      performance:
+        label: Rendimiento estimado
+        fps: "%{fps} FPS"
+        unknown: Sin medir
+      gamer_types:
+        title: PCs por tipo de gamer
+        anime:
+          title: Anime
+          body: Paletas pastel y builds de anime.
+        minimalist:
+          title: Minimalista
+          body: Líneas limpias sin luces intermitentes.
+        rgb:
+          title: RGB
+          body: Espectáculos de luz de espectro completo.
+      best_games:
+        title: Mejores PCs por juego
+        cta: Mejores PCs para %{game}
