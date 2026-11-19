@@ -208,6 +208,12 @@ de:
   activerecord:
     errors:
       models:
+        address:
+          attributes:
+            country:
+              not_enabled: ist kein verfügbares Land
+            province:
+              postal_code_mismatch: passt nicht zur Postleitzahl
         follow:
           attributes:
             store:
@@ -217,6 +223,19 @@ de:
             store:
               reviewing_own_store: Du kannst deinen eigenen Shop nicht bewerten
     attributes:
+      address:
+        city: Stadt
+        company: Unternehmen
+        country_id: Land
+        default_shipping: Standard-Lieferadresse
+        first_name: Vorname
+        label: Bezeichnung
+        last_name: Nachname
+        phone: Telefon
+        postal_code: PLZ
+        province: Provinz
+        street_line1: Adresse
+        street_line2: Adresse (Fortsetzung)
       category:
         kind:
           accessory: Zubehör
@@ -589,3 +608,31 @@ de:
       best_games:
         title: Beste PCs pro Spiel
         cta: Beste PCs für %{game}
+  account:
+    addresses:
+      index:
+        title: Lieferadressen
+        add_new: Adresse hinzufügen
+        empty: Sie haben noch keine Lieferadressen.
+        default_badge: Standard
+        make_default: Als Standard festlegen
+        edit: Bearbeiten
+        destroy: Löschen
+        confirm_destroy: Diese Adresse löschen?
+      new:
+        title: Neue Adresse
+      edit:
+        title: Adresse bearbeiten
+      form:
+        submit: Adresse speichern
+        province_prompt: Provinz auswählen
+        country_prompt: Land auswählen
+      create:
+        success: Adresse hinzugefügt.
+      update:
+        success: Adresse aktualisiert.
+      destroy:
+        success: Adresse gelöscht.
+    address_defaults:
+      update:
+        success: Standard-Lieferadresse aktualisiert.

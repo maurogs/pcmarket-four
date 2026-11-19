@@ -207,6 +207,12 @@ pt:
   activerecord:
     errors:
       models:
+        address:
+          attributes:
+            country:
+              not_enabled: não é um país disponível
+            province:
+              postal_code_mismatch: não corresponde ao código postal
         follow:
           attributes:
             store:
@@ -216,6 +222,19 @@ pt:
             store:
               reviewing_own_store: Não pode avaliar a sua própria loja
     attributes:
+      address:
+        city: Cidade
+        company: Empresa
+        country_id: País
+        default_shipping: Morada de envio predefinida
+        first_name: Nome próprio
+        label: Etiqueta
+        last_name: Apelido
+        phone: Telefone
+        postal_code: Código postal
+        province: Província
+        street_line1: Morada
+        street_line2: Morada (continuação)
       category:
         kind:
           accessory: Acessório
@@ -586,3 +605,31 @@ pt:
       best_games:
         title: Melhores PCs por jogo
         cta: Melhores PCs para %{game}
+  account:
+    addresses:
+      index:
+        title: Moradas de envio
+        add_new: Adicionar morada
+        empty: Ainda não tem moradas de envio.
+        default_badge: Predefinida
+        make_default: Tornar predefinida
+        edit: Editar
+        destroy: Remover
+        confirm_destroy: Remover esta morada?
+      new:
+        title: Nova morada
+      edit:
+        title: Editar morada
+      form:
+        submit: Guardar morada
+        province_prompt: Selecione uma província
+        country_prompt: Selecione um país
+      create:
+        success: Morada adicionada.
+      update:
+        success: Morada atualizada.
+      destroy:
+        success: Morada removida.
+    address_defaults:
+      update:
+        success: Morada de envio predefinida atualizada.

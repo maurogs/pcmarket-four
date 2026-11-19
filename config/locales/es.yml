@@ -207,6 +207,12 @@ es:
   activerecord:
     errors:
       models:
+        address:
+          attributes:
+            country:
+              not_enabled: no es un país disponible
+            province:
+              postal_code_mismatch: no coincide con el código postal
         follow:
           attributes:
             store:
@@ -216,6 +222,19 @@ es:
             store:
               reviewing_own_store: No puedes reseñar tu propia tienda
     attributes:
+      address:
+        city: Ciudad
+        company: Empresa
+        country_id: País
+        default_shipping: Dirección de envío predeterminada
+        first_name: Nombre
+        label: Apodo
+        last_name: Apellidos
+        phone: Teléfono
+        postal_code: Código postal
+        province: Provincia
+        street_line1: Dirección
+        street_line2: Dirección (continuación)
       category:
         kind:
           accessory: Accesorio
@@ -586,3 +605,31 @@ es:
       best_games:
         title: Mejores PCs por juego
         cta: Mejores PCs para %{game}
+  account:
+    addresses:
+      index:
+        title: Direcciones de envío
+        add_new: Añadir dirección
+        empty: Aún no tienes direcciones de envío.
+        default_badge: Predeterminada
+        make_default: Usar como predeterminada
+        edit: Editar
+        destroy: Eliminar
+        confirm_destroy: ¿Eliminar esta dirección?
+      new:
+        title: Nueva dirección
+      edit:
+        title: Editar dirección
+      form:
+        submit: Guardar dirección
+        province_prompt: Selecciona una provincia
+        country_prompt: Selecciona un país
+      create:
+        success: Dirección añadida.
+      update:
+        success: Dirección actualizada.
+      destroy:
+        success: Dirección eliminada.
+    address_defaults:
+      update:
+        success: Dirección de envío predeterminada actualizada.

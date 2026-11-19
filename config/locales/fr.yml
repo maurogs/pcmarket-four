@@ -209,6 +209,12 @@ fr:
   activerecord:
     errors:
       models:
+        address:
+          attributes:
+            country:
+              not_enabled: n'est pas un pays disponible
+            province:
+              postal_code_mismatch: ne correspond pas au code postal
         follow:
           attributes:
             store:
@@ -218,6 +224,19 @@ fr:
             store:
               reviewing_own_store: Vous ne pouvez pas évaluer votre propre boutique
     attributes:
+      address:
+        city: Ville
+        company: Entreprise
+        country_id: Pays
+        default_shipping: Adresse de livraison par défaut
+        first_name: Prénom
+        label: Libellé
+        last_name: Nom
+        phone: Téléphone
+        postal_code: Code postal
+        province: Province
+        street_line1: Adresse
+        street_line2: Adresse (suite)
       category:
         kind:
           accessory: Accessoire
@@ -588,3 +607,31 @@ fr:
       best_games:
         title: Meilleurs PC par jeu
         cta: Meilleurs PC pour %{game}
+  account:
+    addresses:
+      index:
+        title: Adresses de livraison
+        add_new: Ajouter une adresse
+        empty: Vous n'avez aucune adresse de livraison.
+        default_badge: Par défaut
+        make_default: Définir par défaut
+        edit: Modifier
+        destroy: Supprimer
+        confirm_destroy: Supprimer cette adresse ?
+      new:
+        title: Nouvelle adresse
+      edit:
+        title: Modifier l'adresse
+      form:
+        submit: Enregistrer l'adresse
+        province_prompt: Sélectionnez une province
+        country_prompt: Sélectionnez un pays
+      create:
+        success: Adresse ajoutée.
+      update:
+        success: Adresse mise à jour.
+      destroy:
+        success: Adresse supprimée.
+    address_defaults:
+      update:
+        success: Adresse de livraison par défaut mise à jour.

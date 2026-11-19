@@ -1,0 +1,72 @@
+<%= form_with model: [ :account, address ] do |f| %>
+  <%= render "devise/shared/error_messages", resource: address %>
+
+  <div class="mt-6 space-y-4">
+    <div>
+      <%= f.label :label, class: "block text-sm font-medium" %>
+      <%= f.text_field :label, class: "input-field mt-1" %>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <%= f.label :first_name, class: "block text-sm font-medium" %>
+        <%= f.text_field :first_name, autocomplete: "given-name", required: true, class: "input-field mt-1" %>
+      </div>
+      <div>
+        <%= f.label :last_name, class: "block text-sm font-medium" %>
+        <%= f.text_field :last_name, autocomplete: "family-name", required: true, class: "input-field mt-1" %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :company, class: "block text-sm font-medium" %>
+      <%= f.text_field :company, autocomplete: "organization", class: "input-field mt-1" %>
+    </div>
+
+    <div>
+      <%= f.label :street_line1, class: "block text-sm font-medium" %>
+      <%= f.text_field :street_line1, autocomplete: "address-line1", required: true, class: "input-field mt-1" %>
+    </div>
+
+    <div>
+      <%= f.label :street_line2, class: "block text-sm font-medium" %>
+      <%= f.text_field :street_line2, autocomplete: "address-line2", class: "input-field mt-1" %>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <%= f.label :city, class: "block text-sm font-medium" %>
+        <%= f.text_field :city, autocomplete: "address-level2", required: true, class: "input-field mt-1" %>
+      </div>
+      <div>
+        <%= f.label :postal_code, class: "block text-sm font-medium" %>
+        <%= f.text_field :postal_code, autocomplete: "postal-code", required: true, class: "input-field mt-1" %>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <%= f.label :province, class: "block text-sm font-medium" %>
+        <%= f.select :province, SpanishProvince.options, { include_blank: t(".province_prompt") },
+              class: "input-field mt-1" %>
+      </div>
+      <div>
+        <%= f.label :country_id, class: "block text-sm font-medium" %>
+        <%= f.collection_select :country_id, Country.enabled.ordered_by_code, :id, :name,
+              { include_blank: t(".country_prompt") }, class: "input-field mt-1" %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :phone, class: "block text-sm font-medium" %>
+      <%= f.telephone_field :phone, autocomplete: "tel", class: "input-field mt-1" %>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <%= f.check_box :default_shipping, class: "h-4 w-4 rounded border-line accent-primary-600" %>
+      <%= f.label :default_shipping, class: "text-sm font-medium" %>
+    </div>
+
+    <%= f.submit t(".submit"), class: "btn-primary w-full cursor-pointer" %>
+  </div>
+<% end %>

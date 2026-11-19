@@ -27,5 +27,14 @@ Rails.application.routes.draw do
 
     # Newsletter signup placeholder (persists nothing yet).
     resources :newsletter_subscribers, only: :create
+
+    # Signed-in account area (Phase 2).
+    namespace :account do
+      resources :addresses, except: :show do
+        # Singular nested resource: PATCH /account/addresses/:address_id/default
+        # promotes that address to the user's default.
+        resource :default, only: :update, controller: "address_defaults"
+      end
+    end
   end
 end

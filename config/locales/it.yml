@@ -207,6 +207,12 @@ it:
   activerecord:
     errors:
       models:
+        address:
+          attributes:
+            country:
+              not_enabled: non è un paese disponibile
+            province:
+              postal_code_mismatch: non corrisponde al CAP
         follow:
           attributes:
             store:
@@ -216,6 +222,19 @@ it:
             store:
               reviewing_own_store: Non puoi recensire il tuo stesso negozio
     attributes:
+      address:
+        city: Città
+        company: Azienda
+        country_id: Paese
+        default_shipping: Indirizzo di spedizione predefinito
+        first_name: Nome
+        label: Etichetta
+        last_name: Cognome
+        phone: Telefono
+        postal_code: CAP
+        province: Provincia
+        street_line1: Indirizzo
+        street_line2: Indirizzo (continua)
       category:
         kind:
           accessory: Accessorio
@@ -587,3 +606,31 @@ it:
       best_games:
         title: PC migliori per gioco
         cta: PC migliori per %{game}
+  account:
+    addresses:
+      index:
+        title: Indirizzi di spedizione
+        add_new: Aggiungi indirizzo
+        empty: Non hai ancora indirizzi di spedizione.
+        default_badge: Predefinito
+        make_default: Rendi predefinito
+        edit: Modifica
+        destroy: Rimuovi
+        confirm_destroy: Rimuovere questo indirizzo?
+      new:
+        title: Nuovo indirizzo
+      edit:
+        title: Modifica indirizzo
+      form:
+        submit: Salva indirizzo
+        province_prompt: Seleziona una provincia
+        country_prompt: Seleziona un paese
+      create:
+        success: Indirizzo aggiunto.
+      update:
+        success: Indirizzo aggiornato.
+      destroy:
+        success: Indirizzo rimosso.
+    address_defaults:
+      update:
+        success: Indirizzo di spedizione predefinito aggiornato.

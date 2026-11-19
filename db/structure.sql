@@ -247,6 +247,49 @@ ALTER SEQUENCE public.active_storage_variant_records_id_seq OWNED BY public.acti
 
 
 --
+-- Name: addresses; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.addresses (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    label character varying,
+    first_name character varying NOT NULL,
+    last_name character varying NOT NULL,
+    company character varying,
+    street_line1 character varying NOT NULL,
+    street_line2 character varying,
+    city character varying NOT NULL,
+    province character varying,
+    postal_code character varying NOT NULL,
+    country_id bigint NOT NULL,
+    phone character varying,
+    default_shipping boolean DEFAULT false NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: addresses_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.addresses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: addresses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.addresses_id_seq OWNED BY public.addresses.id;
+
+
+--
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -995,6 +1038,13 @@ ALTER TABLE ONLY public.active_storage_variant_records ALTER COLUMN id SET DEFAU
 
 
 --
+-- Name: addresses id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.addresses ALTER COLUMN id SET DEFAULT nextval('public.addresses_id_seq'::regclass);
+
+
+--
 -- Name: categories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1142,6 +1192,14 @@ ALTER TABLE ONLY public.active_storage_blobs
 
 ALTER TABLE ONLY public.active_storage_variant_records
     ADD CONSTRAINT active_storage_variant_records_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: addresses addresses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.addresses
+    ADD CONSTRAINT addresses_pkey PRIMARY KEY (id);
 
 
 --
@@ -1358,6 +1416,27 @@ CREATE UNIQUE INDEX index_active_storage_blobs_on_key ON public.active_storage_b
 --
 
 CREATE UNIQUE INDEX index_active_storage_variant_records_uniqueness ON public.active_storage_variant_records USING btree (blob_id, variation_digest);
+
+
+--
+-- Name: index_addresses_on_country_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_addresses_on_country_id ON public.addresses USING btree (country_id);
+
+
+--
+-- Name: index_addresses_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_addresses_on_user_id ON public.addresses USING btree (user_id);
+
+
+--
+-- Name: index_addresses_on_user_id_unique_default; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_addresses_on_user_id_unique_default ON public.addresses USING btree (user_id) WHERE default_shipping;
 
 
 --
@@ -1829,6 +1908,14 @@ ALTER TABLE ONLY public.category_filters
 
 
 --
+-- Name: addresses fk_rails_48c9e0c5a2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.addresses
+    ADD CONSTRAINT fk_rails_48c9e0c5a2 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: category_filters fk_rails_534a815bc7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1941,6 +2028,14 @@ ALTER TABLE ONLY public.listing_labels
 
 
 --
+-- Name: addresses fk_rails_d873e14e27; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.addresses
+    ADD CONSTRAINT fk_rails_d873e14e27 FOREIGN KEY (country_id) REFERENCES public.countries(id);
+
+
+--
 -- Name: listing_seller_tags fk_rails_eefd13c54c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1963,6 +2058,7 @@ ALTER TABLE ONLY public.listing_labels
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261119180003'),
 ('20261119180002'),
 ('20261119180001'),
 ('20261119170002'),

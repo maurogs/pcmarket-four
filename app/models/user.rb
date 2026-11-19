@@ -11,6 +11,8 @@ class User < ApplicationRecord
   has_many :follows, foreign_key: :follower_id, dependent: :destroy
   has_many :followed_stores, through: :follows, source: :store
   has_many :reviews_written, class_name: "Review", foreign_key: :author_id, dependent: :destroy
+  has_many :addresses, dependent: :destroy
+  has_one :default_address, -> { where(default_shipping: true) }, class_name: "Address"
   has_one_attached :avatar
 
   enum :role, { user: 0, admin: 1, moderator: 2 }, default: :user

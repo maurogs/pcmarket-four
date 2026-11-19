@@ -206,6 +206,12 @@ en:
   activerecord:
     errors:
       models:
+        address:
+          attributes:
+            country:
+              not_enabled: is not an available country
+            province:
+              postal_code_mismatch: does not match the postal code
         follow:
           attributes:
             store:
@@ -215,6 +221,19 @@ en:
             store:
               reviewing_own_store: You can't review your own store
     attributes:
+      address:
+        city: City
+        company: Company
+        country_id: Country
+        default_shipping: Default shipping address
+        first_name: First name
+        label: Label
+        last_name: Last name
+        phone: Phone
+        postal_code: Postcode
+        province: Province
+        street_line1: Address line 1
+        street_line2: Address line 2
       category:
         kind:
           accessory: Accessory
@@ -581,3 +600,31 @@ en:
       best_games:
         title: Best PCs for a game
         cta: Best PCs for %{game}
+  account:
+    addresses:
+      index:
+        title: Shipping addresses
+        add_new: Add address
+        empty: You don't have any shipping addresses yet.
+        default_badge: Default
+        make_default: Make default
+        edit: Edit
+        destroy: Remove
+        confirm_destroy: Remove this address?
+      new:
+        title: New address
+      edit:
+        title: Edit address
+      form:
+        submit: Save address
+        province_prompt: Select a province
+        country_prompt: Select a country
+      create:
+        success: Address added.
+      update:
+        success: Address updated.
+      destroy:
+        success: Address removed.
+    address_defaults:
+      update:
+        success: Default shipping address updated.

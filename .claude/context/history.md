@@ -423,3 +423,55 @@ tables, so it also needs `teardown { Review.delete_all }`.
 
 Verified: `bin/rails test` 229 green; `bin/rubocop` clean (143 files).
 Not committed.
+
+## 2026-11-19 — Phase 2 step 2a: shipping addresses (model + account CRUD)
+
+Migration `20261119180003_create_addresses` (user/country FKs, label/names/
+company/street_line1/2/city/province/postal_code/phone, default_shipping bool
+default false; **partial unique index [user_id] WHERE (default_shipping)** —
+needs an explicit `name:` because `t.references :user` already created
+`index_addresses_on_user_id`). Reversible `change`; migrate → rollback →
+migrate verified.
+
+Model `Address`: belongs_to user + country; presence on user/country/
+first_name/last_name/street_line1/city/postal_code; Spain-only rules in
+`validate :validate_spain` (`spain?` = country code ES): province required +
+must be a `SpanishProvince` code, postal code `/\A\d{5}\z/`, and postal code
+must start with the province code (INE code = first 2 postal digits; Ceuta 51
+/ Melilla 52 included). `SpanishProvince` has **no postal-prefix mapping** —
+the rule lives in the model. `before_validation` nulls `province` for non-ES;
+country must be `Country.enabled` (`errors.add(:country, :not_enabled)`).
+Defaults: `after_create :become_default_when_first` (update_column),
+`before_save :unset_other_defaults` (update_all) protects the partial unique
+index when creating/editing with the checkbox, `make_default!` wraps
+unset-others + `update!` in a transaction. `defaults_first` scope,
+`formatted_lines`/`to_s`/`full_name`/`province_name`. User: `has_many
+:addresses, dependent: :destroy` + `has_one :default_address` (scoped).
+
+Routes (locale scope): `namespace :account { resources :addresses, except:
+:show { resource :default, only: :update, controller: "address_defaults" } }`
+→ PATCH `/account/addresses/:id/default` (RESTful nested singular resource,
+no custom member action). Controllers scope everything through
+`current_user.addresses.find` (RecordNotFound → 404; test env renders it via
+`show_exceptions = :rescuable`); invalid create/update re-renders the form
+with 422 (Turbo-friendly); flash via lazy `t(".success")`. Views
+`account/addresses/{index,new,edit,_form}` reuse `devise/shared/error_messages`,
+`card`/`input-field`/`btn-*` utilities, province select from
+`SpanishProvince.options` + enabled-countries select.
+
+i18n: `activerecord.errors.models.address.attributes.{country.not_enabled,
+province.postal_code_mismatch}`, `activerecord.attributes.address.*`, and
+`account.addresses.*` + `account.address_defaults.update.success` in all 6
+locales (parity test green).
+
+Tests (30 new): `test/models/address_test.rb` (17) +
+`test/controllers/account/addresses_controller_test.rb` (13). **Gotcha:**
+Warden test-mode `sign_in` injects the user only into the *next* request and
+persistence relies on that response's session cookie — a 404 rendered by the
+exceptions app drops the Set-Cookie, so the *following* request is anonymous
+(302 to sign_in). Controller-test setup warms the session with one successful
+GET first. Also: `assert_match` on translated text with an apostrophe fails
+against HTML (`&#39;`) — use `assert_select` with `text:`.
+
+Verified: `bin/rails test` 259 green; `bin/rubocop` clean (149 files).
+Not committed.

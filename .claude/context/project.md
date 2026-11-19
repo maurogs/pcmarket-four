@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (Phase 2 step 1 — follows + reviews data model,
+_Last updated: 2026-11-19 (Phase 2 step 2a — shipping addresses,
 uncommitted)_
 
 ## What this is
@@ -305,9 +305,35 @@ FR/GB/DE/IT/PT seeded but disabled.
   reload only clears fixture tables). `t.smallint` doesn't exist — use
   `t.integer limit: 2`.
 
+## Code map (Phase 2 step 2a — shipping addresses)
+
+- `db/migrate/20261119180003_create_addresses.rb` — user/country FKs +
+  address fields + `default_shipping`; partial unique index
+  `[user_id] WHERE (default_shipping)` needs an explicit `name:` (collides
+  with the `t.references` FK index otherwise).
+- `app/models/address.rb` — Spain-only rules (province ∈
+  `SpanishProvince.codes`, postal `/\A\d{5}\z/` starting with the province
+  INE code — no mapping exists on `SpanishProvince` itself), country must be
+  `Country.enabled`, `province` nulled for non-ES; first address
+  auto-defaults, `before_save :unset_other_defaults` + `make_default!` keep
+  the partial unique index safe; `defaults_first` scope, `formatted_lines`.
+  User: `has_many :addresses` + `has_one :default_address` (scoped).
+- Routes: `resources :addresses, except: :show` + nested
+  `resource :default, only: :update, controller: "address_defaults"` (PATCH
+  `/account/addresses/:id/default`) inside the locale `:account` namespace.
+- `Account::AddressesController` / `Account::AddressDefaultsController` —
+  all lookups via `current_user.addresses.find` (foreign record → 404),
+  422 re-render on invalid, lazy `t(".success")` flashes. Views
+  `app/views/account/addresses/{index,new,edit,_form}`.
+- Gotcha: Warden test-mode `sign_in` only covers the *next* request; a 404
+  rendered by the exceptions app doesn't set the session cookie, so the next
+  request is anonymous — the controller-test setup warms the session with a
+  successful GET. `assert_match` fails on translated text containing `'`
+  (HTML `&#39;`) — use `assert_select text:`.
+
 ## Testing
 
-- `bin/rails test` — **229 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **259 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -326,7 +352,10 @@ FR/GB/DE/IT/PT seeded but disabled.
   `test/controllers/pc_finders_controller_test.rb` (13 tests); Phase 2 step 1
   adds `test/models/{follow,review}_test.rb` and
   `test/services/stores/rating_recalculator_test.rb` (15 tests, users/reviews
-  created per test).
+  created per test); Phase 2 step 2a adds `test/models/address_test.rb` and
+  `test/controllers/account/addresses_controller_test.rb` (30 tests — ES
+  postal/province rules, default-address logic, auth, ownership 404s, 422
+  re-render, PATCH default).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -352,4 +381,6 @@ FR/GB/DE/IT/PT seeded but disabled.
   `offers_enabled`, `chat_enabled`) — Phases 5/6.
 - Mobile price filter loses values without JS (euro→cents sync is Stimulus).
 - CI not set up yet.
-- No commit made for Phases 0/1a/1b-i/1b-ii/2.1 — awaiting user review.
+- Address book is account-only for now — checkout/sell-flow pickup of
+  `User#default_address` lands with Phase 5 (orders).
+- No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a — awaiting user review.
