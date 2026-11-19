@@ -203,3 +203,30 @@ links, sell-to-us promo flag gating, NavigationMenu service ×4, store show
 sold-last ordering/scoping/tabs/vacation/404, demo seed never loaded in
 test env). `bin/rails test` **163 green**; `bin/rubocop` clean; tailwind
 build OK. Not committed — awaiting user review.
+
+## 2026-11-19 — PC Finder step 1: games + performance scores (uncommitted)
+
+PC Finder (6 steps) groundwork. New `games` table (slug unique, name,
+position, active, `demand` jsonb benchmark targets like
+{"1080p":{"60":20,"144":45,"240":70}}, `cpu_weight` decimal(4,2) default
+0.3) + `Game` model (`required_score(resolution, fps)`, `active` scope
+ordered by position, `has_one_attached :image`). `performance_score`
+integer added to `filter_options` (per machine-value benchmark) and
+`listings` (cached, partial index on status/performance_score where
+published). New `Listings::PerformanceScorer`: gpu score from the
+`gpu_model` filter option, blended with the `cpu_model` option score as
+`gpu*(1-w) + cpu*w` (w=0.3) when present; nil without a scored GPU.
+`Listing` recomputes it in `before_save` when specs change.
+
+Files: `db/migrate/20261119170001_create_games.rb`,
+`db/migrate/20261119170002_add_performance_score_to_filter_options_and_listings.rb`,
+`app/models/game.rb`, `app/services/listings/performance_scorer.rb`,
+`app/models/listing.rb`, `test/models/game_test.rb`,
+`test/services/listings/performance_scorer_test.rb`.
+
+Gotcha: `:1080p` is not a valid Ruby symbol (starts with a digit) — use
+`:"1080p"` in tests.
+
+Verified: migrate → rollback STEP=2 → migrate clean (both reversible);
+new tests 10 green; listing/search regression tests 50 green; rubocop
+clean on touched files. Not committed.

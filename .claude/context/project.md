@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (Phase 1b-ii-a mega menu + home + store pages + demo seed complete, uncommitted)_
+_Last updated: 2026-11-19 (PC Finder step 1 — games + performance scores, uncommitted)_
 
 ## What this is
 
@@ -208,6 +208,18 @@ FR/GB/DE/IT/PT seeded but disabled.
   `Rails.env.development? && ENV["DEMO"] == "1"` (README "Demo data"
   section); `db/seeds/development/demo.rb` self-skips once ≥200 demo
   listings exist. Demo emails are `%@demo.example.com`.
+
+## Code map (Phase 1b-ii-b — PC Finder step 1: games + performance scores)
+
+- `app/models/game.rb` — PC Finder catalog game: `demand` jsonb benchmark
+  targets (`required_score(resolution, fps)`), `cpu_weight`, `active`
+  scope (position order), `has_one_attached :image`.
+- `filter_options.performance_score` / `listings.performance_score`
+  (integer, nullable; partial index `idx_listings_status_performance_score`).
+- `app/services/listings/performance_scorer.rb` — gpu score from the
+  `gpu_model` FilterOption, blended with `cpu_model` as `gpu*0.7 + cpu*0.3`
+  (nil without a scored GPU); `Listing` assigns it in `before_save` when
+  specs change.
 
 ## Testing
 

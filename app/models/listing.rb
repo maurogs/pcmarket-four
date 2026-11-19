@@ -134,6 +134,7 @@ class Listing < ApplicationRecord
 
   before_validation :normalize_specs
   before_save :snapshot_review_context
+  before_save :assign_performance_score, if: :will_save_change_to_specs?
   after_save :return_to_review_if_content_edited
   after_save :queue_counter_refreshes, if: :category_or_status_changed?
   after_destroy :queue_counter_refreshes
@@ -304,6 +305,11 @@ class Listing < ApplicationRecord
 
   def currency_unit
     CURRENCY_UNITS.fetch(currency) { "#{currency} " }
+  end
+
+  # Recompute the PC Finder benchmark score whenever specs change.
+  def assign_performance_score
+    self.performance_score = Listings::PerformanceScorer.call(self)
   end
 
   def original_price_above_price

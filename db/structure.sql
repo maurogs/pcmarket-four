@@ -424,7 +424,8 @@ CREATE TABLE public.filter_options (
     featured boolean DEFAULT false NOT NULL,
     active boolean DEFAULT true NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    performance_score integer
 );
 
 
@@ -478,6 +479,42 @@ CREATE SEQUENCE public.friendly_id_slugs_id_seq
 --
 
 ALTER SEQUENCE public.friendly_id_slugs_id_seq OWNED BY public.friendly_id_slugs.id;
+
+
+--
+-- Name: games; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.games (
+    id bigint NOT NULL,
+    slug character varying NOT NULL,
+    name character varying NOT NULL,
+    "position" integer DEFAULT 0,
+    active boolean DEFAULT true NOT NULL,
+    demand jsonb DEFAULT '{}'::jsonb NOT NULL,
+    cpu_weight numeric(4,2) DEFAULT 0.3 NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: games_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.games_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: games_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.games_id_seq OWNED BY public.games.id;
 
 
 --
@@ -588,7 +625,8 @@ CREATE TABLE public.listings (
     watchers_count integer DEFAULT 0 NOT NULL,
     searchable tsvector,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    performance_score integer
 );
 
 
@@ -925,6 +963,13 @@ ALTER TABLE ONLY public.friendly_id_slugs ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- Name: games id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.games ALTER COLUMN id SET DEFAULT nextval('public.games_id_seq'::regclass);
+
+
+--
 -- Name: listing_labels id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1068,6 +1113,14 @@ ALTER TABLE ONLY public.friendly_id_slugs
 
 
 --
+-- Name: games games_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.games
+    ADD CONSTRAINT games_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: listing_labels listing_labels_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1166,6 +1219,13 @@ CREATE INDEX idx_listings_featured ON public.listings USING btree (status, featu
 --
 
 CREATE INDEX idx_listings_price_published ON public.listings USING btree (price_cents) WHERE ((status)::text = 'published'::text);
+
+
+--
+-- Name: idx_listings_status_performance_score; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_listings_status_performance_score ON public.listings USING btree (status, performance_score) WHERE ((status)::text = 'published'::text);
 
 
 --
@@ -1341,6 +1401,13 @@ CREATE INDEX index_friendly_id_slugs_on_sluggable_type ON public.friendly_id_slu
 --
 
 CREATE INDEX index_friendly_id_slugs_on_sluggable_type_and_sluggable_id ON public.friendly_id_slugs USING btree (sluggable_type, sluggable_id);
+
+
+--
+-- Name: index_games_on_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_games_on_slug ON public.games USING btree (slug);
 
 
 --
@@ -1717,6 +1784,8 @@ ALTER TABLE ONLY public.listing_labels
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261119170002'),
+('20261119170001'),
 ('20261119160012'),
 ('20261119160011'),
 ('20261119160010'),
