@@ -207,6 +207,16 @@ fr:
         description: Vendez vos ordinateurs et composants d'occasion à PCMarket à
           un prix garanti.
   activerecord:
+    errors:
+      models:
+        follow:
+          attributes:
+            store:
+              following_own_store: Vous ne pouvez pas suivre votre propre boutique
+        review:
+          attributes:
+            store:
+              reviewing_own_store: Vous ne pouvez pas évaluer votre propre boutique
     attributes:
       category:
         kind:

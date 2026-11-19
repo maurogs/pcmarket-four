@@ -9,6 +9,9 @@ class Store < ApplicationRecord
   belongs_to :user
   belongs_to :country, optional: true
   has_many :listings, dependent: :destroy
+  has_many :follows, dependent: :destroy
+  has_many :followers, through: :follows, source: :follower
+  has_many :reviews, dependent: :destroy
 
   has_one_attached :logo
   has_one_attached :banner

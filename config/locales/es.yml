@@ -205,6 +205,16 @@ es:
         description: Vende a PCMarket tus ordenadores y componentes de segunda mano
           a un precio garantizado.
   activerecord:
+    errors:
+      models:
+        follow:
+          attributes:
+            store:
+              following_own_store: No puedes seguir tu propia tienda
+        review:
+          attributes:
+            store:
+              reviewing_own_store: No puedes reseñar tu propia tienda
     attributes:
       category:
         kind:

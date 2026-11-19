@@ -377,3 +377,49 @@ No app bugs found — no app code changed. `project.md` updated: PC Finder
 marked done, open items list admin CRUD for games/performance scores
 (Phase 7) and real game images. Verified: `bin/rails test` 214 green;
 `bin/rubocop` clean (135 files). Not committed.
+
+## 2026-11-19 — Phase 2 step 1: follows + reviews data model
+
+Migrations (both reversible, verified `db:rollback STEP=2` + re-migrate):
+`20261119180001_create_follows` (follower_id→users + store_id FKs not null,
+unique [follower_id, store_id], store_id index) and
+`20261119180002_create_reviews` (store/author→users FKs not null, listing FK
+on_delete nullify, order_id bigint **no FK yet** — orders land in Phase 5,
+rating smallint (`t.integer limit: 2`; `t.smallint` doesn't exist on the PG
+TableDefinition) + check constraint `chk_reviews_rating_range` 1..5,
+title/body/seller_reply/seller_replied_at, status string default published,
+verified_purchase, unique partial [author_id, order_id] WHERE order_id IS
+NOT NULL, [store_id, status, created_at DESC]). `t.references … index: false`
+where a composite index covers the FK column.
+
+Models: `Follow` (belongs_to follower User + store counter_cache
+:followers_count; uniqueness scoped to follower; self-follow rejected via
+`errors.add(:store, :following_own_store)`), `Review` (string enum status
+published/hidden, rating numericality 1..5 integer, title ≤120 / body ≤2000,
+self-review rejected, scopes published (enum) + recent, `after_commit
+recalculate_store_rating` on create/update/destroy).
+`Stores::RatingRecalculator` — one `pick(Arel.sql(...))` aggregate
+(COALESCE(ROUND(AVG(rating),2),0), COUNT(*)) over published reviews →
+`update_columns(rating_avg:, ratings_count:)`; guards `store.persisted?`
+because update_columns raises on a destroyed record (store destroy →
+dependent reviews → after_commit runs after the store row is gone).
+
+Associations: User has_many :follows (foreign_key follower_id) /
+:followed_stores / :reviews_written (Review, foreign_key author_id,
+dependent: :destroy) + `following?(store)`; Store has_many :follows /
+:followers / :reviews (all dependent: :destroy). Error messages added under
+`activerecord.errors.models.{follow,review}.attributes.store.*` in all 6
+locales (parity test).
+
+Tests (15 new): follow_test (counter cache + decrement, self-follow,
+duplicate, following?, user destroy), review_test (rating bounds incl.
+2.5/nil, length caps, self-review, defaults, published/recent scopes),
+services/stores/rating_recalculator_test (avg+count on create, 2-decimal
+rounding, hide, destroy→reset). **Gotcha:** after_commit never fires under
+transactional fixtures (confirmed in Rails 8.1 test_fixtures.rb — pinned
+transaction is rolled back), so the recalculator test uses
+`self.use_transactional_tests = false`; fixtures reload only DELETEs fixture
+tables, so it also needs `teardown { Review.delete_all }`.
+
+Verified: `bin/rails test` 229 green; `bin/rubocop` clean (143 files).
+Not committed.

@@ -204,6 +204,16 @@ en:
         description: Sell your used computers and components to PCMarket for a guaranteed
           price.
   activerecord:
+    errors:
+      models:
+        follow:
+          attributes:
+            store:
+              following_own_store: You can't follow your own store
+        review:
+          attributes:
+            store:
+              reviewing_own_store: You can't review your own store
     attributes:
       category:
         kind:

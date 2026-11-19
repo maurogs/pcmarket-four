@@ -205,6 +205,16 @@ it:
         description: Vendi a PCMarket i tuoi computer e componenti usati a un prezzo
           garantito.
   activerecord:
+    errors:
+      models:
+        follow:
+          attributes:
+            store:
+              following_own_store: Non puoi seguire il tuo stesso negozio
+        review:
+          attributes:
+            store:
+              reviewing_own_store: Non puoi recensire il tuo stesso negozio
     attributes:
       category:
         kind:

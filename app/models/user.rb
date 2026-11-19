@@ -8,6 +8,9 @@ class User < ApplicationRecord
 
   belongs_to :country, optional: true
   has_one :store, dependent: :destroy
+  has_many :follows, foreign_key: :follower_id, dependent: :destroy
+  has_many :followed_stores, through: :follows, source: :store
+  has_many :reviews_written, class_name: "Review", foreign_key: :author_id, dependent: :destroy
   has_one_attached :avatar
 
   enum :role, { user: 0, admin: 1, moderator: 2 }, default: :user
@@ -25,6 +28,10 @@ class User < ApplicationRecord
 
   def display_name
     full_name
+  end
+
+  def following?(store)
+    store.present? && follows.exists?(store_id: store.id)
   end
 
   # Creates or finds a user from a Google OAuth identity.

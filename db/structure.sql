@@ -449,6 +449,38 @@ ALTER SEQUENCE public.filter_options_id_seq OWNED BY public.filter_options.id;
 
 
 --
+-- Name: follows; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.follows (
+    id bigint NOT NULL,
+    follower_id bigint NOT NULL,
+    store_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: follows_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.follows_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: follows_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.follows_id_seq OWNED BY public.follows.id;
+
+
+--
 -- Name: friendly_id_slugs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -715,6 +747,48 @@ ALTER SEQUENCE public.product_labels_id_seq OWNED BY public.product_labels.id;
 
 
 --
+-- Name: reviews; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.reviews (
+    id bigint NOT NULL,
+    store_id bigint NOT NULL,
+    author_id bigint NOT NULL,
+    listing_id bigint,
+    order_id bigint,
+    rating smallint NOT NULL,
+    title character varying,
+    body text,
+    seller_reply text,
+    seller_replied_at timestamp(6) without time zone,
+    status character varying DEFAULT 'published'::character varying NOT NULL,
+    verified_purchase boolean DEFAULT false NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    CONSTRAINT chk_reviews_rating_range CHECK (((rating >= 1) AND (rating <= 5)))
+);
+
+
+--
+-- Name: reviews_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.reviews_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: reviews_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.reviews_id_seq OWNED BY public.reviews.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -956,6 +1030,13 @@ ALTER TABLE ONLY public.filter_options ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
+-- Name: follows id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.follows ALTER COLUMN id SET DEFAULT nextval('public.follows_id_seq'::regclass);
+
+
+--
 -- Name: friendly_id_slugs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1002,6 +1083,13 @@ ALTER TABLE ONLY public.probe_things ALTER COLUMN id SET DEFAULT nextval('public
 --
 
 ALTER TABLE ONLY public.product_labels ALTER COLUMN id SET DEFAULT nextval('public.product_labels_id_seq'::regclass);
+
+
+--
+-- Name: reviews id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reviews ALTER COLUMN id SET DEFAULT nextval('public.reviews_id_seq'::regclass);
 
 
 --
@@ -1105,6 +1193,14 @@ ALTER TABLE ONLY public.filter_options
 
 
 --
+-- Name: follows follows_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.follows
+    ADD CONSTRAINT follows_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: friendly_id_slugs friendly_id_slugs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1158,6 +1254,14 @@ ALTER TABLE ONLY public.probe_things
 
 ALTER TABLE ONLY public.product_labels
     ADD CONSTRAINT product_labels_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: reviews reviews_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reviews
+    ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
 
 
 --
@@ -1376,6 +1480,20 @@ CREATE UNIQUE INDEX index_filter_options_on_filter_definition_id_and_value ON pu
 
 
 --
+-- Name: index_follows_on_follower_id_and_store_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_follows_on_follower_id_and_store_id ON public.follows USING btree (follower_id, store_id);
+
+
+--
+-- Name: index_follows_on_store_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_follows_on_store_id ON public.follows USING btree (store_id);
+
+
+--
 -- Name: index_friendly_id_slugs_on_slug_and_sluggable_type; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1537,6 +1655,27 @@ CREATE UNIQUE INDEX index_product_labels_on_slug ON public.product_labels USING 
 
 
 --
+-- Name: index_reviews_on_author_id_and_order_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_reviews_on_author_id_and_order_id ON public.reviews USING btree (author_id, order_id) WHERE (order_id IS NOT NULL);
+
+
+--
+-- Name: index_reviews_on_listing_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_reviews_on_listing_id ON public.reviews USING btree (listing_id);
+
+
+--
+-- Name: index_reviews_on_store_id_and_status_and_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_reviews_on_store_id_and_status_and_created_at ON public.reviews USING btree (store_id, status, created_at DESC);
+
+
+--
 -- Name: index_seller_tags_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1650,11 +1789,35 @@ ALTER TABLE ONLY public.filter_options
 
 
 --
+-- Name: reviews fk_rails_08a5ebb739; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reviews
+    ADD CONSTRAINT fk_rails_08a5ebb739 FOREIGN KEY (store_id) REFERENCES public.stores(id);
+
+
+--
+-- Name: reviews fk_rails_29e6f859c4; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reviews
+    ADD CONSTRAINT fk_rails_29e6f859c4 FOREIGN KEY (author_id) REFERENCES public.users(id);
+
+
+--
 -- Name: listing_seller_tags fk_rails_2d0fc795ec; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.listing_seller_tags
     ADD CONSTRAINT fk_rails_2d0fc795ec FOREIGN KEY (seller_tag_id) REFERENCES public.seller_tags(id);
+
+
+--
+-- Name: follows fk_rails_3975726f96; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.follows
+    ADD CONSTRAINT fk_rails_3975726f96 FOREIGN KEY (store_id) REFERENCES public.stores(id);
 
 
 --
@@ -1679,6 +1842,22 @@ ALTER TABLE ONLY public.category_filters
 
 ALTER TABLE ONLY public.listings
     ADD CONSTRAINT fk_rails_5b5873986f FOREIGN KEY (country_id) REFERENCES public.countries(id);
+
+
+--
+-- Name: reviews fk_rails_60def33a58; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reviews
+    ADD CONSTRAINT fk_rails_60def33a58 FOREIGN KEY (listing_id) REFERENCES public.listings(id) ON DELETE SET NULL;
+
+
+--
+-- Name: follows fk_rails_622d34a301; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.follows
+    ADD CONSTRAINT fk_rails_622d34a301 FOREIGN KEY (follower_id) REFERENCES public.users(id);
 
 
 --
@@ -1784,6 +1963,8 @@ ALTER TABLE ONLY public.listing_labels
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261119180002'),
+('20261119180001'),
 ('20261119170002'),
 ('20261119170001'),
 ('20261119160012'),

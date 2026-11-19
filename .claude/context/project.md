@@ -1,7 +1,7 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (PC Finder step 6 — controller tests, uncommitted;
-PC Finder feature complete)_
+_Last updated: 2026-11-19 (Phase 2 step 1 — follows + reviews data model,
+uncommitted)_
 
 ## What this is
 
@@ -283,9 +283,31 @@ FR/GB/DE/IT/PT seeded but disabled.
   promo and home banner CTA link to `/pc-finder`.
 - **PC Finder (steps 1–6) is done.** Remaining follow-ups are in Open items.
 
+## Code map (Phase 2 step 1 — follows + reviews data model)
+
+- `db/migrate/2026111918000{1,2}_*.rb` — `follows` (unique
+  [follower_id, store_id]) and `reviews` (rating smallint + check constraint
+  1..5, status string published/hidden, verified_purchase, unique partial
+  [author_id, order_id] WHERE order_id IS NOT NULL, [store_id, status,
+  created_at DESC]; `order_id` has **no FK yet** — orders land in Phase 5).
+- `app/models/follow.rb` — counter_cache `:followers_count`, self-follow +
+  duplicate rejected. `app/models/review.rb` — string enum status, rating
+  1..5, title ≤120 / body ≤2000, self-review rejected, `published`/`recent`
+  scopes, after_commit → `Stores::RatingRecalculator` (single aggregate
+  `pick` → `update_columns(rating_avg, ratings_count)`; guards destroyed
+  stores). Error messages under `activerecord.errors.models.*` in 6 locales.
+- User: `follows` (foreign_key `follower_id`) / `followed_stores` /
+  `reviews_written` + `following?(store)`; Store: `follows` / `followers` /
+  `reviews` (dependent destroy).
+- Gotcha: `after_commit` never fires under transactional fixtures (Rails
+  8.1 included) — `test/services/stores/rating_recalculator_test.rb` runs
+  `use_transactional_tests = false` + `Review.delete_all` teardown (fixtures
+  reload only clears fixture tables). `t.smallint` doesn't exist — use
+  `t.integer limit: 2`.
+
 ## Testing
 
-- `bin/rails test` — **214 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **229 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -301,7 +323,10 @@ FR/GB/DE/IT/PT seeded but disabled.
   idempotency test (its `>=` counts still hold); step 3 adds
   `test/services/pc_finder/{query,recommender}_test.rb` (28 tests, records
   created per test); step 6 adds
-  `test/controllers/pc_finders_controller_test.rb` (13 tests).
+  `test/controllers/pc_finders_controller_test.rb` (13 tests); Phase 2 step 1
+  adds `test/models/{follow,review}_test.rb` and
+  `test/services/stores/rating_recalculator_test.rb` (15 tests, users/reviews
+  created per test).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -315,8 +340,10 @@ FR/GB/DE/IT/PT seeded but disabled.
   until real game images are attached (`Game#image`, nothing seeded).
 - Phase 1b-ii+: publish flow, seller dashboard, admin UI for
   categories/filters/labels/settings (seeds cover data now).
-- Store page follow/message buttons + reviews tab summary are placeholders
-  (store ratings come from `stores.rating_avg/ratings_count` only).
+- Store page follow/message buttons + reviews tab summary are placeholders —
+  the follows/reviews data model ships (Phase 2 step 1), the UI doesn't yet.
+- Reviews `order_id` has no FK until the `orders` table lands (Phase 5);
+  `verified_purchase` is never set true until then.
 - Mega-menu budget/theme links need ProductLabel/SellerTag rows (seeds ship
   them; a bare fixture catalog silently drops those columns — demo seed
   `DEMO=1 bin/rails db:seed` fills everything).
@@ -325,4 +352,4 @@ FR/GB/DE/IT/PT seeded but disabled.
   `offers_enabled`, `chat_enabled`) — Phases 5/6.
 - Mobile price filter loses values without JS (euro→cents sync is Stimulus).
 - CI not set up yet.
-- No commit made for Phases 0/1a/1b-i/1b-ii-a — awaiting user review.
+- No commit made for Phases 0/1a/1b-i/1b-ii/2.1 — awaiting user review.
