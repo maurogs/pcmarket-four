@@ -191,8 +191,8 @@
               <% end %>
             </p>
           </div>
-          <%# Follow buttons arrive with the social phase. %>
-          <button type="button" class="btn-secondary shrink-0 px-3 py-1.5 text-xs"><%= t(".seller.follow") %></button>
+          <%# Follow button swaps via Turbo Stream (Stores::FollowsController). %>
+          <%= render "stores/follow_button", store: store, compact: true %>
         </div>
       </div>
 

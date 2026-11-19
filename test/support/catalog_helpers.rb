@@ -27,6 +27,15 @@ module CatalogHelpers
     listing
   end
 
+  # A published store review (author defaults to a non-owner user). Review
+  # callbacks don't fire under transactional fixtures, so call
+  # Stores::RatingRecalculator when the denormalized counters matter.
+  def create_review(store: stores(:confirmed_store), author: users(:pending), **overrides)
+    Review.create!({ store: store, author: author, rating: 5,
+                     title: "Great seller", body: "Fast shipping, item as described." }
+                     .merge(overrides))
+  end
+
   # A small browse catalog (two published GPUs in different price bands, a
   # hidden GPU, a CPU in another subtree) shared by the Phase 1b browse tests.
   # Built per test instead of fixtures so global-scope tests elsewhere keep

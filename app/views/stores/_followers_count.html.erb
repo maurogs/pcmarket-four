@@ -1,0 +1,7 @@
+<%# Store header followers stat — re-rendered by Stores::FollowsController,
+    so the wrapper id must stay dom_id(store, :followers_count). %>
+<%# locals: (store:) %>
+<span id="<%= dom_id(store, :followers_count) %>">
+  <strong class="block text-lg font-bold leading-tight tracking-tight"><%= number_with_delimiter(store.followers_count) %></strong>
+  <span class="text-xs text-muted"><%= t("stores.show.stats.followers") %></span>
+</span>

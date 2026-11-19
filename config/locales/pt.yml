@@ -493,7 +493,6 @@ pt:
           one: "%{count} avaliação"
           other: "%{count} avaliações"
         no_ratings: Ainda sem avaliações
-        follow: Seguir
       published: Publicado em %{date}
       views:
         one: "%{count} visualização"
@@ -528,6 +527,18 @@ pt:
       sell_to_us:
         cta: Pedir proposta
   stores:
+    follow_button:
+      follow: Seguir
+      following: Seguindo
+    follows:
+      create:
+        success: Agora segue %{store}.
+      destroy:
+        success: Deixou de seguir %{store}.
+    review:
+      stars: "%{rating} de 5 estrelas"
+      verified_purchase: Compra verificada
+      seller_reply: Resposta do vendedor
     show:
       vacation:
         title: Loja em férias
@@ -543,7 +554,6 @@ pt:
         followers: Seguidores
         for_sale: À venda
         sold: Vendidos
-      follow: Seguir
       message: Mensagem
       tabs:
         label: Secções da loja
@@ -555,8 +565,12 @@ pt:
         no_bio: Este vendedor ainda não escreveu a descrição da loja.
       reviews:
         title: Críticas
-        placeholder: As críticas abrem quando este vendedor concluir a primeira encomenda
-          protegida.
+        count:
+          one: "%{count} crítica"
+          other: "%{count} críticas"
+        distribution: Distribuição das avaliações
+        empty: Ainda sem críticas. As críticas aparecem quando os compradores concluem
+          uma compra nesta loja.
   pc_finders:
     show:
       title: Encontra o PC que corre os teus jogos

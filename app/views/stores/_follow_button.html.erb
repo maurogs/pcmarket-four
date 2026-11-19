@@ -1,0 +1,20 @@
+<%# Follow / Following button for a store — store page header and listing
+    seller box (compact:). Hidden on your own store; anonymous visitors get a
+    sign-in link. Stores::FollowsController swaps this via Turbo Stream, so
+    the wrapper id must stay dom_id(store, :follow). %>
+<%# locals: (store:, compact: false) %>
+<% return if current_user && store.user_id == current_user.id %>
+<div id="<%= dom_id(store, :follow) %>" class="<%= compact ? "shrink-0" : "flex-1 sm:flex-none" %>">
+  <% label = current_user&.following?(store) ? t(".following") : t(".follow") %>
+  <% button_class = [
+    (current_user&.following?(store) || compact) ? "btn-secondary" : "btn-primary",
+    compact ? "px-3 py-1.5 text-xs" : "w-full sm:w-auto"
+  ].join(" ") %>
+  <% if !user_signed_in? %>
+    <%= link_to label, new_user_session_path, class: button_class %>
+  <% elsif current_user.following?(store) %>
+    <%= button_to label, store_follow_path(store, compact ? { compact: "1" } : {}), method: :delete, class: button_class %>
+  <% else %>
+    <%= button_to label, store_follow_path(store, compact ? { compact: "1" } : {}), method: :post, class: button_class %>
+  <% end %>
+</div>

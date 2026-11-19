@@ -494,7 +494,6 @@ fr:
           one: "%{count} évaluation"
           other: "%{count} évaluations"
         no_ratings: Pas encore d'évaluations
-        follow: Suivre
       published: Publiée le %{date}
       views:
         one: "%{count} vue"
@@ -529,6 +528,18 @@ fr:
       sell_to_us:
         cta: Obtenir une offre
   stores:
+    follow_button:
+      follow: Suivre
+      following: Abonné
+    follows:
+      create:
+        success: Vous suivez désormais %{store}.
+      destroy:
+        success: Vous ne suivez plus %{store}.
+    review:
+      stars: "%{rating} étoiles sur 5"
+      verified_purchase: Achat vérifié
+      seller_reply: Réponse du vendeur
     show:
       vacation:
         title: Boutique en congés
@@ -544,7 +555,6 @@ fr:
         followers: Abonnés
         for_sale: En vente
         sold: Vendus
-      follow: Suivre
       message: Message
       tabs:
         label: Sections de la boutique
@@ -556,8 +566,12 @@ fr:
         no_bio: Ce vendeur n'a pas encore écrit de description de boutique.
       reviews:
         title: Avis
-        placeholder: Les avis s'ouvrent dès que ce vendeur complète sa première commande
-          protégée.
+        count:
+          one: "%{count} avis"
+          other: "%{count} avis"
+        distribution: Répartition des notes
+        empty: Pas encore d'avis. Les avis apparaissent lorsque les acheteurs finalisent
+          un achat dans cette boutique.
   pc_finders:
     show:
       title: Trouvez le PC qui fait tourner vos jeux

@@ -589,3 +589,82 @@ user instead. Session warm-up trick reused.
 
 Verified: `bin/rails test` 315 green; `bin/rubocop` clean (160 files).
 Not committed.
+
+## 2026-11-19 — Phase 2 step 4: store slug history (301 redirects), follow/unfollow via Stores::FollowsController with turbo_stream, store reviews tab with rating distribution, demo follows/reviews (uncommitted)
+
+Store `:slugged` → `:slugged + :history`; `Store.find_by_param` falls back to
+`FriendlyId::Slug` (latest row per slug, scoped by `sluggable_type`) so renamed
+stores keep resolving, and `StoresController#show` 301s (`:moved_permanently`)
+when `@store.slug != params[:slug]`. New `Store#rating_distribution` — one
+grouped query over published reviews, `{ 5 => n, …, 1 => 0 }` in 5→1 order.
+
+Follow: nested `resource :follow, only: %i[create destroy],
+controller: "stores/follows"` → `POST/DELETE /s/:store_slug/follow` (singular —
+one follow per user+store, no id in URL). `Stores::FollowsController`
+(authenticate_user! + `set_store` via `find_by_param`): create builds through
+`current_user.follows` (self-follow just fails validation and re-renders),
+destroy `find_by(store)&.destroy`; turbo_stream renders
+`stores/follows/follow_state` which `turbo_stream.replace`s
+`dom_id(store, :follow)` + `dom_id(store, :followers_count)` (counter cache is
+SQL-side → `@store.reload` first); HTML fallbacks `redirect_back` with
+flash/alert. `_follow_button` partial (hidden on own store, sign-in link for
+anonymous, `compact:` variant for the listing seller box — `?compact=1` rides
+the form so the stream re-applies styling) replaces the old `#` placeholders
+on the store header and `listings/show` seller box; `_followers_count` wraps
+the header stat.
+
+Reviews tab: `StoresController#load_reviews` — published+recent, avatar
+preloaded, manual `Pagy::Offset` (limit 10, `REVIEWS_PER_PAGE`).
+`stores/show` reviews section: avg + `review_stars` + distribution bars
+(`Store#rating_distribution`, share-of-total widths) + `_review` cards
+(author avatar/initial, stars, title/body, verified-purchase badge, seller
+reply block) + `browse/pagination` reuse. `StoresHelper#review_stars` (filled
+first `rating` stars, aria label); `star` icon added to `IconHelper`.
+
+Demo seed: 3–12 follows + 3–8 published reviews per store (ratings skewed 5/4,
+~70% verified_purchase, ~35% seller replies, backdated `update_columns`) —
+seeded after the random counter columns so the counter cache and
+`Stores::RatingRecalculator` overwrite them with true values.
+
+i18n: `stores.follow_button.*`, `stores.follows.{create,destroy}.success`,
+`stores.review.*`, `stores.show.reviews.{count,distribution,empty}` in all 6
+locales (old `show.reviews.placeholder` dropped).
+
+Tests (18 new): `test/controllers/stores/follows_controller_test.rb`
+(14 — auth HTML + turbo, create/destroy turbo swaps + counters, self-follow,
+HTML fallbacks, unknown slug 404, **Devise 5 gotcha: turbo_stream requests are
+treated as navigational, so unauthenticated follow POSTs get a 302 to sign-in,
+not 401**); stores_controller_test +3 (301 old slug, reviews tab avg/
+distribution/cards/pagination, empty state, reviews hidden for non-published);
+store_test +1 (rename keeps old slug resolvable — fixtures bypass FriendlyId so
+this needs a model-created store); `create_review` helper in
+`catalog_helpers.rb` (call `Stores::RatingRecalculator` manually — after_commit
+doesn't fire under transactional fixtures).
+
+Verified: `bin/rails test` 333 green; `bin/rubocop` clean (163 files).
+Uncommitted files (`git status --short`):
+```
+ M app/controllers/stores_controller.rb
+ M app/helpers/icon_helper.rb
+ M app/models/store.rb
+ M app/views/listings/show.html.erb
+ M app/views/stores/show.html.erb
+ M config/locales/de.yml
+ M config/locales/en.yml
+ M config/locales/es.yml
+ M config/locales/fr.yml
+ M config/locales/it.yml
+ M config/locales/pt.yml
+ M config/routes.rb
+ M db/seeds/development/demo.rb
+ M test/controllers/stores_controller_test.rb
+ M test/models/store_test.rb
+ M test/support/catalog_helpers.rb
+?? app/controllers/stores/
+?? app/helpers/stores_helper.rb
+?? app/views/stores/_follow_button.html.erb
+?? app/views/stores/_followers_count.html.erb
+?? app/views/stores/_review.html.erb
+?? app/views/stores/follows/
+?? test/controllers/stores/
+```

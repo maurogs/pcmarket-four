@@ -1,0 +1,9 @@
+<%# Shared create/destroy response: swap the follow button (re-applying the
+    compact styling when the form came from the listing seller box) and the
+    followers count. Missing targets (listing page) are ignored by Turbo. %>
+<%= turbo_stream.replace dom_id(@store, :follow) do %>
+  <%= render "stores/follow_button", store: @store, compact: params[:compact] == "1" %>
+<% end %>
+<%= turbo_stream.replace dom_id(@store, :followers_count) do %>
+  <%= render "stores/followers_count", store: @store %>
+<% end %>

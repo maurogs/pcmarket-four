@@ -23,7 +23,7 @@ class Store < ApplicationRecord
   has_one_attached :logo
   has_one_attached :banner
 
-  friendly_id :slug_source, use: :slugged
+  friendly_id :slug_source, use: %i[slugged history]
 
   validates :name, presence: true, length: { in: 2..60 },
                    uniqueness: { case_sensitive: false }
@@ -44,9 +44,21 @@ class Store < ApplicationRecord
   scope :verified, -> { where(verified: true) }
   scope :not_on_vacation, -> { where(vacation_mode: false) }
 
-  # Slug lookups for seller URLs (/stores/:slug).
+  # Slug lookups for seller URLs (/s/:slug), including historical slugs so
+  # renamed stores keep resolving (the controller 301s them to the new URL).
   def self.find_by_param(param)
-    find_by(slug: param.to_s)
+    store = find_by(slug: param.to_s)
+    return store if store
+
+    slug = FriendlyId::Slug.where(slug: param.to_s, sluggable_type: name).order(id: :desc).first
+    slug&.sluggable
+  end
+
+  # Published review counts per star rating, { 5 => n, …, 1 => n } in 5→1
+  # order — one grouped query behind the reviews tab distribution bars.
+  def rating_distribution
+    counts = reviews.published.group(:rating).count
+    (5).downto(1).index_with { |stars| counts.fetch(stars, 0) }
   end
 
   # Settings-form writer: consumes the remove_logo/remove_banner checkbox
@@ -73,8 +85,8 @@ class Store < ApplicationRecord
     name
   end
 
-  # Renaming the store re-slugs it (Store uses :slugged only — no :history —
-  # so old store URLs stop resolving after a rename).
+  # Renaming the store re-slugs it; :history keeps the old slug resolvable so
+  # StoresController can 301 stale URLs to the canonical one.
   def should_generate_new_friendly_id?
     name_changed? || super
   end

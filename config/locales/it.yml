@@ -493,7 +493,6 @@ it:
           one: "%{count} valutazione"
           other: "%{count} valutazioni"
         no_ratings: Ancora nessuna valutazione
-        follow: Segui
       published: Pubblicato il %{date}
       views:
         one: "%{count} visualizzazione"
@@ -528,6 +527,18 @@ it:
       sell_to_us:
         cta: Richiedi un'offerta
   stores:
+    follow_button:
+      follow: Segui
+      following: Seguiti
+    follows:
+      create:
+        success: Ora segui %{store}.
+      destroy:
+        success: Hai smesso di seguire %{store}.
+    review:
+      stars: "%{rating} su 5 stelle"
+      verified_purchase: Acquisto verificato
+      seller_reply: Risposta del venditore
     show:
       vacation:
         title: Negozio in vacanza
@@ -543,7 +554,6 @@ it:
         followers: Follower
         for_sale: In vendita
         sold: Venduti
-      follow: Segui
       message: Messaggio
       tabs:
         label: Sezioni del negozio
@@ -555,8 +565,12 @@ it:
         no_bio: Questo venditore non ha ancora scritto una descrizione del negozio.
       reviews:
         title: Recensioni
-        placeholder: Le recensioni si aprono quando questo venditore completa il primo
-          ordine protetto.
+        count:
+          one: "%{count} recensione"
+          other: "%{count} recensioni"
+        distribution: Distribuzione delle valutazioni
+        empty: Ancora nessuna recensione. Le recensioni appaiono quando gli acquirenti
+          completano un acquisto in questo negozio.
   pc_finders:
     show:
       title: Trova il PC che fa girare i tuoi giochi

@@ -22,6 +22,19 @@ class StoreTest < ActiveSupport::TestCase
     assert_equal store, Store.find_by_param("retro-corner")
   end
 
+  # Fixtures are inserted straight into the DB and bypass FriendlyId, so
+  # history assertions need a model-created store.
+  test "renaming a store keeps the old slug resolvable via history" do
+    store = Store.create!(user: users(:pending), name: "History Test Store")
+    old_slug = store.slug
+
+    store.update!(name: "Renamed History Store")
+
+    assert_equal "renamed-history-store", store.reload.slug
+    assert_equal store, Store.find_by_param(old_slug)
+    assert_equal store, Store.find_by_param(store.slug)
+  end
+
   test "business stores need identity details" do
     store = stores(:confirmed_store)
 

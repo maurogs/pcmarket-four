@@ -494,7 +494,6 @@ de:
           one: "%{count} Bewertung"
           other: "%{count} Bewertungen"
         no_ratings: Noch keine Bewertungen
-        follow: Folgen
       published: Veröffentlicht am %{date}
       views:
         one: "%{count} Aufruf"
@@ -530,6 +529,18 @@ de:
       sell_to_us:
         cta: Angebot holen
   stores:
+    follow_button:
+      follow: Folgen
+      following: Gefolgt
+    follows:
+      create:
+        success: Du folgst jetzt %{store}.
+      destroy:
+        success: Du folgst %{store} nicht mehr.
+    review:
+      stars: "%{rating} von 5 Sternen"
+      verified_purchase: Verifizierter Kauf
+      seller_reply: Antwort des Verkäufers
     show:
       vacation:
         title: Shop im Urlaub
@@ -545,7 +556,6 @@ de:
         followers: Follower
         for_sale: Im Angebot
         sold: Verkauft
-      follow: Folgen
       message: Nachricht
       tabs:
         label: Shop-Bereiche
@@ -557,8 +567,12 @@ de:
         no_bio: Dieser Verkäufer hat noch keine Shop-Beschreibung geschrieben.
       reviews:
         title: Bewertungen
-        placeholder: Bewertungen erscheinen, sobald dieser Verkäufer seine erste geschützte
-          Bestellung abschließt.
+        count:
+          one: "%{count} Bewertung"
+          other: "%{count} Bewertungen"
+        distribution: Bewertungsverteilung
+        empty: Noch keine Bewertungen. Bewertungen erscheinen, sobald Käufer eine
+          Bestellung in diesem Shop abschließen.
   pc_finders:
     show:
       title: Finde den PC, der deine Spiele zum Laufen bringt

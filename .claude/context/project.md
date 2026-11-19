@@ -1,7 +1,7 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (Phase 2 step 3 — seller store settings,
-uncommitted)_
+_Last updated: 2026-11-19 (Phase 2 step 4 — store slug history, follow
+button + reviews tab, uncommitted)_
 
 ## What this is
 
@@ -375,7 +375,8 @@ FR/GB/DE/IT/PT seeded but disabled.
 - Store: name 2..60 + case-insensitive uniqueness; vacation_message ≤280;
   logo/banner png/jpeg/webp ≤5/8 MB; `normalize_tax_id` before_validation;
   **slug regenerates on rename** (`should_generate_new_friendly_id?`) —
-  `:slugged` only, no `:history`, so old store URLs break on rename.
+  `:history` added in step 4, so old store URLs keep resolving (301, see
+  below).
 - Views `seller/stores/{new,edit,_form}` use the account shell; business
   fields toggle via CSS `:has` (`.store-form:has(#store_kind_business:checked)
   .business-fields` in application.css — no JS, CSP-safe). Sidebar gained
@@ -385,9 +386,44 @@ FR/GB/DE/IT/PT seeded but disabled.
   confirmable rejects `sign_in` for unconfirmed users (`:pending` fixture
   can't sign in — create a confirmed user in tests).
 
+## Code map (Phase 2 step 4 — store slug history, follow button + reviews tab)
+
+- Store: `friendly_id :slug_source, use: %i[slugged history]`;
+  `find_by_param` falls back to `FriendlyId::Slug` (latest row, scoped by
+  `sluggable_type`) so renamed stores keep resolving; `StoresController#show`
+  301s (`:moved_permanently`) stale slugs to the canonical `store_path`.
+  `Store#rating_distribution` — published reviews grouped by rating,
+  `{ 5 => n, …, 1 => 0 }` in 5→1 order (reviews tab bars).
+- Route `resource :follow, only: %i[create destroy], controller:
+  "stores/follows"` nested under stores → `POST/DELETE /s/:store_slug/follow`
+  (singular — one follow per user+store). `Stores::FollowsController`
+  (authenticate_user!, `set_store` via `find_by_param`): create via
+  `current_user.follows.new` (self-follow fails validation → button
+  re-renders unchanged), destroy `find_by(store)&.destroy`; turbo_stream
+  renders `stores/follows/follow_state.turbo_stream.erb` (replaces
+  `dom_id(store, :follow)` + `dom_id(store, :followers_count)`; `@store.reload`
+  first — counter cache updates in SQL); HTML fallbacks `redirect_back` +
+  flash.
+- Partials: `stores/_follow_button` (hidden on own store, sign-in link for
+  anonymous, `compact:` variant for the listing seller box — `?compact=1`
+  rides the form so the stream re-applies styling), `stores/_followers_count`
+  (header stat wrapper), `stores/_review` (author, stars, verified-purchase
+  badge, seller reply). `StoresHelper#review_stars`; `star` icon in
+  `IconHelper`.
+- Reviews tab: `StoresController#load_reviews` — `reviews.published.recent`
+  + avatar preload + manual `Pagy::Offset` (`REVIEWS_PER_PAGE = 10`);
+  `stores/show` reviews section = avg + stars + distribution bars + cards +
+  `browse/pagination` reuse.
+- Demo seed: 3–12 follows + 3–8 published reviews per store (skewed ratings,
+  ~70% verified, ~35% seller replies, backdated via `update_columns`) — runs
+  after the random counter columns so counters/recalculator win.
+- Gotchas: fixtures bypass FriendlyId (history assertions need a
+  model-created store); Devise 5 treats turbo_stream as navigational →
+  unauthenticated follow POSTs 302 to sign-in, not 401.
+
 ## Testing
 
-- `bin/rails test` — **315 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **333 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -419,7 +455,11 @@ FR/GB/DE/IT/PT seeded but disabled.
   accept/reject, auth, open-store-once, 422s for short/taken name, missing
   business identity and bad tax id, vacation toggle, logo/banner
   attach/reject/remove, ownership) and flips the store slug test to
-  rename-regenerates.
+  rename-regenerates; step 4 adds
+  `test/controllers/stores/follows_controller_test.rb` (14 tests — auth HTML +
+  turbo, turbo_stream button/count swaps, self-follow, HTML fallbacks, 404)
+  plus stores_controller 301/reviews-tab tests and a FriendlyId-history
+  store test.
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -433,8 +473,16 @@ FR/GB/DE/IT/PT seeded but disabled.
   until real game images are attached (`Game#image`, nothing seeded).
 - Phase 1b-ii+: publish flow, seller dashboard, admin UI for
   categories/filters/labels/settings (seeds cover data now).
-- Store page follow/message buttons + reviews tab summary are placeholders —
-  the follows/reviews data model ships (Phase 2 step 1), the UI doesn't yet.
+- Store follow button + reviews tab (rating distribution, cards, pagination)
+  ship (Phase 2 step 4); the store **message** button is still a `#`
+  placeholder (Phase 6 messages).
+- **Review creation UI pending Phase 5** — reviews can only be written via
+  seeds/console; the buyer "leave a review" flow lands with orders (so
+  `verified_purchase`/`order_id` can be set honestly).
+- **Devise 5 redirects turbo_stream unauthenticated follow posts to sign-in**
+  (turbo_stream requests are treated as navigational → 302, not 401). Accepted
+  behavior for now (tested); if follow buttons ever move to background/frame
+  contexts, revisit with a turbo-aware failure response.
 - Reviews `order_id` has no FK until the `orders` table lands (Phase 5);
   `verified_purchase` is never set true until then.
 - Mega-menu budget/theme links need ProductLabel/SellerTag rows (seeds ship
@@ -451,5 +499,5 @@ FR/GB/DE/IT/PT seeded but disabled.
   wiring per `User#notify?` lands with the features that emit them (orders,
   messages, offers, saved searches). Delete-account is a sidebar link to the
   Devise registration page until a dedicated flow lands.
-- No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a/2.2b — awaiting user
-  review.
+- No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a/2.2b/2.3/2.4 — awaiting
+  user review.

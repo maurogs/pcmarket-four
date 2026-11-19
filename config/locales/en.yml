@@ -489,7 +489,6 @@ en:
           one: "%{count} rating"
           other: "%{count} ratings"
         no_ratings: No ratings yet
-        follow: Follow
       published: Published on %{date}
       views:
         one: "%{count} view"
@@ -524,6 +523,18 @@ en:
       sell_to_us:
         cta: Get a quote
   stores:
+    follow_button:
+      follow: Follow
+      following: Following
+    follows:
+      create:
+        success: You now follow %{store}.
+      destroy:
+        success: You stopped following %{store}.
+    review:
+      stars: "%{rating} out of 5 stars"
+      verified_purchase: Verified purchase
+      seller_reply: Seller's reply
     show:
       vacation:
         title: Store on vacation
@@ -538,7 +549,6 @@ en:
         followers: Followers
         for_sale: For sale
         sold: Sold
-      follow: Follow
       message: Message
       tabs:
         label: Store sections
@@ -550,8 +560,12 @@ en:
         no_bio: This seller hasn't written a store description yet.
       reviews:
         title: Reviews
-        placeholder: Reviews open as soon as this seller completes their first protected
-          order.
+        count:
+          one: "%{count} review"
+          other: "%{count} reviews"
+        distribution: Rating distribution
+        empty: No reviews yet. Reviews appear once buyers complete a purchase from
+          this store.
   pc_finders:
     show:
       title: Find the gaming PC that runs your games

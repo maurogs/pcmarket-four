@@ -19,7 +19,11 @@ Rails.application.routes.draw do
     # Catalog storefront (Phase 1b).
     resources :categories, only: :show, path: "c", param: :slug
     resources :listings, only: :show, path: "l"
-    resources :stores, only: :show, path: "s", param: :slug
+    resources :stores, only: :show, path: "s", param: :slug do
+      # Follow/unfollow: POST + DELETE /s/:store_slug/follow (singular — a
+      # user has at most one follow per store, so the URL needs no id).
+      resource :follow, only: %i[create destroy], controller: "stores/follows"
+    end
 
     resource :search, only: :show, controller: "searches"
     resource :sell_to_us, only: :show

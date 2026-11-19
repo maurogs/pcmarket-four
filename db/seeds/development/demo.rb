@@ -1,9 +1,11 @@
 # Opt-in demo data for local development (see README: `DEMO=1 bin/rails db:seed`).
 #
 # Creates ~30 Spanish demo users (emails @demo.example.com), 8 stores
-# (3 business), and ~250 published listings built from the seeded catalog so
+# (3 business), ~250 published listings built from the seeded catalog so
 # every spec filter, label, theme tag and chipset link has results: discounts,
-# featured slots, seller tags, sold and pending-review listings included.
+# featured slots, seller tags, sold and pending-review listings included —
+# plus store follows and 3–8 published reviews per store for the storefront
+# tabs.
 #
 # Skipped entirely once its listings exist (≥ 200 demo listings), so repeated
 # seed runs do not duplicate data. Test env: never loaded (db/seeds.rb gate).
@@ -183,6 +185,34 @@ else
   fresh = Listing.joins(store: :user).where("users.email LIKE ?", "%#{DEMO_EMAIL_SUFFIX}%")
                 .where(status: "published").where(featured_until: nil)
   pick.call(fresh.limit(400).to_a, 12).each(&:return_to_review!)
+
+  # --- Follows + reviews --------------------------------------------------------
+  # Real rows land after the random counter columns above, so the counter cache
+  # and Stores::RatingRecalculator overwrite them with true values.
+  stores.each do |store|
+    admirers = (users - [ store.user ]).sample(rand(3..12))
+    admirers.each { |admirer| Follow.find_or_create_by!(follower: admirer, store: store) }
+
+    reviewer_pool = users - [ store.user ]
+    rand(3..8).times do
+      author = pick.call(reviewer_pool)
+      next if Review.exists?(store: store, author: author)
+
+      review = Review.create!(
+        store: store,
+        author: author,
+        rating: [ 5, 5, 5, 4, 4, 3 ].sample,
+        title: Faker::Lorem.sentence(word_count: rand(3..6)).delete_suffix(".").capitalize.first(120),
+        body: Faker::Lorem.paragraph_by_chars(number: rand(80..240)),
+        verified_purchase: rand < 0.7
+      )
+      if rand < 0.35
+        review.update!(seller_reply: Faker::Lorem.sentence(word_count: rand(6..14)),
+                       seller_replied_at: Time.current)
+      end
+      review.update_columns(created_at: rand(1.hour..90.days).ago)
+    end
+  end
 
   Rails.logger.info "Demo seed: #{created.size} listings for #{stores.size} stores."
   puts "Demo seed: #{created.size} listings across #{stores.size} stores (users @demo.example.com)."
