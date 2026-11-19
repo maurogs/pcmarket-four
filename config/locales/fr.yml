@@ -18,6 +18,13 @@ fr:
     pt: Portugal
   errors:
     forbidden: Vous n'êtes pas autorisé à effectuer cette action.
+    messages:
+      must_exceed_price: doit être supérieur au prix
+      too_large_image: "Chaque image doit peser moins de %{max_megabytes} Mo"
+      too_many_images: "Vous pouvez téléverser au plus %{max} images"
+      unknown_filter_key: "%{key} n'est pas un filtre valide"
+      unknown_filter_value: "« %{value} » n'est pas une valeur valide pour %{key}"
+      unsupported_content_type: "%{content_type} n'est pas un format d'image pris en charge"
     throttled: Trop de requêtes. Réessayez dans %{retry_after} secondes.
   footer:
     tagline: La marketplace européenne pour acheter et vendre de la tech en toute confiance.
@@ -123,6 +130,100 @@ fr:
       intro: Obtenez un prix juste pour votre matériel en quelques étapes.
       meta:
         description: Vendez vos ordinateurs et composants d'occasion à PCMarket à un prix garanti.
+  activerecord:
+    attributes:
+      category:
+        kind:
+          accessory: Accessoire
+          component: Composant
+          full_system: Système complet
+          gaming_system: Console de jeu
+          mobile: Appareil mobile
+          peripheral: Périphérique
+          software: Logiciel
+      filter_definition:
+        input_type:
+          boolean: Oui / Non
+          multi_select: Choix multiple
+          range: Plage
+          single_select: Choix unique
+      listing:
+        condition:
+          for_parts: Pour pièces
+          new_open_box: Neuf (déballé)
+          new_sealed: Neuf (scellé)
+          used_fair: Occasion (état correct)
+          used_good: Occasion (bon état)
+          used_like_new: Occasion (comme neuf)
+        shipping_method:
+          own_label: Étiquette personnelle
+          pickup_only: Retrait sur place uniquement
+          platform_label: Étiquette de la plateforme
+        statuses:
+          archived: Archivé
+          draft: Brouillon
+          paused: En pause
+          pending_review: En attente de validation
+          published: Publié
+          rejected: Refusé
+          sold: Vendu
+      store:
+        kind:
+          business: Entreprise
+          individual: Particulier
+  spanish_provinces:
+    a_coruna: A Coruña
+    alava: Álava
+    albacete: Albacete
+    alicante: Alicante
+    almeria: Almería
+    asturias: Asturias
+    avila: Ávila
+    badajoz: Badajoz
+    baleares: Islas Baleares
+    barcelona: Barcelona
+    burgos: Burgos
+    caceres: Cáceres
+    cadiz: Cádiz
+    cantabria: Cantabria
+    castellon: Castellón
+    ceuta: Ceuta
+    ciudad_real: Ciudad Real
+    cordoba: Córdoba
+    cuenca: Cuenca
+    girona: Gerona
+    granada: Granada
+    guadalajara: Guadalajara
+    guipuzkoa: Guipúzcoa
+    huelva: Huelva
+    huesca: Huesca
+    jaen: Jaén
+    la_rioja: La Rioja
+    las_palmas: Las Palmas
+    leon: León
+    lerida: Lérida
+    lugo: Lugo
+    madrid: Madrid
+    malaga: Málaga
+    melilla: Melilla
+    murcia: Murcia
+    navarra: Navarra
+    ourense: Orense
+    palencia: Palencia
+    pontevedra: Pontevedra
+    salamanca: Salamanca
+    segovia: Segovia
+    sevilla: Sevilla
+    soria: Soria
+    tarragona: Tarragona
+    tenerife: Santa Cruz de Tenerife
+    teruel: Teruel
+    toledo: Toledo
+    valencia: Valencia
+    valladolid: Valladolid
+    vizcaya: Vizcaya
+    zamora: Zamora
+    zaragoza: Zaragoza
   settings:
     descriptions:
       sell_to_us_enabled: Affiche et active le flux Rachat

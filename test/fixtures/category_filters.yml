@@ -1,0 +1,11 @@
+components_gpu_chipset:
+  category: components
+  filter_definition: gpu_chipset
+
+components_rgb_lighting:
+  category: components
+  filter_definition: rgb_lighting
+
+gpus_cpu_brand:
+  category: gpus
+  filter_definition: cpu_brand

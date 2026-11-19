@@ -1,0 +1,29 @@
+components:
+  slug: components
+  kind: component
+  position: 1
+  name_translations: { "en": "Components", "es": "Componentes" }
+  description_translations: { "en": "PC parts", "es": "Piezas de PC" }
+
+gpus:
+  slug: gpus
+  kind: component
+  position: 1
+  parent: components
+  name_translations: { "en": "Graphics Cards", "es": "Tarjetas gráficas" }
+  description_translations: { "en": "NVIDIA and AMD GPUs", "es": "GPU NVIDIA y AMD" }
+
+cpus:
+  slug: cpus
+  kind: component
+  position: 2
+  parent: components
+  name_translations: { "en": "CPUs", "es": "Procesadores" }
+  description_translations: { "en": "Intel and AMD CPUs", "es": "CPU Intel y AMD" }
+
+gaming_pcs:
+  slug: gaming-pcs
+  kind: full_system
+  position: 0
+  name_translations: { "en": "Gaming PCs", "es": "PC Gaming" }
+  description_translations: { "en": "Prebuilt gaming desktops", "es": "PC gaming prefabricados" }

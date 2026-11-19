@@ -36,8 +36,12 @@ bin/rails db:prepare     # create, migrate and seed (countries + settings)
 bin/dev                  # web + tailwind watcher on http://localhost:3000
 ```
 
-Seed data: 6 countries (only Spain enabled) and 18 settings/feature flags.
-In development it also creates a handful of sample users.
+Seed data: 6 countries (only Spain enabled), 18 settings/feature flags, and
+the catalog reference data — 45 categories, 35 filter definitions with 223
+filter options, category→filter assignments, product labels and seller tags.
+All seed files (`db/seeds/*.rb`, loaded in order by `db/seeds.rb`) are
+idempotent: re-running `bin/rails db:seed` updates in place and preserves
+admin edits. In development it also creates a handful of sample users.
 
 ### Bundler platform note
 
@@ -110,6 +114,19 @@ bin/rubocop              # standardrb ruleset
 bin/rails tailwindcss:build
 ```
 
+## Troubleshooting
+
+**`tailwindcss-ruby` binary not found** — if a Rails command fails with an error
+about the Tailwind CSS executable (e.g. when running under rbenv), point the
+gem at the installed binary:
+
+```bash
+export TAILWINDCSS_INSTALL_DIR="$HOME/.rbenv/versions/$(cat .ruby-version)/lib/ruby/gems/$(cat .ruby-version).0/gems/tailwindcss-ruby-<version>-x86_64-linux-gnu/exe/x86_64-linux-gnu"
+```
+
+Adjust the gem version in the path to the one in `Gemfile.lock`. The export
+only needs to be in the shell running Rails commands (`bin/rails`, `bin/dev`).
+
 ## Layout cheatsheet
 
 ```
@@ -117,18 +134,26 @@ app/
   assets/tailwind/          # Tailwind v4 input CSS + fonts.css
   controllers/concerns/     # locale_concern.rb (locale + country resolution)
   javascript/controllers/   # theme_toggle, dropdown, drawer, toast
-  models/                   # country, setting, user, current
+  models/                   # country, setting, user, current, category,
+  |                         # filter_definition/option, store, listing (AASM)
   policies/                 # application_policy (Pundit base)
-  services/                 # app_settings.rb
+  services/                 # app_settings.rb, listings/search.rb,
+  |                         # stores/*, categories/*
   views/{devise,home,pages,searches,sell_to_us,shared}/
 config/locales/             # en/es/fr/de/it/pt .yml — keys must match exactly
-db/                         # countries, settings, devise users; idempotent seeds
+db/                         # countries, settings, devise users, catalog seeds;
+  |                         # idempotent seeds; structure.sql (schema :sql)
 ```
 
 ## Roadmap (phases)
 
-0. **Foundation** — this phase: i18n, countries, flags, design system, auth.
-1. Catalog: categories, listings, search (pg_search), seller profiles.
+0. **Foundation** — i18n, countries, flags, design system, auth.
+1. Catalog: categories, listings, search, seller profiles.
+   1a. **Done** — data model: category tree, filter definitions/options,
+       stores, listings with AASM moderation workflow and a trigger-maintained
+       weighted `tsvector` search column (unaccent + custom text search
+       config), `Listings::Search` service (filters, facets, pagination).
+   1b. Storefront: category/browse pages, listing detail, seller dashboard.
 2. Ordering: carts or direct checkout, Stripe payments, shipping.
 3. Auctions, offers/negotiation, reviews.
 4. Seller tools, moderation, SEO growth (sitemap already in place).

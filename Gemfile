@@ -54,7 +54,6 @@ gem "pagy"
 gem "friendly_id"
 
 # Search & SEO
-gem "pg_search"
 gem "meta-tags"
 gem "sitemap_generator"
 

@@ -1,0 +1,5 @@
+confirmed_store:
+  user: confirmed
+  name: Confirmed Store
+  slug: confirmed-store
+  country: es

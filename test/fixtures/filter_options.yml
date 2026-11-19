@@ -1,0 +1,26 @@
+nvidia:
+  filter_definition: gpu_chipset
+  value: nvidia
+  featured: true
+  label_translations: { "en": "NVIDIA", "es": "NVIDIA" }
+
+amd:
+  filter_definition: gpu_chipset
+  value: amd
+  label_translations: { "en": "AMD" }
+
+intel:
+  filter_definition: gpu_chipset
+  value: intel
+  active: false
+  label_translations: { "en": "Intel" }
+
+intel_cpu:
+  filter_definition: cpu_brand
+  value: intel
+  label_translations: { "en": "Intel" }
+
+amd_cpu:
+  filter_definition: cpu_brand
+  value: amd
+  label_translations: { "en": "AMD" }

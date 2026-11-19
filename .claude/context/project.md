@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (Phase 0 foundation complete, uncommitted)_
+_Last updated: 2026-11-19 (Phase 1a catalog data model complete, uncommitted)_
 
 ## What this is
 
@@ -44,6 +44,49 @@ FR/GB/DE/IT/PT seeded but disabled.
   bundler config was removed earlier (was breaking `bundle install`).
 - Devise: confirmable + lockable (10 attempts, 1h unlock), username optional
   (auto-generated from email/name), `User.from_omniauth` auto-confirms.
+- **Schema is `:sql`** (`config/application.rb`) — `db/structure.sql` is
+  canonical, `db/schema.rb` deleted. The search trigger/function/config are
+  migration SQL (schema dumper round-trips them).
+- **Search = Postgres, no gem**: trigger-maintained weighted tsvector
+  `listings.searchable` (A=title, B=specs values, C=description) built by
+  plpgsql `listings_searchable_tsvector()` looping
+  `ts_debug('listings_unaccented', …)` (custom config = unaccent dict,
+  alphanumeric token types only). Query: `Listing.matching`
+  (`websearch_to_tsquery`) and `by_relevance` (`ts_rank`). **pg_search was
+  removed** — rank subselect breaks `count`/facet composition,
+  `with_ranking:` doesn't exist in 2.4.0.
+- **Listing moderation**: AASM 6, **string** status column (default
+  `draft`). States: draft/pending_review/published/rejected/archived + sold.
+  Editing a published listing (REVIEWABLE_FIELDS title/description/
+  price_cents/specs or image blob ids) auto-fires `return_to_review` from
+  `after_save` unless `listing_auto_approve` flag is on; before/after image
+  snapshot in `before_save`.
+- **Specs filters**: `specs` jsonb `{ key => [values] }`; DB filter is
+  `@>` containment — OR within a key, AND across keys (Arel-built).
+  `FilterOption#value` is a machine token `/\A[a-z0-9][a-z0-9._-]*\z/`;
+  display labels live in `label_translations` (real words translated,
+  brands verbatim).
+- **`Listings::Search` service** owns browse/search: params-hash in → records
+  (Pagy::Offset) + total + facets out. Facet counts per option via one
+  grouped query per definition (dimension's own filter excluded), cached
+  5 min keyed on params + data-version stamp. SORTS: relevance, best_match,
+  newest, price_asc, price_desc, most_watched.
+- **Native integer enums** used for: `category.kind`,
+  `filter_definition.input_type`, `store.kind`, `listing.condition`,
+  `listing.shipping_method`. Enum labels i18n'd at
+  `activerecord.attributes.<model>.<column_plural>.<value>`.
+- **Counters**: `Category#listings_count`, `Store#active_listings_count`
+  refreshed by services (`Categories::RefreshListingsCount`,
+  `Stores::RefreshActiveListingsCount`) from after-commit jobs.
+- **Seeds**: `db/seeds/*.rb` (11 files, numeric prefix order via
+  `db/seeds.rb`), all upserts by natural key (`seed_record`) — idempotent,
+  admin edits survive re-seed; obsolete slugs are deleted by slug. Summary
+  `puts` is silenced under `Rails.env.test?`.
+- Gotchas: jsonb migration defaults must be Ruby literals (`default: {}`,
+  `default: []`); TS token-type aliases must exist in PG17 (`asciiword`,
+  `hword_part`, … — old `part_hyphen` etc. don't); `setweight` needs
+  `source.w::"char"` cast; Rails 8.1 `errors` is not lazy — call `valid?`
+  before `errors[:attr]`; `sanitize_sql_array` is a class method.
 
 ## Code map (Phase 0)
 
@@ -70,20 +113,52 @@ FR/GB/DE/IT/PT seeded but disabled.
 - `config/sitemap.rb` + `GET /sitemaps` controller-less redirect → per-locale sitemap.
 - Seeds are idempotent (`seed_record` upsert by natural key).
 
+## Code map (Phase 1a — catalog data model)
+
+- `app/models/category.rb` — tree (`parent_id`), recursive-CTE subtree
+  helpers, `effective_filter_definitions` (own + inherited), listings_count.
+- `app/models/{filter_definition,filter_option,category_filter}.rb` —
+  spec vocabulary: keys, machine-token values, per-category assignment
+  (join model `category_filter.rb`).
+- `app/models/listing.rb` — the big one: AASM machine, validations,
+  `matching`/`by_relevance`/`in_category`/`specs_where` scopes, re-review on
+  edit, `with_includes` preloads, `display_price`.
+- `app/models/{store,product_label,seller_tag,spanish_province}.rb` +
+  join models `listing_label.rb` / `listing_seller_tag.rb` +
+  `app/models/concerns/translatable.rb` (jsonb `*_translations`,
+  `translated_name`). ProductLabel = marketing badges (13 seeded, e.g.
+  `value_gpus`, `deal`); SellerTag = build aesthetic tags (20 seeded, e.g.
+  `rgb`, `sakura`) — seller trust is `Store#verified`, not a tag.
+- `app/services/listings/search.rb` — browse/search pipeline (filters,
+  sorts, facets, Pagy). `app/services/app_settings.rb` gains
+  `enabled?(key)`.
+- `app/services/{stores,categories}/*.rb` + `app/jobs/{stores,categories}/*.rb`
+  — counter refreshes and default-store creation.
+- `db/migrate/20261119160001..12_*.rb` (12), `db/structure.sql`,
+  `db/seeds/{01..10}*.rb`, `config/spanish_provinces.yml`.
+- Tests: `test/models/{category,store,filter_definition,spanish_province,listing}_test.rb`,
+  `test/services/listings/search_test.rb`,
+  `test/integration/seeds_idempotency_test.rb`, fixtures +
+  `test/support/catalog_helpers.rb`.
+
 ## Testing
 
-- `bin/rails test` — 44 tests green: i18n parity, root renders in all 6
-  locales (html lang), cookie/Accept-Language negotiation, 404 for `/xx`,
-  devise localized renders, pages allowlist, flag-gated sell-to-us, setting
-  casting + cache invalidation, country/user validations, `from_omniauth`.
+- `bin/rails test` — **116 tests green**: all Phase 0 checks plus model
+  validations, AASM transitions (incl. edit-returns-to-review and
+  auto-approve), search (accents, spec AND/OR, price/condition filters,
+  sorts, facets, N+1, category descendants), seeds idempotency (twice +
+  admin-edit survival), i18n parity.
+- Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
+  ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
-  run outside `bin/dev`.
+  run outside `bin/dev`; export `TAILWINDCSS_INSTALL_DIR` (see README
+  Troubleshooting) when the tailwind binary isn't found.
 
 ## Open items
 
-- Phase 1: categories + listings models, search (pg_search), seller profiles.
-- Real category taxonomy eventually from DB (currently a helper constant).
+- Phase 1b: storefront views (category browse, listing detail, publish
+  flow, seller dashboard) on top of the 1a model/service layer.
+- Admin UI for categories/filters/labels/settings (seeds cover data now).
 - Wishlist/notifications/cart are `#` placeholders in the header.
-- CI not set up yet; `rubocop -A` touches `config/initializers/devise.rb`
-  (already applied).
-- No commit made for Phase 0 — awaiting user review.
+- CI not set up yet.
+- No commit made for Phase 1a (or 0) — awaiting user review.

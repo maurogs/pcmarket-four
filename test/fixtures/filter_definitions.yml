@@ -1,0 +1,28 @@
+gpu_chipset:
+  key: gpu_chipset
+  input_type: multi_select
+  position: 1
+  label_translations: { "en": "GPU brand", "es": "Marca de GPU" }
+  group_translations: { "en": "Graphics", "es": "Gráficos" }
+
+cpu_brand:
+  key: cpu_brand
+  input_type: multi_select
+  position: 2
+  label_translations: { "en": "CPU brand", "es": "Marca de CPU" }
+  group_translations: { "en": "CPU" }
+
+rgb_lighting:
+  key: rgb_lighting
+  input_type: boolean
+  position: 3
+  label_translations: { "en": "RGB lighting" }
+  group_translations: { "en": "Features" }
+
+console_platform:
+  key: console_platform
+  input_type: single_select
+  position: 1
+  show_in_sidebar: false
+  label_translations: { "en": "Platform" }
+  group_translations: { "en": "Platform" }

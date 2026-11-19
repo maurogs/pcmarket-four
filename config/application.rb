@@ -30,5 +30,9 @@ module PcmarketFour
     config.i18n.default_locale = :es
     # Non-Spanish locales fall back straight to :en (never leak :es).
     config.i18n.fallbacks = { es: [ :es ], en: [ :en ], fr: [ :en ], de: [ :en ], it: [ :en ], pt: [ :en ] }
+
+    # The listings search trigger/function only round-trips through a SQL
+    # dump, so the canonical schema is db/structure.sql (never edit by hand).
+    config.active_record.schema_format = :sql
   end
 end

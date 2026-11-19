@@ -18,6 +18,13 @@ it:
     pt: Portogallo
   errors:
     forbidden: Non sei autorizzato a eseguire questa azione.
+    messages:
+      must_exceed_price: deve essere superiore al prezzo
+      too_large_image: "Ogni immagine deve essere inferiore a %{max_megabytes} MB"
+      too_many_images: "Puoi caricare al massimo %{max} immagini"
+      unknown_filter_key: "%{key} non è un filtro valido"
+      unknown_filter_value: "'%{value}' non è un valore valido per %{key}"
+      unsupported_content_type: "%{content_type} non è un formato immagine supportato"
     throttled: Troppe richieste. Riprova tra %{retry_after} secondi.
   footer:
     tagline: Il marketplace europeo per comprare e vendere tecnologia in tutta sicurezza.
@@ -123,6 +130,100 @@ it:
       intro: Ottieni un prezzo equo per il tuo vecchio hardware in pochi passaggi.
       meta:
         description: Vendi a PCMarket i tuoi computer e componenti usati a un prezzo garantito.
+  activerecord:
+    attributes:
+      category:
+        kind:
+          accessory: Accessorio
+          component: Componente
+          full_system: Sistema completo
+          gaming_system: Console
+          mobile: Dispositivo mobile
+          peripheral: Periferica
+          software: Software
+      filter_definition:
+        input_type:
+          boolean: Sì / No
+          multi_select: Scelta multipla
+          range: Intervallo
+          single_select: Scelta singola
+      listing:
+        condition:
+          for_parts: Per parti
+          new_open_box: Nuovo (aperto)
+          new_sealed: Nuovo (sigillato)
+          used_fair: Usato (discreto)
+          used_good: Usato (buono)
+          used_like_new: Usato (pari al nuovo)
+        shipping_method:
+          own_label: Etichetta propria
+          pickup_only: Solo ritiro a mano
+          platform_label: Etichetta della piattaforma
+        statuses:
+          archived: Archiviato
+          draft: Bozza
+          paused: In pausa
+          pending_review: In revisione
+          published: Pubblicato
+          rejected: Rifiutato
+          sold: Venduto
+      store:
+        kind:
+          business: Azienda
+          individual: Privato
+  spanish_provinces:
+    a_coruna: A Coruña
+    alava: Álava
+    albacete: Albacete
+    alicante: Alicante
+    almeria: Almería
+    asturias: Asturias
+    avila: Ávila
+    badajoz: Badajoz
+    baleares: Islas Baleares
+    barcelona: Barcelona
+    burgos: Burgos
+    caceres: Cáceres
+    cadiz: Cádiz
+    cantabria: Cantabria
+    castellon: Castellón
+    ceuta: Ceuta
+    ciudad_real: Ciudad Real
+    cordoba: Córdoba
+    cuenca: Cuenca
+    girona: Gerona
+    granada: Granada
+    guadalajara: Guadalajara
+    guipuzkoa: Guipúzcoa
+    huelva: Huelva
+    huesca: Huesca
+    jaen: Jaén
+    la_rioja: La Rioja
+    las_palmas: Las Palmas
+    leon: León
+    lerida: Lérida
+    lugo: Lugo
+    madrid: Madrid
+    malaga: Málaga
+    melilla: Melilla
+    murcia: Murcia
+    navarra: Navarra
+    ourense: Orense
+    palencia: Palencia
+    pontevedra: Pontevedra
+    salamanca: Salamanca
+    segovia: Segovia
+    sevilla: Sevilla
+    soria: Soria
+    tarragona: Tarragona
+    tenerife: Santa Cruz de Tenerife
+    teruel: Teruel
+    toledo: Toledo
+    valencia: Valencia
+    valladolid: Valladolid
+    vizcaya: Vizcaya
+    zamora: Zamora
+    zaragoza: Zaragoza
   settings:
     descriptions:
       sell_to_us_enabled: Mostra e attiva il flusso Vendi a noi

@@ -7,6 +7,7 @@ class User < ApplicationRecord
          :omniauthable, omniauth_providers: %i[google]
 
   belongs_to :country, optional: true
+  has_one :store, dependent: :destroy
   has_one_attached :avatar
 
   enum :role, { user: 0, admin: 1, moderator: 2 }, default: :user
