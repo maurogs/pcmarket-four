@@ -805,6 +805,68 @@ it:
         invalid_confirmation: Questa password o username non è corretto.
         success: Il tuo account è stato eliminato.
   seller:
+    dashboards:
+      show:
+        greeting: Ciao %{name}! Ecco come sta andando il tuo negozio.
+        period_label: Periodo di riferimento
+        periods:
+          "7d": 7 giorni
+          "30d": 30 giorni
+          "90d": 90 giorni
+        kpis:
+          active_listings: Annunci attivi
+          pending_review: In revisione
+          total_views: Visualizzazioni totali
+          favorites: Preferiti
+          followers: Follower
+          sold: Venduti nel periodo
+          rating: Valutazione
+          revenue: Ricavi nel periodo
+        rating_value:
+          one: "%{avg} (%{count} valutazione)"
+          other: "%{avg} (%{count} valutazioni)"
+        no_ratings: Ancora nessuna valutazione
+        sold_chart:
+          title: Vendite al giorno
+          empty: Nessuna vendita in questo periodo.
+          day:
+            one: "%{date}: %{count} venduto"
+            other: "%{date}: %{count} venduti"
+        attention:
+          title: Richiede attenzione
+          empty: Niente che richieda la tua attenzione.
+          rejected_title: Annunci rifiutati
+          stale_drafts_title: Bozze in attesa
+          no_photos_title: Annunci senza foto
+          reason: "Motivo: %{reason}"
+          fix: Correggi
+        top:
+          title: Annunci più visti
+          empty: Ancora nessun annuncio.
+          listing: Annuncio
+          views: Visualizzazioni
+          views_count:
+            one: "%{count} visualizzazione"
+            other: "%{count} visualizzazioni"
+        activity:
+          title: Attività recente
+          empty: Niente per ora.
+          updated: Aggiornato il %{date}
+        quick:
+          title: Azioni rapide
+          new_listing: Vendi un articolo
+          store_settings: Impostazioni del negozio
+          public_store: Vedi negozio pubblico
+        onboarding:
+          title: Prepara il tuo negozio
+          intro: Completa questi passaggi per iniziare a vendere.
+          done: Fatto
+          todo: Da fare
+          items:
+            logo: Carica il logo del negozio
+            bio: Scrivi la descrizione del negozio
+            first_listing: Crea il tuo primo annuncio
+            first_approved: Fai approvare il tuo primo annuncio
     stores:
       new:
         title: Apri il tuo negozio

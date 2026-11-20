@@ -804,6 +804,68 @@ pt:
         invalid_confirmation: Essa palavra-passe ou nome de utilizador não está correto.
         success: A sua conta foi eliminada.
   seller:
+    dashboards:
+      show:
+        greeting: Olá %{name}! Eis como está a correr a sua loja.
+        period_label: Período em análise
+        periods:
+          "7d": 7 dias
+          "30d": 30 dias
+          "90d": 90 dias
+        kpis:
+          active_listings: Anúncios ativos
+          pending_review: Em revisão
+          total_views: Visualizações totais
+          favorites: Favoritos
+          followers: Seguidores
+          sold: Vendidos no período
+          rating: Avaliação
+          revenue: Receitas no período
+        rating_value:
+          one: "%{avg} (%{count} avaliação)"
+          other: "%{avg} (%{count} avaliações)"
+        no_ratings: Ainda sem avaliações
+        sold_chart:
+          title: Vendas por dia
+          empty: Sem vendas neste período.
+          day:
+            one: "%{date}: %{count} vendido"
+            other: "%{date}: %{count} vendidos"
+        attention:
+          title: Requer atenção
+          empty: Nada a requerer a sua atenção.
+          rejected_title: Anúncios rejeitados
+          stale_drafts_title: Rascunhos à sua espera
+          no_photos_title: Anúncios sem fotos
+          reason: "Motivo: %{reason}"
+          fix: Corrigir
+        top:
+          title: Anúncios mais vistos
+          empty: Ainda não tem anúncios.
+          listing: Anúncio
+          views: Visualizações
+          views_count:
+            one: "%{count} visualização"
+            other: "%{count} visualizações"
+        activity:
+          title: Atividade recente
+          empty: Nada por agora.
+          updated: Atualizado a %{date}
+        quick:
+          title: Ações rápidas
+          new_listing: Vender um artigo
+          store_settings: Definições da loja
+          public_store: Ver loja pública
+        onboarding:
+          title: Prepare a sua loja
+          intro: Conclua estes passos para começar a vender.
+          done: Concluído
+          todo: Fazer
+          items:
+            logo: Carregue um logótipo da loja
+            bio: Escreva a descrição da sua loja
+            first_listing: Crie o seu primeiro anúncio
+            first_approved: Obtenha a aprovação do primeiro anúncio
     stores:
       new:
         title: Abra a sua loja

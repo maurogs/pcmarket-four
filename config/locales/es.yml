@@ -805,6 +805,68 @@ es:
         invalid_confirmation: Esa contraseña o nombre de usuario no es correcto.
         success: Tu cuenta se ha eliminado.
   seller:
+    dashboards:
+      show:
+        greeting: "¡Hola, %{name}! Así va tu tienda."
+        period_label: Periodo del informe
+        periods:
+          "7d": 7 días
+          "30d": 30 días
+          "90d": 90 días
+        kpis:
+          active_listings: Anuncios activos
+          pending_review: En revisión
+          total_views: Visitas totales
+          favorites: Favoritos
+          followers: Seguidores
+          sold: Vendidos en el periodo
+          rating: Valoración
+          revenue: Ingresos en el periodo
+        rating_value:
+          one: "%{avg} (%{count} valoración)"
+          other: "%{avg} (%{count} valoraciones)"
+        no_ratings: Aún no hay valoraciones
+        sold_chart:
+          title: Ventas por día
+          empty: Sin ventas en este periodo.
+          day:
+            one: "%{date}: %{count} vendido"
+            other: "%{date}: %{count} vendidos"
+        attention:
+          title: Requiere atención
+          empty: No hay nada que requiera tu atención.
+          rejected_title: Anuncios rechazados
+          stale_drafts_title: Borradores esperándote
+          no_photos_title: Anuncios sin fotos
+          reason: "Motivo: %{reason}"
+          fix: Corregir
+        top:
+          title: Anuncios más vistos
+          empty: Todavía no tienes anuncios.
+          listing: Anuncio
+          views: Visitas
+          views_count:
+            one: "%{count} visita"
+            other: "%{count} visitas"
+        activity:
+          title: Actividad reciente
+          empty: Aún no hay nada.
+          updated: Actualizado el %{date}
+        quick:
+          title: Acciones rápidas
+          new_listing: Vender un artículo
+          store_settings: Ajustes de la tienda
+          public_store: Ver tienda pública
+        onboarding:
+          title: Prepara tu tienda
+          intro: Completa estos pasos para empezar a vender.
+          done: Hecho
+          todo: Hacer
+          items:
+            logo: Sube un logo para tu tienda
+            bio: Escribe la descripción de tu tienda
+            first_listing: Crea tu primer anuncio
+            first_approved: Consigue la aprobación de tu primer anuncio
     stores:
       new:
         title: Abre tu tienda

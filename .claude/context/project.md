@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-20 (Phase 3 step 4 — seller listing lifecycle,
+_Last updated: 2026-11-20 (Phase 3 step 5 — seller dashboard,
 uncommitted)_
 
 ## What this is
@@ -625,9 +625,45 @@ FR/GB/DE/IT/PT seeded but disabled.
   photo (submit! requires one). Gotchas: `response.media_type` has no
   charset; top-level params must be merged outside the `listing:` hash.
 
+## Code map (Phase 3 step 5 — seller dashboard)
+
+- Route `resource :dashboard, only: :show` in `namespace :seller` →
+  `Seller::DashboardsController#show` (authenticate_user!; no store →
+  `new_seller_store_path`). Builds `Seller::Dashboard.new(store, period:)`.
+- `app/services/seller/dashboard.rb` PORO: `PERIODS` allowlist (7d/30d/90d,
+  default 30d — unknown params silently fall back, same pattern as the
+  listings index status param). KPIs: `Listing.status_counts` (one grouped
+  query) for published/pending, `SUM(views_count)`/`SUM(favorites_count)`,
+  denormalized `followers_count`/`rating_avg`/`ratings_count`, sold count +
+  revenue (`sold_at` in period, single COUNT+SUM — **revenue is provisional:
+  sum of sold listings' `price_cents`, TODO Phase 5 order totals**).
+  `sold_per_day` = zero-filled `[Date, count]` series
+  (`group("sold_at::date")`). Needs attention (capped at 5 each): rejected
+  (with `rejection_reason`), drafts untouched >7 days (`updated_at`),
+  photo-less live-ish listings via `where.missing(:images_attachments)`
+  (the `has_many_attached` association is a real association). Top 5 by
+  `views_count`; activity = 10 latest `updated_at` (every lifecycle event
+  bumps it). Onboarding checklist (logo attached / bio present / first
+  listing / `published_at NOT NULL`), shown when the store has no listings.
+  Every panel is one aggregate query, memoized per instance.
+- `seller/dashboards/show.html.erb` (seller shell): greeting, period
+  switcher links (aria-current), KPI card grid, **pure-CSS bar sparkline**
+  (bar height = day's share of the busiest day, inline `style`, no JS),
+  attention panel (only non-empty lists; Fix → edit), top-listings table,
+  activity feed with status pills, quick actions (List an item / Store
+  settings / View public store), onboarding checklist card.
+- Links wired: sidebar Dashboard (Soon pill gone — sections array now
+  `dashboards/listings/stores`, active via `controller_name`), account
+  dropdown "Seller dashboard" + "My listings" (Soon gone). Listing
+  submission redirects unchanged.
+- Gotchas: backdate `sold_at`/`updated_at` with `update_columns` in tests
+  (callbacks bump `updated_at`); the header still has Soon pills (orders/
+  messages/wishlist/admin), so sidebar assertions must scope to
+  `nav[aria-label='Seller area']`.
+
 ## Testing
 
-- `bin/rails test` — **447 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **467 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -696,7 +732,15 @@ FR/GB/DE/IT/PT seeded but disabled.
   turbo row+toasts stream, ownership 404, auth; pause/resume round-trip +
   invalid-state alerts; sale sold/decrement/invalid-state; HTML fallbacks)
   plus Save & submit + status-banner tests in the listings controller test
-  and `record_offline_sale!`/paused→sold/submit-needs-photo model tests.
+  and `record_offline_sale!`/paused→sold/submit-needs-photo model tests;
+  Phase 3 step 5 adds `test/services/seller/dashboard_test.rb` (13 tests —
+  period sanitizing, KPI counts/sums, period-filtered sold+revenue,
+  zero-filled sold-per-day, attention lists, top/activity caps, onboarding
+  checklist progression, memoization) and
+  `test/controllers/seller/dashboards_controller_test.rb` (7 tests — auth,
+  no-store redirect, KPI render, onboarding vs panels, chart+attention
+  render, period param sanitized, sidebar link), and the header menu test
+  now asserts the Seller dashboard / My listings links.
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -708,7 +752,7 @@ FR/GB/DE/IT/PT seeded but disabled.
 - PC Finder: admin CRUD for `Game` rows and listing `performance_score`
   pending Phase 7 (admin UI); game tiles show initial-letter placeholders
   until real game images are attached (`Game#image`, nothing seeded).
-- Phase 1b-ii+: seller dashboard, admin UI
+- Phase 1b-ii+: admin UI
   for categories/filters/labels/settings (seeds cover data now).
 - Store follow button + reviews tab (rating distribution, cards, pagination)
   ship (Phase 2 step 4); the store **message** button is still a `#`

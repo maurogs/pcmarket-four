@@ -30,10 +30,8 @@
       which would otherwise render as a store owner with a nil slug. %>
   <% if current_user.store&.persisted? %>
     <li><%= link_to t("account_menu.public_profile"), store_path(current_user.store), class: row_class %></li>
-    <%# TODO Phase 4: point at the seller dashboard once it exists. %>
-    <li><%= soon_item.call(t("account_menu.seller_dashboard")) %></li>
-    <%# TODO Phase 4: point at the seller listings index once it exists. %>
-    <li><%= soon_item.call(t("account_menu.my_listings")) %></li>
+    <li><%= link_to t("account_menu.seller_dashboard"), seller_dashboard_path, class: row_class %></li>
+    <li><%= link_to t("account_menu.my_listings"), seller_listings_path, class: row_class %></li>
     <li><%= link_to t("account_menu.store_settings"), edit_seller_store_path, class: row_class %></li>
   <% else %>
     <li><%= link_to t("account_menu.open_store"), new_seller_store_path, class: row_class %></li>

@@ -56,6 +56,9 @@ Rails.application.routes.draw do
     # current_user.store in the controller, so foreign ids 404.
     namespace :seller do
       resource :store, only: %i[new create edit update]
+      # Seller dashboard (Phase 3 step 5). Singular — one store per user, so
+      # the URL never carries an id.
+      resource :dashboard, only: :show
       resources :listings, only: %i[index new create edit update destroy] do
         # Lifecycle actions as singular nested resources (Phase 3 step 4): a
         # listing has at most one submission / pause / sale per action, so the

@@ -65,6 +65,8 @@ class HeaderAccountMenuTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "a[href=?]", "/en/s/confirmed-store", text: "Public profile"
+    assert_select "a[href=?]", "/en/seller/dashboard", text: "Seller dashboard"
+    assert_select "a[href=?]", "/en/seller/listings", text: "My listings"
     assert_select "a[href=?]", "/en/seller/store/edit", text: "Store settings"
     assert_select "a", text: "Open your store", count: 0
   end

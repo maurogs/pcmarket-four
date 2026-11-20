@@ -807,6 +807,68 @@ fr:
         invalid_confirmation: Ce mot de passe ou cet identifiant est incorrect.
         success: Votre compte a été supprimé.
   seller:
+    dashboards:
+      show:
+        greeting: Bonjour %{name} ! Voici comment se porte votre boutique.
+        period_label: Période analysée
+        periods:
+          "7d": 7 jours
+          "30d": 30 jours
+          "90d": 90 jours
+        kpis:
+          active_listings: Annonces actives
+          pending_review: En cours de modération
+          total_views: Vues totales
+          favorites: Favoris
+          followers: Abonnés
+          sold: Vendus sur la période
+          rating: Note
+          revenue: Chiffre d’affaires sur la période
+        rating_value:
+          one: "%{avg} (%{count} note)"
+          other: "%{avg} (%{count} notes)"
+        no_ratings: Pas encore de notes
+        sold_chart:
+          title: Ventes par jour
+          empty: Aucune vente sur cette période.
+          day:
+            one: "%{date} : %{count} vendu"
+            other: "%{date} : %{count} vendus"
+        attention:
+          title: À traiter
+          empty: Rien à traiter pour le moment.
+          rejected_title: Annonces refusées
+          stale_drafts_title: Brouillons en attente
+          no_photos_title: Annonces sans photo
+          reason: "Motif : %{reason}"
+          fix: Corriger
+        top:
+          title: Annonces les plus vues
+          empty: Vous n’avez pas encore d’annonce.
+          listing: Annonce
+          views: Vues
+          views_count:
+            one: "%{count} vue"
+            other: "%{count} vues"
+        activity:
+          title: Activité récente
+          empty: Rien pour le moment.
+          updated: Mise à jour le %{date}
+        quick:
+          title: Actions rapides
+          new_listing: Vendre un article
+          store_settings: Paramètres de la boutique
+          public_store: Voir la boutique publique
+        onboarding:
+          title: Préparez votre boutique
+          intro: Terminez ces étapes pour commencer à vendre.
+          done: Terminé
+          todo: À faire
+          items:
+            logo: Ajoutez un logo de boutique
+            bio: Rédigez la présentation de votre boutique
+            first_listing: Créez votre première annonce
+            first_approved: Faites approuver votre première annonce
     stores:
       new:
         title: Ouvrez votre boutique

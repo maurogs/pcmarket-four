@@ -1016,3 +1016,58 @@ edit-page status banner and a "Save & submit" form button.
 `test/controllers/seller/{listings_controller_test.rb,listings/*}`.
 
 Verified: `bin/rails test` 447 green; `bin/rubocop` clean (189 files).
+
+## 2026-11-20 — Phase 3 step 5: seller dashboard (uncommitted)
+
+**What & why**: The seller area needed a landing page with store KPIs, a
+"needs attention" worklist and a new-seller onboarding flow (the sidebar +
+account-menu Dashboard entries were "Soon" pills).
+
+- Route `resource :dashboard, only: :show` in `namespace :seller` →
+  `Seller::DashboardsController#show` (authenticate_user!; sellers without a
+  store redirect to `new_seller_store_path`).
+- New PORO `app/services/seller/dashboard.rb`: period allowlist
+  (`PERIODS` 7d/30d/90d, default 30d, unknown params fall back), KPI cards
+  (`Listing.status_counts` for published/pending, `SUM` of views/favorites,
+  denormalized `followers_count`/`rating_avg`/`ratings_count`, sold count +
+  revenue from `sold_at` in period — **revenue is provisional, TODO Phase 5
+  order totals**), zero-filled sold-per-day series
+  (`group("sold_at::date")`), needs-attention lists (rejected w/ reason,
+  drafts untouched >7d via `updated_at`, `where.missing(:images_attachments)`
+  for photo-less live-ish listings), top 5 by `views_count`, 10 latest
+  `updated_at` as activity, onboarding checklist (logo/bio/first listing/
+  first approved via `published_at NOT NULL`). Every panel = one aggregate
+  query, memoized (`@x ||=`), lists capped at 5/10.
+- View `seller/dashboards/show.html.erb` in the seller shell: greeting,
+  period switcher links (aria-current), KPI card grid, pure-CSS bar
+  sparkline (height = day's share of the busiest day, no JS), attention
+  panel (only non-empty lists, Fix → edit), top-listings table, activity
+  feed, quick actions (List an item / Store settings / View public store),
+  onboarding checklist card when the store has no listings.
+- Links wired: sidebar Dashboard item (Soon pill removed), account dropdown
+  "Seller dashboard" + "My listings" (Soon removed). Listing submission
+  redirect behavior unchanged.
+- i18n: `seller.dashboards.show.*` (~45 keys incl. pluralized
+  rating_value/views_count/day) in all 6 locales.
+- Tests: `test/services/seller/dashboard_test.rb` (13: period sanitizing,
+  KPI counts/sums, period-filtered sold+revenue, sparkline zero-fill,
+  attention lists, top/activity caps, checklist progression, memoization),
+  `test/controllers/seller/dashboards_controller_test.rb` (7: auth, no-store
+  redirect, KPI render, onboarding vs panels, chart+attention render, period
+  param sanitized, sidebar link); header menu test now asserts the two new
+  links.
+- Gotchas: `where.missing(:images_attachments)` works because
+  `has_many_attached` defines a real association; sold_at/updated_at must be
+  backdated with `update_columns` (callbacks would bump `updated_at`); the
+  header still has Soon pills (orders/messages/wishlist/admin) so
+  sidebar-scoped assertions must target `nav[aria-label='Seller area']`.
+
+**Files**: `config/routes.rb`,
+`app/controllers/seller/dashboards_controller.rb`,
+`app/services/seller/dashboard.rb`, `app/views/seller/dashboards/show.html.erb`,
+`app/views/seller/_sidebar.html.erb`, `app/views/shared/_account_links.html.erb`,
+`config/locales/*.yml`, `test/services/seller/dashboard_test.rb`,
+`test/controllers/seller/dashboards_controller_test.rb`,
+`test/integration/header_account_menu_test.rb`.
+
+Verified: `bin/rails test` 467 green; `bin/rubocop` clean (193 files).

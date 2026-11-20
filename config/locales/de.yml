@@ -808,6 +808,68 @@ de:
         invalid_confirmation: Dieses Passwort oder dieser Benutzername ist nicht korrekt.
         success: Ihr Konto wurde gelöscht.
   seller:
+    dashboards:
+      show:
+        greeting: Hallo %{name}! So läuft dein Shop.
+        period_label: Berichtszeitraum
+        periods:
+          "7d": 7 Tage
+          "30d": 30 Tage
+          "90d": 90 Tage
+        kpis:
+          active_listings: Aktive Anzeigen
+          pending_review: In Prüfung
+          total_views: Aufrufe gesamt
+          favorites: Favoriten
+          followers: Follower
+          sold: Verkäufe im Zeitraum
+          rating: Bewertung
+          revenue: Umsatz im Zeitraum
+        rating_value:
+          one: "%{avg} (%{count} Bewertung)"
+          other: "%{avg} (%{count} Bewertungen)"
+        no_ratings: Noch keine Bewertungen
+        sold_chart:
+          title: Verkäufe pro Tag
+          empty: Keine Verkäufe in diesem Zeitraum.
+          day:
+            one: "%{date}: %{count} verkauft"
+            other: "%{date}: %{count} verkauft"
+        attention:
+          title: Braucht deine Aufmerksamkeit
+          empty: Aktuell ist alles in Ordnung.
+          rejected_title: Abgelehnte Anzeigen
+          stale_drafts_title: Entwürfe warten auf dich
+          no_photos_title: Anzeigen ohne Fotos
+          reason: "Grund: %{reason}"
+          fix: Bearbeiten
+        top:
+          title: Meistgesehene Anzeigen
+          empty: Noch keine Anzeigen.
+          listing: Anzeige
+          views: Aufrufe
+          views_count:
+            one: "%{count} Aufruf"
+            other: "%{count} Aufrufe"
+        activity:
+          title: Letzte Aktivitäten
+          empty: Noch nichts.
+          updated: Aktualisiert am %{date}
+        quick:
+          title: Schnellaktionen
+          new_listing: Artikel einstellen
+          store_settings: Shop-Einstellungen
+          public_store: Öffentlichen Shop ansehen
+        onboarding:
+          title: Bereite deinen Shop vor
+          intro: Schließe diese Schritte ab, um mit dem Verkauf zu starten.
+          done: Erledigt
+          todo: Erledigen
+          items:
+            logo: Shop-Logo hochladen
+            bio: Shop-Beschreibung schreiben
+            first_listing: Erste Anzeige erstellen
+            first_approved: Erste Anzeige freigeben lassen
     stores:
       new:
         title: Eröffne deinen Shop

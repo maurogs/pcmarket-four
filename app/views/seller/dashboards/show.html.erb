@@ -1,0 +1,207 @@
+<%
+  # Seller dashboard. All numbers come from Seller::Dashboard (aggregate
+  # queries, memoized). The sold-per-day sparkline is pure CSS bars — the
+  # bar height is the day's share of the busiest day, no JS involved.
+  chart = @dashboard.sold_per_day
+  chart_max = @dashboard.sold_per_day_max
+  attention = [
+    [ "rejected", t(".attention.rejected_title"), @dashboard.rejected_listings ],
+    [ "stale_drafts", t(".attention.stale_drafts_title"), @dashboard.stale_drafts ],
+    [ "no_photos", t(".attention.no_photos_title"), @dashboard.listings_without_photos ]
+  ]
+  kpis = [
+    [ "active_listings", @dashboard.active_listings_count, "tag" ],
+    [ "pending_review", @dashboard.pending_review_count, "clock" ],
+    [ "total_views", @dashboard.total_views, "eye" ],
+    [ "favorites", @dashboard.favorites_count, "heart" ],
+    [ "followers", @dashboard.followers_count, "user" ],
+    [ "sold", @dashboard.sold_count, "check" ]
+  ]
+%>
+<% content_for :seller_body do %>
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <h1 class="font-display text-2xl font-bold"><%= t(".greeting", name: current_user.display_name) %></h1>
+    <%= link_to new_seller_listing_path, class: "btn-primary" do %>
+      <%= icon "plus", class: "h-4 w-4" %><%= t(".quick.new_listing") %>
+    <% end %>
+  </div>
+
+  <%# Period switcher — the controller/service sanitize unknown values. %>
+  <nav aria-label="<%= t(".period_label") %>" class="mt-6 flex gap-2">
+    <% Seller::Dashboard::PERIODS.each_key do |key| %>
+      <%= link_to t(".periods.#{key}"), seller_dashboard_path(period: key),
+            aria: { current: ("page" if key == @dashboard.period) },
+            class: class_names(
+              "rounded-full px-4 py-2 text-sm font-semibold",
+              "bg-primary-100 text-primary-900 dark:bg-primary-900 dark:text-primary-100" => key == @dashboard.period,
+              "text-muted hover:bg-cream-100 hover:text-body dark:hover:bg-cream-surface" => key != @dashboard.period
+            ) %>
+    <% end %>
+  </nav>
+
+  <%# KPI cards render for everyone — a new seller's zeros are informative. %>
+  <dl class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+    <% kpis.each do |key, value, icon_name| %>
+      <div class="card p-4">
+        <dt class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-muted">
+          <%= icon icon_name, class: "h-3.5 w-3.5" %><%= t(".kpis.#{key}") %>
+        </dt>
+        <dd class="mt-1 font-display text-2xl font-bold"><%= value %></dd>
+      </div>
+    <% end %>
+    <div class="card p-4">
+      <dt class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-muted">
+        <%= icon "star", class: "h-3.5 w-3.5" %><%= t(".kpis.rating") %>
+      </dt>
+      <dd class="mt-1 font-display text-2xl font-bold">
+        <% if @dashboard.rating_count.positive? %>
+          <%= t(".rating_value", avg: ("%.1f" % @dashboard.rating_avg), count: @dashboard.rating_count) %>
+        <% else %>
+          <span class="text-base font-semibold text-muted"><%= t(".no_ratings") %></span>
+        <% end %>
+      </dd>
+    </div>
+    <div class="card p-4">
+      <dt class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-muted">
+        <%= icon "cart", class: "h-3.5 w-3.5" %><%= t(".kpis.revenue") %>
+      </dt>
+      <dd class="mt-1 font-display text-2xl font-bold">
+        <%= number_to_currency(@dashboard.revenue_cents / 100.0, unit: Listing::CURRENCY_UNITS.fetch("EUR")) %>
+      </dd>
+    </div>
+  </dl>
+
+  <% if @dashboard.onboarding? %>
+    <%# New seller: checklist instead of the (all-empty) panels below. %>
+    <section class="card mt-6 p-6" aria-labelledby="onboarding-title">
+      <h2 id="onboarding-title" class="font-display text-lg font-bold"><%= t(".onboarding.title") %></h2>
+      <p class="mt-1 text-sm text-muted"><%= t(".onboarding.intro") %></p>
+      <ul class="mt-4 space-y-2">
+        <% @dashboard.onboarding_checklist.each do |item| %>
+          <li class="flex items-center justify-between gap-3 rounded-xl bg-cream-100 px-4 py-3 dark:bg-cream-surface">
+            <span class="flex items-center gap-2 text-sm font-semibold <%= "text-muted line-through" if item[:done] %>">
+              <% if item[:done] %>
+                <span class="text-green-700 dark:text-green-400"><%= icon "check", class: "h-4 w-4" %></span>
+              <% end %>
+              <%= t(".onboarding.items.#{item[:key]}") %>
+            </span>
+            <% if item[:done] %>
+              <span class="text-xs font-bold uppercase tracking-wide text-green-700 dark:text-green-400"><%= t(".onboarding.done") %></span>
+            <% else %>
+              <%= link_to t(".onboarding.todo"),
+                    item[:key] == "first_listing" ? new_seller_listing_path : edit_seller_store_path,
+                    class: "btn-secondary px-3 py-1 text-xs" %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% else %>
+    <%# Sold-per-day sparkline: one CSS bar per day in the period. %>
+    <section class="card mt-6 p-6" aria-labelledby="sold-chart-title">
+      <h2 id="sold-chart-title" class="font-display text-lg font-bold"><%= t(".sold_chart.title") %></h2>
+      <% if @dashboard.sold_count.zero? %>
+        <p class="mt-4 text-sm text-muted"><%= t(".sold_chart.empty") %></p>
+      <% else %>
+        <div class="mt-4 flex h-24 items-end gap-px border-b border-line" role="img"
+             aria-label="<%= t(".sold_chart.title") %>">
+          <% chart.each do |day, count| %>
+            <div class="flex-1 rounded-t bg-primary-500 dark:bg-primary-400"
+                 style="height: <%= count.zero? ? 0 : (count.to_f / chart_max * 100).ceil %>%"
+                 title="<%= t(".sold_chart.day", date: l(day), count: count) %>"></div>
+          <% end %>
+        </div>
+      <% end %>
+    </section>
+
+    <%# Needs attention: only the non-empty lists get a block. %>
+    <section class="card mt-6 p-6" aria-labelledby="attention-title">
+      <h2 id="attention-title" class="font-display text-lg font-bold"><%= t(".attention.title") %></h2>
+      <% if @dashboard.needs_attention? %>
+        <div class="mt-4 space-y-5">
+          <% attention.each do |_key, title, listings| %>
+            <% next if listings.empty? %>
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wide text-muted"><%= title %></h3>
+              <ul class="mt-2 divide-y divide-line">
+                <% listings.each do |listing| %>
+                  <li class="flex items-center justify-between gap-3 py-2">
+                    <div class="min-w-0">
+                      <p class="truncate text-sm font-semibold"><%= listing.title %></p>
+                      <% if listing.rejected? && listing.rejection_reason.present? %>
+                        <p class="truncate text-xs text-muted"><%= t(".attention.reason", reason: listing.rejection_reason) %></p>
+                      <% end %>
+                    </div>
+                    <%= link_to t(".attention.fix"), edit_seller_listing_path(listing), class: "btn-secondary shrink-0 px-3 py-1 text-xs" %>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="mt-4 text-sm text-muted"><%= t(".attention.empty") %></p>
+      <% end %>
+    </section>
+
+    <div class="mt-6 grid gap-6 lg:grid-cols-2">
+      <section class="card p-6" aria-labelledby="top-title">
+        <h2 id="top-title" class="font-display text-lg font-bold"><%= t(".top.title") %></h2>
+        <% if @dashboard.top_listings.empty? %>
+          <p class="mt-4 text-sm text-muted"><%= t(".top.empty") %></p>
+        <% else %>
+          <table class="mt-4 w-full text-sm">
+            <thead>
+              <tr class="text-start text-xs font-bold uppercase tracking-wide text-muted">
+                <th class="pb-2 text-start"><%= t(".top.listing") %></th>
+                <th class="pb-2 text-end"><%= t(".top.views") %></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-line">
+              <% @dashboard.top_listings.each do |listing| %>
+                <tr>
+                  <td class="py-2">
+                    <%= link_to listing.title, edit_seller_listing_path(listing), class: "font-semibold hover:text-primary-700 dark:hover:text-primary-200" %>
+                  </td>
+                  <td class="py-2 text-end tabular-nums"><%= t(".top.views_count", count: listing.views_count) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
+      </section>
+
+      <section class="card p-6" aria-labelledby="activity-title">
+        <h2 id="activity-title" class="font-display text-lg font-bold"><%= t(".activity.title") %></h2>
+        <% if @dashboard.recent_activity.empty? %>
+          <p class="mt-4 text-sm text-muted"><%= t(".activity.empty") %></p>
+        <% else %>
+          <ul class="mt-4 divide-y divide-line">
+            <% @dashboard.recent_activity.each do |listing| %>
+              <li class="flex items-center justify-between gap-3 py-2">
+                <div class="min-w-0">
+                  <%= link_to listing.title, edit_seller_listing_path(listing), class: "block truncate text-sm font-semibold hover:text-primary-700 dark:hover:text-primary-200" %>
+                  <p class="text-xs text-muted"><%= t(".activity.updated", date: l(listing.updated_at.to_date)) %></p>
+                </div>
+                <span class="shrink-0 rounded-full bg-cream-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted dark:bg-cream-surface">
+                  <%= t("activerecord.attributes.listing.statuses.#{listing.status}") %>
+                </span>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </section>
+    </div>
+  <% end %>
+
+  <%# Quick actions stay available in both states. %>
+  <section class="mt-6 flex flex-wrap gap-3" aria-label="<%= t(".quick.title") %>">
+    <%= link_to new_seller_listing_path, class: "btn-primary" do %>
+      <%= icon "plus", class: "h-4 w-4" %><%= t(".quick.new_listing") %>
+    <% end %>
+    <%= link_to t(".quick.store_settings"), edit_seller_store_path, class: "btn-secondary" %>
+    <%= link_to t(".quick.public_store"), store_path(@dashboard.store), class: "btn-secondary" %>
+  </section>
+<% end %>
+
+<%= render "seller/shell" %>

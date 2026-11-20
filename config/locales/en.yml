@@ -800,6 +800,68 @@ en:
         invalid_confirmation: That password or username is not correct.
         success: Your account has been deleted.
   seller:
+    dashboards:
+      show:
+        greeting: Hi %{name}! Here's how your store is doing.
+        period_label: Reporting period
+        periods:
+          "7d": 7 days
+          "30d": 30 days
+          "90d": 90 days
+        kpis:
+          active_listings: Active listings
+          pending_review: Pending review
+          total_views: Total views
+          favorites: Favorites
+          followers: Followers
+          sold: Sold in period
+          rating: Rating
+          revenue: Revenue in period
+        rating_value:
+          one: "%{avg} (%{count} rating)"
+          other: "%{avg} (%{count} ratings)"
+        no_ratings: No ratings yet
+        sold_chart:
+          title: Sold per day
+          empty: No sales in this period.
+          day:
+            one: "%{date}: %{count} sold"
+            other: "%{date}: %{count} sold"
+        attention:
+          title: Needs attention
+          empty: Nothing needs your attention right now.
+          rejected_title: Rejected listings
+          stale_drafts_title: Drafts waiting for you
+          no_photos_title: Listings without photos
+          reason: "Reason: %{reason}"
+          fix: Fix
+        top:
+          title: Top listings by views
+          empty: No listings yet.
+          listing: Listing
+          views: Views
+          views_count:
+            one: "%{count} view"
+            other: "%{count} views"
+        activity:
+          title: Recent activity
+          empty: Nothing yet.
+          updated: Updated %{date}
+        quick:
+          title: Quick actions
+          new_listing: List an item
+          store_settings: Store settings
+          public_store: View public store
+        onboarding:
+          title: Get your store ready
+          intro: Finish these steps to start selling.
+          done: Done
+          todo: Do this
+          items:
+            logo: Upload a store logo
+            bio: Write your store bio
+            first_listing: Create your first listing
+            first_approved: Get your first listing approved
     stores:
       new:
         title: Open your store
