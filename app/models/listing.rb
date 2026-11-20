@@ -48,6 +48,9 @@ class Listing < ApplicationRecord
   has_many :product_labels, through: :listing_labels
   has_many :listing_seller_tags, dependent: :destroy
   has_many :seller_tags, through: :listing_seller_tags
+  # Cart rows hold a FK to the listing, so they must go with it (a listing
+  # can only be in carts while visible, but admins can still destroy one).
+  has_many :cart_items, dependent: :destroy
 
   has_many_attached :images
 

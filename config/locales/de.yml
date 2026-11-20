@@ -1167,3 +1167,43 @@ de:
       dashboard: Dashboard
       my_listings: Meine Anzeigen
       store_settings: Shop-Einstellungen
+  carts:
+    notices:
+      removed: '"%{listing}" ist nicht mehr verfügbar und wurde aus dem Warenkorb entfernt.'
+      price_changed: 'Der Preis von "%{listing}" hat sich auf %{price} geändert.'
+      quantity_capped: 'Nur noch %{count} von "%{listing}" verfügbar — Menge angepasst.'
+    show:
+      title: Dein Warenkorb
+      items_count:
+        one: "%{count} Artikel"
+        other: "%{count} Artikel"
+      empty:
+        title: Dein Warenkorb ist leer
+        body: Stöbere im Marktplatz und lege etwas in den Warenkorb.
+        cta: Weiter einkaufen
+      item:
+        quantity_label: Menge
+        update: Aktualisieren
+        remove: Entfernen
+      store:
+        subtotal: Zwischensumme
+        shipping: Versand
+        free_shipping: Kostenlos
+      summary:
+        title: Bestellübersicht
+        subtotal: Zwischensumme
+        shipping: Versand
+        free_shipping: Kostenlos
+        total: Gesamt
+        taxes_included: Preise inkl. MwSt.
+        checkout: Zur Kasse
+      continue_shopping: Weiter einkaufen
+  cart_items:
+    flashes:
+      added: In den Warenkorb gelegt.
+      increased: Menge im Warenkorb aktualisiert.
+      capped: Nur noch %{count} auf Lager — Menge angepasst.
+      own_listing: Eigene Anzeigen kannst du nicht in den Warenkorb legen.
+      not_available: Dieser Artikel ist nicht mehr verfügbar.
+      updated: Menge aktualisiert.
+      removed: Artikel aus dem Warenkorb entfernt.

@@ -1166,3 +1166,43 @@ es:
       dashboard: Panel
       my_listings: Mis anuncios
       store_settings: Ajustes de la tienda
+  carts:
+    notices:
+      removed: '"%{listing}" ya no está disponible y se ha quitado de tu cesta.'
+      price_changed: 'El precio de "%{listing}" ha cambiado a %{price}.'
+      quantity_capped: 'Solo quedan %{count} unidades de "%{listing}" — cantidad ajustada.'
+    show:
+      title: Tu cesta
+      items_count:
+        one: "%{count} artículo"
+        other: "%{count} artículos"
+      empty:
+        title: Tu cesta está vacía
+        body: Explora el mercado y añade lo que más te guste.
+        cta: Seguir comprando
+      item:
+        quantity_label: Cantidad
+        update: Actualizar
+        remove: Quitar
+      store:
+        subtotal: Subtotal
+        shipping: Envío
+        free_shipping: Gratis
+      summary:
+        title: Resumen del pedido
+        subtotal: Subtotal
+        shipping: Envío
+        free_shipping: Gratis
+        total: Total
+        taxes_included: Los precios incluyen IVA.
+        checkout: Tramitar pedido
+      continue_shopping: Seguir comprando
+  cart_items:
+    flashes:
+      added: Añadido a tu cesta.
+      increased: Cantidad actualizada en tu cesta.
+      capped: Solo quedan %{count} en stock — cantidad ajustada.
+      own_listing: No puedes añadir tu propio anuncio a la cesta.
+      not_available: Este artículo ya no está disponible.
+      updated: Cantidad actualizada.
+      removed: Artículo quitado de tu cesta.

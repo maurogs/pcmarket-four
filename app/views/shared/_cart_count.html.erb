@@ -1,0 +1,6 @@
+<%# Header cart badge — the id is the turbo_stream target after every cart
+    mutation (CartItemsController#cart_update), so the span always renders,
+    hidden while the cart is empty. %>
+<% count = cart_badge_count %>
+<span id="cart_count"
+      class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-600 px-1 text-[10px] font-bold text-white dark:bg-primary-400 dark:text-primary-950 <%= "hidden" if count.zero? %>"><%= count > 99 ? "99+" : count %></span>

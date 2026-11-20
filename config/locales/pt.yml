@@ -1164,3 +1164,43 @@ pt:
       dashboard: Painel
       my_listings: Os meus anúncios
       store_settings: Definições da loja
+  carts:
+    notices:
+      removed: '"%{listing}" não está mais disponível e foi removido do carrinho.'
+      price_changed: 'O preço de "%{listing}" mudou para %{price}.'
+      quantity_capped: 'Só restam %{count} de "%{listing}" — quantidade ajustada.'
+    show:
+      title: O seu carrinho
+      items_count:
+        one: "%{count} artigo"
+        other: "%{count} artigos"
+      empty:
+        title: O seu carrinho está vazio
+        body: Explore o mercado e adicione o que gostar.
+        cta: Continuar a comprar
+      item:
+        quantity_label: Quantidade
+        update: Atualizar
+        remove: Remover
+      store:
+        subtotal: Subtotal
+        shipping: Envio
+        free_shipping: Grátis
+      summary:
+        title: Resumo da encomenda
+        subtotal: Subtotal
+        shipping: Envio
+        free_shipping: Grátis
+        total: Total
+        taxes_included: Os preços incluem IVA.
+        checkout: Finalizar compra
+      continue_shopping: Continuar a comprar
+  cart_items:
+    flashes:
+      added: Adicionado ao carrinho.
+      increased: Quantidade atualizada no carrinho.
+      capped: Só restam %{count} em stock — quantidade ajustada.
+      own_listing: Não pode adicionar o seu próprio anúncio ao carrinho.
+      not_available: Este artigo já não está disponível.
+      updated: Quantidade atualizada.
+      removed: Artigo removido do carrinho.

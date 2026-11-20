@@ -1166,3 +1166,43 @@ it:
       dashboard: Dashboard
       my_listings: I miei annunci
       store_settings: Impostazioni del negozio
+  carts:
+    notices:
+      removed: '"%{listing}" non è più disponibile ed è stato rimosso dal carrello.'
+      price_changed: 'Il prezzo di "%{listing}" è cambiato a %{price}.'
+      quantity_capped: 'Solo %{count} rimasti per "%{listing}" — quantità aggiustata.'
+    show:
+      title: Il tuo carrello
+      items_count:
+        one: "%{count} articolo"
+        other: "%{count} articoli"
+      empty:
+        title: Il tuo carrello è vuoto
+        body: Esplora il mercato e aggiungi ciò che ti piace.
+        cta: Continua lo shopping
+      item:
+        quantity_label: Quantità
+        update: Aggiorna
+        remove: Rimuovi
+      store:
+        subtotal: Subtotale
+        shipping: Spedizione
+        free_shipping: Gratuita
+      summary:
+        title: Riepilogo ordine
+        subtotal: Subtotale
+        shipping: Spedizione
+        free_shipping: Gratuita
+        total: Totale
+        taxes_included: I prezzi includono l'IVA.
+        checkout: Vai alla cassa
+      continue_shopping: Continua lo shopping
+  cart_items:
+    flashes:
+      added: Aggiunto al carrello.
+      increased: Quantità aggiornata nel carrello.
+      capped: Solo %{count} rimasti in magazzino — quantità aggiustata.
+      own_listing: Non puoi aggiungere il tuo stesso annuncio al carrello.
+      not_available: Questo articolo non è più disponibile.
+      updated: Quantità aggiornata.
+      removed: Articolo rimosso dal carrello.

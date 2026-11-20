@@ -1,7 +1,7 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-20 (Phase 3 step 6 — selling landing pages,
-uncommitted; Phase 3 complete)_
+_Last updated: 2026-11-20 (Phase 4 step 1 — cart,
+uncommitted)_
 
 ## What this is
 
@@ -694,9 +694,68 @@ FR/GB/DE/IT/PT seeded but disabled.
   dashes; `assert_select` CTA counts must use `minimum:` because header/
   footer add their own sell links.
 
+## Code map (Phase 4 step 1 — cart)
+
+- Routes (locale scope): `resource :cart, only: :show` + `resources
+  :cart_items, only: %i[create update destroy]` — singular cart (one per
+  visitor/user, no id in the URL); cart items addressed by row id. Both
+  controllers `require_checkout_enabled` → **404 while the flag is off**,
+  and the header cart link + listing-page CTAs hide with it.
+- `db/migrate/2026112015000{1,2}_*.rb`: `carts` (nullable `user_id` FK —
+  guest carts keep NULL and are addressed by `token`; unique partial index
+  on user_id WHERE NOT NULL = one cart per user; unique token) and
+  `cart_items` (unique [cart_id, listing_id] doubling as the cart FK index,
+  `quantity > 0` check constraint, `unit_price_cents` price snapshot).
+- `Cart` (`app/models/cart.rb`): `COOKIE = "pcmarket_cart"`, `AddOutcome`
+  struct (`:added/:increased/:capped` success; `:own_listing/
+  :not_available` rejected), `#add` (visibility + own-listing guards, stock
+  cap, price snapshot), `#items_by_store` (multi-seller groups),
+  `#subtotal_cents`/`#shipping_cents` (one fee per distinct listing)/
+  `#count`, `#refresh!` (drops invisible listings, syncs price/stock drift,
+  returns translated notices for the cart page), `#merge!` (guest → user,
+  re-runs `#add` so all rules apply, destroys source). `CartItem`:
+  quantity/price validations + unique [cart_id, listing_id].
+  User `has_one :cart`, Listing `has_many :cart_items` (both dependent
+  destroy).
+- `CurrentCart` concern: `current_cart` (signed-in → lazy
+  `current_user.create_cart!`; guest → `Cart.guest.find_by(token:)` from
+  the cookie, **nil without one — no cart row per visitor**),
+  `cart_for_adding` (creates guest cart + cookie, only from add actions),
+  `require_checkout_enabled`. Cookie: `cookies.signed.permanent` **with
+  explicit `httponly: true`** (Rails 8.1 does NOT default httponly —
+  verified via Set-Cookie probe; same as LocaleConcern).
+  `Current.cart` mirrors the resolved cart so the badge reuses it.
+- `config/initializers/warden_cart_merge.rb`: Warden `after_set_user`
+  (scope `:user`, only `authentication`/`set_user` — session restores
+  (`:fetch`) don't re-merge) reads the cookie from
+  `ActionDispatch::Request.new(auth.env).cookie_jar` (the jar lives in the
+  env header `action_dispatch.cookies`, so it IS the one the middleware
+  commits) and `user_cart.merge!(guest_cart)` + deletes the cookie. Rails
+  8.1 signed cookies have **no `_` prefix** (signature in the value), so
+  plain `cookies.delete(Cart::COOKIE)` removes the right cookie.
+- `CartsController#show` (refresh! + notices + groups) /
+  `CartItemsController` (create = add w/ `buy_now=1` redirect-to-cart
+  placeholder; update caps at stock; destroy; all scoped via
+  `current_cart&.cart_items` → foreign ids 404). Turbo gets
+  `cart_items/cart_update.turbo_stream.erb` (replaces `#cart_count` +
+  `#toasts`); HTML falls back to `redirect_back_or_to cart_path` + flash.
+- UI: header cart link + `shared/_cart_count` badge (`#cart_count`,
+  hidden at 0, "99+" cap, `CartHelper#cart_badge_count` — no DB query for
+  cookieless guests); `listings/show` Buy-now/Add-to-cart `button_to`s
+  (`cartable` = flag + `visible_to_public?` + not own listing);
+  `carts/show` store-grouped cards, quantity select + remove, per-store +
+  summary totals, checkout CTA = `aria-disabled` "Soon" span (TODO Phase 4
+  step 3). `IconHelper` gained `trash`. i18n: `carts.*`, `cart_items.*`,
+  `nav.cart` in all 6 locales.
+- Gotchas: `assert_includes response.body` fails on translated text with
+  `"`/`'` (escaped `&quot;`/`&#39;`) — use `assert_select text:`; the
+  Warden hook never runs under the test-mode `sign_in` helper, so merge
+  tests POST to `/users/sign_in` for real; guest carts have `user_id` nil
+  so the own-listing guard can't fire until the merge re-adds as the user.
+
 ## Testing
 
-- `bin/rails test` — **486 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **535 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -781,7 +840,14 @@ FR/GB/DE/IT/PT seeded but disabled.
   `test/controllers/sell_to_us_controller_test.rb` (7 tests — flag on/off/
   missing 404s, 6-locale render, mailto CTA, sell-to-us links hidden when
   off / shown when on; the 3 original tests moved out of
-  `pages_controller_test.rb`).
+  `pages_controller_test.rb`); Phase 4 step 1 adds
+  `test/models/{cart,cart_item}_test.rb` +
+  `test/controllers/{carts,cart_items,cart_sign_in_merge}_controller_test.rb`
+  (~49 tests — add/increase/cap/own-listing/invisible guards, price
+  snapshot + refresh! notices, cookie signed+httponly, no cart row for
+  cookieless visitors, lazy user cart, update cap + foreign-item 404,
+  turbo badge/toasts streams, flag 404s + hidden header link, badge count,
+  sign-in merge incl. cookie clearing and own-listing merge-to-nothing).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -810,12 +876,13 @@ FR/GB/DE/IT/PT seeded but disabled.
 - Mega-menu budget/theme links need ProductLabel/SellerTag rows (seeds ship
   them; a bare fixture catalog silently drops those columns — demo seed
   `DEMO=1 bin/rails db:seed` fills everything).
-- Wishlist/cart/offers/chat buttons are `#` placeholders gated by
-  AppSettings flags (`checkout_enabled`, `payments_enabled`,
-  `offers_enabled`, `chat_enabled`) — Phases 5/6. The account menu's
-  orders/messages/wishlist/seller-dashboard/my-listings/admin-panel items
-  are "Soon" pills until those pages land (Phases 4–7) — swap them for real
-  links there.
+- Wishlist/offers/chat buttons are `#` placeholders gated by AppSettings
+  flags (`payments_enabled`, `offers_enabled`, `chat_enabled`) — Phases 5/6.
+  The cart ships (Phase 4 step 1) but its **checkout CTA is a "Soon"
+  placeholder** until Phase 4 step 3 (orders), and "Buy now" just redirects
+  to the cart. The account menu's orders/messages/wishlist/admin-panel
+  items are "Soon" pills until those pages land (Phases 5–7) — swap them
+  for real links there.
 - Mobile price filter loses values without JS (euro→cents sync is Stimulus).
 - CI not set up yet.
 - Address book is account-only for now — checkout/sell-flow pickup of
@@ -830,4 +897,4 @@ FR/GB/DE/IT/PT seeded but disabled.
   quote-request form/offer pipeline is a later phase. Payouts table rows are
   static I18n strings, not price data.
 - No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a/2.2b/2.3/2.4/2.5/2.6/
-  3.1/3.2/3.3/3.4/3.5/3.6 — awaiting user review.
+  3.1/3.2/3.3/3.4/3.5/3.6/4.1 — awaiting user review.

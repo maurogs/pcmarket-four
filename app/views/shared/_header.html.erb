@@ -35,7 +35,12 @@
 
       <%= link_to "#", class: "btn-ghost p-2", aria: { label: t("nav.wishlist") } do %><%= icon "heart" %><% end %>
       <%= link_to "#", class: "btn-ghost p-2", aria: { label: t("nav.notifications") } do %><%= icon "bell" %><% end %>
-      <%= link_to "#", class: "btn-ghost p-2", aria: { label: t("nav.cart") } do %><%= icon "cart" %><% end %>
+      <% if AppSettings.enabled?(:checkout_enabled) %>
+        <%= link_to cart_path, class: "btn-ghost relative p-2", aria: { label: t("nav.cart") } do %>
+          <%= icon "cart" %>
+          <%= render "shared/cart_count" %>
+        <% end %>
+      <% end %>
       <%= render "shared/account_menu" %>
 
       <div class="relative" data-controller="dropdown">

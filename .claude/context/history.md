@@ -1135,3 +1135,79 @@ Verified: `bin/rails test` 467 green; `bin/rubocop` clean (193 files).
 `test/controllers/pages_controller_test.rb`.
 
 Verified: `bin/rails test` 486 green; `bin/rubocop` clean (197 files).
+
+## 2026-11-20 — Phase 4 step 1: cart (uncommitted)
+
+- Migrations `20261120150001_create_carts` / `20261120150002_create_cart_items`:
+  `carts` (nullable user FK — guest carts keep NULL and live by their
+  `token`; unique partial index on user_id WHERE NOT NULL; unique token) and
+  `cart_items` (cart/listing FKs, `quantity` default 1 + `quantity > 0`
+  check, `unit_price_cents` snapshot, unique [cart_id, listing_id] which
+  doubles as the cart FK index). `db/structure.sql` regenerated.
+- `Cart` model: `COOKIE = "pcmarket_cart"`, `AddOutcome` struct
+  (`added`/`increased`/`capped` vs `own_listing`/`not_available`), `#add`
+  (public-visibility + own-listing guards, stock cap, price snapshot),
+  `#items_by_store`, `#subtotal_cents`/`#shipping_cents` (one fee per
+  distinct listing)/`#count`, `#refresh!` (drop invisible, sync price/stock
+  drift, return translated notices), `#merge!` (guest → user via `#add`,
+  destroy source). `CartItem` (validations + unique scope). User
+  `has_one :cart`, Listing `has_many :cart_items` (dependent destroy);
+  `Current.cart` attribute.
+- `CurrentCart` concern: `current_cart` (lazy `create_cart!` for signed-in;
+  `Cart.guest.find_by(token:)` for guests — **nil without the cookie, so
+  browsing never creates cart rows**), `cart_for_adding` (guest cart +
+  cookie created only on add), `require_checkout_enabled` (404 while
+  `checkout_enabled` off). Cookie: `cookies.signed.permanent` + explicit
+  `httponly: true` — **Rails 8.1 does not default httponly** (Set-Cookie
+  probe showed the flag missing until set explicitly; matches
+  LocaleConcern).
+- `config/initializers/warden_cart_merge.rb`: Warden `after_set_user`
+  (scope `:user`, only `authentication`/`set_user` — `:fetch` session
+  restores skip) merges the cookie's guest cart into the user's cart and
+  deletes the cookie. The jar from `ActionDispatch::Request.new(auth.env)`
+  is the committed one (stored in the `action_dispatch.cookies` env
+  header), and Rails 8.1 signed cookies have no `_` name prefix, so plain
+  `cookies.delete` clears the right cookie.
+- Routes `resource :cart, only: :show` + `resources :cart_items, only:
+  %i[create update destroy]` (locale scope). `CartsController#show` runs
+  `refresh!` (notices) + `items_by_store`. `CartItemsController`: create
+  (`buy_now=1` → redirect to cart, TODO step 3), update (cap at stock),
+  destroy; items scoped through `current_cart` → foreign ids 404. Turbo
+  `cart_items/cart_update.turbo_stream.erb` replaces `#cart_count` +
+  `#toasts`; HTML falls back to `redirect_back_or_to` + flash.
+- UI: header cart link + `shared/_cart_count` badge (`CartHelper#
+  cart_badge_count` — zero DB for cookieless guests; hidden at 0, "99+"
+  cap); `listings/show` Buy-now/Add-to-cart `button_to`s shown only when
+  `cartable` (flag + visible + not own listing); `carts/show` store-grouped
+  cards, quantity select/remove, totals, "Soon" checkout placeholder
+  (`aria-disabled` span). `IconHelper` gained `trash`. i18n `carts.*` /
+  `cart_items.flashes.*` / `nav.cart` in all 6 locales.
+- Tests: `test/models/{cart,cart_item}_test.rb`,
+  `test/controllers/carts_controller_test.rb` (8),
+  `test/controllers/cart_items_controller_test.rb` (14),
+  `test/controllers/cart_sign_in_merge_test.rb` (6 — real POST to
+  `/users/sign_in` because the test-mode `sign_in` helper never runs
+  Warden callbacks; asserts guest cart destroyed, items merged, cookie
+  blanked, own-listing merges to nothing).
+- Review fixes in this pass: (1) `carts_controller_test.rb` "reports
+  removed items" used `assert_includes response.body` on a translation
+  wrapping the title in `"` — the view correctly escapes them to
+  `&quot;`, so the assertion (not the app) was wrong → `assert_select "p",
+  text:`; (2) the cart cookie was **not httponly** (real bug — Rails 8.1
+  dropped the implicit default) → `httponly: true` in `set_cart_cookie` +
+  regression test "the guest cart cookie is signed and httponly"
+  (asserts the flag and that the raw token never appears in the header).
+
+**Files**: `db/migrate/2026112015000{1,2}_*.rb`, `db/structure.sql`,
+`app/models/{cart,cart_item,current,user,listing}.rb`,
+`app/controllers/{carts,cart_items}_controller.rb`,
+`app/controllers/concerns/current_cart.rb`,
+`app/helpers/cart_helper.rb`, `app/helpers/icon_helper.rb`,
+`app/views/carts/show.html.erb`, `app/views/cart_items/cart_update.turbo_stream.erb`,
+`app/views/shared/{_header,_cart_count}.html.erb`,
+`app/views/listings/show.html.erb`, `config/initializers/warden_cart_merge.rb`,
+`config/routes.rb`, `config/locales/*.yml`,
+`test/models/{cart,cart_item}_test.rb`,
+`test/controllers/{carts,cart_items,cart_sign_in_merge}_controller_test.rb`.
+
+Verified: `bin/rails test` 535 green; `bin/rubocop` clean (211 files).

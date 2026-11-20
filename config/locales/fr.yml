@@ -1167,3 +1167,43 @@ fr:
       dashboard: Tableau de bord
       my_listings: Mes annonces
       store_settings: Réglages de la boutique
+  carts:
+    notices:
+      removed: '"%{listing}" n''est plus disponible et a été retiré de votre panier.'
+      price_changed: 'Le prix de "%{listing}" est passé à %{price}.'
+      quantity_capped: 'Plus que %{count} en stock pour "%{listing}" — quantité ajustée.'
+    show:
+      title: Votre panier
+      items_count:
+        one: "%{count} article"
+        other: "%{count} articles"
+      empty:
+        title: Votre panier est vide
+        body: Parcourez la boutique et ajoutez ce qui vous plaît.
+        cta: Continuer vos achats
+      item:
+        quantity_label: Quantité
+        update: Mettre à jour
+        remove: Retirer
+      store:
+        subtotal: Sous-total
+        shipping: Livraison
+        free_shipping: Gratuite
+      summary:
+        title: Récapitulatif de la commande
+        subtotal: Sous-total
+        shipping: Livraison
+        free_shipping: Gratuite
+        total: Total
+        taxes_included: Prix TTC, TVA incluse.
+        checkout: Commander
+      continue_shopping: Continuer vos achats
+  cart_items:
+    flashes:
+      added: Ajouté à votre panier.
+      increased: Quantité mise à jour dans votre panier.
+      capped: Plus que %{count} en stock — quantité ajustée.
+      own_listing: Vous ne pouvez pas ajouter votre propre annonce au panier.
+      not_available: Cet article n'est plus disponible.
+      updated: Quantité mise à jour.
+      removed: Article retiré de votre panier.

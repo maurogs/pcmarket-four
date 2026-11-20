@@ -141,12 +141,15 @@
         </ul>
 
         <div class="mt-5 space-y-2">
-          <%# Checkout / cart / offers / chat CTAs ship in Phases 5 and 6 — %><%# hrefs stay "#" placeholders behind feature flags. %>
-          <% if AppSettings.enabled?("checkout_enabled") %>
-            <%= link_to t(".cta.buy_now"), "#", class: "btn-primary w-full" %>
-          <% end %>
-          <% if AppSettings.enabled?("payments_enabled") %>
-            <%= link_to t(".cta.add_to_cart"), "#", class: "btn-secondary w-full" %>
+          <%# Offers / chat CTAs ship in Phase 6 — hrefs stay "#" placeholders.
+              Cart CTAs hide on your own listings and on anything not publicly
+              visible (sold, paused, pending review, vacation stores). %>
+          <% cartable = AppSettings.enabled?("checkout_enabled") && @listing.visible_to_public? &&
+                        !(current_user && @listing.store.user_id == current_user.id) %>
+          <% if cartable %>
+            <%# TODO Phase 4 step 3: Buy now should go straight to checkout. %>
+            <%= button_to t(".cta.buy_now"), cart_items_path(listing_id: @listing.to_param, buy_now: "1"), class: "btn-primary w-full" %>
+            <%= button_to t(".cta.add_to_cart"), cart_items_path(listing_id: @listing.to_param), class: "btn-secondary w-full" %>
           <% end %>
           <% if AppSettings.enabled?("offers_enabled") && @listing.allow_offers? %>
             <%= link_to t(".cta.make_offer"), "#", class: "btn-secondary w-full" %>

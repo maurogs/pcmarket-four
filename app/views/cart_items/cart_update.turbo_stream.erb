@@ -1,0 +1,5 @@
+<%# Shared create/update/destroy response: refresh the header badge and the
+    toast area (flash set via flash.now). Missing targets are ignored by
+    Turbo. %>
+<%= turbo_stream.replace "cart_count", partial: "shared/cart_count" %>
+<%= turbo_stream.replace "toasts", partial: "shared/toasts" %>

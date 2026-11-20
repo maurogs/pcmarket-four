@@ -1155,3 +1155,43 @@ en:
       dashboard: Dashboard
       my_listings: My listings
       store_settings: Store settings
+  carts:
+    notices:
+      removed: '"%{listing}" is no longer available and was removed from your cart.'
+      price_changed: 'The price of "%{listing}" changed to %{price}.'
+      quantity_capped: 'Only %{count} left of "%{listing}" — quantity adjusted.'
+    show:
+      title: Your cart
+      items_count:
+        one: "%{count} item"
+        other: "%{count} items"
+      empty:
+        title: Your cart is empty
+        body: Browse the marketplace and add something you like.
+        cta: Continue shopping
+      item:
+        quantity_label: Quantity
+        update: Update
+        remove: Remove
+      store:
+        subtotal: Subtotal
+        shipping: Shipping
+        free_shipping: Free
+      summary:
+        title: Order summary
+        subtotal: Subtotal
+        shipping: Shipping
+        free_shipping: Free
+        total: Total
+        taxes_included: Prices include VAT.
+        checkout: Checkout
+      continue_shopping: Continue shopping
+  cart_items:
+    flashes:
+      added: Added to your cart.
+      increased: Quantity updated in your cart.
+      capped: Only %{count} left in stock — quantity adjusted.
+      own_listing: You can't add your own listing to the cart.
+      not_available: This item is no longer available.
+      updated: Quantity updated.
+      removed: Item removed from your cart.

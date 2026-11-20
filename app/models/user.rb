@@ -24,6 +24,7 @@ class User < ApplicationRecord
   has_many :reviews_written, class_name: "Review", foreign_key: :author_id, dependent: :destroy
   has_many :addresses, dependent: :destroy
   has_one :default_address, -> { where(default_shipping: true) }, class_name: "Address"
+  has_one :cart, dependent: :destroy
   has_one_attached :avatar
   has_one_attached :data_export
 

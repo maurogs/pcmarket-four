@@ -302,6 +302,73 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: cart_items; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.cart_items (
+    id bigint NOT NULL,
+    cart_id bigint NOT NULL,
+    listing_id bigint NOT NULL,
+    quantity integer DEFAULT 1 NOT NULL,
+    unit_price_cents integer NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    CONSTRAINT chk_cart_items_quantity_positive CHECK ((quantity > 0))
+);
+
+
+--
+-- Name: cart_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.cart_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: cart_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.cart_items_id_seq OWNED BY public.cart_items.id;
+
+
+--
+-- Name: carts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.carts (
+    id bigint NOT NULL,
+    user_id bigint,
+    token character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: carts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.carts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: carts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.carts_id_seq OWNED BY public.carts.id;
+
+
+--
 -- Name: categories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1051,6 +1118,20 @@ ALTER TABLE ONLY public.addresses ALTER COLUMN id SET DEFAULT nextval('public.ad
 
 
 --
+-- Name: cart_items id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart_items ALTER COLUMN id SET DEFAULT nextval('public.cart_items_id_seq'::regclass);
+
+
+--
+-- Name: carts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.carts ALTER COLUMN id SET DEFAULT nextval('public.carts_id_seq'::regclass);
+
+
+--
 -- Name: categories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1214,6 +1295,22 @@ ALTER TABLE ONLY public.addresses
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: cart_items cart_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart_items
+    ADD CONSTRAINT cart_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: carts carts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.carts
+    ADD CONSTRAINT carts_pkey PRIMARY KEY (id);
 
 
 --
@@ -1443,6 +1540,34 @@ CREATE INDEX index_addresses_on_user_id ON public.addresses USING btree (user_id
 --
 
 CREATE UNIQUE INDEX index_addresses_on_user_id_unique_default ON public.addresses USING btree (user_id) WHERE default_shipping;
+
+
+--
+-- Name: index_cart_items_on_cart_id_and_listing_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_cart_items_on_cart_id_and_listing_id ON public.cart_items USING btree (cart_id, listing_id);
+
+
+--
+-- Name: index_cart_items_on_listing_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_cart_items_on_listing_id ON public.cart_items USING btree (listing_id);
+
+
+--
+-- Name: index_carts_on_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_carts_on_token ON public.carts USING btree (token);
+
+
+--
+-- Name: index_carts_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_carts_on_user_id ON public.carts USING btree (user_id) WHERE (user_id IS NOT NULL);
 
 
 --
@@ -1881,6 +2006,14 @@ ALTER TABLE ONLY public.filter_options
 
 
 --
+-- Name: cart_items fk_rails_06b6c1f5e0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart_items
+    ADD CONSTRAINT fk_rails_06b6c1f5e0 FOREIGN KEY (listing_id) REFERENCES public.listings(id);
+
+
+--
 -- Name: reviews fk_rails_08a5ebb739; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1969,6 +2102,14 @@ ALTER TABLE ONLY public.listings
 
 
 --
+-- Name: cart_items fk_rails_6cdb1f0139; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart_items
+    ADD CONSTRAINT fk_rails_6cdb1f0139 FOREIGN KEY (cart_id) REFERENCES public.carts(id);
+
+
+--
 -- Name: users fk_rails_7325e2cdfa; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2049,6 +2190,14 @@ ALTER TABLE ONLY public.addresses
 
 
 --
+-- Name: carts fk_rails_ea59a35211; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.carts
+    ADD CONSTRAINT fk_rails_ea59a35211 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: listing_seller_tags fk_rails_eefd13c54c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2071,6 +2220,8 @@ ALTER TABLE ONLY public.listing_labels
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261120150002'),
+('20261120150001'),
 ('20261120120001'),
 ('20261119190002'),
 ('20261119190001'),

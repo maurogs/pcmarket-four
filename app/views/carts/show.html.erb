@@ -1,0 +1,110 @@
+<% set_meta_tags title: t(".title") %>
+
+<div class="mx-auto max-w-6xl px-4 py-6">
+  <h1 class="font-display text-2xl font-bold sm:text-3xl"><%= t(".title") %></h1>
+
+  <% @notices.each do |notice| %>
+    <p class="mt-4 rounded-2xl border border-cream-400 bg-cream-100 p-4 text-sm dark:border-cream-500 dark:bg-cream-surface">
+      <%= notice %>
+    </p>
+  <% end %>
+
+  <% if @groups.empty? %>
+    <div class="card mt-6 flex flex-col items-center gap-2 p-10 text-center">
+      <span class="text-primary-300 dark:text-primary-700"><%= icon "cart", class: "h-12 w-12" %></span>
+      <h2 class="font-display text-lg font-semibold"><%= t(".empty.title") %></h2>
+      <p class="text-sm text-muted"><%= t(".empty.body") %></p>
+      <%= link_to t(".empty.cta"), root_path, class: "btn-primary mt-3" %>
+    </div>
+  <% else %>
+    <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+      <div class="space-y-4">
+        <% @groups.each do |store, items| %>
+          <% store_shipping_cents = items.map(&:listing).uniq.sum(&:shipping_price_cents) %>
+          <section class="card overflow-hidden">
+            <header class="flex flex-wrap items-center justify-between gap-2 border-b border-line px-5 py-4">
+              <h2 class="flex min-w-0 items-center gap-1.5 font-semibold">
+                <%= link_to store.display_name, store_path(store), class: "truncate hover:text-primary-700 hover:underline dark:hover:text-primary-300" %>
+                <% if store.verified? %>
+                  <span class="shrink-0 text-primary-600 dark:text-primary-400" title="<%= t("listings.show.seller.verified") %>"><%= icon "verified", class: "h-4 w-4" %></span>
+                <% end %>
+              </h2>
+              <span class="text-xs text-muted"><%= t(".items_count", count: items.size) %></span>
+            </header>
+
+            <ul class="divide-y divide-line">
+              <% items.each do |item| %>
+                <% listing = item.listing %>
+                <li class="flex gap-4 p-5">
+                  <div class="h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-line">
+                    <%= listing_picture(listing, variant: :thumb) %>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <%= link_to listing.title, listing_path(listing), class: "line-clamp-2 text-sm font-semibold leading-snug hover:text-primary-700 hover:underline dark:hover:text-primary-300" %>
+                    <p class="mt-1 text-sm text-muted">
+                      <%= format_euros(item.unit_price_cents) %>
+                      <span aria-hidden="true">×</span> <%= item.quantity %>
+                    </p>
+                  </div>
+                  <div class="flex flex-col items-end justify-between gap-3">
+                    <p class="font-semibold"><%= format_euros(item.total_cents) %></p>
+                    <div class="flex items-center gap-1">
+                      <%= form_with url: cart_item_path(item), method: :patch, class: "flex items-center gap-1" do %>
+                        <%= select_tag :quantity, options_for_select((1..listing.quantity).to_a, item.quantity),
+                              aria: { label: t(".item.quantity_label") }, class: "input-field w-16 py-1 text-sm" %>
+                        <%= submit_tag t(".item.update"), class: "btn-ghost px-2 py-1 text-xs" %>
+                      <% end %>
+                      <%= button_to cart_item_path(item), method: :delete, class: "btn-ghost p-1.5 text-muted hover:text-rose-600",
+                            title: t(".item.remove"), "aria-label": t(".item.remove") do %>
+                        <%= icon "trash", class: "h-4 w-4" %>
+                      <% end %>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+
+            <footer class="space-y-1 border-t border-line bg-cream-100/60 px-5 py-4 text-sm dark:bg-cream-surface/60">
+              <div class="flex justify-between">
+                <span class="text-muted"><%= t(".store.subtotal") %></span>
+                <span class="font-semibold"><%= format_euros(items.sum(&:total_cents)) %></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-muted"><%= t(".store.shipping") %></span>
+                <span class="font-semibold">
+                  <%= store_shipping_cents.zero? ? t(".store.free_shipping") : format_euros(store_shipping_cents) %>
+                </span>
+              </div>
+            </footer>
+          </section>
+        <% end %>
+      </div>
+
+      <aside class="card space-y-3 p-5 lg:sticky lg:top-24">
+        <h2 class="font-display text-lg font-semibold"><%= t(".summary.title") %></h2>
+        <div class="flex justify-between text-sm">
+          <span class="text-muted"><%= t(".summary.subtotal") %></span>
+          <span><%= format_euros(@cart.subtotal_cents) %></span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-muted"><%= t(".summary.shipping") %></span>
+          <span>
+            <%= @cart.shipping_cents.zero? ? t(".summary.free_shipping") : format_euros(@cart.shipping_cents) %>
+          </span>
+        </div>
+        <div class="flex justify-between border-t border-line pt-3 font-bold">
+          <span><%= t(".summary.total") %></span>
+          <span><%= format_euros(@cart.subtotal_cents + @cart.shipping_cents) %></span>
+        </div>
+        <p class="text-xs text-muted"><%= t(".summary.taxes_included") %></p>
+
+        <%# TODO Phase 4 step 3: replace with the real checkout once orders land. %>
+        <span class="btn-primary w-full cursor-default opacity-60" aria-disabled="true">
+          <span class="flex-1 text-center"><%= t(".summary.checkout") %></span>
+          <span class="shrink-0 rounded-full bg-white/25 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"><%= t("account_menu.soon") %></span>
+        </span>
+        <%= link_to t(".continue_shopping"), root_path, class: "btn-secondary w-full" %>
+      </aside>
+    </div>
+  <% end %>
+</div>

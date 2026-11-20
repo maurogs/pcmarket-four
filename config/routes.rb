@@ -27,6 +27,13 @@ Rails.application.routes.draw do
 
     resource :search, only: :show, controller: "searches"
     resource :sell_to_us, only: :show
+
+    # Cart (Phase 4 step 1). Singular — one cart per visitor/user, so the URL
+    # never carries an id; cart items are addressed by their row id. Both
+    # controllers 404 while checkout_enabled is off.
+    resource :cart, only: :show
+    resources :cart_items, only: %i[create update destroy]
+
     # "Sell on PCMarket" landing page (Phase 3 step 6). Singular — one public
     # selling page per locale, so the URL never carries an id.
     resource :selling, only: :show, path: "sell"
