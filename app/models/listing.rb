@@ -325,6 +325,71 @@ class Listing < ApplicationRecord
     nil
   end
 
+  # --- Gallery ---------------------------------------------------------------
+
+  # The sell form only submits newly picked files, so assigning images
+  # appends to the existing gallery instead of replacing it. Removals go
+  # through #remove_image_ids=. (Mirrors the generated setter, which would
+  # otherwise build a replace-all CreateMany change.)
+  def images=(attachables)
+    attachables = Array(attachables).compact_blank
+    return if attachables.empty?
+
+    pending = attachment_changes["images"]
+    self.attachment_changes["images"] =
+      ActiveStorage::Attached::Changes::CreateMany.new(
+        "images", self, images.blobs + attachables,
+        pending_uploads: pending.try(:pending_uploads)
+      )
+  end
+
+  # Checkbox removal from the sell form. Accepts attachment ids or blob
+  # signed ids and purges only this listing's matching attachments (the
+  # attachment rows go away right away, the blob files asynchronously).
+  def remove_image_ids=(ids)
+    ids = Array(ids).map { |id| id.to_s }.reject(&:blank?)
+    return if ids.empty?
+
+    targets = images_attachments.select do |attachment|
+      ids.include?(attachment.id.to_s) || (attachment.blob && ids.include?(attachment.blob.signed_id))
+    end
+    return if targets.empty?
+
+    # The rows disappear before save, so snapshot the gallery first for the
+    # re-review logic (see snapshot_review_context).
+    @images_before_edit ||= image_blob_ids
+    targets.each(&:purge_later)
+    images_attachments.reset
+    images_blobs.reset
+
+    # A pending append (images= assigned first) would re-attach the purged
+    # blobs on save, so rebuild it from the surviving gallery.
+    if (change = attachment_changes["images"]).present?
+      new_files = change.attachables.reject { |attachable| attachable.is_a?(ActiveStorage::Blob) }
+      attachment_changes.delete("images")
+      self.images = new_files if new_files.any?
+    end
+  end
+
+  # Accepts a JSON string (the form's hidden field) or an array of ids.
+  def image_order=(value)
+    parsed = value.is_a?(String) ? parse_json_array(value) : Array(value)
+    super(parsed.filter_map { |id| id.to_s.strip.presence })
+  end
+
+  # Images in the seller's chosen order: those whose attachment id or blob
+  # signed id appears in image_order come first (in that order), the rest
+  # fall back to attachment order at the end. The first image is the cover.
+  def ordered_images
+    attachments = images.to_a
+    return attachments if image_order.blank?
+
+    order = image_order.map(&:to_s)
+    attachments.sort_by.with_index do |attachment, index|
+      [ order.index(attachment.id.to_s) || order.index(attachment.blob&.signed_id) || order.size, index ]
+    end
+  end
+
   # Earliest delivery: preparation days only; latest adds estimated transit.
   def estimated_arrival_from
     ships_within_days.days.from_now.to_date
@@ -430,6 +495,13 @@ class Listing < ApplicationRecord
     {}
   end
 
+  def parse_json_array(value)
+    parsed = JSON.parse(value)
+    parsed.is_a?(Array) ? parsed : []
+  rescue JSON::ParserError
+    []
+  end
+
   def specs_are_valid
     return if specs.blank?
 
@@ -488,7 +560,9 @@ class Listing < ApplicationRecord
     return unless persisted? && status == "published"
 
     @content_edit_pending = REVIEWABLE_FIELDS.any? { |field| will_save_change_to_attribute?(field) }
-    @images_before_edit = image_blob_ids
+    # ||= because remove_image_ids= snapshots the gallery before purging
+    # attachment rows ahead of the save.
+    @images_before_edit ||= image_blob_ids
   end
 
   def return_to_review_if_content_edited

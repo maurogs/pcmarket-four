@@ -880,7 +880,19 @@ de:
         offers_title: Angebote
         specs_title: Technische Daten
         photos_title: Fotos
-        photos_placeholder: Demnächst — du kannst bis zu 12 Fotos hochladen.
+        photos_add: Fotos hinzufügen
+        photos_hint: JPEG, PNG, WebP oder HEIC, maximal %{max_mb} MB pro Datei.
+        photos_cover: Titelbild
+        photos_move_left: Nach links verschieben
+        photos_move_right: Nach rechts verschieben
+        photos_drag_hint: Ziehen zum Sortieren
+        photos_remove: Entfernen
+        photos_too_many: Du kannst maximal %{max} Fotos hochladen.
+        photos_tips_title: Tipps
+        photos_tips:
+          first_is_cover: Das erste Foto ist das Titelbild in den Suchergebnissen.
+          good_light: Fotografiere bei gutem Licht vor einem neutralen Hintergrund.
+          show_defects: Zeige Mängel ehrlich, um Streitigkeiten zu vermeiden.
         submit: Anzeige speichern
       specs_fields:
         prompt: Wähle zuerst eine Kategorie — die dazugehörigen Daten erscheinen hier.

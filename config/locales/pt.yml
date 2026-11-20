@@ -875,7 +875,19 @@ pt:
         offers_title: Ofertas
         specs_title: Especificações
         photos_title: Fotos
-        photos_placeholder: Em breve — poderá carregar até 12 fotos.
+        photos_add: Adicionar fotos
+        photos_hint: JPEG, PNG, WebP ou HEIC, até %{max_mb} MB cada.
+        photos_cover: Capa
+        photos_move_left: Mover para a esquerda
+        photos_move_right: Mover para a direita
+        photos_drag_hint: Arraste para reordenar
+        photos_remove: Remover
+        photos_too_many: Pode carregar no máximo %{max} fotos.
+        photos_tips_title: Dicas
+        photos_tips:
+          first_is_cover: A primeira foto é a capa mostrada nos resultados de pesquisa.
+          good_light: Fotografe com boa luz e um fundo neutro.
+          show_defects: Mostre os defeitos com honestidade para evitar disputas.
         submit: Guardar anúncio
       specs_fields:
         prompt: Escolha primeiro uma categoria — as respetivas características aparecerão aqui.

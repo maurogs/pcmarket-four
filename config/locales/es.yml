@@ -877,7 +877,19 @@ es:
         offers_title: Ofertas
         specs_title: Características
         photos_title: Fotos
-        photos_placeholder: Muy pronto — podrás subir hasta 12 fotos.
+        photos_add: Añadir fotos
+        photos_hint: JPEG, PNG, WebP o HEIC, hasta %{max_mb} MB cada una.
+        photos_cover: Portada
+        photos_move_left: Mover a la izquierda
+        photos_move_right: Mover a la derecha
+        photos_drag_hint: Arrastra para reordenar
+        photos_remove: Quitar
+        photos_too_many: Puedes subir como máximo %{max} fotos.
+        photos_tips_title: Consejos
+        photos_tips:
+          first_is_cover: La primera foto es la portada que se muestra en los resultados.
+          good_light: Haz las fotos con buena luz y un fondo neutro.
+          show_defects: Muestra los defectos con honestidad para evitar disputas.
         submit: Guardar anuncio
       specs_fields:
         prompt: Elige primero una categoría; sus características aparecerán aquí.

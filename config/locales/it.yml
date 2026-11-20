@@ -876,7 +876,19 @@ it:
         offers_title: Offerte
         specs_title: Specifiche
         photos_title: Foto
-        photos_placeholder: Prossimamente — potrai caricare fino a 12 foto.
+        photos_add: Aggiungi foto
+        photos_hint: JPEG, PNG, WebP o HEIC, fino a %{max_mb} MB ciascuna.
+        photos_cover: Copertina
+        photos_move_left: Sposta a sinistra
+        photos_move_right: Sposta a destra
+        photos_drag_hint: Trascina per riordinare
+        photos_remove: Rimuovi
+        photos_too_many: Puoi caricare al massimo %{max} foto.
+        photos_tips_title: Suggerimenti
+        photos_tips:
+          first_is_cover: La prima foto è la copertina mostrata nei risultati di ricerca.
+          good_light: Scatta con buona luce su uno sfondo neutro.
+          show_defects: Mostra i difetti con onestà per evitare contestazioni.
         submit: Salva annuncio
       specs_fields:
         prompt: Scegli prima una categoria — le specifiche corrispondenti appariranno qui.

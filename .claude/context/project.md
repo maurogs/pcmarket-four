@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-20 (Phase 3 step 2 — sell-form specification fields,
+_Last updated: 2026-11-20 (Phase 3 step 3 — listing photos in the sell form,
 uncommitted)_
 
 ## What this is
@@ -553,9 +553,45 @@ FR/GB/DE/IT/PT seeded but disabled.
   published (so AASM `submit!` enforces it; drafts stay incomplete). Error
   key `errors.messages.missing_required_spec`.
 
+## Code map (Phase 3 step 3 — listing photos)
+
+- `listings.image_order` jsonb (default `[]`) — seller gallery order, an array
+  of attachment-id strings (blob signed ids also resolve).
+- `Listing` gallery API (`# --- Gallery ---`): `images=` **appends** (rebuilds
+  the `CreateMany` change from `images.blobs + attachables`, preserving
+  `pending_uploads`) because the sell form only submits newly picked files;
+  `remove_image_ids=` accepts attachment ids or blob signed ids (string-
+  normalized), purges only this listing's matches via `purge_later` (rows go
+  away synchronously), resets `images_attachments`/`images_blobs` caches and
+  rebuilds a pending append so purged blobs aren't re-attached; `image_order=`
+  parses JSON string or array; `ordered_images` sorts by image_order with
+  unordered images falling back to attachment order at the end (first = cover).
+  `snapshot_review_context` uses `@images_before_edit ||=` — `remove_image_ids=`
+  snapshots before purging so the re-review diff still sees the old gallery.
+- Cover order flows through `ListingsHelper#listing_picture` and
+  `listings/_gallery.html.erb` (both use `ordered_images`).
+- Direct uploads: importmap pin `@rails/activestorage` → `activestorage.esm.js`,
+  `startActiveStorage()` in `application.js`.
+- `seller/listings/_form.html.erb` Photos section: `listing[images][]` file
+  input (multiple, `direct_upload: true`), `ordered_images` tiles (thumb
+  variant) with move buttons + draggable grip + `listing[remove_image_ids][]`
+  checkbox + Cover badge on the first, hidden `listing[image_order]` (JSON),
+  "N / max" counter (`AppSettings max_images_per_listing`) and tips. Tiles for
+  pending (failed-save) or non-`variable?` blobs render a filename placeholder
+  — unsaved blobs have no signed id and text blobs can't be transformed.
+- `image_uploader_controller.js` (Stimulus): object-URL previews (revoked on
+  disconnect), own `pendingFiles` list rebuilt into `input.files` via
+  `DataTransfer` (the browser replaces the FileList on every pick),
+  `direct-upload:initialize/progress/error/end` progress bars, drag-and-drop +
+  arrow-button reordering, keeps hidden order + Cover badge + counter/warning
+  in sync. New files have no attachment id → never in image_order (server
+  appends them).
+- `IconHelper` gained the `grip` icon; i18n keys `form.photos_*` +
+  `form.photos_tips.*` in all 6 locales (`photos_placeholder` removed).
+
 ## Testing
 
-- `bin/rails test` — **401 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **413 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -609,7 +645,14 @@ FR/GB/DE/IT/PT seeded but disabled.
   specs create/update tests in the listings controller test (stored +
   unknown keys/values dropped, boolean "1" → "true") and two `Listing`
   tests (`.sanitize_specs` whitelist, required spec enforced on `submit!`
-  but not on drafts).
+  but not on drafts); Phase 3 step 3 adds 7 photos tests to the listings
+  controller test (create attaches uploads, second update appends, image_order
+  persisted + ordered_images respects it, remove_image_ids removes only the
+  chosen one, foreign attachment id ignored, exceeding max_images_per_listing
+  → 422, non-image upload → 422) and 5 to the listing model test
+  (`ordered_images` follows image_order, appends missing ids at the end,
+  `remove_image_ids` purges only the match, image change on a published
+  listing returns it to pending_review, auto-approve keeps it published).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -623,7 +666,7 @@ FR/GB/DE/IT/PT seeded but disabled.
   until real game images are attached (`Game#image`, nothing seeded).
 - Phase 1b-ii+: submit-for-review button on the sell form (create/update
   only save drafts for now — the required-specs validation already fires on
-  `submit!`), listing photos (Phase 3 step 3), seller dashboard, admin UI
+  `submit!`), seller dashboard, admin UI
   for categories/filters/labels/settings (seeds cover data now).
 - Store follow button + reviews tab (rating distribution, cards, pagination)
   ship (Phase 2 step 4); the store **message** button is still a `#`

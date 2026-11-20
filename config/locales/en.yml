@@ -871,7 +871,19 @@ en:
         offers_title: Offers
         specs_title: Specifications
         photos_title: Photos
-        photos_placeholder: Coming soon — you'll be able to upload up to 12 photos.
+        photos_add: Add photos
+        photos_hint: JPEG, PNG, WebP or HEIC, up to %{max_mb} MB each.
+        photos_cover: Cover
+        photos_move_left: Move left
+        photos_move_right: Move right
+        photos_drag_hint: Drag to reorder
+        photos_remove: Remove
+        photos_too_many: You can upload at most %{max} photos.
+        photos_tips_title: Tips
+        photos_tips:
+          first_is_cover: The first photo is the cover shown in search results.
+          good_light: Shoot in good light against a plain background.
+          show_defects: Photograph any defects honestly to avoid disputes.
         submit: Save listing
       specs_fields:
         prompt: Choose a category first — its specification fields will appear here.

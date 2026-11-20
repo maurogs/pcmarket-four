@@ -701,7 +701,8 @@ CREATE TABLE public.listings (
     searchable tsvector,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    performance_score integer
+    performance_score integer,
+    image_order jsonb DEFAULT '[]'::jsonb NOT NULL
 );
 
 
@@ -2070,6 +2071,7 @@ ALTER TABLE ONLY public.listing_labels
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261120120001'),
 ('20261119190002'),
 ('20261119190001'),
 ('20261119180004'),

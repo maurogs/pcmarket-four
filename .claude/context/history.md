@@ -873,3 +873,76 @@ Uncommitted files (this step):
 ?? app/views/seller/listings/_specs_fields.html.erb
 ?? test/controllers/seller/listing_spec_fields_controller_test.rb
 ```
+
+## 2026-11-20 — Phase 3 step 3: listing photos in the sell form (uncommitted)
+
+**What changed**
+- Migration `20261120120001_add_image_order_to_listings` (applied): `listings.image_order`
+  jsonb `DEFAULT '[]' NOT NULL` — the seller's gallery order (attachment ids as
+  strings); plain reversible `add_column` inside `change`.
+- `Listing` gallery API: `images=` appends instead of replacing (rebuilds the
+  `CreateMany` change from `images.blobs + attachables`, carrying
+  `pending_uploads` over); `remove_image_ids=` accepts attachment ids **or blob
+  signed ids** (normalized to strings), purges only this listing's matches
+  (`purge_later` deletes the rows synchronously), resets the association caches
+  and rebuilds any pending append so purged blobs aren't re-attached;
+  `image_order=` parses a JSON string or array (blanks dropped);
+  `ordered_images` sorts by image_order (attachment id or blob signed id) with
+  unordered images falling back to attachment order at the end — first is the
+  cover. `snapshot_review_context` uses `@images_before_edit ||=` because
+  `remove_image_ids=` snapshots before purging.
+- `Seller::ListingsController` permits `image_order`, `images: []`,
+  `remove_image_ids: []`.
+- `ListingsHelper#listing_picture` and `listings/_gallery.html.erb` use
+  `ordered_images` (cover = first in image_order).
+- `config/importmap.rb` pins `@rails/activestorage` → `activestorage.esm.js`;
+  `application.js` calls `startActiveStorage()` for direct uploads.
+- `_form.html.erb` Photos section (step 3b): file input `listing[images][]`
+  (multiple, `direct_upload: true`, accept jpeg/png/webp/heic), tile grid of
+  `ordered_images` (thumb variant) each with move-left/move-right buttons, a
+  draggable grip handle, a `listing[remove_image_ids][]` checkbox and a Cover
+  badge on the first; hidden `listing[image_order]` (JSON); "N / max" counter
+  from `AppSettings max_images_per_listing`; formats hint + tips list. Tiles
+  for pending (failed-save) or non-transformable blobs render a filename
+  placeholder instead of a variant (no signed id / `Can't transform` errors).
+- New Stimulus `image_uploader_controller.js`: previews picked files via object
+  URLs (revoked on disconnect), keeps its own `pendingFiles` list and rebuilds
+  `input.files` via `DataTransfer` (the browser replaces the FileList on every
+  pick), direct-upload progress bars from `direct-upload:initialize/progress/
+  error/end` on the input, drag-and-drop (grip handle) + arrow-button
+  reordering, syncs the hidden order field + Cover badge, updates the counter
+  and shows an over-limit warning.
+- `IconHelper`: new `grip` icon.
+- i18n: `photos_placeholder` removed; `form.photos_{add,hint,cover,move_left,
+  move_right,drag_hint,remove,too_many,tips_title}` + `form.photos_tips.*`
+  added in all 6 locales.
+
+**Why**: the sell form's last Phase 3 input; appending (not replacing) keeps
+existing images when only new files are submitted, and the jsonb order column
+avoids a join table for a seller-only ordering concern.
+
+**Files**: `db/migrate/20261120120001_add_image_order_to_listings.rb`,
+`app/models/listing.rb`, `app/controllers/seller/listings_controller.rb`,
+`app/helpers/listings_helper.rb`, `app/helpers/icon_helper.rb`,
+`app/views/listings/_gallery.html.erb`, `app/views/seller/listings/_form.html.erb`,
+`app/javascript/{application.js,controllers/image_uploader_controller.js}`,
+`config/importmap.rb`, `config/locales/*.yml`, `db/structure.sql`,
+`test/models/listing_test.rb`, `test/controllers/seller/listings_controller_test.rb`.
+
+Verified: `bin/rails test` 413 green; `bin/rubocop` clean (181 files).
+Uncommitted files (3a + 3b):
+```
+ M app/controllers/seller/listings_controller.rb
+ M app/helpers/listings_helper.rb
+ M app/javascript/application.js
+ M app/models/listing.rb
+ M app/views/listings/_gallery.html.erb
+ M app/views/seller/listings/_form.html.erb
+ M config/importmap.rb
+ M config/locales/{de,en,es,fr,it,pt}.yml
+ M db/structure.sql
+ M test/controllers/seller/listings_controller_test.rb
+ M test/models/listing_test.rb
+?? app/javascript/controllers/image_uploader_controller.js
+?? db/migrate/20261120120001_add_image_order_to_listings.rb
+```

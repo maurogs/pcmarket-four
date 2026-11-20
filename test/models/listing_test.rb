@@ -182,6 +182,59 @@ class ListingTest < ActiveSupport::TestCase
     assert_includes listing.errors[:images], I18n.t("errors.messages.too_many_images", max: 1)
   end
 
+  test "ordered_images follows image_order" do
+    @listing.update!(images: [ Rack::Test::UploadedFile.new(image_file("1x1.jpg"), "image/jpeg"),
+                               Rack::Test::UploadedFile.new(image_file, "image/png") ])
+    first, second = @listing.images.to_a
+
+    @listing.update!(image_order: [ second.id, first.id ].map(&:to_s).to_json)
+
+    assert_equal [ second.id, first.id ], @listing.reload.ordered_images.map(&:id)
+  end
+
+  test "ordered_images appends images missing from image_order at the end" do
+    @listing.update!(images: [ Rack::Test::UploadedFile.new(image_file("1x1.jpg"), "image/jpeg"),
+                               Rack::Test::UploadedFile.new(image_file, "image/png") ])
+    first, second = @listing.images.to_a
+
+    # Only the second image is ordered (plus a stale id that no longer exists).
+    @listing.update!(image_order: [ second.id, 999_999_999 ].map(&:to_s).to_json)
+
+    assert_equal [ second.id, first.id ], @listing.reload.ordered_images.map(&:id)
+  end
+
+  test "remove_image_ids purges only the matching attachment" do
+    @listing.update!(images: [ Rack::Test::UploadedFile.new(image_file("1x1.jpg"), "image/jpeg"),
+                               Rack::Test::UploadedFile.new(image_file, "image/png") ])
+    first, second = @listing.images.to_a
+
+    @listing.update!(remove_image_ids: [ first.id ])
+
+    assert_equal [ second.id ], @listing.reload.images.map(&:id)
+  end
+
+  test "removing an image from a published listing returns it to pending review" do
+    publish(@listing)
+    @listing.update!(images: [ Rack::Test::UploadedFile.new(image_file("1x1.jpg"), "image/jpeg"),
+                               Rack::Test::UploadedFile.new(image_file, "image/png") ])
+    assert_predicate @listing.reload, :pending_review?
+
+    @listing.approve!
+    @listing.update!(remove_image_ids: [ @listing.images.first.id ])
+
+    assert_predicate @listing.reload, :pending_review?
+    assert_equal 1, @listing.images.count
+  end
+
+  test "with auto-approve enabled, image changes keep the listing published" do
+    set_setting("listing_auto_approve", true)
+    publish(@listing)
+
+    @listing.update!(images: [ Rack::Test::UploadedFile.new(image_file, "image/png") ])
+
+    assert_predicate @listing.reload, :published?
+  end
+
   # --- State machine --------------------------------------------------------
 
   test "happy path draft → pending_review → published stamps timestamps" do

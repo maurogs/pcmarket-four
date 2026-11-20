@@ -1,5 +1,5 @@
-<%# Listing image gallery. Local: listing. %>
-<% images = listing.images %>
+<%# Listing image gallery, in the seller's chosen order. Local: listing. %>
+<% images = listing.ordered_images %>
 <% if images.empty? %>
   <div class="card aspect-[4/3] overflow-hidden"><%= listing_image_placeholder %></div>
 <% else %>

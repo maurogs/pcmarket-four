@@ -879,7 +879,19 @@ fr:
         offers_title: Offres
         specs_title: Caractéristiques
         photos_title: Photos
-        photos_placeholder: Bientôt disponible — vous pourrez téléverser jusqu'à 12 photos.
+        photos_add: Ajouter des photos
+        photos_hint: JPEG, PNG, WebP ou HEIC, jusqu'à %{max_mb} Mo par fichier.
+        photos_cover: Photo principale
+        photos_move_left: Déplacer à gauche
+        photos_move_right: Déplacer à droite
+        photos_drag_hint: Glisser pour réordonner
+        photos_remove: Supprimer
+        photos_too_many: Vous pouvez téléverser au maximum %{max} photos.
+        photos_tips_title: Conseils
+        photos_tips:
+          first_is_cover: La première photo est la photo principale dans les résultats.
+          good_light: Photographiez avec une bonne lumière sur un fond neutre.
+          show_defects: Montrez honnêtement les défauts pour éviter les litiges.
         submit: Enregistrer l'annonce
       specs_fields:
         prompt: "Choisissez d'abord une catégorie — ses caractéristiques apparaîtront ici."

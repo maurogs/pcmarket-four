@@ -3,9 +3,10 @@
 # are memoized in instance variables, so a whole grid of cards shares them.
 module ListingsHelper
   # Responsive webp picture with intrinsic dimensions (no layout shift), or
-  # a placeholder when the listing has no images.
+  # a placeholder when the listing has no images. Uses the seller's gallery
+  # order, so the cover is the first image in image_order.
   def listing_picture(listing, variant: :card, css: "h-full w-full object-cover")
-    image = listing.images.first
+    image = listing.ordered_images.first
     return listing_image_placeholder if image.nil?
 
     metadata = image.blob.metadata || {}

@@ -1,7 +1,8 @@
 <%# Sell form — Phase 3. Specs (step 2) reload from the category select through
-    the listing_specs Turbo Frame; photos (step 3) are still a placeholder at
-    the end. Price fields work in euros and convert to cents via the model's
-    virtual attributes (Listing#price=, #original_price=, #shipping_price=). %>
+    the listing_specs Turbo Frame; photos (step 3) upload directly to storage
+    through the image_uploader controller at the end. Price fields work in
+    euros and convert to cents via the model's virtual attributes
+    (Listing#price=, #original_price=, #shipping_price=). %>
 <%= form_with model: listing,
       url: listing.persisted? ? seller_listing_path(listing) : seller_listings_path,
       class: "mt-6 space-y-8" do |f| %>
@@ -157,12 +158,120 @@
     </div>
   </section>
 
-  <%# TODO Phase 3 step 3: image upload (Listing#images). %>
-  <section>
+  <%# Photos (Phase 3 step 3b): existing images are reorderable tiles (drag
+      handle or the arrow buttons) with a remove checkbox; new files preview
+      client-side and direct-upload on submit. The hidden image_order field
+      holds the attachment ids as JSON — see image_uploader_controller.js. %>
+  <% max_images = AppSettings.get("max_images_per_listing", Listing::DEFAULT_MAX_IMAGES).to_i %>
+  <% existing_images = listing.ordered_images %>
+  <section data-controller="image-uploader" data-image-uploader-max-value="<%= max_images %>">
     <h2 class="text-lg font-semibold"><%= t(".photos_title") %></h2>
-    <p class="mt-4 rounded-2xl border border-dashed border-line-strong p-6 text-center text-sm text-muted">
-      <%= t(".photos_placeholder") %>
-    </p>
+
+    <div class="mt-4 space-y-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <label class="btn-secondary cursor-pointer">
+          <%= t(".photos_add") %>
+          <%= f.file_field :images, multiple: true, direct_upload: true,
+                accept: "image/jpeg,image/png,image/webp,image/heic", class: "sr-only",
+                data: { image_uploader_target: "input",
+                        action: "change->image-uploader#filesSelected " \
+                                "direct-upload:initialize->image-uploader#uploadInitialize " \
+                                "direct-upload:progress->image-uploader#uploadProgress " \
+                                "direct-upload:error->image-uploader#uploadError " \
+                                "direct-upload:end->image-uploader#uploadEnd" } %>
+        </label>
+        <span class="text-xs text-muted" data-image-uploader-target="counter">
+          <%= existing_images.size %> / <%= max_images %>
+        </span>
+      </div>
+
+      <p class="text-xs text-muted"><%= t(".photos_hint", max_mb: Listing::MAX_IMAGE_BYTES / 1.megabyte) %></p>
+
+      <p class="hidden text-xs font-medium text-red-600 dark:text-red-400" data-image-uploader-target="warning">
+        <%= t(".photos_too_many", max: max_images) %>
+      </p>
+
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
+           data-image-uploader-target="grid" data-action="dragover->image-uploader#dragOver">
+        <% existing_images.each_with_index do |attachment, index| %>
+          <%# A failed save re-renders the form with pending (not yet uploaded)
+              or rejected blobs, which have no signed id / cannot be
+              transformed — those tiles fall back to a filename placeholder. %>
+          <% thumbnail = attachment.persisted? && attachment.blob&.variable? %>
+          <div class="relative aspect-square overflow-hidden rounded-2xl border border-line bg-surface"
+               data-image-uploader-target="tile" data-image-uploader-id="<%= attachment.id %>">
+            <% if thumbnail %>
+              <%= image_tag url_for(attachment.variant(**Listing::IMAGE_VARIANTS[:thumb], format: Listing::IMAGE_FORMAT)),
+                    alt: "", loading: "lazy", class: "h-full w-full object-cover" %>
+            <% else %>
+              <div class="flex h-full w-full flex-col items-center justify-center gap-1.5 p-3 text-muted">
+                <%= icon "image", class: "h-6 w-6" %>
+                <span class="line-clamp-2 break-all text-center text-[10px] leading-tight"><%= attachment.filename %></span>
+              </div>
+            <% end %>
+            <span class="absolute left-1.5 top-1.5 rounded-full bg-primary-600 px-2 py-0.5 text-[10px] font-semibold text-white <%= "hidden" unless index.zero? %>"
+                  data-image-uploader-target="badge"><%= t(".photos_cover") %></span>
+            <div class="absolute inset-x-0 bottom-0 flex items-center gap-0.5 bg-black/50 px-1.5 py-1 text-white">
+              <button type="button" class="cursor-pointer p-1" data-action="image-uploader#moveLeft"
+                      aria-label="<%= t(".photos_move_left") %>"><%= icon "chevron-left", class: "h-4 w-4" %></button>
+              <button type="button" class="cursor-pointer p-1" data-action="image-uploader#moveRight"
+                      aria-label="<%= t(".photos_move_right") %>"><%= icon "chevron-right", class: "h-4 w-4" %></button>
+              <span class="cursor-grab p-1 active:cursor-grabbing" draggable="true" title="<%= t(".photos_drag_hint") %>"
+                    data-action="dragstart->image-uploader#dragStart">
+                <%= icon "grip", class: "h-4 w-4" %>
+              </span>
+              <% if attachment.persisted? %>
+                <label class="ml-auto flex cursor-pointer items-center gap-1 pl-1 text-[11px] font-medium">
+                  <%= check_box_tag "listing[remove_image_ids][]", attachment.id, false,
+                        id: "remove_image_#{attachment.id}", class: "h-3.5 w-3.5 accent-red-600",
+                        data: { action: "image-uploader#toggleRemove" } %>
+                  <%= t(".photos_remove") %>
+                </label>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <%= f.hidden_field :image_order, value: existing_images.map { |a| a.id.to_s }.to_json,
+            data: { image_uploader_target: "order" } %>
+
+      <%# Cloned by the controller for every newly picked file (no attachment
+          id yet, so it never enters image_order — the server appends it). %>
+      <template data-image-uploader-target="template">
+        <div class="relative aspect-square overflow-hidden rounded-2xl border border-line bg-surface"
+             data-image-uploader-target="tile" data-image-uploader-id="">
+          <img class="h-full w-full object-cover" alt="" data-image-uploader-target="preview">
+          <span class="absolute left-1.5 top-1.5 hidden rounded-full bg-primary-600 px-2 py-0.5 text-[10px] font-semibold text-white"
+                data-image-uploader-target="badge"><%= t(".photos_cover") %></span>
+          <div class="absolute inset-x-0 top-0 h-1 bg-black/20 opacity-0 transition-opacity"
+               data-image-uploader-target="progress">
+            <div class="h-full w-0 bg-primary-500" data-image-uploader-target="bar"></div>
+          </div>
+          <div class="absolute inset-x-0 bottom-0 flex items-center gap-0.5 bg-black/50 px-1.5 py-1 text-white">
+            <button type="button" class="cursor-pointer p-1" data-action="image-uploader#moveLeft"
+                    aria-label="<%= t(".photos_move_left") %>"><%= icon "chevron-left", class: "h-4 w-4" %></button>
+            <button type="button" class="cursor-pointer p-1" data-action="image-uploader#moveRight"
+                    aria-label="<%= t(".photos_move_right") %>"><%= icon "chevron-right", class: "h-4 w-4" %></button>
+            <span class="cursor-grab p-1 active:cursor-grabbing" draggable="true" title="<%= t(".photos_drag_hint") %>"
+                  data-action="dragstart->image-uploader#dragStart">
+              <%= icon "grip", class: "h-4 w-4" %>
+            </span>
+            <button type="button" class="ml-auto cursor-pointer p-1" data-action="image-uploader#removeNew"
+                    aria-label="<%= t(".photos_remove") %>"><%= icon "close", class: "h-4 w-4" %></button>
+          </div>
+        </div>
+      </template>
+
+      <div>
+        <h3 class="text-xs font-semibold uppercase tracking-wide text-muted"><%= t(".photos_tips_title") %></h3>
+        <ul class="mt-1 list-disc space-y-0.5 pl-5 text-xs text-muted">
+          <li><%= t(".photos_tips.first_is_cover") %></li>
+          <li><%= t(".photos_tips.good_light") %></li>
+          <li><%= t(".photos_tips.show_defects") %></li>
+        </ul>
+      </div>
+    </div>
   </section>
 
   <%= f.submit t(".submit"), class: "btn-primary w-full cursor-pointer" %>

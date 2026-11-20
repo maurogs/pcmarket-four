@@ -169,6 +169,97 @@ class Seller::ListingsControllerTest < ActionDispatch::IntegrationTest
     assert_equal({ "gpu_chipset" => [ "nvidia" ], "rgb_lighting" => [ "true" ] }, listing.reload.specs)
   end
 
+  # --- Photos -------------------------------------------------------------------
+
+  test "create attaches uploaded photos" do
+    post "/en/seller/listings", params: listing_params(
+      images: [ fixture_file_upload("1x1.jpg", "image/jpeg"),
+                fixture_file_upload("1x1.png", "image/png") ]
+    )
+
+    listing = @store.listings.find_by(title: "Gigabyte RTX 4070 Aorus Master 12 GB")
+    assert_redirected_to "/en/seller/listings/#{listing.to_param}/edit"
+    assert_equal [ "image/jpeg", "image/png" ], listing.images.map { |a| a.blob.content_type }
+  end
+
+  test "a second update appends to the gallery" do
+    listing = create_listing(title: "Append Gallery Graphics Card")
+
+    patch "/en/seller/listings/#{listing.to_param}",
+      params: listing_params(images: [ fixture_file_upload("1x1.jpg", "image/jpeg") ])
+    assert_equal 1, listing.reload.images.count
+
+    patch "/en/seller/listings/#{listing.to_param}",
+      params: listing_params(images: [ fixture_file_upload("1x1.png", "image/png") ])
+    assert_equal 2, listing.reload.images.count
+  end
+
+  test "image_order is persisted and ordered_images respects it" do
+    listing = create_listing(title: "Reordered Gallery Graphics Card")
+    listing.update!(images: [ fixture_file_upload("1x1.jpg", "image/jpeg"),
+                              fixture_file_upload("1x1.png", "image/png") ])
+    first, second = listing.images.to_a
+
+    patch "/en/seller/listings/#{listing.to_param}",
+      params: listing_params(image_order: [ second.id, first.id ].map(&:to_s).to_json)
+
+    assert_redirected_to "/en/seller/listings/#{listing.to_param}/edit"
+    listing.reload
+    assert_equal [ second.id.to_s, first.id.to_s ], listing.image_order
+    assert_equal [ second.id, first.id ], listing.ordered_images.map(&:id)
+  end
+
+  test "remove_image_ids removes only the chosen photo" do
+    listing = create_listing(title: "Partial Removal Graphics Card")
+    listing.update!(images: [ fixture_file_upload("1x1.jpg", "image/jpeg"),
+                              fixture_file_upload("1x1.png", "image/png") ])
+    first, second = listing.images.to_a
+
+    patch "/en/seller/listings/#{listing.to_param}", params: listing_params(remove_image_ids: [ first.id ])
+
+    assert_redirected_to "/en/seller/listings/#{listing.to_param}/edit"
+    assert_equal [ second.id ], listing.reload.images.map(&:id)
+  end
+
+  test "remove_image_ids ignores foreign attachment ids" do
+    listing = create_listing(title: "Protected Gallery Graphics Card")
+    listing.update!(images: [ fixture_file_upload("1x1.png", "image/png") ])
+    own = listing.images.first.id
+
+    foreign = create_listing(title: "Donor Gallery Graphics Card")
+    foreign.update!(images: [ fixture_file_upload("1x1.jpg", "image/jpeg") ])
+
+    patch "/en/seller/listings/#{listing.to_param}",
+      params: listing_params(remove_image_ids: [ foreign.images.first.id ])
+
+    assert_redirected_to "/en/seller/listings/#{listing.to_param}/edit"
+    assert_equal [ own ], listing.reload.images.map(&:id)
+    assert_equal 1, foreign.reload.images.count
+  end
+
+  test "exceeding the max photos setting is rejected with 422" do
+    set_setting("max_images_per_listing", 1, value_type: "integer")
+    listing = create_listing(title: "Overfilled Gallery Graphics Card")
+
+    patch "/en/seller/listings/#{listing.to_param}", params: listing_params(
+      images: [ fixture_file_upload("1x1.jpg", "image/jpeg"),
+                fixture_file_upload("1x1.png", "image/png") ]
+    )
+
+    assert_response :unprocessable_entity
+    assert_equal 0, listing.reload.images.count
+  end
+
+  test "non-image uploads are rejected with 422" do
+    listing = create_listing(title: "Text File Gallery Graphics Card")
+
+    patch "/en/seller/listings/#{listing.to_param}",
+      params: listing_params(images: [ fixture_file_upload("upload.txt", "text/plain") ])
+
+    assert_response :unprocessable_entity
+    assert_equal 0, listing.reload.images.count
+  end
+
   # --- Edit / update --------------------------------------------------------------
 
   test "edit renders the seller's own listing prefilled" do

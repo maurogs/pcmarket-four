@@ -87,8 +87,9 @@ module Seller
       permitted = params.expect(listing: %i[category_id title description price original_price
                                             quantity condition shipping_method shipping_price
                                             free_shipping ships_within_days local_pickup
-                                            province city postal_code allow_offers] +
-                                [ { specs: {} } ])
+                                            province city postal_code allow_offers
+                                            image_order] +
+                                [ { specs: {}, images: [], remove_image_ids: [] } ])
       # specs is an arbitrary { key => value | [values] } hash; the model
       # filters it down to the category's known definitions and values.
       if permitted[:specs].present?
