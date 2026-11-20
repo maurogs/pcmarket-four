@@ -43,7 +43,7 @@
     <% end %>
 
     <div class="mt-4 flex flex-col gap-2 border-t border-line pt-4">
-      <%= link_to t("nav.list_item"), root_path, class: "btn-primary" %>
+      <%= link_to t("nav.list_item"), new_seller_listing_path, class: "btn-primary" %>
       <% if AppSettings.enabled?(:sell_to_us_enabled) %>
         <%= link_to t("nav.sell_to_us"), sell_to_us_path, class: "btn-secondary" %>
       <% end %>

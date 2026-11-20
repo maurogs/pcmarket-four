@@ -29,7 +29,7 @@
       <% if AppSettings.enabled?(:sell_to_us_enabled) %>
         <%= link_to t("nav.sell_to_us"), sell_to_us_path, class: "btn-secondary hidden md:inline-flex" %>
       <% end %>
-      <%= link_to root_path, class: "btn-primary" do %>
+      <%= link_to new_seller_listing_path, class: "btn-primary" do %>
         <%= icon "plus", class: "h-4 w-4" %><span class="hidden sm:inline"><%= t("nav.list_item") %></span>
       <% end %>
 

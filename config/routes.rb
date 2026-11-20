@@ -52,9 +52,11 @@ Rails.application.routes.draw do
 
     # Seller area (Phase 2): "open your store" + store settings. Singular —
     # a user owns at most one store, so the URL never carries an id and other
-    # sellers' stores are simply unreachable.
+    # sellers' stores are simply unreachable. Listings are scoped to
+    # current_user.store in the controller, so foreign ids 404.
     namespace :seller do
       resource :store, only: %i[new create edit update]
+      resources :listings, only: %i[index new create edit update destroy]
     end
   end
 end

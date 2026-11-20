@@ -773,3 +773,46 @@ Uncommitted files (`git status --short`):
 ?? test/controllers/account/{data_exports,deletions}_controller_test.rb
 ?? test/services/accounts/
 ```
+
+## 2026-11-20 — Phase 3 step 1: seller listings CRUD (uncommitted)
+
+- Routes: `resources :listings` in `namespace :seller`; header + mobile
+  drawer "List an item" buttons now go to `new_seller_listing_path`.
+- `Seller::ListingsController` (skinny, `params.expect`): scoped to
+  `current_user.store` (foreign ids 404 — `render_not_found` moved from
+  `Browseable` to `ApplicationController`); `Stores::EnsureForUser` on
+  new/create; `new` prefills draft from store (allow_offers_default,
+  province/city/postal_code); create/update save drafts only (published
+  edits return to pending_review via the model); destroy hard-deletes
+  `deletable?` (draft/rejected) else `archive!`; index tabs per status
+  with counts from `Listing.status_counts` (one grouped query).
+- `Listing`: `TITLE_MIN/MAX_LENGTH`, `#deletable?`, virtual euro
+  accessors `price`/`original_price`/`shipping_price` +
+  `.euros_to_cents` (garbage → nil; blank shipping → 0).
+- Views: new `seller/_shell` + `_sidebar` (Dashboard soon / My listings /
+  Store settings; stores pages migrated off the account shell);
+  `seller/listings/{index,new,edit,_form}` with grouped category select
+  (`Seller::ListingsHelper`), condition radio cards, euro price fields,
+  shipping/location/offers, marked Specs + Photos placeholder sections;
+  `char_count_controller.js` title counter.
+- i18n: `seller.listings.*`, `seller.sidebar.*`, condition descriptions,
+  full listing attribute labels in all 6 locales.
+- Tests: `test/controllers/seller/listings_controller_test.rb` (20).
+
+Verified: `bin/rails test` 391 green; `bin/rubocop` clean (178 files).
+Uncommitted files (this step):
+```
+ M app/controllers/application_controller.rb
+ M app/controllers/concerns/browseable.rb
+ M app/models/listing.rb
+ M app/views/seller/stores/{edit,new}.html.erb
+ M app/views/shared/{_header,_mobile_drawer}.html.erb
+ M config/locales/{de,en,es,fr,it,pt}.yml
+ M config/routes.rb
+?? app/controllers/seller/listings_controller.rb
+?? app/helpers/seller/listings_helper.rb
+?? app/javascript/controllers/char_count_controller.js
+?? app/views/seller/{_shell,_sidebar}.html.erb
+?? app/views/seller/listings/
+?? test/controllers/seller/listings_controller_test.rb
+```

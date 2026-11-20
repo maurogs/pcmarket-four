@@ -29,6 +29,10 @@ class Listing < ApplicationRecord
   # Attributes that make a published listing require a new review when edited.
   REVIEWABLE_FIELDS = %w[title description price_cents specs].freeze
 
+  # Sell-form title bounds (the form reads the max from the model).
+  TITLE_MIN_LENGTH = 4
+  TITLE_MAX_LENGTH = 120
+
   # Currency symbol map for display_price (amounts are stored in cents).
   CURRENCY_UNITS = { "EUR" => "€", "GBP" => "£", "USD" => "$" }.freeze
 
@@ -111,7 +115,7 @@ class Listing < ApplicationRecord
     ))
   end
 
-  validates :title, presence: true, length: { in: 4..120 }
+  validates :title, presence: true, length: { in: TITLE_MIN_LENGTH..TITLE_MAX_LENGTH }
   validates :description, length: { maximum: 20_000 }
   validates :price_cents, presence: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -208,6 +212,13 @@ class Listing < ApplicationRecord
     where(id: ids).with_includes.reorder(id: :asc)
   end
 
+  # Listing counts per status for one store — the single grouped query
+  # behind the seller index tabs. Always returns every status, 0-filled.
+  def self.status_counts(store)
+    counts = for_store(store).group(:status).count
+    STATUSES.index_with { |status| counts.fetch(status, 0) }
+  end
+
   # @param filters [Hash] { "filter_key" => ["option_value", …] } — values are
   #   OR-ed within a key, keys are AND-ed (jsonb containment @> on specs).
   def self.specs_condition(filters)
@@ -241,6 +252,50 @@ class Listing < ApplicationRecord
     return false if user.nil?
 
     user.admin? || user.id == store.user_id
+  end
+
+  # Never went public — the seller may delete it for good; anything that did
+  # is only archived (see Seller::ListingsController#destroy).
+  def deletable?
+    draft? || rejected?
+  end
+
+  # --- Euro amounts for the sell form (the DB stores cents) ------------------
+  # A fresh record's zero defaults render as blank inputs; unparsable input
+  # becomes nil so the presence/numericality validations surface it.
+
+  def price
+    euro_amount(price_cents)
+  end
+
+  def price=(value)
+    self.price_cents = self.class.euros_to_cents(value)
+  end
+
+  def original_price
+    euro_amount(original_price_cents)
+  end
+
+  def original_price=(value)
+    self.original_price_cents = self.class.euros_to_cents(value)
+  end
+
+  def shipping_price
+    euro_amount(shipping_price_cents)
+  end
+
+  def shipping_price=(value)
+    # Shipping is NOT NULL — blank means free (0), not "unset".
+    self.shipping_price_cents = self.class.euros_to_cents(value) || 0
+  end
+
+  # "49.99" → 4999; blank or unparsable input → nil.
+  def self.euros_to_cents(value)
+    return if value.blank?
+
+    (BigDecimal(value.to_s) * 100).round
+  rescue ArgumentError, TypeError
+    nil
   end
 
   # Earliest delivery: preparation days only; latest adds estimated transit.
@@ -302,6 +357,12 @@ class Listing < ApplicationRecord
   end
 
   private
+
+  def euro_amount(cents)
+    return if cents.nil? || (cents.zero? && new_record?)
+
+    (cents / 100.0).round(2)
+  end
 
   def currency_unit
     CURRENCY_UNITS.fetch(currency) { "#{currency} " }

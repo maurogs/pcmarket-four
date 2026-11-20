@@ -1,0 +1,12 @@
+<%# Shared seller-area frame: sidebar on the left (horizontal scrollable
+    tabs on mobile) + page content from :seller_body. Pages capture their
+    content with content_for so lazy t(".key") lookups keep the page's own
+    virtual path (blocks passed to render would resolve against this file). %>
+<div class="mx-auto max-w-5xl px-4 py-12">
+  <div class="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
+    <%= render "seller/sidebar" %>
+    <div class="min-w-0">
+      <%= yield :seller_body %>
+    </div>
+  </div>
+</div>

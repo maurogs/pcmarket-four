@@ -283,6 +283,9 @@ de:
           range: Bereich
           single_select: Einfachauswahl
       listing:
+        allow_offers: Angebote erlauben
+        category_id: Kategorie
+        city: Stadt
         condition:
           for_parts: Für Ersatzteile
           new_open_box: Neu (Open Box)
@@ -290,10 +293,23 @@ de:
           used_fair: Gebraucht (gebrauchsspuren)
           used_good: Gebraucht (gut)
           used_like_new: Gebraucht (wie neu)
+        description: Beschreibung
+        free_shipping: Kostenloser Versand
+        local_pickup: Abholung vor Ort
+        original_price: Ursprünglicher Preis
+        original_price_cents: Ursprünglicher Preis
+        postal_code: Postleitzahl
+        price: Preis
+        price_cents: Preis
+        province: Provinz
+        quantity: Menge
         shipping_method:
           own_label: Eigenes Label
           pickup_only: Nur Abholung
           platform_label: Plattform-Etikett
+        shipping_price: Versandkosten
+        shipping_price_cents: Versandkosten
+        ships_within_days: Versand in (Tagen)
         statuses:
           archived: Archiviert
           draft: Entwurf
@@ -302,6 +318,7 @@ de:
           published: Veröffentlicht
           rejected: Abgelehnt
           sold: Verkauft
+        title: Titel
       store:
         allow_offers_default: Angebote standardmäßig erlauben
         banner: Banner
@@ -819,3 +836,61 @@ de:
         success: Dein Shop ist eröffnet.
       update:
         success: Shop-Einstellungen aktualisiert.
+    listings:
+      index:
+        title: Meine Anzeigen
+        new_listing: Neue Anzeige
+        statuses_label: Nach Status filtern
+        empty: Hier ist noch nichts.
+        rejection_reason: Ablehnungsgrund
+        quantity: "%{count} auf Lager"
+        updated: Aktualisiert am %{date}
+        edit: Bearbeiten
+        delete: Löschen
+        archive: Archivieren
+        confirm_delete: Diese Anzeige endgültig löschen? Das kann nicht rückgängig gemacht werden.
+        confirm_archive: Diese Anzeige archivieren?
+      new:
+        title: Neue Anzeige
+        intro: Fülle aus, was du weißt — deine Anzeige bleibt ein Entwurf, bis
+          du sie zur Prüfung einreichst.
+      edit:
+        title: Anzeige bearbeiten
+        status_note: "Aktueller Status: %{status}"
+      form:
+        category_title: Kategorie
+        category_prompt: Kategorie auswählen
+        details_title: Details
+        condition_title: Zustand
+        condition_descriptions:
+          new_sealed: Nagelneu, noch in der Originalverpackung.
+          new_open_box: Neu, aber die Verpackung wurde geöffnet.
+          used_like_new: Kaum benutzt, sieht aus und funktioniert wie neu.
+          used_good: Funktioniert, mit leichten Gebrauchsspuren.
+          used_fair: Funktioniert, aber mit sichtbaren Gebrauchsspuren.
+          for_parts: Defekt oder unvollständig — als Ersatzteil verkauft.
+        price_title: Preis
+        price_hint: Beträge in Euro.
+        original_price_hint: Optionaler Vergleichspreis, durchgestrichen neben deinem.
+        shipping_title: Versand
+        ships_within_days_hint: 1 bis 30 Werktage.
+        location_title: Standort
+        province_prompt: Provinz auswählen
+        offers_title: Angebote
+        specs_title: Technische Daten
+        specs_placeholder: Demnächst — hier folgen kategoriespezifische Daten.
+        photos_title: Fotos
+        photos_placeholder: Demnächst — du kannst bis zu 12 Fotos hochladen.
+        submit: Anzeige speichern
+      create:
+        success: Anzeige als Entwurf gespeichert.
+      update:
+        success: Anzeige aktualisiert.
+      destroy:
+        destroyed: Anzeige gelöscht.
+        archived: Anzeige archiviert.
+    sidebar:
+      title: Verkäuferbereich
+      dashboard: Dashboard
+      my_listings: Meine Anzeigen
+      store_settings: Shop-Einstellungen

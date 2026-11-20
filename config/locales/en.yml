@@ -281,6 +281,9 @@ en:
           range: Range
           single_select: Single choice
       listing:
+        allow_offers: Allow offers
+        category_id: Category
+        city: City
         condition:
           for_parts: For parts
           new_open_box: New (open box)
@@ -288,10 +291,23 @@ en:
           used_fair: Used (fair)
           used_good: Used (good)
           used_like_new: Used (like new)
+        description: Description
+        free_shipping: Free shipping
+        local_pickup: Local pickup
+        original_price: Original price
+        original_price_cents: Original price
+        postal_code: Postal code
+        price: Price
+        price_cents: Price
+        province: Province
+        quantity: Quantity
         shipping_method:
           own_label: Own label
           pickup_only: Pickup only
           platform_label: Platform label
+        shipping_price: Shipping price
+        shipping_price_cents: Shipping price
+        ships_within_days: Ships within (days)
         statuses:
           archived: Archived
           draft: Draft
@@ -300,6 +316,7 @@ en:
           published: Published
           rejected: Rejected
           sold: Sold
+        title: Title
       store:
         allow_offers_default: Allow offers by default
         banner: Banner
@@ -810,3 +827,61 @@ en:
         success: Your store is open.
       update:
         success: Store settings updated.
+    listings:
+      index:
+        title: My listings
+        new_listing: New listing
+        statuses_label: Filter by status
+        empty: Nothing here yet.
+        rejection_reason: Rejection reason
+        quantity: "%{count} in stock"
+        updated: Updated %{date}
+        edit: Edit
+        delete: Delete
+        archive: Archive
+        confirm_delete: Delete this listing for good? This cannot be undone.
+        confirm_archive: Archive this listing?
+      new:
+        title: New listing
+        intro: Fill in what you know — your listing stays a draft until you
+          submit it for review.
+      edit:
+        title: Edit listing
+        status_note: "Current status: %{status}"
+      form:
+        category_title: Category
+        category_prompt: Select a category
+        details_title: Details
+        condition_title: Condition
+        condition_descriptions:
+          new_sealed: Brand new, still in the factory packaging.
+          new_open_box: New, but the packaging has been opened.
+          used_like_new: Barely used, looks and works like new.
+          used_good: Working, with light signs of use.
+          used_fair: Working, but with visible wear.
+          for_parts: Not working or incomplete — sold for spare parts.
+        price_title: Price
+        price_hint: Amounts in euros.
+        original_price_hint: Optional comparison price, shown struck through.
+        shipping_title: Shipping
+        ships_within_days_hint: 1 to 30 business days.
+        location_title: Location
+        province_prompt: Select a province
+        offers_title: Offers
+        specs_title: Specifications
+        specs_placeholder: Coming soon — category-specific specs will go here.
+        photos_title: Photos
+        photos_placeholder: Coming soon — you'll be able to upload up to 12 photos.
+        submit: Save listing
+      create:
+        success: Listing saved as a draft.
+      update:
+        success: Listing updated.
+      destroy:
+        destroyed: Listing deleted.
+        archived: Listing archived.
+    sidebar:
+      title: Seller area
+      dashboard: Dashboard
+      my_listings: My listings
+      store_settings: Store settings

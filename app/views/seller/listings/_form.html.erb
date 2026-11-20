@@ -1,0 +1,163 @@
+<%# Sell form — Phase 3 step 1 covers the basic fields only. Specs and photos
+    land in the next steps; their placeholder sections are marked at the end.
+    Price fields work in euros and convert to cents via the model's virtual
+    attributes (Listing#price=, #original_price=, #shipping_price=). %>
+<%= form_with model: listing,
+      url: listing.persisted? ? seller_listing_path(listing) : seller_listings_path,
+      class: "mt-6 space-y-8" do |f| %>
+  <%= render "devise/shared/error_messages", resource: listing %>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".category_title") %></h2>
+
+    <div class="mt-4">
+      <%= f.label :category_id, class: "block text-sm font-medium" %>
+      <%= f.select :category_id, grouped_category_options,
+            { include_blank: t(".category_prompt") }, class: "input-field mt-1" %>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".details_title") %></h2>
+
+    <div class="mt-4 space-y-4">
+      <div data-controller="char-count" data-char-count-max-value="<%= Listing::TITLE_MAX_LENGTH %>">
+        <%= f.label :title, class: "block text-sm font-medium" %>
+        <div class="mt-1 flex items-center gap-3">
+          <%= f.text_field :title, required: true, maxlength: Listing::TITLE_MAX_LENGTH,
+                class: "input-field",
+                data: { char_count_target: "input", action: "input->char-count#refresh" } %>
+          <span class="shrink-0 text-xs text-muted" data-char-count-target="count"></span>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :description, class: "block text-sm font-medium" %>
+        <%= f.text_area :description, rows: 6, class: "input-field mt-1 rounded-2xl" %>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".condition_title") %></h2>
+
+    <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <% Listing.conditions.each_key do |value| %>
+        <%= f.label :condition, value: value,
+              class: "flex cursor-pointer flex-col gap-1 rounded-2xl border border-line bg-surface p-4 has-[:checked]:border-primary-600 has-[:checked]:bg-primary-50 dark:has-[:checked]:border-primary-400 dark:has-[:checked]:bg-primary-950" do %>
+          <span class="flex items-center gap-2">
+            <%= f.radio_button :condition, value, class: "h-4 w-4 border-line accent-primary-600" %>
+            <span class="text-sm font-semibold"><%= t("activerecord.attributes.listing.condition.#{value}") %></span>
+          </span>
+          <span class="text-xs text-muted"><%= t(".condition_descriptions.#{value}") %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".price_title") %></h2>
+
+    <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div>
+        <%= f.label :price, class: "block text-sm font-medium" %>
+        <p class="text-xs text-muted"><%= t(".price_hint") %></p>
+        <%= f.number_field :price, step: 0.01, min: 0, required: true, class: "input-field mt-1" %>
+      </div>
+      <div>
+        <%= f.label :original_price, class: "block text-sm font-medium" %>
+        <p class="text-xs text-muted"><%= t(".original_price_hint") %></p>
+        <%= f.number_field :original_price, step: 0.01, min: 0, class: "input-field mt-1" %>
+      </div>
+      <div>
+        <%= f.label :quantity, class: "block text-sm font-medium" %>
+        <%= f.number_field :quantity, min: 1, required: true, class: "input-field mt-1" %>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".shipping_title") %></h2>
+
+    <div class="mt-4 space-y-4">
+      <div class="grid gap-3 sm:grid-cols-3">
+        <% Listing.shipping_methods.each_key do |value| %>
+          <label class="flex cursor-pointer items-center gap-2 rounded-2xl border border-line bg-surface p-4 has-[:checked]:border-primary-600 has-[:checked]:bg-primary-50 dark:has-[:checked]:border-primary-400 dark:has-[:checked]:bg-primary-950">
+            <%= f.radio_button :shipping_method, value, class: "h-4 w-4 border-line accent-primary-600" %>
+            <span class="text-sm font-semibold"><%= t("activerecord.attributes.listing.shipping_method.#{value}") %></span>
+          </label>
+        <% end %>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <%= f.label :shipping_price, class: "block text-sm font-medium" %>
+          <%= f.number_field :shipping_price, step: 0.01, min: 0, class: "input-field mt-1" %>
+        </div>
+        <div>
+          <%= f.label :ships_within_days, class: "block text-sm font-medium" %>
+          <p class="text-xs text-muted"><%= t(".ships_within_days_hint") %></p>
+          <%= f.number_field :ships_within_days, min: 1, max: 30, required: true, class: "input-field mt-1" %>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-6">
+        <div class="flex items-center gap-2">
+          <%= f.check_box :free_shipping, class: "h-4 w-4 rounded border-line accent-primary-600" %>
+          <%= f.label :free_shipping, class: "text-sm font-medium" %>
+        </div>
+        <div class="flex items-center gap-2">
+          <%= f.check_box :local_pickup, class: "h-4 w-4 rounded border-line accent-primary-600" %>
+          <%= f.label :local_pickup, class: "text-sm font-medium" %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".location_title") %></h2>
+
+    <div class="mt-4 grid grid-cols-2 gap-3">
+      <div>
+        <%= f.label :province, class: "block text-sm font-medium" %>
+        <%= f.select :province, SpanishProvince.options,
+              { include_blank: t(".province_prompt") }, class: "input-field mt-1" %>
+      </div>
+      <div>
+        <%= f.label :city, class: "block text-sm font-medium" %>
+        <%= f.text_field :city, autocomplete: "address-level2", class: "input-field mt-1" %>
+      </div>
+      <div>
+        <%= f.label :postal_code, class: "block text-sm font-medium" %>
+        <%= f.text_field :postal_code, autocomplete: "postal-code", class: "input-field mt-1" %>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".offers_title") %></h2>
+
+    <div class="mt-4 flex items-center gap-2">
+      <%= f.check_box :allow_offers, class: "h-4 w-4 rounded border-line accent-primary-600" %>
+      <%= f.label :allow_offers, class: "text-sm font-medium" %>
+    </div>
+  </section>
+
+  <%# TODO Phase 3 step 2: category-driven specification inputs (specs jsonb). %>
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".specs_title") %></h2>
+    <p class="mt-4 rounded-2xl border border-dashed border-line-strong p-6 text-center text-sm text-muted">
+      <%= t(".specs_placeholder") %>
+    </p>
+  </section>
+
+  <%# TODO Phase 3 step 3: image upload (Listing#images). %>
+  <section>
+    <h2 class="text-lg font-semibold"><%= t(".photos_title") %></h2>
+    <p class="mt-4 rounded-2xl border border-dashed border-line-strong p-6 text-center text-sm text-muted">
+      <%= t(".photos_placeholder") %>
+    </p>
+  </section>
+
+  <%= f.submit t(".submit"), class: "btn-primary w-full cursor-pointer" %>
+<% end %>

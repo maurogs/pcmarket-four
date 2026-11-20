@@ -17,8 +17,4 @@ module Browseable
     end
     @search_result = Listings::Search.call(search_params.merge(q: @query, category: category&.slug))
   end
-
-  def render_not_found
-    render file: Rails.public_path.join("404.html"), status: :not_found, layout: false
-  end
 end

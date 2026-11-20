@@ -282,6 +282,9 @@ es:
           range: Rango
           single_select: Selección simple
       listing:
+        allow_offers: Permitir ofertas
+        category_id: Categoría
+        city: Ciudad
         condition:
           for_parts: Para piezas
           new_open_box: Nuevo (desprecintado)
@@ -289,10 +292,23 @@ es:
           used_fair: Segunda mano (con marcas)
           used_good: Segunda mano (buen estado)
           used_like_new: Segunda mano (como nuevo)
+        description: Descripción
+        free_shipping: Envío gratis
+        local_pickup: Recogida en mano
+        original_price: Precio original
+        original_price_cents: Precio original
+        postal_code: Código postal
+        price: Precio
+        price_cents: Precio
+        province: Provincia
+        quantity: Cantidad
         shipping_method:
           own_label: Etiqueta propia
           pickup_only: Solo recogida en mano
           platform_label: Etiqueta de la plataforma
+        shipping_price: Gastos de envío
+        shipping_price_cents: Gastos de envío
+        ships_within_days: Envío en (días)
         statuses:
           archived: Archivado
           draft: Borrador
@@ -301,6 +317,7 @@ es:
           published: Publicado
           rejected: Rechazado
           sold: Vendido
+        title: Título
       store:
         allow_offers_default: Permitir ofertas por defecto
         banner: Banner
@@ -816,3 +833,61 @@ es:
         success: Tu tienda ya está abierta.
       update:
         success: Ajustes de la tienda actualizados.
+    listings:
+      index:
+        title: Mis anuncios
+        new_listing: Nuevo anuncio
+        statuses_label: Filtrar por estado
+        empty: Aún no hay nada aquí.
+        rejection_reason: Motivo del rechazo
+        quantity: "%{count} en stock"
+        updated: Actualizado el %{date}
+        edit: Editar
+        delete: Eliminar
+        archive: Archivar
+        confirm_delete: "¿Eliminar este anuncio definitivamente? No se puede deshacer."
+        confirm_archive: "¿Archivar este anuncio?"
+      new:
+        title: Nuevo anuncio
+        intro: Rellena lo que sepas — el anuncio se queda en borrador hasta que
+          lo envíes a revisión.
+      edit:
+        title: Editar anuncio
+        status_note: "Estado actual: %{status}"
+      form:
+        category_title: Categoría
+        category_prompt: Selecciona una categoría
+        details_title: Detalles
+        condition_title: Estado del artículo
+        condition_descriptions:
+          new_sealed: Nuevo sin abrir, con su embalaje de fábrica.
+          new_open_box: Nuevo, pero el embalaje ha sido abierto.
+          used_like_new: Apenas usado, parece y funciona como nuevo.
+          used_good: Funciona, con leves señales de uso.
+          used_fair: Funciona, pero con desgaste visible.
+          for_parts: No funciona o está incompleto — se vende como pieza.
+        price_title: Precio
+        price_hint: Importes en euros.
+        original_price_hint: Precio de comparación opcional, tachado junto al tuyo.
+        shipping_title: Envío
+        ships_within_days_hint: De 1 a 30 días laborables.
+        location_title: Ubicación
+        province_prompt: Selecciona una provincia
+        offers_title: Ofertas
+        specs_title: Características
+        specs_placeholder: Muy pronto — aquí irán las características según la categoría.
+        photos_title: Fotos
+        photos_placeholder: Muy pronto — podrás subir hasta 12 fotos.
+        submit: Guardar anuncio
+      create:
+        success: Anuncio guardado como borrador.
+      update:
+        success: Anuncio actualizado.
+      destroy:
+        destroyed: Anuncio eliminado.
+        archived: Anuncio archivado.
+    sidebar:
+      title: Zona de vendedor
+      dashboard: Panel
+      my_listings: Mis anuncios
+      store_settings: Ajustes de la tienda

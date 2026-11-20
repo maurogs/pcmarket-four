@@ -38,4 +38,10 @@ class ApplicationController < ActionController::Base
   def user_not_authorized
     redirect_to(root_path, alert: t("errors.forbidden"))
   end
+
+  # Shared 404 for controllers that scope lookups to the current user and
+  # come up empty (instead of leaking existence with a 403).
+  def render_not_found
+    render file: Rails.public_path.join("404.html"), status: :not_found, layout: false
+  end
 end

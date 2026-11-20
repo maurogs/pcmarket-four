@@ -282,6 +282,9 @@ pt:
           range: Intervalo
           single_select: Seleção única
       listing:
+        allow_offers: Permitir ofertas
+        category_id: Categoria
+        city: Cidade
         condition:
           for_parts: Para peças
           new_open_box: Novo (embalagem aberta)
@@ -289,10 +292,23 @@ pt:
           used_fair: Usado (com marcas)
           used_good: Usado (bom estado)
           used_like_new: Usado (como novo)
+        description: Descrição
+        free_shipping: Envio grátis
+        local_pickup: Levantamento em mãos
+        original_price: Preço original
+        original_price_cents: Preço original
+        postal_code: Código postal
+        price: Preço
+        price_cents: Preço
+        province: Distrito
+        quantity: Quantidade
         shipping_method:
           own_label: Etiqueta própria
           pickup_only: Só levantamento em mãos
           platform_label: Etiqueta da plataforma
+        shipping_price: Custos de envio
+        shipping_price_cents: Custos de envio
+        ships_within_days: Envio em (dias)
         statuses:
           archived: Arquivado
           draft: Rascunho
@@ -301,6 +317,7 @@ pt:
           published: Publicado
           rejected: Rejeitado
           sold: Vendido
+        title: Título
       store:
         allow_offers_default: Permitir ofertas por omissão
         banner: Banner
@@ -814,3 +831,61 @@ pt:
         success: A sua loja está aberta.
       update:
         success: Definições da loja atualizadas.
+    listings:
+      index:
+        title: Os meus anúncios
+        new_listing: Novo anúncio
+        statuses_label: Filtrar por estado
+        empty: Ainda não há nada aqui.
+        rejection_reason: Motivo da rejeição
+        quantity: "%{count} em stock"
+        updated: Atualizado a %{date}
+        edit: Editar
+        delete: Eliminar
+        archive: Arquivar
+        confirm_delete: Eliminar este anúncio definitivamente? Não é possível anular.
+        confirm_archive: Arquivar este anúncio?
+      new:
+        title: Novo anúncio
+        intro: Preencha o que souber — o anúncio fica em rascunho até ser
+          enviado para revisão.
+      edit:
+        title: Editar anúncio
+        status_note: "Estado atual: %{status}"
+      form:
+        category_title: Categoria
+        category_prompt: Selecione uma categoria
+        details_title: Detalhes
+        condition_title: Estado
+        condition_descriptions:
+          new_sealed: Novo, ainda na embalagem de fábrica.
+          new_open_box: Novo, mas a embalagem foi aberta.
+          used_like_new: Quase não usado, parece e funciona como novo.
+          used_good: Funciona, com leves sinais de uso.
+          used_fair: Funciona, mas com desgaste visível.
+          for_parts: Não funciona ou está incompleto — vendido como peça.
+        price_title: Preço
+        price_hint: Valores em euros.
+        original_price_hint: Preço de comparação opcional, riscado ao lado do seu.
+        shipping_title: Envio
+        ships_within_days_hint: De 1 a 30 dias úteis.
+        location_title: Localização
+        province_prompt: Selecione um distrito
+        offers_title: Ofertas
+        specs_title: Especificações
+        specs_placeholder: Em breve — aqui ficarão as especificações por categoria.
+        photos_title: Fotos
+        photos_placeholder: Em breve — poderá carregar até 12 fotos.
+        submit: Guardar anúncio
+      create:
+        success: Anúncio guardado como rascunho.
+      update:
+        success: Anúncio atualizado.
+      destroy:
+        destroyed: Anúncio eliminado.
+        archived: Anúncio arquivado.
+    sidebar:
+      title: Área de vendedor
+      dashboard: Painel
+      my_listings: Os meus anúncios
+      store_settings: Definições da loja

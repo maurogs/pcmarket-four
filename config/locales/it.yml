@@ -282,6 +282,9 @@ it:
           range: Intervallo
           single_select: Scelta singola
       listing:
+        allow_offers: Consenti offerte
+        category_id: Categoria
+        city: Città
         condition:
           for_parts: Per parti
           new_open_box: Nuovo (aperto)
@@ -289,10 +292,23 @@ it:
           used_fair: Usato (discreto)
           used_good: Usato (buono)
           used_like_new: Usato (pari al nuovo)
+        description: Descrizione
+        free_shipping: Spedizione gratuita
+        local_pickup: Ritiro di persona
+        original_price: Prezzo originale
+        original_price_cents: Prezzo originale
+        postal_code: CAP
+        price: Prezzo
+        price_cents: Prezzo
+        province: Provincia
+        quantity: Quantità
         shipping_method:
           own_label: Etichetta propria
           pickup_only: Solo ritiro a mano
           platform_label: Etichetta della piattaforma
+        shipping_price: Costi di spedizione
+        shipping_price_cents: Costi di spedizione
+        ships_within_days: Spedisce entro (giorni)
         statuses:
           archived: Archiviato
           draft: Bozza
@@ -301,6 +317,7 @@ it:
           published: Pubblicato
           rejected: Rifiutato
           sold: Venduto
+        title: Titolo
       store:
         allow_offers_default: Consenti offerte per impostazione predefinita
         banner: Banner
@@ -815,3 +832,61 @@ it:
         success: Il tuo negozio è aperto.
       update:
         success: Impostazioni del negozio aggiornate.
+    listings:
+      index:
+        title: I miei annunci
+        new_listing: Nuovo annuncio
+        statuses_label: Filtra per stato
+        empty: Ancora niente qui.
+        rejection_reason: Motivo del rifiuto
+        quantity: "%{count} in magazzino"
+        updated: Aggiornato il %{date}
+        edit: Modifica
+        delete: Elimina
+        archive: Archivia
+        confirm_delete: Eliminare definitivamente questo annuncio? Non si può annullare.
+        confirm_archive: Archiviare questo annuncio?
+      new:
+        title: Nuovo annuncio
+        intro: Compila quello che sai — l'annuncio resta in bozza finché non lo
+          invii in revisione.
+      edit:
+        title: Modifica annuncio
+        status_note: "Stato attuale: %{status}"
+      form:
+        category_title: Categoria
+        category_prompt: Seleziona una categoria
+        details_title: Dettagli
+        condition_title: Condizioni
+        condition_descriptions:
+          new_sealed: Nuovo, ancora nella confezione originale.
+          new_open_box: Nuovo, ma la confezione è stata aperta.
+          used_like_new: Usato pochissimo, sembra e funziona come nuovo.
+          used_good: Funzionante, con lievi segni di usura.
+          used_fair: Funzionante, ma con segni di usura visibili.
+          for_parts: Non funziona o incompleto — venduto per parti di ricambio.
+        price_title: Prezzo
+        price_hint: Importi in euro.
+        original_price_hint: Prezzo di confronto facoltativo, barrato accanto al tuo.
+        shipping_title: Spedizione
+        ships_within_days_hint: Da 1 a 30 giorni lavorativi.
+        location_title: Luogo
+        province_prompt: Seleziona una provincia
+        offers_title: Offerte
+        specs_title: Specifiche
+        specs_placeholder: Prossimamente — qui arriveranno le specifiche per categoria.
+        photos_title: Foto
+        photos_placeholder: Prossimamente — potrai caricare fino a 12 foto.
+        submit: Salva annuncio
+      create:
+        success: Annuncio salvato in bozza.
+      update:
+        success: Annuncio aggiornato.
+      destroy:
+        destroyed: Annuncio eliminato.
+        archived: Annuncio archiviato.
+    sidebar:
+      title: Area venditore
+      dashboard: Dashboard
+      my_listings: I miei annunci
+      store_settings: Impostazioni del negozio

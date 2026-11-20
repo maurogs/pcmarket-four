@@ -284,6 +284,9 @@ fr:
           range: Plage
           single_select: Choix unique
       listing:
+        allow_offers: Autoriser les offres
+        category_id: Catégorie
+        city: Ville
         condition:
           for_parts: Pour pièces
           new_open_box: Neuf (déballé)
@@ -291,10 +294,23 @@ fr:
           used_fair: Occasion (état correct)
           used_good: Occasion (bon état)
           used_like_new: Occasion (comme neuf)
+        description: Description
+        free_shipping: Livraison gratuite
+        local_pickup: Retrait sur place
+        original_price: Prix initial
+        original_price_cents: Prix initial
+        postal_code: Code postal
+        price: Prix
+        price_cents: Prix
+        province: Province
+        quantity: Quantité
         shipping_method:
           own_label: Étiquette personnelle
           pickup_only: Retrait sur place uniquement
           platform_label: Étiquette de la plateforme
+        shipping_price: Frais de livraison
+        shipping_price_cents: Frais de livraison
+        ships_within_days: Expédié sous (jours)
         statuses:
           archived: Archivé
           draft: Brouillon
@@ -303,6 +319,7 @@ fr:
           published: Publié
           rejected: Refusé
           sold: Vendu
+        title: Titre
       store:
         allow_offers_default: Autoriser les offres par défaut
         banner: Bannière
@@ -818,3 +835,61 @@ fr:
         success: Votre boutique est ouverte.
       update:
         success: Réglages de la boutique mis à jour.
+    listings:
+      index:
+        title: Mes annonces
+        new_listing: Nouvelle annonce
+        statuses_label: Filtrer par statut
+        empty: Rien ici pour le moment.
+        rejection_reason: Motif du refus
+        quantity: "%{count} en stock"
+        updated: Mis à jour le %{date}
+        edit: Modifier
+        delete: Supprimer
+        archive: Archiver
+        confirm_delete: Supprimer définitivement cette annonce ? Action irréversible.
+        confirm_archive: Archiver cette annonce ?
+      new:
+        title: Nouvelle annonce
+        intro: Remplissez ce que vous savez — l'annonce reste un brouillon tant
+          que vous ne la soumettez pas à la modération.
+      edit:
+        title: Modifier l'annonce
+        status_note: "Statut actuel : %{status}"
+      form:
+        category_title: Catégorie
+        category_prompt: Choisir une catégorie
+        details_title: Détails
+        condition_title: État
+        condition_descriptions:
+          new_sealed: Neuf, encore dans son emballage d'origine.
+          new_open_box: Neuf, mais l'emballage a été ouvert.
+          used_like_new: À peine utilisé, semble et fonctionne comme neuf.
+          used_good: Fonctionne, avec de légères traces d'utilisation.
+          used_fair: Fonctionne, mais avec une usure visible.
+          for_parts: Ne fonctionne pas ou incomplet — vendu pour pièces.
+        price_title: Prix
+        price_hint: Montants en euros.
+        original_price_hint: Prix de comparaison facultatif, barré à côté du vôtre.
+        shipping_title: Livraison
+        ships_within_days_hint: De 1 à 30 jours ouvrés.
+        location_title: Lieu
+        province_prompt: Choisir une province
+        offers_title: Offres
+        specs_title: Caractéristiques
+        specs_placeholder: Bientôt disponible — les caractéristiques par catégorie arriveront ici.
+        photos_title: Photos
+        photos_placeholder: Bientôt disponible — vous pourrez téléverser jusqu'à 12 photos.
+        submit: Enregistrer l'annonce
+      create:
+        success: Annonce enregistrée en brouillon.
+      update:
+        success: Annonce mise à jour.
+      destroy:
+        destroyed: Annonce supprimée.
+        archived: Annonce archivée.
+    sidebar:
+      title: Espace vendeur
+      dashboard: Tableau de bord
+      my_listings: Mes annonces
+      store_settings: Réglages de la boutique

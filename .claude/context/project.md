@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-19 (Phase 2 step 6 — GDPR deletion + data export,
+_Last updated: 2026-11-20 (Phase 3 step 1 — seller listings CRUD,
 uncommitted)_
 
 ## What this is
@@ -481,9 +481,46 @@ FR/GB/DE/IT/PT seeded but disabled.
 - Gotcha: `ActiveStorage::Blob#download` returns ASCII-8BIT — `force_encoding
   ("UTF-8")` before comparing non-ASCII JSON in tests.
 
+## Code map (Phase 3 step 1 — seller listings CRUD)
+
+- Routes: `namespace :seller { resources :listings, only: %i[index new
+  create edit update destroy] }`. Header + mobile drawer "List an item"
+  buttons now point at `new_seller_listing_path` (were `root_path`).
+- `Seller::ListingsController`: everything scoped to `current_user.store`
+  (foreign listings 404 via `render_not_found`, which moved from
+  `Browseable` up to `ApplicationController`). `new`/`create` lazily create
+  the store via `Stores::EnsureForUser` so the header button never
+  dead-ends. `new` builds a draft prefilled from store settings
+  (`allow_offers_default`, province/city/postal_code). create/update only
+  ever save — published listings edited here go back to pending_review
+  through the model's own `return_to_review_if_content_edited`. destroy:
+  hard delete when `Listing#deletable?` (draft/rejected, never went
+  public), otherwise AASM `archive!`.
+- `Listing` additions: `TITLE_MIN/MAX_LENGTH` constants (form reads the
+  max), `Listing.status_counts(store)` (one grouped query, 0-filled for
+  the index tabs), `#deletable?`, and virtual euro writers/readers
+  `#price`/`#original_price`/`#shipping_price` (`Listing.euros_to_cents`:
+  blank/garbage → nil so validations surface it; blank shipping → 0 since
+  the column is NOT NULL). Fresh records render zero-cent defaults as
+  blank inputs.
+- Views: new `seller/_shell` + `seller/_sidebar` (Dashboard "Soon" pill
+  until Phase 4, My listings, Store settings) — `seller/stores/{new,edit}`
+  switched from the account shell to it. `seller/listings/{index,new,edit,
+  _form}`: index has one tab per status with counts + rejection reason on
+  rejected rows; form has category grouped select
+  (`Seller::ListingsHelper#grouped_category_options`, active leaves grouped
+  by translated parent name), title with `char-count` Stimulus counter,
+  condition radio cards with short descriptions, euro price fields,
+  shipping/location/offers sections, and clearly marked Specifications
+  (Phase 3 step 2) + Photos (step 3) placeholders. `form_with` needs an
+  explicit `url:` — there is no top-level listings route.
+- i18n: `seller.listings.*`, `seller.sidebar.*`, condition short
+  descriptions, and full `activerecord.attributes.listing` label set in
+  all 6 locales.
+
 ## Testing
 
-- `bin/rails test` — **371 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **391 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -524,7 +561,13 @@ FR/GB/DE/IT/PT seeded but disabled.
   + `test/controllers/account/{data_exports,deletions}_controller_test.rb`
   + deleted/throttle user-model tests (29 tests — export JSON shape, throttle
   flash + disabled button, download link, 422 wrong password, sign-out +
-  root redirect, deleted user refused at sign_in).
+  root redirect, deleted user refused at sign_in); Phase 3 step 1 adds
+  `test/controllers/seller/listings_controller_test.rb` (20 tests — auth,
+  store auto-creation on new/create, euro→cents create, 422s incl. garbage
+  price, edit/update own listing, published edit returns to review, foreign
+  listing 404 on edit/patch/delete, draft/rejected hard delete vs published
+  archive, index status filter + counts + rejection reason + bogus-status
+  fallback).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -536,7 +579,9 @@ FR/GB/DE/IT/PT seeded but disabled.
 - PC Finder: admin CRUD for `Game` rows and listing `performance_score`
   pending Phase 7 (admin UI); game tiles show initial-letter placeholders
   until real game images are attached (`Game#image`, nothing seeded).
-- Phase 1b-ii+: publish flow, seller dashboard, admin UI for
+- Phase 1b-ii+: submit-for-review button on the sell form (create/update
+  only save drafts for now), listing specs inputs (Phase 3 step 2) and
+  photos (step 3), seller dashboard, admin UI for
   categories/filters/labels/settings (seeds cover data now).
 - Store follow button + reviews tab (rating distribution, cards, pagination)
   ship (Phase 2 step 4); the store **message** button is still a `#`

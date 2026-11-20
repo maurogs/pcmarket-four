@@ -1,0 +1,64 @@
+<% content_for :seller_body do %>
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <h1 class="font-display text-2xl font-bold"><%= t(".title") %></h1>
+    <%= link_to new_seller_listing_path, class: "btn-primary" do %>
+      <%= icon "plus", class: "h-4 w-4" %><%= t(".new_listing") %>
+    <% end %>
+  </div>
+
+  <%# One tab per status with its count (Listing.status_counts). %>
+  <nav aria-label="<%= t(".statuses_label") %>" class="mt-6 flex gap-2 overflow-x-auto pb-2">
+    <% Listing::STATUSES.each do |status| %>
+      <%= link_to seller_listings_path(status: status),
+            aria: { current: ("page" if status == @status) },
+            class: class_names(
+              "flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold",
+              "bg-primary-100 text-primary-900 dark:bg-primary-900 dark:text-primary-100" => status == @status,
+              "text-muted hover:bg-cream-100 hover:text-body dark:hover:bg-cream-surface" => status != @status
+            ) do %>
+        <%= t("activerecord.attributes.listing.statuses.#{status}") %>
+        <span class="rounded-full bg-cream-200 px-2 py-0.5 text-xs font-bold text-muted dark:bg-cream-surface"><%= @counts.fetch(status, 0) %></span>
+      <% end %>
+    <% end %>
+  </nav>
+
+  <% if @listings.any? %>
+    <ul class="mt-6 space-y-3">
+      <% @listings.each do |listing| %>
+        <li class="card flex flex-wrap items-center gap-x-6 gap-y-3 p-4">
+          <div class="min-w-0 flex-1">
+            <%= link_to listing.title, edit_seller_listing_path(listing),
+                  class: "font-semibold hover:text-primary-700 dark:hover:text-primary-300" %>
+            <p class="mt-1 text-sm text-muted">
+              <%= listing.category.name %> · <%= format_euros(listing.price_cents) %> ·
+              <%= t(".quantity", count: listing.quantity) %> ·
+              <%= t(".updated", date: l(listing.updated_at.to_date)) %>
+            </p>
+            <% if listing.rejected? && listing.rejection_reason.present? %>
+              <p class="mt-1 text-sm text-rose-700 dark:text-rose-400">
+                <span class="font-semibold"><%= t(".rejection_reason") %>:</span>
+                <%= listing.rejection_reason %>
+              </p>
+            <% end %>
+          </div>
+          <div class="flex shrink-0 items-center gap-2">
+            <%= link_to t(".edit"), edit_seller_listing_path(listing), class: "btn-secondary" %>
+            <% if listing.deletable? %>
+              <%= button_to t(".delete"), seller_listing_path(listing), method: :delete,
+                    class: "btn-ghost text-rose-700 dark:text-rose-400",
+                    form: { data: { turbo_confirm: t(".confirm_delete") } } %>
+            <% else %>
+              <%= button_to t(".archive"), seller_listing_path(listing), method: :delete,
+                    class: "btn-ghost",
+                    form: { data: { turbo_confirm: t(".confirm_archive") } } %>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="card mt-6 p-8 text-center text-sm text-muted"><%= t(".empty") %></p>
+  <% end %>
+<% end %>
+
+<%= render "seller/shell" %>
