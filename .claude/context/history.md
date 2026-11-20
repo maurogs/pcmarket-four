@@ -1321,3 +1321,62 @@ checkout_confirmations}_controller.rb`, `app/services/orders/placer.rb`,
 `test/controllers/carts_controller_test.rb` (CTA test rewritten).
 
 Verified: `bin/rails test` 606 green; `bin/rubocop` clean (226 files).
+
+## 2026-11-20 — Phase 4 step 4a: Stripe config + seller Connect onboarding (uncommitted)
+
+Payments groundwork, everything double-gated behind `payments_enabled`
+(AppSettings) AND `Payments.configured?` (credentials present):
+
+- `config/initializers/stripe.rb`: `Stripe.api_key` from
+  `STRIPE_SECRET_KEY` env → `credentials.stripe.secret_key`; `api_version`
+  pinned to the gem's bundled version (`2026-11-18.endive`) so upgrades
+  can't silently change API behaviour.
+- `Payments` service facade: `secret_key` / `publishable_key` /
+  `webhook_secret` (env → credentials) and `configured?` (secret + webhook
+  secret present). Env vars documented in the README (new "Payments
+  (Stripe)" section).
+- Migration `AddStripeConnectFieldsToStores` (reversible, verified
+  migrate → rollback → migrate): stores get `stripe_account_id` (partial
+  UNIQUE index WHERE NOT NULL), `stripe_charges_enabled` /
+  `stripe_payouts_enabled` / `stripe_details_submitted` (boolean, default
+  false, NOT NULL) and `stripe_synced_at`.
+- `Payments::ConnectOnboarding`: `account_link_for(store, return_url:,
+  refresh_url:)` lazily creates the Express account (country ES, store
+  user's email, business_type individual/company from `Store#kind`,
+  capabilities transfers + card_payments, metadata store_id), saves
+  `stripe_account_id`, then returns the `account_onboarding` AccountLink
+  url. `sync!(store)` copies the account's 3 flags + stamps `synced_at`.
+  Every `Stripe::StripeError` becomes a failed `Result` with
+  `t("payments.connect.stripe_error")` — callers never rescue Stripe.
+- `Store#stripe_connect_status` (:not_connected / :pending / :active) and
+  `#stripe_sync_stale?` (> 5 min) keep the controller skinny.
+- Route `namespace :seller { resource :payout_account, only: %i[show
+  create] }` + `Seller::PayoutAccountsController`: show renders the status
+  card (sync! first when an account exists and the cache is stale) and,
+  while the feature is off, an explanatory card instead of a 404; create
+  303s off-site (`allow_other_host: true`) to the Stripe onboarding link,
+  or bounces back with the translated alert. Sidebar gains a "Payouts"
+  entry.
+- i18n: `seller.sidebar.payouts`, `seller.payout_accounts.*`,
+  `payments.connect.stripe_error` — all 6 locales (parity green).
+- `minitest-mock` added to the :test group (minitest 6 split
+  `minitest/mock` out of the core gem).
+- Tests (19, Stripe fully stubbed via `stub` + OpenStruct — no real API):
+  service (7: account created once + link params, company mapping, error
+  wrapping, sync flags, sync error) and controller (12: auth, no-store
+  bounce, disabled/not-configured explanatory page, create bounce, the 3
+  statuses, stale-sync trigger, fresh-sync skip, sync alert banner,
+  off-site redirect, create error alert).
+
+Files: `config/initializers/stripe.rb`, `app/services/payments.rb`,
+`app/services/payments/connect_onboarding.rb`,
+`db/migrate/20261120180001_add_stripe_connect_fields_to_stores.rb`,
+`app/models/store.rb`, `config/routes.rb`,
+`app/controllers/seller/payout_accounts_controller.rb`,
+`app/views/seller/payout_accounts/show.html.erb`,
+`app/views/seller/_sidebar.html.erb`, `Gemfile`/`Gemfile.lock`, `README.md`,
+6 locale files, `test/services/payments/connect_onboarding_test.rb` (7),
+`test/controllers/seller/payout_accounts_controller_test.rb` (12).
+
+Verified: `bin/rails test` 625 green; `bin/rubocop` clean (233 files);
+migrate/rollback/migrate round-trip OK.

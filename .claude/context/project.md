@@ -1,7 +1,7 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-20 (Phase 4 step 3 — manual checkout flow;
-uncommitted)_
+_Last updated: 2026-11-20 (Phase 4 step 4a — Stripe config + seller Connect
+onboarding; uncommitted)_
 
 ## What this is
 
@@ -834,9 +834,41 @@ FR/GB/DE/IT/PT seeded but disabled.
   integration tests come from the cookie set by POSTing cart_items;
   `stores.user_id` is UNIQUE (second store needs a second seller user).
 
+## Code map (Phase 4 step 4a — Stripe config + Connect onboarding)
+
+- `config/initializers/stripe.rb`: api_key from `STRIPE_SECRET_KEY` env →
+  `credentials.stripe.secret_key`; `Stripe.api_version` PINNED
+  ("2026-11-18.endive") — bump deliberately with the suite.
+- `Payments` (`app/services/payments.rb`): `secret_key` /
+  `publishable_key` / `webhook_secret` (env → `credentials.stripe.*`) +
+  `configured?` (secret AND webhook secret present). The feature is
+  double-gated: `AppSettings.enabled?(:payments_enabled) &&
+  Payments.configured?`. Env vars documented in README "Payments (Stripe)".
+- stores stripe columns (migration 20261120180001, reversible):
+  `stripe_account_id` (partial UNIQUE index WHERE NOT NULL),
+  `stripe_charges_enabled` / `stripe_payouts_enabled` /
+  `stripe_details_submitted` (boolean NOT NULL default false),
+  `stripe_synced_at`. `Store#stripe_connect_status` → :not_connected /
+  :pending / :active; `Store#stripe_sync_stale?` → older than 5 min.
+- `Payments::ConnectOnboarding`: `account_link_for` lazily creates the
+  Express account (ES, user email, business_type from store kind,
+  capabilities transfers + card_payments, metadata store_id), saves the
+  id, returns the account_onboarding AccountLink url; `sync!` copies the
+  3 flags + stamps synced_at. Stripe::StripeError → failed `Result`
+  (url, errors) with `t("payments.connect.stripe_error")` — never raises.
+- Route `resource :payout_account, only: %i[show create]` (seller
+  namespace) + `Seller::PayoutAccountsController`: show = status card,
+  sync! when account present + cache stale, explanatory card (NOT 404)
+  while the feature is off; create 303s off-site (`allow_other_host`) to
+  Stripe, alert on failure. Sidebar "Payouts" entry.
+- `minitest-mock` gem (:test) — minitest 6 dropped `minitest/mock`.
+- Tests stub `Stripe::Account.create` / `AccountLink.create` /
+  `Account.retrieve` with OpenStructs (never the real API) and
+  `Payments.stub(:configured?, true)` stands in for credentials.
+
 ## Testing
 
-- `bin/rails test` — **535 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **625 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -962,10 +994,13 @@ FR/GB/DE/IT/PT seeded but disabled.
   flags (`payments_enabled`, `offers_enabled`, `chat_enabled`) — Phases 5/6.
   The cart ships (Phase 4 step 1), the orders model + `Orders::Placer`
   service ship (Phase 4 step 2) and the **manual checkout** ships (Phase 4
-  step 3: checkout form → Placer → confirmation, 48h expiry job), but
-  "Buy now" still just redirects to the cart and online payment is TODO
-  (step 4 — the checkout already renders a Stripe radio when
-  `payments_enabled` is on, yet places manual orders). The account menu's
+  step 3: checkout form → Placer → confirmation, 48h expiry job), and
+  **Stripe config + Connect onboarding** ship (step 4a: `Payments` facade,
+  stores stripe_* columns, `Payments::ConnectOnboarding`,
+  `/seller/payout_account`), but "Buy now" still just redirects to the
+  cart and online payment is TODO (step 4b — the checkout already renders
+  a Stripe radio when `payments_enabled` is on, yet places manual orders;
+  the webhook receiver + payment intents land there). The account menu's
   orders/messages/wishlist/admin-panel
   items are "Soon" pills until those pages land (Phases 5–7) — swap them
   for real links there.
@@ -984,4 +1019,4 @@ FR/GB/DE/IT/PT seeded but disabled.
   quote-request form/offer pipeline is a later phase. Payouts table rows are
   static I18n strings, not price data.
 - No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a/2.2b/2.3/2.4/2.5/2.6/
-  3.1/3.2/3.3/3.4/3.5/3.6/4.1 — awaiting user review.
+  3.1/3.2/3.3/3.4/3.5/3.6/4.1/4.2/4.3/4.4a — awaiting user review.

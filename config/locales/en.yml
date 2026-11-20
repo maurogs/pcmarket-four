@@ -1194,6 +1194,37 @@ en:
       dashboard: Dashboard
       my_listings: My listings
       store_settings: Store settings
+      payouts: Payouts
+    payout_accounts:
+      show:
+        title: Payouts
+        intro: Connect a Stripe account so your sales land in your bank account.
+        status:
+          not_connected: Not connected
+          pending: Pending verification
+          active: Active
+        status_body:
+          not_connected: Connect your Stripe account to start receiving payouts for your sales.
+          pending: Your account is being verified. You will get an email from Stripe when it is ready.
+          active: Your account is active — payouts arrive in your bank account automatically.
+        connect: Connect payout account
+        manage: Reopen Stripe onboarding
+        flags:
+          charges_enabled: Card payments accepted
+          payouts_enabled: Payouts enabled
+          details_submitted: Identity details submitted
+        flag_on: "Yes"
+        flag_off: "No"
+        last_synced: "Last checked: %{time}"
+        not_available:
+          title: Payouts are not available yet
+          body: Online payments are not enabled on this marketplace yet. Once they
+            are, you can connect your bank account here.
+      create:
+        not_available: Payouts are not available yet.
+  payments:
+    connect:
+      stripe_error: We could not reach Stripe. Please try again later.
   carts:
     notices:
       removed: '"%{listing}" is no longer available and was removed from your cart.'

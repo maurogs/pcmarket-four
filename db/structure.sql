@@ -1116,7 +1116,12 @@ CREATE TABLE public.stores (
     province character varying,
     postal_code character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    stripe_account_id character varying,
+    stripe_charges_enabled boolean DEFAULT false NOT NULL,
+    stripe_payouts_enabled boolean DEFAULT false NOT NULL,
+    stripe_details_submitted boolean DEFAULT false NOT NULL,
+    stripe_synced_at timestamp(6) without time zone
 );
 
 
@@ -2118,6 +2123,13 @@ CREATE UNIQUE INDEX index_stores_on_slug ON public.stores USING btree (slug);
 
 
 --
+-- Name: index_stores_on_stripe_account_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_stores_on_stripe_account_id ON public.stores USING btree (stripe_account_id) WHERE (stripe_account_id IS NOT NULL);
+
+
+--
 -- Name: index_stores_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2449,6 +2461,7 @@ ALTER TABLE ONLY public.listing_labels
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261120180001'),
 ('20261120160002'),
 ('20261120160001'),
 ('20261120150002'),

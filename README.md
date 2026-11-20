@@ -95,6 +95,22 @@ cannot scope them under a dynamic segment.
 Feature flags already wired: `sell_to_us_enabled`, `offers_enabled`,
 `auctions_enabled`, `reviews_enabled`, `maintenance_mode`, etc.
 
+## Payments (Stripe)
+
+Seller payouts use Stripe Connect (Phase 4). The feature is double-gated: the
+`payments_enabled` setting must be on **and** the credentials below must be
+present (`Payments.configured?` in `app/services/payments.rb`).
+
+| Variable                | Purpose                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------------- |
+| `STRIPE_SECRET_KEY`     | Secret API key (`sk_…`); falls back to `credentials.stripe.secret_key`.                      |
+| `STRIPE_PUBLISHABLE_KEY`| Publishable key (`pk_…`) for client-side payment elements (used from Phase 4b).              |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_…` signing secret used to verify Stripe webhook signatures (used from Phase 4b).     |
+
+`Stripe.api_version` is pinned in `config/initializers/stripe.rb` — bump it
+deliberately, together with the test suite. Tests never call the real API:
+every Stripe touchpoint is stubbed.
+
 ## Design system
 
 Tailwind v4 with CSS-first configuration in `app/assets/tailwind/application.css`:

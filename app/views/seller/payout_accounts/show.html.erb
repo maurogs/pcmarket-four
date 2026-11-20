@@ -1,0 +1,65 @@
+<%
+  # Seller payouts page (Phase 4 step 4a). While the feature is off (flag or
+  # missing credentials) the card explains that instead of 404ing. Statuses
+  # come from Store#stripe_connect_status; the flags are a cached copy of the
+  # Stripe account, refreshed by the controller when older than 5 minutes.
+  status = @store.stripe_connect_status
+  badge_class = {
+    not_connected: "bg-cream-100 text-muted dark:bg-cream-surface",
+    pending: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
+    active: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
+  }.fetch(status)
+  flags = [
+    [ "charges_enabled", @store.stripe_charges_enabled ],
+    [ "payouts_enabled", @store.stripe_payouts_enabled ],
+    [ "details_submitted", @store.stripe_details_submitted ]
+  ]
+%>
+<% content_for :seller_body do %>
+  <h1 class="font-display text-2xl font-bold"><%= t(".title") %></h1>
+
+  <% if @payouts_available %>
+    <p class="mt-2 text-muted"><%= t(".intro") %></p>
+
+    <% if @sync_result && !@sync_result.success? %>
+      <p class="mt-4 rounded-lg bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 dark:bg-rose-950 dark:text-rose-400"
+         role="alert"><%= @sync_result.errors.first %></p>
+    <% end %>
+
+    <section class="card mt-6 p-6">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="font-display text-lg font-bold"><%= t(".title") %></h2>
+        <span class="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide <%= badge_class %>">
+          <%= t(".status.#{status}") %>
+        </span>
+      </div>
+      <p class="mt-2 text-sm text-muted"><%= t(".status_body.#{status}") %></p>
+
+      <% if status == :not_connected %>
+        <%= button_to t(".connect"), seller_payout_account_path, class: "btn-primary mt-4" %>
+      <% else %>
+        <dl class="mt-4 space-y-1 text-sm">
+          <% flags.each do |key, enabled| %>
+            <div class="flex items-center gap-2">
+              <dt class="text-muted"><%= t(".flags.#{key}") %></dt>
+              <dd class="font-semibold <%= enabled ? "text-emerald-700 dark:text-emerald-400" : "text-muted" %>">
+                <%= enabled ? t(".flag_on") : t(".flag_off") %>
+              </dd>
+            </div>
+          <% end %>
+        </dl>
+        <% if @store.stripe_synced_at %>
+          <p class="mt-4 text-xs text-muted"><%= t(".last_synced", time: l(@store.stripe_synced_at, format: :short)) %></p>
+        <% end %>
+        <%= button_to t(".manage"), seller_payout_account_path, class: "btn-secondary mt-4" %>
+      <% end %>
+    </section>
+  <% else %>
+    <section class="card mt-6 p-6">
+      <h2 class="font-display text-lg font-bold"><%= t(".not_available.title") %></h2>
+      <p class="mt-2 text-sm text-muted"><%= t(".not_available.body") %></p>
+    </section>
+  <% end %>
+<% end %>
+
+<%= render "seller/shell" %>

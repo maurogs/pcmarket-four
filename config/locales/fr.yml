@@ -1206,6 +1206,38 @@ fr:
       dashboard: Tableau de bord
       my_listings: Mes annonces
       store_settings: Réglages de la boutique
+      payouts: Paiements
+    payout_accounts:
+      show:
+        title: Paiements
+        intro: Connectez un compte Stripe pour recevoir le produit de vos ventes
+          sur votre compte bancaire.
+        status:
+          not_connected: Non connecté
+          pending: Vérification en cours
+          active: Actif
+        status_body:
+          not_connected: Connectez votre compte Stripe pour commencer à recevoir vos paiements.
+          pending: Votre compte est en cours de vérification. Vous recevrez un e-mail de Stripe lorsqu'il sera prêt.
+          active: Votre compte est actif — les paiements arrivent automatiquement sur votre compte bancaire.
+        connect: Connecter le compte de paiements
+        manage: Rouvrir la vérification Stripe
+        flags:
+          charges_enabled: Paiements par carte acceptés
+          payouts_enabled: Paiements activés
+          details_submitted: Informations d'identité envoyées
+        flag_on: "Oui"
+        flag_off: "Non"
+        last_synced: "Dernière vérification : %{time}"
+        not_available:
+          title: Les paiements ne sont pas encore disponibles
+          body: Le paiement en ligne n'est pas encore activé sur cette plateforme.
+            Une fois activé, vous pourrez connecter votre compte bancaire ici.
+      create:
+        not_available: Les paiements ne sont pas encore disponibles.
+  payments:
+    connect:
+      stripe_error: Impossible de joindre Stripe. Veuillez réessayer plus tard.
   carts:
     notices:
       removed: '"%{listing}" n''est plus disponible et a été retiré de votre panier.'

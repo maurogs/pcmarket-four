@@ -94,6 +94,8 @@ group :development do
 end
 
 group :test do
+  # Minitest 6 split `Object#stub` / Minitest::Mock out of the core gem.
+  gem "minitest-mock"
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"

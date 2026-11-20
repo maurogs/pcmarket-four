@@ -1203,6 +1203,37 @@ pt:
       dashboard: Painel
       my_listings: Os meus anúncios
       store_settings: Definições da loja
+      payouts: Pagamentos
+    payout_accounts:
+      show:
+        title: Pagamentos
+        intro: Ligue uma conta Stripe para que as suas vendas cheguem à sua conta bancária.
+        status:
+          not_connected: Não ligada
+          pending: Verificação pendente
+          active: Ativa
+        status_body:
+          not_connected: Ligue a sua conta Stripe para começar a receber os pagamentos das suas vendas.
+          pending: A sua conta está a ser verificada. Vai receber um e-mail da Stripe quando estiver pronta.
+          active: A sua conta está ativa — os pagamentos chegam automaticamente à sua conta bancária.
+        connect: Ligar conta de pagamentos
+        manage: Reabrir a verificação da Stripe
+        flags:
+          charges_enabled: Pagamentos com cartão aceites
+          payouts_enabled: Pagamentos ativados
+          details_submitted: Dados de identidade enviados
+        flag_on: "Sim"
+        flag_off: "Não"
+        last_synced: "Última verificação: %{time}"
+        not_available:
+          title: Os pagamentos ainda não estão disponíveis
+          body: O pagamento online ainda não está ativo neste mercado. Quando estiver,
+            pode ligar a sua conta bancária aqui.
+      create:
+        not_available: Os pagamentos ainda não estão disponíveis.
+  payments:
+    connect:
+      stripe_error: Não foi possível contactar a Stripe. Tente novamente mais tarde.
   carts:
     notices:
       removed: '"%{listing}" não está mais disponível e foi removido do carrinho.'

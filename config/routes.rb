@@ -75,6 +75,9 @@ Rails.application.routes.draw do
       # Seller dashboard (Phase 3 step 5). Singular — one store per user, so
       # the URL never carries an id.
       resource :dashboard, only: :show
+      # Stripe Connect payouts (Phase 4 step 4a). Singular for the same
+      # reason; create 303s off-site to Stripe's hosted onboarding.
+      resource :payout_account, only: %i[show create]
       resources :listings, only: %i[index new create edit update destroy] do
         # Lifecycle actions as singular nested resources (Phase 3 step 4): a
         # listing has at most one submission / pause / sale per action, so the

@@ -89,6 +89,24 @@ class Store < ApplicationRecord
     update!(verified: true, verified_at: Time.current)
   end
 
+  # --- Stripe Connect (Phase 4 step 4a) ------------------------------------
+  # The stripe_* columns cache the Stripe account state; the payouts page
+  # refreshes them with Payments::ConnectOnboarding.sync! when stale.
+
+  # Onboarding state for the payouts page: :not_connected (no account yet),
+  # :active (fully onboarded and able to receive money) or :pending.
+  def stripe_connect_status
+    return :not_connected if stripe_account_id.blank?
+    return :active if stripe_details_submitted && stripe_charges_enabled && stripe_payouts_enabled
+
+    :pending
+  end
+
+  # Cached flags older than 5 minutes are refreshed on the next page view.
+  def stripe_sync_stale?
+    stripe_synced_at.nil? || stripe_synced_at < 5.minutes.ago
+  end
+
   def slug_source
     name
   end

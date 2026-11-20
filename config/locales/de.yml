@@ -1206,6 +1206,37 @@ de:
       dashboard: Dashboard
       my_listings: Meine Anzeigen
       store_settings: Shop-Einstellungen
+      payouts: Auszahlungen
+    payout_accounts:
+      show:
+        title: Auszahlungen
+        intro: Verknüpfe ein Stripe-Konto, damit deine Verkäufe auf deinem Bankkonto landen.
+        status:
+          not_connected: Nicht verknüpft
+          pending: Überprüfung ausstehend
+          active: Aktiv
+        status_body:
+          not_connected: Verknüpfe dein Stripe-Konto, um Auszahlungen für deine Verkäufe zu erhalten.
+          pending: Dein Konto wird überprüft. Du erhältst eine E-Mail von Stripe, sobald es bereit ist.
+          active: Dein Konto ist aktiv — Auszahlungen landen automatisch auf deinem Bankkonto.
+        connect: Auszahlungskonto verknüpfen
+        manage: Stripe-Überprüfung erneut öffnen
+        flags:
+          charges_enabled: Kartenzahlungen akzeptiert
+          payouts_enabled: Auszahlungen aktiviert
+          details_submitted: Identitätsdaten übermittelt
+        flag_on: "Ja"
+        flag_off: "Nein"
+        last_synced: "Letzte Prüfung: %{time}"
+        not_available:
+          title: Auszahlungen noch nicht verfügbar
+          body: Online-Zahlungen sind in diesem Marktplatz noch nicht aktiviert.
+            Sobald sie aktiviert sind, kannst du hier dein Bankkonto verknüpfen.
+      create:
+        not_available: Auszahlungen sind noch nicht verfügbar.
+  payments:
+    connect:
+      stripe_error: Stripe konnte nicht erreicht werden. Bitte versuche es später erneut.
   carts:
     notices:
       removed: '"%{listing}" ist nicht mehr verfügbar und wurde aus dem Warenkorb entfernt.'
