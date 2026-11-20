@@ -1265,3 +1265,59 @@ decrement.
 (19).
 
 Verified: `bin/rails test` 575 green; `bin/rubocop` clean (218 files).
+
+---
+
+## 2026-11-20 — Phase 4 step 3: manual checkout flow
+
+**What**: checkout page + confirmation, guest checkout, 48h expiry job.
+
+- Routes (locale scope): `resource :checkout, only: %i[show create]` +
+  `resources :checkout_confirmations, only: :show, param: :group` (the
+  confirmation is addressed by the Placer's `checkout_group` uuid).
+- `CheckoutForm` (first `app/forms/` object, ActiveModel::Model): email
+  (guest-required + format), saved `address_id` (must belong to the user)
+  OR inline address fields validated by building an unsaved `Address`
+  (ES country) and copying its errors — postcode/province rules stay in
+  one place; `accept_terms` acceptance; `save_address` opt-in;
+  `payment_method` pinned to "manual" while `payments_enabled` is off
+  (Stripe radio rendered when on, but `placer_payment_method` still
+  returns "manual" — TODO step 4).
+- `CheckoutsController`: CurrentCart + `require_checkout_enabled` (404);
+  guests only while `guest_checkout_enabled` (else `authenticate_user!`);
+  empty cart → cart + alert; create → `Orders::Placer` — success saves
+  the opt-in address, remembers the group in `session[:checkout_groups]`
+  (capped at 10, so guests can see their confirmation) and redirects to
+  it; Placer failure (stock/price drift) → cart with the Placer errors;
+  invalid form → 422 re-render (devise `_error_messages` partial reused).
+  `Orders::Placer` gained a `buyer_note:` kwarg (column existed).
+- `CheckoutConfirmationsController#show`: orders by group scoped to
+  `buyer_id` for signed-in users, else only groups placed in this
+  session — anything else `render_not_found`.
+- Views: `checkouts/show` (contact / saved-or-inline address / payment /
+  note / terms + sticky per-store summary sidebar + buyer-protection
+  callout), `checkout_confirmations/show` (per-store order cards with
+  items + totals, "what happens next" manual-payment steps, messages
+  still a Soon pill). Cart CTA: "Soon" span → `link_to checkout_path`.
+- `Orders::ExpireUnpaidJob` cancels pending **manual** orders older than
+  48h (`RESERVATION_HOURS`) with reason "expired" via `cancel!` (bangless
+  AASM events do NOT persist — Order model comment) which restocks; new
+  `config/recurring.yml` schedules it hourly (production, Solid Queue).
+- i18n: `checkouts.*`, `checkout_confirmations.show.*`,
+  `activerecord.attributes.checkout_form.*`,
+  `errors.models.checkout_form.attributes.address_id.not_found` — all 6
+  locales (parity green, 928 keys).
+
+**Files**: `config/routes.rb`, `config/recurring.yml`,
+`app/forms/checkout_form.rb`, `app/controllers/{checkouts,
+checkout_confirmations}_controller.rb`, `app/services/orders/placer.rb`,
+`app/jobs/orders/expire_unpaid_job.rb`, `app/views/checkouts/show.html.erb`,
+`app/views/checkout_confirmations/show.html.erb`,
+`app/views/carts/show.html.erb`, `app/controllers/carts_controller.rb`
+(comment), 6 locale files, `test/forms/checkout_form_test.rb` (13),
+`test/controllers/checkouts_controller_test.rb` (12),
+`test/controllers/checkout_confirmations_controller_test.rb` (5),
+`test/jobs/orders/expire_unpaid_job_test.rb` (2),
+`test/controllers/carts_controller_test.rb` (CTA test rewritten).
+
+Verified: `bin/rails test` 606 green; `bin/rubocop` clean (226 files).

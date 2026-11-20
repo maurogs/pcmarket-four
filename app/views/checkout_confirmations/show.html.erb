@@ -1,0 +1,68 @@
+<% set_meta_tags title: t(".title") %>
+
+<div class="mx-auto max-w-3xl px-4 py-10">
+  <div class="card flex flex-col items-center gap-3 p-8 text-center">
+    <span class="text-primary-600 dark:text-primary-400"><%= icon "check", class: "h-12 w-12" %></span>
+    <h1 class="font-display text-2xl font-bold sm:text-3xl"><%= t(".title") %></h1>
+    <p class="text-sm text-muted"><%= t(".intro", email: @orders.first.buyer_email) %></p>
+  </div>
+
+  <div class="mt-6 space-y-4">
+    <% @orders.each do |order| %>
+      <section class="card overflow-hidden">
+        <header class="flex flex-wrap items-center justify-between gap-2 border-b border-line px-5 py-4">
+          <h2 class="min-w-0 truncate font-semibold">
+            <%= link_to order.store.display_name, store_path(order.store),
+                  class: "hover:text-primary-700 hover:underline dark:hover:text-primary-300" %>
+          </h2>
+          <span class="font-mono text-sm text-muted"><%= order.number %></span>
+        </header>
+
+        <ul class="divide-y divide-line text-sm">
+          <% order.order_items.each do |item| %>
+            <li class="flex justify-between gap-3 px-5 py-3">
+              <span class="min-w-0 truncate">
+                <%= item.title %> <span class="text-muted"><span aria-hidden="true">×</span> <%= item.quantity %></span>
+              </span>
+              <span class="shrink-0 font-medium"><%= format_euros(item.line_total_cents) %></span>
+            </li>
+          <% end %>
+        </ul>
+
+        <footer class="space-y-1 border-t border-line bg-cream-100/60 px-5 py-4 text-sm dark:bg-cream-surface/60">
+          <div class="flex justify-between">
+            <span class="text-muted"><%= t(".order.subtotal") %></span>
+            <span class="font-semibold"><%= format_euros(order.subtotal_cents) %></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-muted"><%= t(".order.shipping") %></span>
+            <span class="font-semibold">
+              <%= order.shipping_cents.zero? ? t(".order.free_shipping") : format_euros(order.shipping_cents) %>
+            </span>
+          </div>
+          <div class="flex justify-between border-t border-line pt-1 font-bold">
+            <span><%= t(".order.total") %></span>
+            <span><%= format_euros(order.total_cents) %></span>
+          </div>
+        </footer>
+      </section>
+    <% end %>
+  </div>
+
+  <section class="card mt-6 space-y-2 p-5">
+    <h2 class="flex items-center gap-2 font-display text-lg font-semibold">
+      <span class="text-primary-600 dark:text-primary-400"><%= icon "clock", class: "h-5 w-5" %></span>
+      <%= t(".next_steps.title") %>
+    </h2>
+    <p class="text-sm text-muted"><%= t(".next_steps.manual") %></p>
+    <div class="flex flex-wrap items-center gap-2 pt-1 text-sm">
+      <span class="btn-ghost cursor-default opacity-60" aria-disabled="true">
+        <span class="flex-1"><%= t(".next_steps.messages") %></span>
+        <span class="shrink-0 rounded-full bg-white/25 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"><%= t("account_menu.soon") %></span>
+      </span>
+      <span class="text-xs text-muted"><%= t(".next_steps.messages_hint") %></span>
+    </div>
+  </section>
+
+  <%= link_to t(".continue_shopping"), root_path, class: "btn-primary mt-6 w-full text-center" %>
+</div>

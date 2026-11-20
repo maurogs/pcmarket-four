@@ -29,6 +29,11 @@ pt:
       missing_required_spec: "%{label} é obrigatório antes de enviar para revisão"
       unsupported_content_type: "%{content_type} não é um formato de imagem suportado"
       image_required_for_review: Adicione pelo menos uma foto antes de enviar para revisão
+    models:
+      checkout_form:
+        attributes:
+          address_id:
+            not_found: não foi encontrado
     throttled: Demasiados pedidos. Tente novamente em %{retry_after} segundos.
   footer:
     tagline: O mercado europeu para comprar e vender tecnologia com toda a confiança.
@@ -443,6 +448,21 @@ pt:
           mobile: Dispositivo móvel
           peripheral: Periférico
           software: Software
+      checkout_form:
+        accept_terms: Aceitação dos termos
+        address_id: Endereço salvo
+        buyer_note: Nota para o vendedor
+        city: Cidade
+        email: E-mail
+        first_name: Nome
+        last_name: Apelidos
+        payment_method: Forma de pagamento
+        phone: Telefone
+        postal_code: Código postal
+        province: Distrito
+        save_address: Salvar este endereço na minha conta
+        street_line1: Morada
+        street_line2: Andar, porta, etc.
       filter_definition:
         input_type:
           boolean: Sim / Não
@@ -1223,6 +1243,58 @@ pt:
       not_available: Este artigo já não está disponível.
       updated: Quantidade atualizada.
       removed: Artigo removido do carrinho.
+  checkouts:
+    flashes:
+      empty_cart: O seu carrinho está vazio.
+      placed: O seu pedido foi efetuado.
+    show:
+      title: Finalizar compra
+      contact:
+        title: Contato
+        email_hint: Enviaremos a confirmação do pedido para este endereço.
+      address:
+        title: Endereço de entrega
+        saved_prompt: Enviar para um novo endereço
+        save_address: Salvar este endereço na minha conta
+      payment:
+        title: Forma de pagamento
+        manual: Pagar diretamente ao vendedor
+        manual_hint: Pague diretamente ao vendedor — ele enviará as instruções de pagamento; o seu pedido fica reservado por 48 h.
+        stripe: Pagar online com Stripe
+        stripe_hint: Pagamento seguro com cartão. Em breve — até lá, cada pedido é reservado como pagamento manual.
+      note:
+        title: Nota para o vendedor
+        placeholder: Algo que o vendedor deva saber? (opcional)
+      terms: Aceito os termos de compra e a política de privacidade.
+      submit: Efetuar pedido
+      protection:
+        title: Proteção ao comprador
+        body: O seu dinheiro está protegido até receber o artigo. Se algo correr mal, a nossa equipa intervém.
+      summary:
+        title: Resumo do pedido
+        items_count:
+          one: "%{count} artigo"
+          other: "%{count} artigos"
+        subtotal: Subtotal
+        shipping: Envio
+        free_shipping: Grátis
+        total: Total
+        taxes_included: Preços com IVA.
+  checkout_confirmations:
+    show:
+      title: Obrigado! O seu pedido foi efetuado.
+      intro: Enviámos a confirmação para %{email}.
+      order:
+        subtotal: Subtotal
+        shipping: Envio
+        free_shipping: Grátis
+        total: Total
+      next_steps:
+        title: O que acontece a seguir
+        manual: O vendedor entrará em contacto consigo com as instruções de pagamento. O seu pedido fica reservado por 48 h — depois é cancelado automaticamente e o stock volta a estar à venda.
+        messages: Mensagens
+        messages_hint: As mensagens diretas com o vendedor chegam em breve.
+      continue_shopping: Continuar a comprar
   orders:
     placer:
       errors:

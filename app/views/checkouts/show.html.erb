@@ -1,0 +1,172 @@
+<% set_meta_tags title: t(".title") %>
+
+<div class="mx-auto max-w-6xl px-4 py-6">
+  <h1 class="font-display text-2xl font-bold sm:text-3xl"><%= t(".title") %></h1>
+
+  <%= form_with model: @form, url: checkout_path do |f| %>
+    <%= render "devise/shared/error_messages", resource: @form %>
+
+    <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+      <div class="space-y-4">
+        <section class="card space-y-3 p-5">
+          <h2 class="font-display text-lg font-semibold"><%= t(".contact.title") %></h2>
+          <div>
+            <%= f.label :email, class: "block text-sm font-medium" %>
+            <%= f.email_field :email, autocomplete: "email", required: true, class: "input-field mt-1" %>
+            <p class="mt-1 text-xs text-muted"><%= t(".contact.email_hint") %></p>
+          </div>
+        </section>
+
+        <section class="card space-y-3 p-5">
+          <h2 class="font-display text-lg font-semibold"><%= t(".address.title") %></h2>
+
+          <% if @form.user %>
+            <div>
+              <%= f.label :address_id, class: "block text-sm font-medium" %>
+              <%= f.select :address_id,
+                    @form.user.addresses.defaults_first.map { |a| [ "#{a.full_name} — #{a.street_line1}, #{a.postal_code} #{a.city}", a.id ] },
+                    { include_blank: t(".address.saved_prompt") }, class: "input-field mt-1" %>
+            </div>
+          <% end %>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <%= f.label :first_name, class: "block text-sm font-medium" %>
+              <%= f.text_field :first_name, autocomplete: "given-name", class: "input-field mt-1" %>
+            </div>
+            <div>
+              <%= f.label :last_name, class: "block text-sm font-medium" %>
+              <%= f.text_field :last_name, autocomplete: "family-name", class: "input-field mt-1" %>
+            </div>
+          </div>
+
+          <div>
+            <%= f.label :street_line1, class: "block text-sm font-medium" %>
+            <%= f.text_field :street_line1, autocomplete: "address-line1", class: "input-field mt-1" %>
+          </div>
+
+          <div>
+            <%= f.label :street_line2, class: "block text-sm font-medium" %>
+            <%= f.text_field :street_line2, autocomplete: "address-line2", class: "input-field mt-1" %>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <%= f.label :city, class: "block text-sm font-medium" %>
+              <%= f.text_field :city, autocomplete: "address-level2", class: "input-field mt-1" %>
+            </div>
+            <div>
+              <%= f.label :postal_code, class: "block text-sm font-medium" %>
+              <%= f.text_field :postal_code, autocomplete: "postal-code", class: "input-field mt-1" %>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <%= f.label :province, class: "block text-sm font-medium" %>
+              <%= f.select :province, SpanishProvince.options, { include_blank: t("account.addresses.form.province_prompt") },
+                    class: "input-field mt-1" %>
+            </div>
+            <div>
+              <%= f.label :phone, class: "block text-sm font-medium" %>
+              <%= f.telephone_field :phone, autocomplete: "tel", class: "input-field mt-1" %>
+            </div>
+          </div>
+
+          <% if @form.user %>
+            <div class="flex items-center gap-2">
+              <%= f.check_box :save_address, class: "h-4 w-4 rounded border-line accent-primary-600" %>
+              <%= f.label :save_address, class: "text-sm font-medium" %>
+            </div>
+          <% end %>
+        </section>
+
+        <section class="card space-y-3 p-5">
+          <h2 class="font-display text-lg font-semibold"><%= t(".payment.title") %></h2>
+
+          <% if @form.payments_enabled? %>
+            <div class="space-y-2">
+              <label class="flex items-start gap-2 text-sm">
+                <%= f.radio_button :payment_method, "manual", class: "mt-0.5" %>
+                <span>
+                  <span class="font-medium"><%= t(".payment.manual") %></span>
+                  <span class="block text-xs text-muted"><%= t(".payment.manual_hint") %></span>
+                </span>
+              </label>
+              <label class="flex items-start gap-2 text-sm">
+                <%= f.radio_button :payment_method, "stripe", class: "mt-0.5" %>
+                <span>
+                  <span class="font-medium"><%= t(".payment.stripe") %></span>
+                  <span class="block text-xs text-muted"><%= t(".payment.stripe_hint") %></span>
+                </span>
+              </label>
+            </div>
+          <% else %>
+            <%= f.hidden_field :payment_method %>
+            <div class="flex gap-3 rounded-2xl border border-primary-200 bg-primary-50 p-4 text-sm
+                        dark:border-primary-800 dark:bg-primary-950">
+              <span class="shrink-0 text-primary-600 dark:text-primary-400"><%= icon "banknote", class: "h-5 w-5" %></span>
+              <p><%= t(".payment.manual_hint") %></p>
+            </div>
+          <% end %>
+        </section>
+
+        <section class="card space-y-3 p-5">
+          <h2 class="font-display text-lg font-semibold"><%= t(".note.title") %></h2>
+          <%= f.text_area :buyer_note, rows: 3, placeholder: t(".note.placeholder"), class: "input-field" %>
+        </section>
+
+        <section class="card space-y-4 p-5">
+          <div class="flex items-start gap-2">
+            <%= f.check_box :accept_terms, class: "mt-0.5 h-4 w-4 rounded border-line accent-primary-600" %>
+            <%= f.label :accept_terms, t(".terms"), class: "text-sm" %>
+          </div>
+          <%= f.submit t(".submit"), class: "btn-primary w-full cursor-pointer" %>
+        </section>
+      </div>
+
+      <aside class="space-y-4 lg:sticky lg:top-24">
+        <div class="card space-y-3 p-5">
+          <h2 class="font-display text-lg font-semibold"><%= t(".summary.title") %></h2>
+
+          <ul class="space-y-1 text-xs text-muted">
+            <% @groups.each do |store, items| %>
+              <% store_shipping_cents = items.map(&:listing).uniq.sum(&:shipping_price_cents) %>
+              <li class="flex justify-between gap-2">
+                <span class="truncate"><%= store.display_name %>
+                  (<%= t(".summary.items_count", count: items.size) %>)</span>
+                <span class="shrink-0">
+                  <%= store_shipping_cents.zero? ? t(".summary.free_shipping") : format_euros(store_shipping_cents) %>
+                </span>
+              </li>
+            <% end %>
+          </ul>
+
+          <div class="flex justify-between border-t border-line pt-3 text-sm">
+            <span class="text-muted"><%= t(".summary.subtotal") %></span>
+            <span><%= format_euros(@cart.subtotal_cents) %></span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-muted"><%= t(".summary.shipping") %></span>
+            <span>
+              <%= @cart.shipping_cents.zero? ? t(".summary.free_shipping") : format_euros(@cart.shipping_cents) %>
+            </span>
+          </div>
+          <div class="flex justify-between border-t border-line pt-3 font-bold">
+            <span><%= t(".summary.total") %></span>
+            <span><%= format_euros(@cart.subtotal_cents + @cart.shipping_cents) %></span>
+          </div>
+          <p class="text-xs text-muted"><%= t(".summary.taxes_included") %></p>
+        </div>
+
+        <div class="card flex gap-3 p-5">
+          <span class="shrink-0 text-primary-600 dark:text-primary-400"><%= icon "shield", class: "h-6 w-6" %></span>
+          <div>
+            <h2 class="font-semibold"><%= t(".protection.title") %></h2>
+            <p class="mt-1 text-xs text-muted"><%= t(".protection.body") %></p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  <% end %>
+</div>

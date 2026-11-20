@@ -30,6 +30,11 @@ fr:
       unsupported_content_type: "%{content_type} n'est pas un format d'image pris
         en charge"
       image_required_for_review: Ajoutez au moins une photo avant l'envoi en révision
+    models:
+      checkout_form:
+        attributes:
+          address_id:
+            not_found: est introuvable
     throttled: Trop de requêtes. Réessayez dans %{retry_after} secondes.
   footer:
     tagline: La marketplace européenne pour acheter et vendre de la tech en toute
@@ -444,6 +449,21 @@ fr:
           mobile: Appareil mobile
           peripheral: Périphérique
           software: Logiciel
+      checkout_form:
+        accept_terms: Acceptation des conditions
+        address_id: Adresse enregistrée
+        buyer_note: Message au vendeur
+        city: Ville
+        email: E-mail
+        first_name: Prénom
+        last_name: Nom
+        payment_method: Moyen de paiement
+        phone: Téléphone
+        postal_code: Code postal
+        province: Province
+        save_address: Enregistrer cette adresse dans mon compte
+        street_line1: Adresse
+        street_line2: Appartement, étage, etc.
       filter_definition:
         input_type:
           boolean: Oui / Non
@@ -1226,6 +1246,58 @@ fr:
       not_available: Cet article n'est plus disponible.
       updated: Quantité mise à jour.
       removed: Article retiré de votre panier.
+  checkouts:
+    flashes:
+      empty_cart: Votre panier est vide.
+      placed: Votre commande a été passée.
+    show:
+      title: Commande
+      contact:
+        title: Contact
+        email_hint: Nous enverrons la confirmation de commande à cette adresse.
+      address:
+        title: Adresse de livraison
+        saved_prompt: Livrer à une nouvelle adresse
+        save_address: Enregistrer cette adresse dans mon compte
+      payment:
+        title: Moyen de paiement
+        manual: Payer directement le vendeur
+        manual_hint: Payez directement le vendeur — il vous enverra les instructions de paiement ; votre commande est réservée pendant 48 h.
+        stripe: Payer en ligne avec Stripe
+        stripe_hint: Paiement sécurisé par carte. Bientôt disponible — d'ici là, chaque commande est réservée en paiement manuel.
+      note:
+        title: Message au vendeur
+        placeholder: Quelque chose que le vendeur devrait savoir ? (facultatif)
+      terms: J'accepte les conditions d'achat et la politique de confidentialité.
+      submit: Passer la commande
+      protection:
+        title: Protection de l'acheteur
+        body: Votre argent est protégé jusqu'à la réception de l'article. En cas de problème, notre équipe intervient.
+      summary:
+        title: Récapitulatif de la commande
+        items_count:
+          one: "%{count} article"
+          other: "%{count} articles"
+        subtotal: Sous-total
+        shipping: Livraison
+        free_shipping: Gratuit
+        total: Total
+        taxes_included: Prix TTC.
+  checkout_confirmations:
+    show:
+      title: Merci ! Votre commande est passée.
+      intro: Nous avons envoyé la confirmation à %{email}.
+      order:
+        subtotal: Sous-total
+        shipping: Livraison
+        free_shipping: Gratuit
+        total: Total
+      next_steps:
+        title: Ce qui se passe ensuite
+        manual: Le vendeur vous contactera avec les instructions de paiement. Votre commande est réservée pendant 48 heures ; au-delà, elle est annulée automatiquement et le stock est remis en vente.
+        messages: Messages
+        messages_hint: La messagerie directe avec le vendeur arrive bientôt.
+      continue_shopping: Continuer mes achats
   orders:
     placer:
       errors:

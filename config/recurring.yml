@@ -1,0 +1,8 @@
+# Solid Queue recurring tasks (loaded by the queue worker in production;
+# see the SOLID_QUEUE_IN_PUMA hook in config/puma.rb).
+production:
+  # Cancels manual orders whose 48h payment reservation expired and puts
+  # the stock back on sale (Orders::ExpireUnpaidJob).
+  expire_unpaid_orders:
+    class: Orders::ExpireUnpaidJob
+    schedule: every hour

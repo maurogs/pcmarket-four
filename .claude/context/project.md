@@ -1,7 +1,7 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-20 (Phase 4 step 2 — orders data model +
-`Orders::Placer`; uncommitted)_
+_Last updated: 2026-11-20 (Phase 4 step 3 — manual checkout flow;
+uncommitted)_
 
 ## What this is
 
@@ -744,9 +744,9 @@ FR/GB/DE/IT/PT seeded but disabled.
   cookieless guests); `listings/show` Buy-now/Add-to-cart `button_to`s
   (`cartable` = flag + `visible_to_public?` + not own listing);
   `carts/show` store-grouped cards, quantity select + remove, per-store +
-  summary totals, checkout CTA = `aria-disabled` "Soon" span (TODO Phase 4
-  step 3). `IconHelper` gained `trash`. i18n: `carts.*`, `cart_items.*`,
-  `nav.cart` in all 6 locales.
+  summary totals, checkout CTA links to `checkout_path` (live since
+  Phase 4 step 3). `IconHelper` gained `trash`. i18n: `carts.*`,
+  `cart_items.*`, `nav.cart` in all 6 locales.
 - Gotchas: `assert_includes response.body` fails on translated text with
   `"`/`'` (escaped `&quot;`/`&#39;`) — use `assert_select text:`; the
   Warden hook never runs under the test-mode `sign_in` helper, so merge
@@ -782,9 +782,9 @@ FR/GB/DE/IT/PT seeded but disabled.
   (skips deleted listings).
 - `Orders::Placer` (`app/services/orders/placer.rb`):
   `call(cart:, buyer:, email:, shipping_address:, shipping_method:,
-  payment_method:, discount_code: nil)` → `Result(orders, errors,
-  checkout_group)` with `success?`. One transaction; listings locked FOR
-  UPDATE ordered by id; abort (via `Rollback < ActiveRecord::Rollback`)
+  payment_method:, discount_code: nil, buyer_note: nil)` →
+  `Result(orders, errors, checkout_group)` with `success?`. One
+  transaction; listings locked FOR UPDATE ordered by id; abort (via `Rollback < ActiveRecord::Rollback`)
   on invalid input / empty cart / missing listing / not visible / short
   stock / `cart.refresh!` notices. One Order per store sharing a uuid
   checkout_group; commission snapshotted from AppSettings; shipping per
@@ -796,6 +796,43 @@ FR/GB/DE/IT/PT seeded but disabled.
 - Tests: `test/models/order_test.rb` (21), `test/services/orders/placer_test.rb`
   (19). Model tests must pre-decrement listing quantity to simulate
   placement before asserting restock.
+
+## Code map (Phase 4 step 3 — manual checkout)
+
+- Routes: `resource :checkout, only: %i[show create]` +
+  `resources :checkout_confirmations, only: :show, param: :group` (inside
+  the `(:locale)` scope). Confirmation URL = the `checkout_group` uuid.
+- `CheckoutForm` (`app/forms/checkout_form.rb`, ActiveModel::Model — the
+  first form object): email required for guests + format; `address_id`
+  (saved address, must belong to the user) OR inline fields validated by
+  copying errors off an unsaved `Address` (ES country, `Address::SPAIN_CODE`);
+  `accept_terms` acceptance; `address_to_save` only for signed-in
+  `save_address` opt-ins with an inline address; `payment_method` pinned
+  to "manual" while `payments_enabled` is off, `placer_payment_method`
+  always "manual" (TODO step 4).
+- `CheckoutsController`: `require_checkout_enabled` (404) + guests gated
+  by `guest_checkout_enabled`; empty cart → cart + alert; create → Placer
+  (success: save opt-in address, push group into
+  `session[:checkout_groups]` capped at 10, redirect to confirmation;
+  Placer errors → cart alert; invalid → 422 re-render reusing the devise
+  `_error_messages` partial — its `errors.messages.not_saved` comes from
+  Devise's own locale files, all 6 covered).
+- `CheckoutConfirmationsController#show`: group visible to its `buyer_id`
+  or via the session list (guests) — else `render_not_found`.
+- `Orders::ExpireUnpaidJob` + `config/recurring.yml` (hourly, production
+  section — Solid Queue recurring): pending **manual** orders with
+  `placed_at` older than `RESERVATION_HOURS` (48) get `cancel!("expired")`
+  (bangless AASM events don't persist!) → restock.
+- Views: `checkouts/show` (form + sticky per-store summary via
+  `Cart#items_by_store` + protection callout),
+  `checkout_confirmations/show` (order cards + manual-payment next steps,
+  messages link still a Soon pill). Cart CTA is now a real link.
+- Tests: `test/forms/checkout_form_test.rb` (13),
+  `test/controllers/checkouts_controller_test.rb` (12),
+  `test/controllers/checkout_confirmations_controller_test.rb` (5),
+  `test/jobs/orders/expire_unpaid_job_test.rb` (2). Guest carts in
+  integration tests come from the cookie set by POSTing cart_items;
+  `stores.user_id` is UNIQUE (second store needs a second seller user).
 
 ## Testing
 
@@ -923,17 +960,20 @@ FR/GB/DE/IT/PT seeded but disabled.
   `DEMO=1 bin/rails db:seed` fills everything).
 - Wishlist/offers/chat buttons are `#` placeholders gated by AppSettings
   flags (`payments_enabled`, `offers_enabled`, `chat_enabled`) — Phases 5/6.
-  The cart ships (Phase 4 step 1) and the orders model + `Orders::Placer`
-  service ship (Phase 4 step 2), but there is **no checkout UI yet** — the
-  cart CTA is a "Soon" placeholder until Phase 4 step 3 (checkout
-  controller/views calling the Placer), and "Buy now" just redirects
-  to the cart. The account menu's orders/messages/wishlist/admin-panel
+  The cart ships (Phase 4 step 1), the orders model + `Orders::Placer`
+  service ship (Phase 4 step 2) and the **manual checkout** ships (Phase 4
+  step 3: checkout form → Placer → confirmation, 48h expiry job), but
+  "Buy now" still just redirects to the cart and online payment is TODO
+  (step 4 — the checkout already renders a Stripe radio when
+  `payments_enabled` is on, yet places manual orders). The account menu's
+  orders/messages/wishlist/admin-panel
   items are "Soon" pills until those pages land (Phases 5–7) — swap them
   for real links there.
 - Mobile price filter loses values without JS (euro→cents sync is Stimulus).
 - CI not set up yet.
-- Address book is account-only for now — checkout/sell-flow pickup of
-  `User#default_address` lands with Phase 5 (orders).
+- Address book: checkout picks a saved address (default preselected) and
+  can save the inline one (Phase 4 step 3); the sell-flow pickup of
+  `User#default_address` is still open (Phase 5).
 - Notification preferences are stored but nothing sends them yet — mailer
   wiring per `User#notify?` lands with the features that emit them (orders,
   messages, offers, saved searches). GDPR deletion + data export ship

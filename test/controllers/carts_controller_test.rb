@@ -61,7 +61,7 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     assert_select "p", text: I18n.t("carts.notices.removed", listing: @listing.title)
   end
 
-  test "the checkout CTA is a disabled Soon placeholder" do
+  test "the checkout CTA links to the checkout page" do
     cart = Cart.create!(user: users(:confirmed))
     cart.add(@listing)
 
@@ -70,7 +70,8 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     get "/en/cart"
 
     assert_response :success
-    assert_select "span[aria-disabled=true]", text: /#{I18n.t("account_menu.soon")}/
+    assert_select "a[href=?][class*=btn-primary]", "/en/checkout",
+      text: I18n.t("carts.show.summary.checkout")
   end
 
   test "the whole page 404s while checkout is disabled" do

@@ -98,11 +98,7 @@
         </div>
         <p class="text-xs text-muted"><%= t(".summary.taxes_included") %></p>
 
-        <%# TODO Phase 4 step 3: replace with the real checkout once orders land. %>
-        <span class="btn-primary w-full cursor-default opacity-60" aria-disabled="true">
-          <span class="flex-1 text-center"><%= t(".summary.checkout") %></span>
-          <span class="shrink-0 rounded-full bg-white/25 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"><%= t("account_menu.soon") %></span>
-        </span>
+        <%= link_to t(".summary.checkout"), checkout_path, class: "btn-primary w-full" %>
         <%= link_to t(".continue_shopping"), root_path, class: "btn-secondary w-full" %>
       </aside>
     </div>

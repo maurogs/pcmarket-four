@@ -29,6 +29,11 @@ de:
       missing_required_spec: "%{label} ist vor der Übermittlung zur Prüfung erforderlich"
       unsupported_content_type: "%{content_type} wird als Bildformat nicht unterstützt"
       image_required_for_review: Füge mindestens ein Foto hinzu, bevor du zur Prüfung einreichst
+    models:
+      checkout_form:
+        attributes:
+          address_id:
+            not_found: wurde nicht gefunden
     throttled: Zu viele Anfragen. Bitte in %{retry_after} Sekunden erneut versuchen.
   footer:
     tagline: Der europäische Marktplatz, um Technik sicher zu kaufen und zu verkaufen.
@@ -442,6 +447,21 @@ de:
           mobile: Mobilgerät
           peripheral: Peripheriegerät
           software: Software
+      checkout_form:
+        accept_terms: Akzeptanz der Bedingungen
+        address_id: Gespeicherte Adresse
+        buyer_note: Nachricht an den Verkäufer
+        city: Stadt
+        email: E-Mail
+        first_name: Vorname
+        last_name: Nachname
+        payment_method: Zahlungsart
+        phone: Telefon
+        postal_code: PLZ
+        province: Provinz
+        save_address: Diese Adresse in meinem Konto speichern
+        street_line1: Adresse
+        street_line2: Wohnung, Etage usw.
       filter_definition:
         input_type:
           boolean: Ja / Nein
@@ -1226,6 +1246,58 @@ de:
       not_available: Dieser Artikel ist nicht mehr verfügbar.
       updated: Menge aktualisiert.
       removed: Artikel aus dem Warenkorb entfernt.
+  checkouts:
+    flashes:
+      empty_cart: Dein Warenkorb ist leer.
+      placed: Deine Bestellung wurde aufgegeben.
+    show:
+      title: Kasse
+      contact:
+        title: Kontakt
+        email_hint: Wir senden die Bestellbestätigung an diese Adresse.
+      address:
+        title: Lieferadresse
+        saved_prompt: An eine neue Adresse liefern
+        save_address: Diese Adresse in meinem Konto speichern
+      payment:
+        title: Zahlungsart
+        manual: Direkt an den Verkäufer zahlen
+        manual_hint: Bezahle direkt den Verkäufer — er schickt dir die Zahlungsanweisungen; deine Bestellung wird 48 Std. reserviert.
+        stripe: Online mit Stripe bezahlen
+        stripe_hint: Sichere Kartenzahlung. Demnächst verfügbar — bis dahin wird jede Bestellung als manuelle Zahlung reserviert.
+      note:
+        title: Nachricht an den Verkäufer
+        placeholder: Sollte der Verkäufer etwas wissen? (optional)
+      terms: Ich akzeptiere die Kaufbedingungen und die Datenschutzerklärung.
+      submit: Bestellung aufgeben
+      protection:
+        title: Käuferschutz
+        body: Dein Geld ist bis zum Erhalt der Ware geschützt. Bei Problemen schaltet sich unser Team ein.
+      summary:
+        title: Bestellübersicht
+        items_count:
+          one: "%{count} Artikel"
+          other: "%{count} Artikel"
+        subtotal: Zwischensumme
+        shipping: Versand
+        free_shipping: Kostenlos
+        total: Gesamt
+        taxes_included: Preise inkl. MwSt.
+  checkout_confirmations:
+    show:
+      title: Danke! Deine Bestellung ist eingegangen.
+      intro: Wir haben die Bestätigung an %{email} gesendet.
+      order:
+        subtotal: Zwischensumme
+        shipping: Versand
+        free_shipping: Kostenlos
+        total: Gesamt
+      next_steps:
+        title: So geht es weiter
+        manual: Der Verkäufer kontaktiert dich mit den Zahlungsanweisungen. Deine Bestellung wird 48 Stunden reserviert — danach wird sie automatisch storniert und der Bestand wieder in den Verkauf gegeben.
+        messages: Nachrichten
+        messages_hint: Die direkte Nachrichtenfunktion mit dem Verkäufer folgt bald.
+      continue_shopping: Weiter einkaufen
   orders:
     placer:
       errors:

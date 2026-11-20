@@ -29,6 +29,11 @@ en:
       missing_required_spec: "%{label} is required before submitting for review"
       unsupported_content_type: "%{content_type} is not a supported image format"
       image_required_for_review: Add at least one photo before submitting for review
+    models:
+      checkout_form:
+        attributes:
+          address_id:
+            not_found: was not found
     throttled: Too many requests. Please try again in %{retry_after} seconds.
   footer:
     tagline: The European marketplace to buy and sell tech with confidence.
@@ -438,6 +443,21 @@ en:
           mobile: Mobile device
           peripheral: Peripheral
           software: Software
+      checkout_form:
+        accept_terms: Terms acceptance
+        address_id: Saved address
+        buyer_note: Note for the seller
+        city: City
+        email: Email
+        first_name: First name
+        last_name: Last name
+        payment_method: Payment method
+        phone: Phone
+        postal_code: Postcode
+        province: Province
+        save_address: Save this address to my account
+        street_line1: Address line 1
+        street_line2: Address line 2
       filter_definition:
         input_type:
           boolean: Yes / No
@@ -1214,6 +1234,58 @@ en:
       not_available: This item is no longer available.
       updated: Quantity updated.
       removed: Item removed from your cart.
+  checkouts:
+    flashes:
+      empty_cart: Your cart is empty.
+      placed: Your order has been placed.
+    show:
+      title: Checkout
+      contact:
+        title: Contact
+        email_hint: We'll send the order confirmation to this address.
+      address:
+        title: Shipping address
+        saved_prompt: Ship to a new address
+        save_address: Save this address to my account
+      payment:
+        title: Payment method
+        manual: Pay the seller directly
+        manual_hint: Pay the seller directly — they'll send payment instructions; your order is reserved for 48h.
+        stripe: Pay online with Stripe
+        stripe_hint: Secure card payment. Coming soon — until then every order is reserved as a manual payment.
+      note:
+        title: Note for the seller
+        placeholder: Anything the seller should know? (optional)
+      terms: I accept the purchase terms and the privacy policy.
+      submit: Place order
+      protection:
+        title: Buyer protection
+        body: Your money is protected until you receive the item. If something goes wrong, our team steps in.
+      summary:
+        title: Order summary
+        items_count:
+          one: "%{count} item"
+          other: "%{count} items"
+        subtotal: Subtotal
+        shipping: Shipping
+        free_shipping: Free
+        total: Total
+        taxes_included: Prices include VAT.
+  checkout_confirmations:
+    show:
+      title: Thank you! Your order is placed.
+      intro: We've sent the confirmation to %{email}.
+      order:
+        subtotal: Subtotal
+        shipping: Shipping
+        free_shipping: Free
+        total: Total
+      next_steps:
+        title: What happens next
+        manual: The seller will contact you with the payment instructions. Your order is reserved for 48 hours — after that it is cancelled automatically and the stock goes back on sale.
+        messages: Messages
+        messages_hint: Direct messaging with the seller is coming soon.
+      continue_shopping: Continue shopping
   orders:
     placer:
       errors:

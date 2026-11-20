@@ -29,6 +29,11 @@ it:
       missing_required_spec: "%{label} è obbligatorio prima dell'invio per la revisione"
       unsupported_content_type: "%{content_type} non è un formato immagine supportato"
       image_required_for_review: Aggiungi almeno una foto prima dell'invio per la revisione
+    models:
+      checkout_form:
+        attributes:
+          address_id:
+            not_found: non è stato trovato
     throttled: Troppe richieste. Riprova tra %{retry_after} secondi.
   footer:
     tagline: Il marketplace europeo per comprare e vendere tecnologia in tutta sicurezza.
@@ -444,6 +449,21 @@ it:
           mobile: Dispositivo mobile
           peripheral: Periferica
           software: Software
+      checkout_form:
+        accept_terms: Accettazione delle condizioni
+        address_id: Indirizzo salvato
+        buyer_note: Nota per il venditore
+        city: Città
+        email: E-mail
+        first_name: Nome
+        last_name: Cognome
+        payment_method: Metodo di pagamento
+        phone: Telefono
+        postal_code: CAP
+        province: Provincia
+        save_address: Salva questo indirizzo nel mio account
+        street_line1: Indirizzo
+        street_line2: Appartamento, piano, ecc.
       filter_definition:
         input_type:
           boolean: Sì / No
@@ -1225,6 +1245,58 @@ it:
       not_available: Questo articolo non è più disponibile.
       updated: Quantità aggiornata.
       removed: Articolo rimosso dal carrello.
+  checkouts:
+    flashes:
+      empty_cart: Il tuo carrello è vuoto.
+      placed: Il tuo ordine è stato effettuato.
+    show:
+      title: Pagamento
+      contact:
+        title: Contatti
+        email_hint: Invieremo la conferma dell'ordine a questo indirizzo.
+      address:
+        title: Indirizzo di spedizione
+        saved_prompt: Spedisci a un nuovo indirizzo
+        save_address: Salva questo indirizzo nel mio account
+      payment:
+        title: Metodo di pagamento
+        manual: Paga direttamente il venditore
+        manual_hint: Paga direttamente il venditore — ti invierà le istruzioni di pagamento; il tuo ordine è riservato per 48 ore.
+        stripe: Paga online con Stripe
+        stripe_hint: Pagamento sicuro con carta. Prossimamente — fino ad allora ogni ordine viene riservato come pagamento manuale.
+      note:
+        title: Nota per il venditore
+        placeholder: Qualcosa che il venditore dovrebbe sapere? (facoltativo)
+      terms: Accetto le condizioni di acquisto e l'informativa sulla privacy.
+      submit: Effettua l'ordine
+      protection:
+        title: Protezione dell'acquirente
+        body: Il tuo denaro è protetto fino alla ricezione dell'articolo. Se qualcosa va storto, il nostro team interviene.
+      summary:
+        title: Riepilogo dell'ordine
+        items_count:
+          one: "%{count} articolo"
+          other: "%{count} articoli"
+        subtotal: Subtotale
+        shipping: Spedizione
+        free_shipping: Gratis
+        total: Totale
+        taxes_included: Prezzi IVA inclusa.
+  checkout_confirmations:
+    show:
+      title: Grazie! Il tuo ordine è stato effettuato.
+      intro: Abbiamo inviato la conferma a %{email}.
+      order:
+        subtotal: Subtotale
+        shipping: Spedizione
+        free_shipping: Gratis
+        total: Totale
+      next_steps:
+        title: Cosa succede ora
+        manual: Il venditore ti contatterà con le istruzioni di pagamento. Il tuo ordine è riservato per 48 ore; dopo verrà annullato automaticamente e lo stock rimesso in vendita.
+        messages: Messaggi
+        messages_hint: La messaggistica diretta con il venditore arriverà presto.
+      continue_shopping: Continua lo shopping
   orders:
     placer:
       errors:

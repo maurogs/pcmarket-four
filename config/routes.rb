@@ -34,6 +34,12 @@ Rails.application.routes.draw do
     resource :cart, only: :show
     resources :cart_items, only: %i[create update destroy]
 
+    # Checkout (Phase 4 step 3). Singular — one cart per visitor, so the
+    # checkout URL never carries an id. The confirmation page is addressed
+    # by the checkout_group uuid the Placer stamps on the placed orders.
+    resource :checkout, only: %i[show create]
+    resources :checkout_confirmations, only: :show, param: :group
+
     # "Sell on PCMarket" landing page (Phase 3 step 6). Singular — one public
     # selling page per locale, so the URL never carries an id.
     resource :selling, only: :show, path: "sell"

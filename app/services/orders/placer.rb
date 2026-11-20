@@ -11,7 +11,8 @@
 # errors so the buyer can review the cart (nothing is written).
 #
 #   Orders::Placer.call(cart:, buyer:, email:, shipping_address:,
-#                       shipping_method:, payment_method:, discount_code: nil)
+#                       shipping_method:, payment_method:, discount_code: nil,
+#                       buyer_note: nil)
 #     → Result(orders, errors, checkout_group)
 #
 # discount_code is accepted but ignored for now (TODO Phase 4 step 7:
@@ -40,13 +41,14 @@ module Orders
     end
 
     def initialize(cart:, buyer:, email:, shipping_address:, shipping_method:,
-                   payment_method:, discount_code: nil)
+                   payment_method:, discount_code: nil, buyer_note: nil)
       @cart = cart
       @buyer = buyer
       @email = email.presence || buyer&.email
       @shipping_address = address_snapshot(shipping_address)
       @shipping_method = shipping_method.to_s
       @payment_method = payment_method.to_s
+      @buyer_note = buyer_note.to_s.strip.presence
       # TODO Phase 4 step 7 — discount codes land there; accepted, not applied.
       @discount_code = discount_code
       @errors = []
@@ -89,7 +91,8 @@ module Orders
 
     private
 
-    attr_reader :cart, :buyer, :email, :shipping_address, :shipping_method, :payment_method
+    attr_reader :cart, :buyer, :email, :shipping_address, :shipping_method,
+                :payment_method, :buyer_note
 
     # Returning from inside `transaction do` would COMMIT, so failures raise
     # a Rollback subclass instead (silently rolls back, call returns Result).
@@ -164,6 +167,7 @@ module Orders
         shipping_method: shipping_method,
         shipping_address: shipping_address,
         checkout_group: checkout_group,
+        buyer_note: buyer_note,
         locale: I18n.locale.to_s,
         currency: listings.fetch(store_items.first.listing_id).currency,
         subtotal_cents: subtotal,
