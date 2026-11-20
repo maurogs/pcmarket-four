@@ -4,6 +4,8 @@ settings = [
     description_key: "settings.descriptions.sell_to_us_enabled" },
   { key: "payments_enabled", value: false, value_type: "boolean", group: "sales",
     description_key: "settings.descriptions.payments_enabled" },
+  { key: "manual_payments_enabled", value: true, value_type: "boolean", group: "sales",
+    description_key: "settings.descriptions.manual_payments_enabled" },
   { key: "commission_enabled", value: false, value_type: "boolean", group: "sales",
     description_key: "settings.descriptions.commission_enabled" },
   { key: "commission_percent", value: 0, value_type: "float", group: "sales",

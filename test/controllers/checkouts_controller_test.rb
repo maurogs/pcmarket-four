@@ -1,4 +1,6 @@
 require "test_helper"
+require "minitest/mock"
+require "ostruct"
 
 class CheckoutsControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -147,7 +149,81 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_includes flash[:alert], I18n.t("orders.placer.errors.listing_unavailable", title: @listing.title)
   end
 
+  # --- Stripe payments (Phase 4 step 4b) -------------------------------------------
+
+  test "checkout with payments on redirects to Stripe and stamps the session" do
+    enable_payments
+    add_to_cart(@listing)
+
+    Payments.stub(:configured?, true) do
+      Stripe::Checkout::Session.stub(:create, ->(*) { stripe_session }) do
+        post "/en/checkout", params: checkout_params(checkout_form: { payment_method: "stripe" })
+      end
+    end
+
+    assert_redirected_to "https://checkout.stripe.com/pay/cs_test_1"
+    order = Order.last
+    assert_equal "stripe", order.payment_method
+    assert_predicate order, :pending?
+    assert_equal "cs_test_1", order.stripe_checkout_session_id
+  end
+
+  test "a Stripe failure cancels the placed orders and restores the stock" do
+    enable_payments
+    add_to_cart(@listing)
+
+    Payments.stub(:configured?, true) do
+      Stripe::Checkout::Session.stub(:create, ->(*) { raise Stripe::StripeError, "boom" }) do
+        post "/en/checkout", params: checkout_params(checkout_form: { payment_method: "stripe" })
+      end
+    end
+
+    assert_redirected_to "/en/cart"
+    assert_includes flash[:alert], I18n.t("payments.checkout.stripe_error")
+    order = Order.last
+    assert_predicate order, :cancelled?
+    assert_equal "payment_session_failed", order.cancel_reason
+    assert_equal 3, @listing.reload.quantity
+  end
+
+  test "a store that cannot take payments falls the whole checkout back to manual" do
+    set_setting("payments_enabled", true)
+    # @store is deliberately NOT payment-ready (stripe_charges_enabled stays false).
+    add_to_cart(@listing)
+
+    Payments.stub(:configured?, true) do
+      Stripe::Checkout::Session.stub(:create, ->(*) { flunk "must not create a session" }) do
+        post "/en/checkout", params: checkout_params(checkout_form: { payment_method: "stripe" })
+      end
+    end
+
+    order = Order.last
+    assert_predicate order, :pending?
+    assert_equal "manual", order.payment_method
+    assert_redirected_to "/en/checkout_confirmations/#{order.checkout_group}"
+    assert_includes flash[:alert], I18n.t("checkouts.flashes.stripe_fallback")
+    assert_equal I18n.t("checkouts.flashes.placed"), flash[:notice]
+  end
+
+  test "checkout stays manual while payments are off" do
+    add_to_cart(@listing)
+
+    post "/en/checkout", params: checkout_params(checkout_form: { payment_method: "stripe" })
+
+    assert_redirected_to "/en/checkout_confirmations/#{Order.last.checkout_group}"
+    assert_equal "manual", Order.last.payment_method
+  end
+
   private
+
+  def enable_payments
+    set_setting("payments_enabled", true)
+    @store.update!(stripe_charges_enabled: true)
+  end
+
+  def stripe_session
+    OpenStruct.new(id: "cs_test_1", url: "https://checkout.stripe.com/pay/cs_test_1")
+  end
 
   # The cart the requests above accumulate for the current visitor.
   def cart

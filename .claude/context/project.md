@@ -1,7 +1,7 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-20 (Phase 4 step 4a — Stripe config + seller Connect
-onboarding; uncommitted)_
+_Last updated: 2026-11-20 (Phase 4 step 4b — Stripe Checkout payment +
+webhooks; uncommitted)_
 
 ## What this is
 
@@ -866,9 +866,59 @@ FR/GB/DE/IT/PT seeded but disabled.
   `Account.retrieve` with OpenStructs (never the real API) and
   `Payments.stub(:configured?, true)` stands in for credentials.
 
+## Code map (Phase 4 step 4b — Stripe Checkout payment + webhooks)
+
+- `Payments.active?` = `AppSettings.enabled?(:payments_enabled) &&
+  Payments.configured?` — the single gate forms/views/controllers check.
+- New setting `manual_payments_enabled` (boolean, group sales, default
+  true, seeds 02): keeps the "pay the seller directly" option offered while
+  payments are on.
+- `CheckoutForm`: defaults `payment_method` to "stripe" when
+  `payments_enabled` (still pinned to "manual" when off); rejects a
+  hand-crafted "manual" when payments are on and the manual setting is off
+  (`activemodel.errors.models.checkout_form.attributes.payment_method.unavailable`);
+  `placer_payment_method` now passes the real method through.
+- `Payments::CheckoutSessionCreator.call(orders, success_url:, cancel_url:)`
+  → `Result(session, errors)`: `Stripe::Checkout::Session.create` (mode
+  payment, eur, one line item per order item + one shipping line per order
+  when shipping_cents > 0, customer_email, locale map pt→"pt-PT" else
+  I18n.locale or "auto", expires_at +30min, payment_intent_data
+  transfer_group/metadata + session metadata `checkout_group`,
+  idempotency key `checkout-#{group}`); stamps
+  `stripe_checkout_session_id` on all orders. `Stripe::StripeError` →
+  failed Result (`payments.checkout.stripe_error`) — callers never rescue.
+- `CheckoutsController#create`: `effective_payment_method` downgrades
+  "stripe"→"manual" when any cart store lacks `stripe_charges_enabled`
+  (flash `checkouts.flashes.stripe_fallback` alongside the placed notice).
+  Stripe path: create session → 303 `redirect_to session.url,
+  allow_other_host: true`; on failure cancel the placed orders
+  (reason `payment_session_failed`, restocks) → cart with the alert.
+- Route `resource :stripe_webhook, only: :create, path: "webhooks/stripe"`
+  OUTSIDE the locale scope; `StripeWebhooksController` skips CSRF (the
+  signature is the auth), `Stripe::Webhook.construct_event` on the raw
+  body → 400 on SignatureVerificationError/InvalidRequestError/JSON::ParserError,
+  else delegates and answers 200 fast.
+- Idempotency: `stripe_events` table (migration 20261120190001: stripe_id
+  UNIQUE, event_type, processed_at, payload jsonb) + `StripeEvent` model.
+  `Payments::WebhookHandler.call(event)` → true handled / false duplicate
+  (exists? check + rescued RecordNotUnique). Events: `checkout.session.completed`
+  (paid → save payment intent + mark_paid! per order), `checkout.session.expired`
+  (cancel pending, reason "payment_expired" → restock), `charge.refunded`
+  (fully refunded → refund! orders by payment intent), `account.updated`
+  (mirror Connect flags onto the store by stripe_account_id). Unknown
+  types recorded + ignored.
+- Confirmation page: pending + stripe group → "processing" card +
+  `<meta http-equiv="refresh">` every 5s with a bumping `?tries=` counter,
+  capped at 12 (~1 min, `CheckoutConfirmationsController::MAX_REFRESHES`);
+  paid stripe orders get `next_steps.stripe_paid` copy.
+- Tests: creator (7), webhook handler (10), webhook controller (7),
+  checkouts controller +4, form +4, confirmations +3 — Stripe fully
+  stubbed (`stub` + OpenStruct; fake events are OpenStructs read
+  dot-access style).
+
 ## Testing
 
-- `bin/rails test` — **625 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **659 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -993,14 +1043,13 @@ FR/GB/DE/IT/PT seeded but disabled.
 - Wishlist/offers/chat buttons are `#` placeholders gated by AppSettings
   flags (`payments_enabled`, `offers_enabled`, `chat_enabled`) — Phases 5/6.
   The cart ships (Phase 4 step 1), the orders model + `Orders::Placer`
-  service ship (Phase 4 step 2) and the **manual checkout** ships (Phase 4
-  step 3: checkout form → Placer → confirmation, 48h expiry job), and
-  **Stripe config + Connect onboarding** ship (step 4a: `Payments` facade,
-  stores stripe_* columns, `Payments::ConnectOnboarding`,
-  `/seller/payout_account`), but "Buy now" still just redirects to the
-  cart and online payment is TODO (step 4b — the checkout already renders
-  a Stripe radio when `payments_enabled` is on, yet places manual orders;
-  the webhook receiver + payment intents land there). The account menu's
+  service ship (Phase 4 step 2), the **manual checkout** ships (Phase 4
+  step 3: checkout form → Placer → confirmation, 48h expiry job),
+  **Stripe config + Connect onboarding** ship (step 4a) and **Stripe
+  Checkout payment + webhooks** ship (step 4b: `CheckoutSessionCreator`,
+  `/webhooks/stripe` + `stripe_events` idempotency, `WebhookHandler`,
+  processing confirmation page), but "Buy now" still just redirects to
+  the cart. The account menu's
   orders/messages/wishlist/admin-panel
   items are "Soon" pills until those pages land (Phases 5–7) — swap them
   for real links there.

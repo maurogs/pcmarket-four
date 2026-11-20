@@ -388,6 +388,13 @@ de:
         title: Deine alte GPU ist jemandes Traum-Upgrade
         body: Stelle heute deine erste Anzeige ein — fünf Minuten, keine Kosten.
         cta: Erste Anzeige einstellen
+  activemodel:
+    errors:
+      models:
+        checkout_form:
+          attributes:
+            payment_method:
+              unavailable: "Diese Zahlungsart ist nicht verfügbar."
   activerecord:
     errors:
       models:
@@ -602,6 +609,7 @@ de:
     descriptions:
       sell_to_us_enabled: Zeigt und aktiviert den Ankaufs-Flow
       payments_enabled: Aktiviert die Online-Zahlungsverarbeitung
+      manual_payments_enabled: "Die manuelle Zahlungsoption (direkt an den Verkäufer zahlen) bei aktivierter Online-Zahlung anbieten"
       commission_enabled: Erhebt eine Provision auf abgeschlossene Verkäufe
       commission_percent: Provisionssatz auf Verkäufe
       featured_listings_enabled: Erlaubt kostenpflichtige Hervorhebungen von Anzeigen
@@ -1237,6 +1245,10 @@ de:
   payments:
     connect:
       stripe_error: Stripe konnte nicht erreicht werden. Bitte versuche es später erneut.
+    checkout:
+      stripe_error: "Die Zahlung konnte nicht gestartet werden. Bitte versuche es erneut."
+      shipping_line: "Versand — %{store}"
+      no_orders: "Es gibt nichts zu bezahlen."
   carts:
     notices:
       removed: '"%{listing}" ist nicht mehr verfügbar und wurde aus dem Warenkorb entfernt.'
@@ -1281,6 +1293,7 @@ de:
     flashes:
       empty_cart: Dein Warenkorb ist leer.
       placed: Deine Bestellung wurde aufgegeben.
+      stripe_fallback: "Die Online-Zahlung ist nicht für alle Artikel in deinem Warenkorb verfügbar — deine Bestellung wurde daher als manuelle Zahlung aufgegeben."
     show:
       title: Kasse
       contact:
@@ -1295,7 +1308,7 @@ de:
         manual: Direkt an den Verkäufer zahlen
         manual_hint: Bezahle direkt den Verkäufer — er schickt dir die Zahlungsanweisungen; deine Bestellung wird 48 Std. reserviert.
         stripe: Online mit Stripe bezahlen
-        stripe_hint: Sichere Kartenzahlung. Demnächst verfügbar — bis dahin wird jede Bestellung als manuelle Zahlung reserviert.
+        stripe_hint: "Sichere Kartenzahlung über Stripe — deine Bestellung ist bestätigt, sobald die Zahlung erfolgreich war."
       note:
         title: Nachricht an den Verkäufer
         placeholder: Sollte der Verkäufer etwas wissen? (optional)
@@ -1323,9 +1336,13 @@ de:
         shipping: Versand
         free_shipping: Kostenlos
         total: Gesamt
+      processing:
+        title: "Deine Zahlung wird verarbeitet…"
+        body: "Wir haben deine Bestellung erhalten und warten auf die Zahlungsbestätigung von Stripe. Diese Seite aktualisiert sich automatisch — du musst nichts tun."
       next_steps:
         title: So geht es weiter
         manual: Der Verkäufer kontaktiert dich mit den Zahlungsanweisungen. Deine Bestellung wird 48 Stunden reserviert — danach wird sie automatisch storniert und der Bestand wieder in den Verkauf gegeben.
+        stripe_paid: "Deine Zahlung ist eingegangen und die Verkäufer wurden benachrichtigt. Jeder Verkäufer kontaktiert dich wegen der Lieferung seiner Artikel."
         messages: Nachrichten
         messages_hint: Die direkte Nachrichtenfunktion mit dem Verkäufer folgt bald.
       continue_shopping: Weiter einkaufen

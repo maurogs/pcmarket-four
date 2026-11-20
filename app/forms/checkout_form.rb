@@ -5,8 +5,11 @@
 # The inline address is validated by building an unsaved Address with the
 # Spanish market country and copying its errors onto the form, so the
 # postcode/province consistency rules live in one place (see Address).
-# While `payments_enabled` is off the payment method is pinned to "manual";
-# even when it is on, this step still places manual orders only.
+# While payments are active (AppSettings flag AND Stripe credentials, see
+# Payments.active?) the method defaults to "stripe"; "manual" stays offered
+# only while the manual_payments_enabled setting is on. With payments off the
+# method is pinned to "manual". Whether Stripe can actually be used for the
+# cart (every store payment-ready) is decided by the controller.
 class CheckoutForm
   include ActiveModel::Model
 
@@ -20,23 +23,32 @@ class CheckoutForm
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, if: -> { email.present? }
   validates :payment_method, inclusion: { in: Order::PAYMENT_METHODS }
   validates :accept_terms, acceptance: true
+  validate :manual_payment_allowed
   validate :shipping_address_valid
 
-  def initialize(user: nil, payments_enabled: AppSettings.enabled?(:payments_enabled), **attributes)
+  def initialize(user: nil, payments_enabled: Payments.active?,
+                 manual_payments_enabled: AppSettings.enabled?(:manual_payments_enabled),
+                 **attributes)
     @user = user
     @payments_enabled = payments_enabled
+    @manual_payments_enabled = manual_payments_enabled
     super(attributes)
     self.payment_method = "manual" unless @payments_enabled
+    self.payment_method = "stripe" if @payments_enabled && payment_method.blank?
   end
 
   def payments_enabled?
     @payments_enabled
   end
 
-  # The Placer always receives "manual" for now.
-  # TODO Phase 4 step 4: pass "stripe" through once Stripe checkout lands.
+  def manual_payments_enabled?
+    @manual_payments_enabled
+  end
+
+  # The method the Placer receives; the controller may still downgrade
+  # "stripe" to "manual" when a cart store is not payment-ready.
   def placer_payment_method
-    "manual"
+    payment_method
   end
 
   # Address handed to the Placer: the chosen saved address, or the unsaved
@@ -58,6 +70,14 @@ class CheckoutForm
   end
 
   private
+
+  # With payments active the manual option is an admin choice: rejecting a
+  # hand-crafted "manual" submission keeps the setting authoritative.
+  def manual_payment_allowed
+    return unless payments_enabled? && payment_method == "manual" && !manual_payments_enabled?
+
+    errors.add(:payment_method, :unavailable)
+  end
 
   def shipping_address_valid
     if address_id.present?

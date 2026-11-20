@@ -1380,3 +1380,64 @@ Files: `config/initializers/stripe.rb`, `app/services/payments.rb`,
 
 Verified: `bin/rails test` 625 green; `bin/rubocop` clean (233 files);
 migrate/rollback/migrate round-trip OK.
+
+## 2026-11-20 — Phase 4 step 4b: Stripe Checkout payment + webhooks
+
+Goal: pay a placed checkout_group through Stripe Checkout, with a signed
+webhook receiver driving the order state machine — active only when
+`Payments.active?` (AppSettings `payments_enabled` AND credentials).
+
+- `Payments.active?` helper; new `manual_payments_enabled` setting
+  (default true, seeds 02) keeps the manual option offered while Stripe
+  is on.
+- `CheckoutForm`: defaults to "stripe" when payments are active (still
+  pinned to "manual" when off), rejects "manual" when the setting is off,
+  and `placer_payment_method` finally passes the real method through
+  (TODO from step 3 removed).
+- `Payments::CheckoutSessionCreator`: one line item per order item + a
+  shipping line per order, eur, transfer_group/metadata = checkout_group,
+  idempotency key `checkout-#{group}`, +30min expiry, locale map
+  (pt→"pt-PT"); stamps the session id on every order; StripeError →
+  translated failed Result.
+- `CheckoutsController#create`: stripe → 303 off-site to the session url;
+  Stripe failure cancels the placed orders (`payment_session_failed`,
+  restocks) and bounces to the cart; a store without
+  `stripe_charges_enabled` falls the whole group back to manual with a
+  `stripe_fallback` alert.
+- `resource :stripe_webhook, only: :create` at `/webhooks/stripe`
+  (outside the locale scope): signature IS the auth (CSRF skipped),
+  unverifiable payload → 400, everything else → 200 fast.
+- Idempotency via `stripe_events` (migration 20261120190001, unique
+  stripe_id) + `Payments::WebhookHandler`: session.completed → paid +
+  intent saved; session.expired → cancel pending ("payment_expired");
+  charge.refunded (full) → refund! by payment intent; account.updated →
+  mirror Connect flags onto the store. Unknown events recorded + ignored.
+- Confirmation page: pending stripe group shows a "processing" card and
+  meta-refreshes every 5s (`?tries=` bumping, capped at 12 ≈ 1 min);
+  paid stripe orders get new next-steps copy.
+- i18n: `settings.descriptions.manual_payments_enabled`,
+  `checkouts.flashes.stripe_fallback`, `payments.checkout.*`,
+  `checkout_confirmations.show.processing.*`, `next_steps.stripe_paid`,
+  activemodel `checkout_form.payment_method.unavailable`, refreshed
+  `stripe_hint` — all 6 locales (parity green).
+- Tests (+34, Stripe never real): creator 7, webhook handler 10, webhook
+  controller 7, checkouts +4, form +4, confirmations +3.
+
+Files: `db/migrate/20261120190001_create_stripe_events.rb`,
+`app/models/stripe_event.rb`, `app/services/payments.rb`,
+`app/services/payments/checkout_session_creator.rb`,
+`app/services/payments/webhook_handler.rb`,
+`app/controllers/stripe_webhooks_controller.rb`, `config/routes.rb`,
+`app/forms/checkout_form.rb`, `app/controllers/checkouts_controller.rb`,
+`app/controllers/checkout_confirmations_controller.rb`,
+`app/views/checkouts/show.html.erb`,
+`app/views/checkout_confirmations/show.html.erb`, `db/seeds/02_settings.rb`,
+6 locale files, `test/services/payments/checkout_session_creator_test.rb` (7),
+`test/services/payments/webhook_handler_test.rb` (10),
+`test/controllers/stripe_webhooks_controller_test.rb` (7),
+`test/controllers/checkouts_controller_test.rb` (+4),
+`test/forms/checkout_form_test.rb` (+4),
+`test/controllers/checkout_confirmations_controller_test.rb` (+3).
+
+Verified: migrate/rollback/migrate round-trip OK; `bin/rails test` 659
+green; `bin/rubocop` clean (241 files).

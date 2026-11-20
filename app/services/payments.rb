@@ -25,4 +25,10 @@ module Payments
   def configured?
     secret_key.present? && webhook_secret.present?
   end
+
+  # The single gate callers should check: the per-market switch AND usable
+  # credentials. (AppSettings lives here so views/forms never combine them.)
+  def active?
+    AppSettings.enabled?(:payments_enabled) && configured?
+  end
 end

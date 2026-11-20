@@ -389,6 +389,13 @@ pt:
         title: A sua gráfica antiga é o sonho de outra pessoa
         body: Publique o seu primeiro anúncio hoje — cinco minutos e sem custos.
         cta: Publicar o primeiro anúncio
+  activemodel:
+    errors:
+      models:
+        checkout_form:
+          attributes:
+            payment_method:
+              unavailable: "Este método de pagamento não está disponível."
   activerecord:
     errors:
       models:
@@ -603,6 +610,7 @@ pt:
     descriptions:
       sell_to_us_enabled: Mostra e ativa o fluxo Venda-nos
       payments_enabled: Ativa o processamento de pagamentos online
+      manual_payments_enabled: "Manter a opção de pagamento manual (pagar diretamente ao vendedor) com os pagamentos online ativos"
       commission_enabled: Aplica comissão às vendas concluídas
       commission_percent: Percentagem de comissão aplicada às vendas
       featured_listings_enabled: Permite anúncios em destaque pagos
@@ -1234,6 +1242,10 @@ pt:
   payments:
     connect:
       stripe_error: Não foi possível contactar a Stripe. Tente novamente mais tarde.
+    checkout:
+      stripe_error: "Não foi possível iniciar o pagamento. Tente novamente."
+      shipping_line: "Envio — %{store}"
+      no_orders: "Não há nada para pagar."
   carts:
     notices:
       removed: '"%{listing}" não está mais disponível e foi removido do carrinho.'
@@ -1278,6 +1290,7 @@ pt:
     flashes:
       empty_cart: O seu carrinho está vazio.
       placed: O seu pedido foi efetuado.
+      stripe_fallback: "O pagamento online ainda não está disponível para todos os artigos do seu carrinho, por isso a sua encomenda foi feita como pagamento manual."
     show:
       title: Finalizar compra
       contact:
@@ -1292,7 +1305,7 @@ pt:
         manual: Pagar diretamente ao vendedor
         manual_hint: Pague diretamente ao vendedor — ele enviará as instruções de pagamento; o seu pedido fica reservado por 48 h.
         stripe: Pagar online com Stripe
-        stripe_hint: Pagamento seguro com cartão. Em breve — até lá, cada pedido é reservado como pagamento manual.
+        stripe_hint: "Pagamento seguro com cartão através da Stripe — a sua encomenda é confirmada assim que o pagamento for concluído."
       note:
         title: Nota para o vendedor
         placeholder: Algo que o vendedor deva saber? (opcional)
@@ -1320,9 +1333,13 @@ pt:
         shipping: Envio
         free_shipping: Grátis
         total: Total
+      processing:
+        title: "A processar o seu pagamento…"
+        body: "Recebemos a sua encomenda e aguardamos a confirmação do pagamento pela Stripe. Esta página é atualizada automaticamente — não precisa de fazer nada."
       next_steps:
         title: O que acontece a seguir
         manual: O vendedor entrará em contacto consigo com as instruções de pagamento. O seu pedido fica reservado por 48 h — depois é cancelado automaticamente e o stock volta a estar à venda.
+        stripe_paid: "O seu pagamento foi recebido e os vendedores foram notificados. Cada vendedor o contactará para combinar a entrega dos seus artigos."
         messages: Mensagens
         messages_hint: As mensagens diretas com o vendedor chegam em breve.
       continue_shopping: Continuar a comprar

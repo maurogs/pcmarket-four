@@ -77,12 +77,32 @@ class CheckoutFormTest < ActiveSupport::TestCase
     assert_equal "manual", form.payment_method
   end
 
-  test "stripe can be chosen when payments are enabled but orders stay manual" do
+  test "the payment method defaults to stripe when payments are enabled" do
+    form = build_form(payments_enabled: true, payment_method: nil)
+
+    assert_equal "stripe", form.payment_method
+    assert_equal "stripe", form.placer_payment_method
+  end
+
+  test "stripe is passed through to the Placer when payments are enabled" do
     form = build_form(payments_enabled: true, payment_method: "stripe")
 
     assert_predicate form, :valid?
-    assert_equal "stripe", form.payment_method
+    assert_equal "stripe", form.placer_payment_method
+  end
+
+  test "manual stays available while the manual_payments_enabled setting is on" do
+    form = build_form(payments_enabled: true, manual_payments_enabled: true, payment_method: "manual")
+
+    assert_predicate form, :valid?
     assert_equal "manual", form.placer_payment_method
+  end
+
+  test "manual is rejected when the manual_payments_enabled setting is off" do
+    form = build_form(payments_enabled: true, manual_payments_enabled: false, payment_method: "manual")
+
+    assert_not_predicate form, :valid?
+    assert_includes form.errors.attribute_names, :payment_method
   end
 
   test "address_to_save is the inline address only for signed-in opt-ins" do
@@ -104,7 +124,7 @@ class CheckoutFormTest < ActiveSupport::TestCase
                     province: "28")
   end
 
-  def build_form(user: nil, payments_enabled: false, **overrides)
+  def build_form(user: nil, payments_enabled: false, manual_payments_enabled: true, **overrides)
     defaults = {
       email: "buyer@example.com",
       first_name: "Mauro", last_name: "Lopez",
@@ -112,6 +132,8 @@ class CheckoutFormTest < ActiveSupport::TestCase
       province: "28", postal_code: "28001", phone: "600123456",
       accept_terms: "1", payment_method: "manual"
     }
-    CheckoutForm.new(user: user, payments_enabled: payments_enabled, **defaults.merge(overrides))
+    CheckoutForm.new(user: user, payments_enabled: payments_enabled,
+                     manual_payments_enabled: manual_payments_enabled,
+                     **defaults.merge(overrides))
   end
 end

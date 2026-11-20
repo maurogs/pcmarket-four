@@ -6,6 +6,12 @@ Rails.application.routes.draw do
   devise_for :users, only: :omniauth_callbacks,
                      controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
+  # Stripe webhooks (Phase 4 step 4b) — outside the locale scope: Stripe
+  # posts to one fixed URL, so the path is pinned to /webhooks/stripe.
+  # Singular resource: one receiver endpoint, addressed by no id.
+  resource :stripe_webhook, only: :create, path: "webhooks/stripe",
+                            controller: "stripe_webhooks"
+
   # Public site, localized through an optional URL prefix (/es/pages/about, /de...).
   # Requests without a prefix negotiate the locale from cookie/header; request-time
   # path helpers add the current locale via ApplicationController#default_url_options.

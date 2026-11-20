@@ -384,6 +384,13 @@ en:
         body: Post your first listing today — it takes five minutes and costs
           nothing.
         cta: List your first item
+  activemodel:
+    errors:
+      models:
+        checkout_form:
+          attributes:
+            payment_method:
+              unavailable: "This payment method is not available."
   activerecord:
     errors:
       models:
@@ -598,6 +605,7 @@ en:
     descriptions:
       sell_to_us_enabled: Show and enable the Sell to us flow
       payments_enabled: Enable online payment processing
+      manual_payments_enabled: "Keep the manual (pay the seller directly) option while online payments are on"
       commission_enabled: Charge a commission on completed sales
       commission_percent: Commission percentage applied to sales
       featured_listings_enabled: Allow paid featured listings
@@ -1225,6 +1233,10 @@ en:
   payments:
     connect:
       stripe_error: We could not reach Stripe. Please try again later.
+    checkout:
+      stripe_error: "We could not start the payment. Please try again."
+      shipping_line: "Shipping — %{store}"
+      no_orders: "There is nothing to pay for."
   carts:
     notices:
       removed: '"%{listing}" is no longer available and was removed from your cart.'
@@ -1269,6 +1281,7 @@ en:
     flashes:
       empty_cart: Your cart is empty.
       placed: Your order has been placed.
+      stripe_fallback: "Online payment isn't available for every item in your cart yet, so your order was placed as a manual payment."
     show:
       title: Checkout
       contact:
@@ -1283,7 +1296,7 @@ en:
         manual: Pay the seller directly
         manual_hint: Pay the seller directly — they'll send payment instructions; your order is reserved for 48h.
         stripe: Pay online with Stripe
-        stripe_hint: Secure card payment. Coming soon — until then every order is reserved as a manual payment.
+        stripe_hint: "Secure card payment through Stripe — your order is confirmed as soon as the payment succeeds."
       note:
         title: Note for the seller
         placeholder: Anything the seller should know? (optional)
@@ -1311,9 +1324,13 @@ en:
         shipping: Shipping
         free_shipping: Free
         total: Total
+      processing:
+        title: "Processing your payment…"
+        body: "We've received your order and we're waiting for Stripe to confirm your payment. This page refreshes automatically — no need to do anything."
       next_steps:
         title: What happens next
         manual: The seller will contact you with the payment instructions. Your order is reserved for 48 hours — after that it is cancelled automatically and the stock goes back on sale.
+        stripe_paid: "Your payment was received and the sellers have been notified. Each seller will contact you to arrange the delivery of their items."
         messages: Messages
         messages_hint: Direct messaging with the seller is coming soon.
       continue_shopping: Continue shopping

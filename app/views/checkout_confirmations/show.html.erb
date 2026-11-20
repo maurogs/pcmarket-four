@@ -1,4 +1,9 @@
 <% set_meta_tags title: t(".title") %>
+<% if @refresh_url %>
+  <% content_for :head do %>
+    <%= tag.meta("http-equiv": "refresh", content: "#{@refresh_seconds}; url=#{@refresh_url}") %>
+  <% end %>
+<% end %>
 
 <div class="mx-auto max-w-3xl px-4 py-10">
   <div class="card flex flex-col items-center gap-3 p-8 text-center">
@@ -49,20 +54,32 @@
     <% end %>
   </div>
 
-  <section class="card mt-6 space-y-2 p-5">
-    <h2 class="flex items-center gap-2 font-display text-lg font-semibold">
-      <span class="text-primary-600 dark:text-primary-400"><%= icon "clock", class: "h-5 w-5" %></span>
-      <%= t(".next_steps.title") %>
-    </h2>
-    <p class="text-sm text-muted"><%= t(".next_steps.manual") %></p>
-    <div class="flex flex-wrap items-center gap-2 pt-1 text-sm">
-      <span class="btn-ghost cursor-default opacity-60" aria-disabled="true">
-        <span class="flex-1"><%= t(".next_steps.messages") %></span>
-        <span class="shrink-0 rounded-full bg-white/25 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"><%= t("account_menu.soon") %></span>
-      </span>
-      <span class="text-xs text-muted"><%= t(".next_steps.messages_hint") %></span>
-    </div>
-  </section>
+  <% if @processing %>
+    <section class="card mt-6 space-y-2 p-5">
+      <h2 class="flex items-center gap-2 font-display text-lg font-semibold">
+        <span class="animate-pulse text-primary-600 dark:text-primary-400"><%= icon "clock", class: "h-5 w-5" %></span>
+        <%= t(".processing.title") %>
+      </h2>
+      <p class="text-sm text-muted"><%= t(".processing.body") %></p>
+    </section>
+  <% else %>
+    <section class="card mt-6 space-y-2 p-5">
+      <h2 class="flex items-center gap-2 font-display text-lg font-semibold">
+        <span class="text-primary-600 dark:text-primary-400"><%= icon "clock", class: "h-5 w-5" %></span>
+        <%= t(".next_steps.title") %>
+      </h2>
+      <p class="text-sm text-muted">
+        <%= @orders.first.payment_method == "stripe" ? t(".next_steps.stripe_paid") : t(".next_steps.manual") %>
+      </p>
+      <div class="flex flex-wrap items-center gap-2 pt-1 text-sm">
+        <span class="btn-ghost cursor-default opacity-60" aria-disabled="true">
+          <span class="flex-1"><%= t(".next_steps.messages") %></span>
+          <span class="shrink-0 rounded-full bg-white/25 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"><%= t("account_menu.soon") %></span>
+        </span>
+        <span class="text-xs text-muted"><%= t(".next_steps.messages_hint") %></span>
+      </div>
+    </section>
+  <% end %>
 
   <%= link_to t(".continue_shopping"), root_path, class: "btn-primary mt-6 w-full text-center" %>
 </div>

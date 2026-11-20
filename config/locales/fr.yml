@@ -390,6 +390,13 @@ fr:
         title: Votre ancienne GPU fait le bonheur de quelqu'un
         body: Publiez votre première annonce aujourd'hui — cinq minutes, zéro coût.
         cta: Publier ma première annonce
+  activemodel:
+    errors:
+      models:
+        checkout_form:
+          attributes:
+            payment_method:
+              unavailable: "Ce mode de paiement n'est pas disponible."
   activerecord:
     errors:
       models:
@@ -604,6 +611,7 @@ fr:
     descriptions:
       sell_to_us_enabled: Affiche et active le flux Rachat
       payments_enabled: Active le paiement en ligne
+      manual_payments_enabled: "Conserver l'option de paiement manuel (payer directement le vendeur) lorsque le paiement en ligne est activé"
       commission_enabled: Applique une commission sur les ventes réalisées
       commission_percent: Taux de commission appliqué aux ventes
       featured_listings_enabled: Autorise les annonces mises en avant payantes
@@ -1238,6 +1246,10 @@ fr:
   payments:
     connect:
       stripe_error: Impossible de joindre Stripe. Veuillez réessayer plus tard.
+    checkout:
+      stripe_error: "Nous n'avons pas pu démarrer le paiement. Veuillez réessayer."
+      shipping_line: "Livraison — %{store}"
+      no_orders: "Il n'y a rien à payer."
   carts:
     notices:
       removed: '"%{listing}" n''est plus disponible et a été retiré de votre panier.'
@@ -1282,6 +1294,7 @@ fr:
     flashes:
       empty_cart: Votre panier est vide.
       placed: Votre commande a été passée.
+      stripe_fallback: "Le paiement en ligne n'est pas encore disponible pour tous les articles de votre panier ; votre commande a donc été passée en paiement manuel."
     show:
       title: Commande
       contact:
@@ -1296,7 +1309,7 @@ fr:
         manual: Payer directement le vendeur
         manual_hint: Payez directement le vendeur — il vous enverra les instructions de paiement ; votre commande est réservée pendant 48 h.
         stripe: Payer en ligne avec Stripe
-        stripe_hint: Paiement sécurisé par carte. Bientôt disponible — d'ici là, chaque commande est réservée en paiement manuel.
+        stripe_hint: "Paiement sécurisé par carte via Stripe — votre commande est confirmée dès que le paiement aboutit."
       note:
         title: Message au vendeur
         placeholder: Quelque chose que le vendeur devrait savoir ? (facultatif)
@@ -1324,9 +1337,13 @@ fr:
         shipping: Livraison
         free_shipping: Gratuit
         total: Total
+      processing:
+        title: "Traitement de votre paiement…"
+        body: "Nous avons bien reçu votre commande et attendons la confirmation du paiement par Stripe. Cette page s'actualise toute seule — vous n'avez rien à faire."
       next_steps:
         title: Ce qui se passe ensuite
         manual: Le vendeur vous contactera avec les instructions de paiement. Votre commande est réservée pendant 48 heures ; au-delà, elle est annulée automatiquement et le stock est remis en vente.
+        stripe_paid: "Votre paiement a été reçu et les vendeurs ont été prévenus. Chaque vendeur vous contactera pour convenir de la livraison de ses articles."
         messages: Messages
         messages_hint: La messagerie directe avec le vendeur arrive bientôt.
       continue_shopping: Continuer mes achats

@@ -1145,6 +1145,40 @@ ALTER SEQUENCE public.stores_id_seq OWNED BY public.stores.id;
 
 
 --
+-- Name: stripe_events; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.stripe_events (
+    id bigint NOT NULL,
+    stripe_id character varying NOT NULL,
+    event_type character varying NOT NULL,
+    processed_at timestamp(6) without time zone,
+    payload jsonb DEFAULT '{}'::jsonb NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.stripe_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.stripe_events_id_seq OWNED BY public.stripe_events.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1381,6 +1415,13 @@ ALTER TABLE ONLY public.stores ALTER COLUMN id SET DEFAULT nextval('public.store
 
 
 --
+-- Name: stripe_events id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.stripe_events ALTER COLUMN id SET DEFAULT nextval('public.stripe_events_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1601,6 +1642,14 @@ ALTER TABLE ONLY public.settings
 
 ALTER TABLE ONLY public.stores
     ADD CONSTRAINT stores_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stripe_events stripe_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.stripe_events
+    ADD CONSTRAINT stripe_events_pkey PRIMARY KEY (id);
 
 
 --
@@ -2144,6 +2193,13 @@ CREATE INDEX index_stores_on_verified_and_rating_avg ON public.stores USING btre
 
 
 --
+-- Name: index_stripe_events_on_stripe_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_stripe_events_on_stripe_id ON public.stripe_events USING btree (stripe_id);
+
+
+--
 -- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2461,6 +2517,7 @@ ALTER TABLE ONLY public.listing_labels
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261120190001'),
 ('20261120180001'),
 ('20261120160002'),
 ('20261120160001'),

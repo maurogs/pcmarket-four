@@ -55,6 +55,45 @@ class CheckoutConfirmationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  # --- Stripe processing state (Phase 4 step 4b) ------------------------------------
+
+  test "a pending Stripe order shows the processing card and self-refreshes" do
+    sign_in users(:confirmed)
+    get "/en"
+    group = place_directly(buyer: users(:confirmed), payment_method: "stripe")
+
+    get "/en/checkout_confirmations/#{group}"
+
+    assert_response :success
+    assert_includes response.body, I18n.t("checkout_confirmations.show.processing.title")
+    assert_select "meta[http-equiv=refresh][content*=?]", "tries=1"
+  end
+
+  test "the refresh budget is spent after a minute of polling" do
+    sign_in users(:confirmed)
+    get "/en"
+    group = place_directly(buyer: users(:confirmed), payment_method: "stripe")
+
+    get "/en/checkout_confirmations/#{group}?tries=12"
+
+    assert_response :success
+    assert_includes response.body, I18n.t("checkout_confirmations.show.processing.title")
+    assert_no_match(/http-equiv="refresh"/, response.body)
+  end
+
+  test "a paid Stripe order shows the paid next steps and stops refreshing" do
+    sign_in users(:confirmed)
+    get "/en"
+    group = place_directly(buyer: users(:confirmed), payment_method: "stripe")
+    Order.where(checkout_group: group).each(&:mark_paid!)
+
+    get "/en/checkout_confirmations/#{group}"
+
+    assert_response :success
+    assert_no_match(/http-equiv="refresh"/, response.body)
+    assert_includes response.body, I18n.t("checkout_confirmations.show.next_steps.stripe_paid")
+  end
+
   private
 
   # Places through the real checkout so the group lands in the session.
@@ -73,14 +112,14 @@ class CheckoutConfirmationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Places straight through the service, bypassing the session.
-  def place_directly(buyer: nil)
+  def place_directly(buyer: nil, payment_method: "manual")
     cart = Cart.create!(user: buyer)
     cart.add(@listing)
     result = Orders::Placer.call(
       cart: cart, buyer: buyer, email: "buyer@example.com",
       shipping_address: { first_name: "Mauro", last_name: "Lopez", street_line1: "Calle Mayor 1",
                           postal_code: "28001", city: "Madrid", province: "28" },
-      shipping_method: "delivery", payment_method: "manual"
+      shipping_method: "delivery", payment_method: payment_method
     )
     assert_predicate result, :success?, result.errors.join(" ")
     result.checkout_group
