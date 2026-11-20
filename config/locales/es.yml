@@ -37,7 +37,7 @@ es:
       about: Sobre nosotros
       help: Centro de ayuda
       buying: Comprar y vender
-      selling: Guía de venta
+      selling: Vende en PCMarket
       academy: Academia del vendedor
       terms: Condiciones de uso
       privacy: Política de privacidad
@@ -106,7 +106,7 @@ es:
         title: Vende tu equipo en minutos
         body: 'Fotografía, describe y publica. Anuncios gratis: solo pagas cuando
           se vende.'
-        primary: Publicar anuncio
+        primary: Empieza a vender
       testimonials:
         title: La comunidad gamer nos adora
         items:
@@ -222,6 +222,168 @@ es:
       meta:
         description: Vende a PCMarket tus ordenadores y componentes de segunda mano
           a un precio garantizado.
+      hero:
+        cta: Pedir oferta
+        note: Etiqueta prepago gratis · Pago en 48 h tras la prueba
+      cta_subject: Véndenos — solicitud de oferta
+      payouts:
+        title: Pagos de ejemplo
+        body: Rangos orientativos para hardware funcional en buen estado. La oferta
+          final depende del modelo exacto, el estado y nuestras pruebas.
+        columns:
+          hardware: Hardware
+          payout: Pago estimado
+        rows:
+          rtx_4070:
+            hardware: NVIDIA GeForce RTX 4070
+            payout: 320–380 €
+          rtx_3060:
+            hardware: NVIDIA GeForce RTX 3060 12GB
+            payout: 150–190 €
+          rx_6700:
+            hardware: AMD Radeon RX 6700 XT
+            payout: 160–200 €
+          ryzen_7:
+            hardware: AMD Ryzen 7 5800X
+            payout: 90–120 €
+          i5_12400:
+            hardware: Intel Core i5-12400F
+            payout: 60–80 €
+      steps:
+        title: Cómo funciona
+        one:
+          title: Cuéntanos qué tienes
+          body: Mándanos por email tus piezas con fotos y notas de estado.
+        two:
+          title: Recibe tu oferta
+          body: Respondemos en un día laborable con un precio garantizado.
+        three:
+          title: Envío gratis
+          body: Acepta la oferta y te mandamos una etiqueta prepago — empaqueta y
+            deja el paquete.
+        four:
+          title: Cobra
+          body: Probamos las piezas y transferimos el dinero en 48 horas.
+      faq:
+        title: Preguntas
+        items:
+          condition:
+            q: ¿Qué aceptáis?
+            a: Gráficas, procesadores, RAM, almacenamiento y equipos completos que
+              funcionen. El desgaste estético no importa si la pieza pasa nuestras
+              pruebas.
+          price:
+            q: ¿Cómo ponéis el precio?
+            a: Partimos del precio de mercado del modelo y aplicamos un pequeño
+              margen de reacondicionamiento. La oferta es exactamente lo que
+              recibes — sin comisiones ocultas.
+          shipping:
+            q: ¿Quién paga el envío?
+            a: Nosotros. Cuando aceptas una oferta te mandamos por email una
+              etiqueta prepago válida durante 14 días.
+          payment:
+            q: ¿Cuándo cobro?
+            a: Por transferencia bancaria en las 48 horas siguientes a recibir las
+              piezas y pasar las pruebas.
+      final_cta:
+        title: ¿Listo para convertir tu hardware viejo en dinero?
+        body: Mándanos tu lista de piezas — nosotros hacemos el resto.
+  sellings:
+    show:
+      title: Vende en PCMarket
+      meta:
+        description: Vende tu hardware de PC a la comunidad tecnológica española en
+          PCMarket. Anuncios gratis, comisiones bajas en el lanzamiento, compradores
+          verificados y cobros rápidos.
+      hero:
+        badge: Info para vendedores
+        title: Empieza a vender a la comunidad PC de España
+        subtitle: Hazle fotos, descríbelo y publícalo. Llega a gamers, montadores
+          y geeks de todo el país — publicar es siempre gratis.
+        cta: Empieza a vender
+        note: Anuncios gratis · Solo pagas cuando se vende
+      steps:
+        title: Cómo funciona
+        list_it:
+          title: Publica
+          body: Haz unas fotos, elige la categoría y añade tus especificaciones.
+            Un buen anuncio se hace en unos cinco minutos.
+        ship_it:
+          title: Envía
+          body: Imprime una etiqueta y lleva el paquete a un punto, o entrega el
+            producto en mano — tú eliges cómo enviar cada anuncio.
+        get_paid:
+          title: Cobra
+          body_escrow: El comprador paga a través de PCMarket y el dinero se libera
+            en cuanto se completa el pedido.
+          body_direct: El comprador te paga a la entrega o acordáis el pago por
+            chat — cierra tratos solo con compradores confirmados.
+      perks:
+        title: Por qué los vendedores eligen PCMarket
+        fees:
+          title: Comisiones bajas
+          body_free: 0% de comisión durante el lanzamiento — te quedas todo lo que
+            ganas.
+          body_percent: Solo un %{percent}% de comisión por venta — sin gastos de
+            publicación ni suscripciones.
+        community:
+          title: Comunidad verificada
+          body: Perfiles reales con valoraciones y reseñas significan compradores
+            serios y menos tiempo perdido.
+        secure:
+          title: Transacciones seguras
+          body: Anuncios moderados, datos de contacto protegidos y botón de denuncia
+            en todo lo sospechoso.
+        payouts:
+          title: Cobros rápidos
+          body: El dinero de las ventas completadas llega a tu cuenta en días, no
+            en semanas.
+      featured_stores:
+        title: Tiendas destacadas
+        body: Los vendedores a los que la comunidad siempre vuelve.
+        sales:
+          one: "%{count} venta"
+          other: "%{count} ventas"
+      faq:
+        title: Preguntas frecuentes
+        items:
+          fees:
+            q: ¿Cuánto cuesta vender?
+            a: Publicar es gratis. Durante el lanzamiento no cobramos ninguna
+              comisión; más adelante se aplica una pequeña comisión solo cuando
+              tu producto se vende de verdad.
+          review:
+            q: ¿Cómo se revisan los anuncios?
+            a: Nuestro equipo de moderación revisa cada anuncio antes de
+              publicarlo — verificamos fotos, especificaciones y coherencia del
+              precio, normalmente en un día.
+          shipping:
+            q: ¿Cómo funciona el envío?
+            a: Tú eliges por anuncio — envía con una etiqueta que imprimes tú,
+              acuerda una recogida o entrega en mano al comprador.
+          payout:
+            q: ¿Cuándo y cómo cobro?
+            a_escrow: El pago del comprador se retiene de forma segura y se libera
+              al completarse el pedido. Los cobros a tu cuenta bancaria llegan en
+              unos pocos días laborables.
+            a_direct: Acuerdas el pago con el comprador — a la entrega o por chat.
+              Queda en un lugar público y revisa la valoración del comprador antes
+              de entregar nada.
+          elsewhere:
+            q: ¿Puedo publicar mis productos en otras webs?
+            a: Sí. Nunca pedimos exclusividad — publica donde quieras y vende
+              donde te encuentre antes el comprador.
+          business:
+            q: Vendo como empresa — ¿necesito NIF español?
+            a: Las cuentas de empresa deben añadir un identificador fiscal válido
+              (NIF, NIE o CIF) al abrir la tienda, para que facturas e información
+              al mercado cumplan la normativa.
+      recently_sold:
+        title: Vendido recientemente
+      final_cta:
+        title: Tu gráfica antigua es el sueño de otra persona
+        body: Publica tu primer anuncio hoy — cinco minutos y cero coste.
+        cta: Publicar mi primer anuncio
   activerecord:
     errors:
       models:

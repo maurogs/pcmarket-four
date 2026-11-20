@@ -1,4 +1,10 @@
 module StoresHelper
+  # Up-to-two-letter monogram for store avatars without an uploaded logo
+  # (store cards on the selling landing page).
+  def store_initials(store)
+    store.display_name.split(/[\s_-]+/).first(2).filter_map { |part| part[0] }.join.upcase
+  end
+
   # Five stars with the first `rating` filled — reviews tab summary and cards.
   def review_stars(rating, size: "h-4 w-4")
     stars = (1..5).map do |star|

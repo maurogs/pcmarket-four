@@ -1,7 +1,7 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-20 (Phase 3 step 5 — seller dashboard,
-uncommitted)_
+_Last updated: 2026-11-20 (Phase 3 step 6 — selling landing pages,
+uncommitted; Phase 3 complete)_
 
 ## What this is
 
@@ -661,9 +661,42 @@ FR/GB/DE/IT/PT seeded but disabled.
   messages/wishlist/admin), so sidebar assertions must scope to
   `nav[aria-label='Seller area']`.
 
+## Code map (Phase 3 step 6 — selling landing pages)
+
+- **Phase 3 is complete** (steps 1–6: sell CRUD, spec fields, photos,
+  lifecycle, dashboard, selling landing pages).
+- Route `resource :selling, only: :show, path: "sell"` (locale scope) →
+  `SellingsController#show`: `expires_in 1.hour, public: true` for
+  anonymous users; whole body in one fragment cache keyed on locale +
+  `commission_enabled`/`commission_percent`/`payments_enabled` +
+  `SellingPage#data_version` (max updated_at of Listing/Store, cached 5 min)
+  so flag flips and new data bust it.
+- `app/services/selling_page.rb` (HomePage pattern — cached id lists +
+  `in_order_of` reload): `featured_stores` via new `Store.featured` scope
+  (not on vacation, `sales_count >= 1`, sales → rating → id desc, limit 5)
+  and `recently_sold` (sold within 1 month, limit 14).
+- `sellings/show.html.erb`: hero + final CTA → `new_seller_listing_path`;
+  3 steps and payout FAQ answer switch copy on `payments_enabled`
+  (escrow vs pay-on-delivery/chat); fee perk/FAQ switch on
+  `commission_enabled` ("0% commission during launch" vs "%{percent}%");
+  featured-stores grid (logo variant or `store_initials` monogram from
+  `StoresHelper`, verified badge, pluralized sales count — hidden when
+  empty); 6-question FAQ as native `<details>`; recently-sold strip reuses
+  `listings/_scroller` (self-hides when empty).
+- `SellToUsController#require_flag` uses `render_not_found` (404) when
+  `sell_to_us_enabled` is off; `sell_to_us/show.html.erb` is a full info
+  page (hero, static I18n payouts table, 4 steps, `<details>` FAQ) with a
+  **mailto CTA** to `AppSettings.get(:support_email)` — no offer flow yet.
+- Entry points: footer "Sell on PCMarket" + home `sell_cta.primary`
+  "Start selling" both → `selling_path` (placeholders replaced); header/
+  drawer/mega-menu sell-to-us links stay flag-gated.
+- Gotchas: unquoted YAML scalars break on `: ` (and fr ` : `) — use em
+  dashes; `assert_select` CTA counts must use `minimum:` because header/
+  footer add their own sell links.
+
 ## Testing
 
-- `bin/rails test` — **467 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **486 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -740,7 +773,15 @@ FR/GB/DE/IT/PT seeded but disabled.
   `test/controllers/seller/dashboards_controller_test.rb` (7 tests — auth,
   no-store redirect, KPI render, onboarding vs panels, chart+attention
   render, period param sanitized, sidebar link), and the header menu test
-  now asserts the Seller dashboard / My listings links.
+  now asserts the Seller dashboard / My listings links; Phase 3 step 6 adds
+  `test/controllers/sellings_controller_test.rb` (16 tests — 6-locale render
+  without missing translations, public 1h cache headers, sell CTAs, fee copy
+  both commission states, payout copy both payments states, featured stores
+  and recently-sold render/hide, home+footer links to /sell) and
+  `test/controllers/sell_to_us_controller_test.rb` (7 tests — flag on/off/
+  missing 404s, 6-locale render, mailto CTA, sell-to-us links hidden when
+  off / shown when on; the 3 original tests moved out of
+  `pages_controller_test.rb`).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -784,5 +825,9 @@ FR/GB/DE/IT/PT seeded but disabled.
   messages, offers, saved searches). GDPR deletion + data export ship
   (Phase 2 step 6); the export-ready **email notification** is still TODO
   (Phase 6 mailer wiring).
+- **Sell-to-us offer flow is mailto-only** (Phase 3 step 6): the page and
+  its "Request an offer" button email `support_email` directly; a real
+  quote-request form/offer pipeline is a later phase. Payouts table rows are
+  static I18n strings, not price data.
 - No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a/2.2b/2.3/2.4/2.5/2.6/
-  3.1/3.2/3.3/3.4 — awaiting user review.
+  3.1/3.2/3.3/3.4/3.5/3.6 — awaiting user review.

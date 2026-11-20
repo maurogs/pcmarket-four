@@ -28,7 +28,9 @@ module IconHelper
     "check" => '<path d="m5 13 4 4 10-10"/>',
     "star" => '<path d="m12 3.6 2.5 5.1 5.6.8-4 3.9.9 5.6-5-2.7-5 2.7 1-5.6-4.1-3.9 5.6-.8L12 3.6Z"/>',
     "lock" => '<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
-    "grip" => '<circle cx="9" cy="6" r=".9"/><circle cx="15" cy="6" r=".9"/><circle cx="9" cy="12" r=".9"/><circle cx="15" cy="12" r=".9"/><circle cx="9" cy="18" r=".9"/><circle cx="15" cy="18" r=".9"/>'
+    "grip" => '<circle cx="9" cy="6" r=".9"/><circle cx="15" cy="6" r=".9"/><circle cx="9" cy="12" r=".9"/><circle cx="15" cy="12" r=".9"/><circle cx="9" cy="18" r=".9"/><circle cx="15" cy="18" r=".9"/>',
+    "banknote" => '<rect x="2" y="6.5" width="20" height="11" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 10v4M18 10v4"/>',
+    "percent" => '<path d="M19 5 5 19"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/>'
   }.freeze
 
   SOCIAL_ICONS = {

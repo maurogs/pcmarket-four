@@ -1,0 +1,111 @@
+<% set_meta_tags title: t(".title"), description: t(".meta.description") %>
+<% commission_label = number_to_percentage(@commission_percent, precision: 1, strip_insignificant_zeros: true) %>
+
+<%# One fragment for the whole body: locale + fee/payment flags + data stamp. %>
+<% cache [ "selling/body", I18n.locale, @commission_enabled, @commission_percent, @payments_enabled, @selling.data_version ] do %>
+  <div class="mx-auto max-w-7xl px-4">
+    <%# Hero. %>
+    <section class="mt-8 overflow-hidden rounded-3xl bg-primary-800 px-6 py-12 text-white sm:px-12 sm:py-16" aria-labelledby="sell-hero-heading">
+      <div class="max-w-2xl">
+        <p class="text-xs font-extrabold uppercase tracking-widest text-primary-200"><%= t(".hero.badge") %></p>
+        <h1 id="sell-hero-heading" class="mt-3 font-display text-3xl font-bold leading-tight tracking-tight sm:text-5xl"><%= t(".hero.title") %></h1>
+        <p class="mt-4 text-base text-primary-100 sm:text-lg"><%= t(".hero.subtitle") %></p>
+        <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+          <%= link_to t(".hero.cta"), new_seller_listing_path, class: "btn bg-cream-50 px-6 py-3 text-base text-primary-800 hover:bg-cream-100" %>
+          <span class="text-sm text-primary-200"><%= t(".hero.note") %></span>
+        </div>
+      </div>
+    </section>
+
+    <%# Three steps (payments copy follows the payments flag). %>
+    <section class="mt-12" aria-labelledby="sell-steps-heading">
+      <h2 id="sell-steps-heading" class="section-title text-xl sm:text-2xl"><%= t(".steps.title") %></h2>
+      <div class="mt-4 grid gap-4 md:grid-cols-3">
+        <% [ [ "list_it", "image" ], [ "ship_it", "truck" ], [ "get_paid", "banknote" ] ].each do |key, icon_name| %>
+          <article class="card p-6">
+            <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300"><%= icon icon_name %></span>
+            <h3 class="mt-4 font-display text-lg font-bold"><%= t(".steps.#{key}.title") %></h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-muted">
+              <%= key == "get_paid" ? t(".steps.get_paid.#{@payments_enabled ? "body_escrow" : "body_direct"}") : t(".steps.#{key}.body") %>
+            </p>
+          </article>
+        <% end %>
+      </div>
+    </section>
+
+    <%# Seller perks (fee copy follows the commission flags). %>
+    <section class="mt-12" aria-labelledby="sell-perks-heading">
+      <h2 id="sell-perks-heading" class="section-title text-xl sm:text-2xl"><%= t(".perks.title") %></h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <% [ [ "fees", "percent" ], [ "community", "verified" ], [ "secure", "shield" ], [ "payouts", "clock" ] ].each do |key, icon_name| %>
+          <article class="card p-5">
+            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300"><%= icon icon_name %></span>
+            <h3 class="mt-3 font-bold"><%= t(".perks.#{key}.title") %></h3>
+            <p class="mt-1 text-sm leading-relaxed text-muted">
+              <%= key == "fees" ? t(".perks.fees.#{@commission_enabled ? "body_percent" : "body_free"}", percent: commission_label) : t(".perks.#{key}.body") %>
+            </p>
+          </article>
+        <% end %>
+      </div>
+    </section>
+
+    <%# Featured stores (hidden until a seller has sales). %>
+    <% stores = @selling.featured_stores %>
+    <% if stores.any? %>
+      <section class="mt-12" aria-labelledby="sell-stores-heading">
+        <h2 id="sell-stores-heading" class="section-title text-xl sm:text-2xl"><%= t(".featured_stores.title") %></h2>
+        <p class="mt-1 text-sm text-muted"><%= t(".featured_stores.body") %></p>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <% stores.each do |store| %>
+            <%= link_to store_path(store), class: "card flex items-center gap-3 p-4 hover:border-primary-300 hover:shadow-md dark:hover:border-primary-700" do %>
+              <span class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-primary-100 font-display text-lg font-bold text-primary-700 dark:bg-primary-900 dark:text-primary-200">
+                <% if store.logo.attached? %>
+                  <%= image_tag url_for(store.logo.variant(resize_to_fill: [ 112, 112 ], format: Listing::IMAGE_FORMAT)), alt: "", class: "h-full w-full object-cover" %>
+                <% else %>
+                  <%= store_initials(store) %>
+                <% end %>
+              </span>
+              <span class="min-w-0">
+                <span class="flex items-center gap-1">
+                  <span class="truncate font-bold"><%= store.display_name %></span>
+                  <% if store.verified? %>
+                    <span class="shrink-0 text-primary-600 dark:text-primary-400" title="<%= t("stores.show.verified") %>"><%= icon "verified", class: "h-4 w-4" %></span>
+                  <% end %>
+                </span>
+                <span class="mt-0.5 block text-xs text-muted"><%= t(".featured_stores.sales", count: store.sales_count) %></span>
+              </span>
+            <% end %>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
+    <%# FAQ — native details accordion. %>
+    <section class="mt-12" aria-labelledby="sell-faq-heading">
+      <h2 id="sell-faq-heading" class="section-title text-xl sm:text-2xl"><%= t(".faq.title") %></h2>
+      <div class="mt-4 grid items-start gap-3 md:grid-cols-2">
+        <% %w[fees review shipping payout elsewhere business].each do |item| %>
+          <details class="card group">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-3 p-5 font-bold [&::-webkit-details-marker]:hidden">
+              <%= t(".faq.items.#{item}.q") %>
+              <%= icon "chevron-down", class: "h-4 w-4 shrink-0 text-muted transition-transform group-open:rotate-180" %>
+            </summary>
+            <p class="px-5 pb-5 text-sm leading-relaxed text-muted">
+              <%= item == "payout" ? t(".faq.items.payout.#{@payments_enabled ? "a_escrow" : "a_direct"}") : t(".faq.items.#{item}.a") %>
+            </p>
+          </details>
+        <% end %>
+      </div>
+    </section>
+
+    <%# Recently sold (the scroller partial hides itself when empty). %>
+    <%= render "listings/scroller", heading: t(".recently_sold.title"), listings: @selling.recently_sold %>
+
+    <%# Final CTA band. %>
+    <section class="my-12 overflow-hidden rounded-3xl bg-primary-700 px-6 py-10 text-center text-white sm:px-10" aria-labelledby="sell-final-cta-heading">
+      <h2 id="sell-final-cta-heading" class="font-display text-2xl font-bold tracking-tight sm:text-3xl"><%= t(".final_cta.title") %></h2>
+      <p class="mx-auto mt-2 max-w-xl text-sm text-primary-100 sm:text-base"><%= t(".final_cta.body") %></p>
+      <%= link_to t(".final_cta.cta"), new_seller_listing_path, class: "btn bg-cream-50 mt-6 px-6 py-3 text-base text-primary-800 hover:bg-cream-100" %>
+    </section>
+  </div>
+<% end %>

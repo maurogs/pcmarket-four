@@ -1,12 +1,77 @@
 <% set_meta_tags title: t(".title"), description: t(".meta.description") %>
+<% support_email = AppSettings.get(:support_email, "support@pcmarket.example") %>
 
-<div class="mx-auto max-w-3xl px-4 py-12">
-  <h1 class="section-title"><%= t(".title") %></h1>
-  <p class="mt-4 text-lg text-muted"><%= t(".intro") %></p>
+<div class="mx-auto max-w-5xl px-4">
+  <%# Hero — the offer flow is email-only for now (mailto CTA). %>
+  <section class="mt-8 overflow-hidden rounded-3xl bg-primary-800 px-6 py-12 text-white sm:px-12 sm:py-16" aria-labelledby="sell-to-us-heading">
+    <div class="max-w-2xl">
+      <h1 id="sell-to-us-heading" class="font-display text-3xl font-bold leading-tight tracking-tight sm:text-5xl"><%= t(".title") %></h1>
+      <p class="mt-4 text-base text-primary-100 sm:text-lg"><%= t(".intro") %></p>
+      <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+        <%= mail_to support_email, t(".hero.cta"), subject: t(".cta_subject"), class: "btn bg-cream-50 px-6 py-3 text-base text-primary-800 hover:bg-cream-100" %>
+        <span class="text-sm text-primary-200"><%= t(".hero.note") %></span>
+      </div>
+    </div>
+  </section>
 
-  <div class="card mt-8 p-8 text-center">
-    <%= icon "tag", class: "mx-auto h-10 w-10 text-primary-500" %>
-    <p class="mt-4 font-semibold"><%= t("pages.coming_soon") %></p>
-    <p class="mt-2 text-sm text-muted"><%= t("pages.placeholder") %></p>
-  </div>
+  <%# Example payouts (static indicative rows). %>
+  <section class="mt-12" aria-labelledby="s2u-payouts-heading">
+    <h2 id="s2u-payouts-heading" class="section-title text-xl sm:text-2xl"><%= t(".payouts.title") %></h2>
+    <p class="mt-1 text-sm text-muted"><%= t(".payouts.body") %></p>
+    <div class="card mt-4 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-cream-100 text-xs uppercase tracking-wide text-muted dark:bg-cream-surface">
+          <tr>
+            <th scope="col" class="px-5 py-3 text-left"><%= t(".payouts.columns.hardware") %></th>
+            <th scope="col" class="px-5 py-3 text-right"><%= t(".payouts.columns.payout") %></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line">
+          <% %w[rtx_4070 rtx_3060 rx_6700 ryzen_7 i5_12400].each do |row| %>
+            <tr>
+              <th scope="row" class="px-5 py-3 text-left font-semibold"><%= t(".payouts.rows.#{row}.hardware") %></th>
+              <td class="px-5 py-3 text-right font-bold tracking-tight"><%= t(".payouts.rows.#{row}.payout") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <%# How it works. %>
+  <section class="mt-12" aria-labelledby="s2u-steps-heading">
+    <h2 id="s2u-steps-heading" class="section-title text-xl sm:text-2xl"><%= t(".steps.title") %></h2>
+    <ol class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <% %w[one two three four].each_with_index do |step, index| %>
+        <li class="card p-5">
+          <span class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-600 font-display text-sm font-bold text-white"><%= index + 1 %></span>
+          <h3 class="mt-3 font-bold"><%= t(".steps.#{step}.title") %></h3>
+          <p class="mt-1 text-sm leading-relaxed text-muted"><%= t(".steps.#{step}.body") %></p>
+        </li>
+      <% end %>
+    </ol>
+  </section>
+
+  <%# FAQ — native details accordion. %>
+  <section class="mt-12" aria-labelledby="s2u-faq-heading">
+    <h2 id="s2u-faq-heading" class="section-title text-xl sm:text-2xl"><%= t(".faq.title") %></h2>
+    <div class="mt-4 grid items-start gap-3 md:grid-cols-2">
+      <% %w[condition price shipping payment].each do |item| %>
+        <details class="card group">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-3 p-5 font-bold [&::-webkit-details-marker]:hidden">
+            <%= t(".faq.items.#{item}.q") %>
+            <%= icon "chevron-down", class: "h-4 w-4 shrink-0 text-muted transition-transform group-open:rotate-180" %>
+          </summary>
+          <p class="px-5 pb-5 text-sm leading-relaxed text-muted"><%= t(".faq.items.#{item}.a") %></p>
+        </details>
+      <% end %>
+    </div>
+  </section>
+
+  <%# Final CTA band. %>
+  <section class="my-12 rounded-3xl border border-line bg-cream-100 p-6 text-center dark:bg-cream-surface sm:p-10" aria-labelledby="s2u-cta-heading">
+    <h2 id="s2u-cta-heading" class="font-display text-2xl font-bold tracking-tight sm:text-3xl"><%= t(".final_cta.title") %></h2>
+    <p class="mx-auto mt-2 max-w-xl text-sm text-muted sm:text-base"><%= t(".final_cta.body") %></p>
+    <%= mail_to support_email, t(".hero.cta"), subject: t(".cta_subject"), class: "btn-primary mt-6 px-6 py-3 text-base" %>
+  </section>
 </div>

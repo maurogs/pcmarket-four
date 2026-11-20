@@ -1071,3 +1071,67 @@ account-menu Dashboard entries were "Soon" pills).
 `test/integration/header_account_menu_test.rb`.
 
 Verified: `bin/rails test` 467 green; `bin/rubocop` clean (193 files).
+
+## 2026-11-20 — Phase 3 step 6: selling landing pages (uncommitted)
+
+- Route `resource :selling, only: :show, path: "sell"` inside the locale
+  scope → `SellingsController#show` ("Sell on PCMarket"). Anonymous
+  responses get `expires_in 1.hour, public: true` (same pattern as
+  `ListingsController`); the whole body is one fragment cache keyed on
+  `locale + commission_enabled + commission_percent + payments_enabled +
+  data_version` so flag flips and new data invalidate it (memory store is
+  live in tests, so this also keeps mid-test flag flips honest).
+- `app/services/selling_page.rb` PORO (mirrors `HomePage`): `featured_stores`
+  (new `Store.featured` scope — `not_on_vacation`, `sales_count >= 1`, order
+  sales_count/rating_avg/id desc, limit 5) and `recently_sold` (sold in the
+  last month, limit 14) as cached id lists keyed on `data_version` + locale,
+  reloaded with `in_order_of` + eager loads. `data_version` = max
+  updated_at of Listing/Store, cached 5 min.
+- `sellings/show.html.erb`: hero (CTA → `new_seller_listing_path`), 3 steps
+  (List it / Ship it / Get paid — payment copy switches on
+  `payments_enabled`: escrow vs pay-on-delivery/chat), 4 perks (fee copy
+  switches on `commission_enabled`: "0% commission during launch" vs
+  "%{percent}%"), featured-stores grid (logo variant or `store_initials`
+  monogram, verified badge, pluralized sales count; hidden when empty),
+  6-question FAQ as native `<details>` accordions (payout answer also
+  flag-conditional), recently-sold strip reusing `listings/_scroller`
+  (self-hides when empty), final CTA band.
+- `SellToUsController` now `render_not_found` (was
+  `raise ActiveRecord::RecordNotFound`) when `sell_to_us_enabled` is off, and
+  `sell_to_us/show.html.erb` replaces the "coming soon" placeholder with a
+  full info page: hero, static indicative payouts table (5 GPU/CPU rows,
+  I18n strings), 4-step how-it-works, 4-question `<details>` FAQ, mailto CTA
+  ("Request an offer") to `AppSettings.get(:support_email)` with a
+  translated subject — the real offer flow is out of scope (open item).
+- Links wired: footer "Selling guide" placeholder (`page_path(id: "selling")`)
+  → `selling_path` with label reworded to "Sell on PCMarket" in all locales;
+  home `sell_cta.primary` placeholder (`root_path`) → `selling_path`, label
+  → "Start selling". Header/drawer/mega-menu sell-to-us gating untouched.
+- Helpers: `IconHelper` gained `banknote` + `percent` icons; `StoresHelper`
+  gained `store_initials` (up-to-2-letter monogram, same split as the
+  account links avatar).
+- i18n: new `sellings.show.*` block (~60 keys incl. `body_escrow`/
+  `body_direct`, `body_free`/`body_percent`, `a_escrow`/`a_direct` variants
+  and pluralized `featured_stores.sales`) + expanded `sell_to_us.show.*`
+  (hero/cta_subject/payouts table/steps/faq/final_cta) in all 6 locales,
+  edited as text. Gotcha: unquoted YAML scalars can't contain `: ` — three
+  translations had to swap colon for em dash (fr also ` : ` with spaces).
+- Tests: `test/controllers/sellings_controller_test.rb` (16 — 6-locale
+  render w/ missing-translation check, public 1h cache headers, CTA links
+  (header/footer add extra matches → `minimum: 2`), fee copy both flag
+  states, payout copy both payments states, featured stores render/hide,
+  recently sold render/hide, home+footer link to /sell) and
+  `test/controllers/sell_to_us_controller_test.rb` (7 — flag on/off/missing,
+  6-locale render, mailto CTA, links hidden when off, header button when on;
+  the 3 old tests moved out of `pages_controller_test.rb`).
+
+**Files**: `config/routes.rb`, `app/controllers/sellings_controller.rb`,
+`app/controllers/sell_to_us_controller.rb`, `app/services/selling_page.rb`,
+`app/models/store.rb`, `app/helpers/icon_helper.rb`, `app/helpers/stores_helper.rb`,
+`app/views/sellings/show.html.erb`, `app/views/sell_to_us/show.html.erb`,
+`app/views/home/index.html.erb`, `app/views/shared/_footer.html.erb`,
+`config/locales/*.yml`, `test/controllers/sellings_controller_test.rb`,
+`test/controllers/sell_to_us_controller_test.rb`,
+`test/controllers/pages_controller_test.rb`.
+
+Verified: `bin/rails test` 486 green; `bin/rubocop` clean (197 files).

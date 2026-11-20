@@ -37,7 +37,7 @@ en:
       about: About us
       help: Help center
       buying: Buying & selling
-      selling: Selling guide
+      selling: Sell on PCMarket
       academy: Seller academy
       terms: Terms of use
       privacy: Privacy policy
@@ -105,7 +105,7 @@ en:
         title: Sell your gear in minutes
         body: Photograph it, describe it, post it. Free listings, and you only pay
           when your item sells.
-        primary: List an item
+        primary: Start selling
       testimonials:
         title: Loved by gamers and geeks
         items:
@@ -221,6 +221,164 @@ en:
       meta:
         description: Sell your used computers and components to PCMarket for a guaranteed
           price.
+      hero:
+        cta: Request an offer
+        note: Free prepaid label · Payment within 48h of testing
+      cta_subject: Sell to us — quote request
+      payouts:
+        title: Example payouts
+        body: Indicative ranges for working hardware in good condition. Your final
+          quote depends on the exact model, condition and our tests.
+        columns:
+          hardware: Hardware
+          payout: Estimated payout
+        rows:
+          rtx_4070:
+            hardware: NVIDIA GeForce RTX 4070
+            payout: €320–380
+          rtx_3060:
+            hardware: NVIDIA GeForce RTX 3060 12GB
+            payout: €150–190
+          rx_6700:
+            hardware: AMD Radeon RX 6700 XT
+            payout: €160–200
+          ryzen_7:
+            hardware: AMD Ryzen 7 5800X
+            payout: €90–120
+          i5_12400:
+            hardware: Intel Core i5-12400F
+            payout: €60–80
+      steps:
+        title: How it works
+        one:
+          title: Tell us what you have
+          body: Email your parts list with photos and condition notes.
+        two:
+          title: Get your quote
+          body: We reply within one business day with a guaranteed price.
+        three:
+          title: Ship it for free
+          body: Accept the quote and we send a prepaid label — pack it and drop it
+            off.
+        four:
+          title: Get paid
+          body: We test the parts and transfer the money within 48 hours.
+      faq:
+        title: Questions
+        items:
+          condition:
+            q: What do you accept?
+            a: Working graphics cards, processors, RAM, storage and complete builds.
+              Cosmetic wear is fine as long as the part passes our tests.
+          price:
+            q: How do you set the price?
+            a: We start from current market prices for the model and keep a small
+              refurbishment margin. The quote is exactly what you receive — no
+              hidden fees.
+          shipping:
+            q: Who pays for shipping?
+            a: We do. Once you accept a quote we email a prepaid label valid for
+              14 days.
+          payment:
+            q: When do I get paid?
+            a: By bank transfer within 48 hours of the parts arriving and passing
+              testing.
+      final_cta:
+        title: Ready to turn old hardware into cash?
+        body: Send us your parts list — we'll take care of the rest.
+  sellings:
+    show:
+      title: Sell on PCMarket
+      meta:
+        description: Sell your PC hardware to Spain's tech community on PCMarket.
+          Free listings, low launch fees, verified buyers and fast payouts.
+      hero:
+        badge: Seller info
+        title: Start selling to Spain's PC community
+        subtitle: Photograph it, describe it, post it. Reach gamers, builders and
+          geeks across the country — listing is always free.
+        cta: Start selling
+        note: Free listings · You only pay when your item sells
+      steps:
+        title: How it works
+        list_it:
+          title: List it
+          body: Snap a few photos, pick the category and add your specs. A good
+            listing takes about five minutes.
+        ship_it:
+          title: Ship it
+          body: Print a label and drop the parcel off, or hand the item over in
+            person — you choose how to ship every listing.
+        get_paid:
+          title: Get paid
+          body_escrow: The buyer pays through PCMarket and the money is released to
+            you as soon as the order is completed.
+          body_direct: The buyer pays you on delivery or you agree on the payment
+            in chat — settle only with confirmed buyers.
+      perks:
+        title: Why sellers choose PCMarket
+        fees:
+          title: Low fees
+          body_free: 0% commission during launch — you keep everything you earn.
+          body_percent: Only %{percent}% commission per sale — no listing fees and
+            no subscriptions.
+        community:
+          title: Verified community
+          body: Real profiles with ratings and reviews mean serious buyers and less
+            time wasted.
+        secure:
+          title: Secure transactions
+          body: Moderated listings, protected contact details and a report button
+            on everything suspicious.
+        payouts:
+          title: Fast payouts
+          body: Money for completed sales reaches your account in days, not weeks.
+      featured_stores:
+        title: Featured stores
+        body: The sellers the community keeps coming back to.
+        sales:
+          one: "%{count} sale"
+          other: "%{count} sales"
+      faq:
+        title: Frequently asked questions
+        items:
+          fees:
+            q: What does it cost to sell?
+            a: Listing is free. During launch we charge no commission at all; later
+              a small commission applies only when your item actually sells.
+          review:
+            q: How are listings reviewed?
+            a: Every listing is checked by our moderation team before it goes live
+              — we verify photos, specs and price plausibility, usually within a
+              day.
+          shipping:
+            q: How does shipping work?
+            a: You choose per listing — ship with a label you print yourself,
+              arrange pickup, or meet the buyer in person and hand over the item.
+          payout:
+            q: When and how do I get paid?
+            a_escrow: The buyer's payment is held securely and released when the
+              order is completed. Payouts to your bank account arrive within a few
+              business days.
+            a_direct: You agree on the payment with the buyer — on delivery or via
+              chat. Meet in a public place and check the buyer's rating before you
+              hand anything over.
+          elsewhere:
+            q: Can I list my items on other sites too?
+            a: Yes. We never ask for exclusivity — list everywhere and sell where
+              the buyer finds you first.
+          business:
+            q: I sell as a business — do I need a Spanish NIF?
+            a: Business accounts must add a valid tax ID (NIF, NIE or CIF) when
+              opening the store, so invoices and marketplace reporting stay
+              compliant.
+      recently_sold:
+        title: Recently sold
+      final_cta:
+        title: Your old GPU is someone's dream upgrade
+        body: Post your first listing today — it takes five minutes and costs
+          nothing.
+        cta: List your first item
   activerecord:
     errors:
       models:

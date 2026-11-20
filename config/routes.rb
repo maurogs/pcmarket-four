@@ -27,6 +27,9 @@ Rails.application.routes.draw do
 
     resource :search, only: :show, controller: "searches"
     resource :sell_to_us, only: :show
+    # "Sell on PCMarket" landing page (Phase 3 step 6). Singular — one public
+    # selling page per locale, so the URL never carries an id.
+    resource :selling, only: :show, path: "sell"
     resource :pc_finder, only: :show, path: "pc-finder"
 
     # Newsletter signup placeholder (persists nothing yet).

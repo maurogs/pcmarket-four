@@ -37,7 +37,7 @@ de:
       about: Über uns
       help: Hilfe-Center
       buying: Kaufen und verkaufen
-      selling: Verkäuferhandbuch
+      selling: Auf PCMarket verkaufen
       academy: Verkäuferakademie
       terms: Nutzungsbedingungen
       privacy: Datenschutz
@@ -107,7 +107,7 @@ de:
         title: Verkaufe dein Equipment in Minuten
         body: Fotografieren, beschreiben, posten. Kostenlose Anzeigen – du zahlst
           erst bei erfolgreichem Verkauf.
-        primary: Anzeige aufgeben
+        primary: Jetzt verkaufen
       testimonials:
         title: Bei Gamern und Geeks beliebt
         items:
@@ -223,6 +223,166 @@ de:
       meta:
         description: Verkaufen Sie Ihre gebrauchten Computer und Komponenten an PCMarket
           zum garantierten Preis.
+      hero:
+        cta: Angebot anfragen
+        note: Kostenloses Prepaid-Label · Zahlung binnen 48 h nach Test
+      cta_subject: An uns verkaufen — Angebotsanfrage
+      payouts:
+        title: Beispiel-Auszahlungen
+        body: Richtwerte für funktionierende Hardware in gutem Zustand. Das
+          endgültige Angebot hängt von genauem Modell, Zustand und unserem Test ab.
+        columns:
+          hardware: Hardware
+          payout: Geschätzte Auszahlung
+        rows:
+          rtx_4070:
+            hardware: NVIDIA GeForce RTX 4070
+            payout: 320–380 €
+          rtx_3060:
+            hardware: NVIDIA GeForce RTX 3060 12GB
+            payout: 150–190 €
+          rx_6700:
+            hardware: AMD Radeon RX 6700 XT
+            payout: 160–200 €
+          ryzen_7:
+            hardware: AMD Ryzen 7 5800X
+            payout: 90–120 €
+          i5_12400:
+            hardware: Intel Core i5-12400F
+            payout: 60–80 €
+      steps:
+        title: So funktioniert's
+        one:
+          title: Sagen Sie, was Sie haben
+          body: Schicken Sie uns Ihre Teile per E-Mail mit Fotos und Zustandsnotizen.
+        two:
+          title: Angebot erhalten
+          body: Wir antworten binnen eines Werktags mit einem garantierten Preis.
+        three:
+          title: Kostenlos versenden
+          body: Angebot annehmen, Prepaid-Label erhalten — einpacken und abgeben.
+        four:
+          title: Geld erhalten
+          body: Wir testen die Teile und überweisen das Geld binnen 48 Stunden.
+      faq:
+        title: Fragen
+        items:
+          condition:
+            q: Was nehmen Sie an?
+            a: Funktionierende Grafikkarten, Prozessoren, RAM, Speicher und
+              Komplett-PCs. Kosmetische Gebrauchsspuren sind kein Problem, wenn das
+              Teil unseren Test besteht.
+          price:
+            q: Wie bilden Sie den Preis?
+            a: Wir starten beim Marktpreis des Modells und behalten eine kleine
+              Refurbishment-Marge. Das Angebot ist genau das, was Sie erhalten —
+              keine versteckten Gebühren.
+          shipping:
+            q: Wer zahlt den Versand?
+            a: Wir. Nach Annahme eines Angebots senden wir per E-Mail ein
+              Prepaid-Label, gültig für 14 Tage.
+          payment:
+            q: Wann werde ich bezahlt?
+            a: Per Überweisung binnen 48 Stunden, nachdem die Teile angekommen und
+              getestet sind.
+      final_cta:
+        title: Bereit, alte Hardware in Geld zu verwandeln?
+        body: Schicken Sie uns Ihre Teileliste — den Rest machen wir.
+  sellings:
+    show:
+      title: Auf PCMarket verkaufen
+      meta:
+        description: Verkaufe deine PC-Hardware an Spaniens Tech-Community auf
+          PCMarket. Kostenlose Anzeigen, niedrige Launch-Gebühren, verifizierte
+          Käufer und schnelle Auszahlungen.
+      hero:
+        badge: Verkäufer-Infos
+        title: Verkaufe an Spaniens PC-Community
+        subtitle: Ablichten, beschreiben, einstellen. Erreiche Gamer, Schrauber und
+          Geeks im ganzen Land — Anzeigen sind immer kostenlos.
+        cta: Jetzt verkaufen
+        note: Kostenlose Anzeigen · Du zahlst nur bei Verkauf
+      steps:
+        title: So funktioniert's
+        list_it:
+          title: Einstellen
+          body: Ein paar Fotos, Kategorie wählen, Specs ergänzen — eine gute Anzeige
+            dauert etwa fünf Minuten.
+        ship_it:
+          title: Versenden
+          body: Label drucken und Paket abgeben oder persönlich übergeben — du
+            entscheidest je Anzeige, wie der Artikel versandt wird.
+        get_paid:
+          title: Geld erhalten
+          body_escrow: Der Käufer zahlt über PCMarket, und das Geld wird nach
+            Abschluss der Bestellung an dich ausgezahlt.
+          body_direct: Der Käufer zahlt bei Übergabe, oder ihr vereinbart die
+            Zahlung im Chat — schließe Geschäfte nur mit bestätigten Käufern ab.
+      perks:
+        title: Warum Verkäufer PCMarket wählen
+        fees:
+          title: Niedrige Gebühren
+          body_free: 0 % Provision im Launch — du behältst alles, was du verdienst.
+          body_percent: Nur %{percent} Provision pro Verkauf — keine Einstell- oder
+            Abo-Gebühren.
+        community:
+          title: Verifizierte Community
+          body: Echte Profile mit Bewertungen und Rezensionen bedeuten ernsthafte
+            Käufer und weniger Zeitverlust.
+        secure:
+          title: Sichere Transaktionen
+          body: Moderierte Anzeigen, geschützte Kontaktdaten und ein Melden-Button
+            bei allem Verdächtigen.
+        payouts:
+          title: Schnelle Auszahlungen
+          body: Geld aus abgeschlossenen Verkäufen erreicht dein Konto in Tagen,
+            nicht Wochen.
+      featured_stores:
+        title: Beliebte Shops
+        body: Die Verkäufer, zu denen die Community immer wieder zurückkehrt.
+        sales:
+          one: "%{count} Verkauf"
+          other: "%{count} Verkäufe"
+      faq:
+        title: Häufige Fragen
+        items:
+          fees:
+            q: Was kostet das Verkaufen?
+            a: Anzeigen sind kostenlos. Im Launch nehmen wir gar keine Provision;
+              später fällt eine kleine Provision nur an, wenn der Artikel wirklich
+              verkauft wird.
+          review:
+            q: Wie werden Anzeigen geprüft?
+            a: Unser Moderationsteam prüft jede Anzeige vor der Veröffentlichung —
+              Fotos, Specs und Plausibilität des Preises, in der Regel innerhalb
+              eines Tages.
+          shipping:
+            q: Wie läuft der Versand?
+            a: Du entscheidest je Anzeige — selbst gedrucktes Label, vereinbarte
+              Abholung oder persönliche Übergabe an den Käufer.
+          payout:
+            q: Wann und wie erhalte ich mein Geld?
+            a_escrow: Die Käuferzahlung wird sicher verwahrt und nach Abschluss der
+              Bestellung freigegeben. Auszahlungen auf dein Konto erfolgen innerhalb
+              weniger Werktage.
+            a_direct: Die Zahlung vereinbarst du mit dem Käufer — bei Übergabe oder
+              im Chat. Trefft euch an einem öffentlichen Ort und prüfe die
+              Bewertung des Käufers.
+          elsewhere:
+            q: Darf ich meine Artikel auch anderswo einstellen?
+            a: Ja. Wir verlangen nie Exklusivität — stelle überall ein und verkaufe
+              dort, wo dich der Käufer zuerst findet.
+          business:
+            q: Ich verkaufe als Unternehmen — brauche ich eine spanische NIF?
+            a: Geschäftskonten müssen beim Eröffnen des Shops eine gültige Steuer-ID
+              (NIF, NIE oder CIF) angeben, damit Rechnungen und Meldepflichten
+              konform bleiben.
+      recently_sold:
+        title: Kürzlich verkauft
+      final_cta:
+        title: Deine alte GPU ist jemandes Traum-Upgrade
+        body: Stelle heute deine erste Anzeige ein — fünf Minuten, keine Kosten.
+        cta: Erste Anzeige einstellen
   activerecord:
     errors:
       models:

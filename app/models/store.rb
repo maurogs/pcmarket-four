@@ -43,6 +43,11 @@ class Store < ApplicationRecord
 
   scope :verified, -> { where(verified: true) }
   scope :not_on_vacation, -> { where(vacation_mode: false) }
+  # Top sellers for the selling landing page: sellers with at least one sale,
+  # sales first then rating (id keeps the order stable for the cache).
+  scope :featured, -> {
+    not_on_vacation.where(sales_count: 1..).order(sales_count: :desc, rating_avg: :desc, id: :desc)
+  }
 
   # Slug lookups for seller URLs (/s/:slug), including historical slugs so
   # renamed stores keep resolving (the controller 301s them to the new URL).
