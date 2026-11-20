@@ -134,6 +134,7 @@ class Listing < ApplicationRecord
     allow_blank: true, if: :spain?
   validate :original_price_above_price
   validate :specs_are_valid
+  validate :required_specs_present, if: :entering_review_or_published?
   validate :images_are_valid
 
   before_validation :normalize_specs
@@ -235,6 +236,32 @@ class Listing < ApplicationRecord
     return nil if groups.empty?
 
     Arel::Nodes::And.new(groups.map { |node| Arel::Nodes::Grouping.new(node) })
+  end
+
+  # Whitelist for the sell form's specs inputs: keeps only the category's
+  # form-visible filter definitions, drops unknown keys and (for selections)
+  # unknown option values, and maps checkbox "1"/"0" booleans to
+  # "true"/"false". Range values are kept as typed.
+  def self.sanitize_specs(category, raw)
+    return {} if raw.blank? || category.blank?
+
+    definitions = category.effective_filter_definitions
+                          .select(&:show_in_listing_form)
+                          .index_by(&:key)
+
+    raw.to_h.each_with_object({}) do |(key, value), clean|
+      definition = definitions[key.to_s]
+      next if definition.nil?
+
+      values = Array(value).map { |v| v.is_a?(String) ? v : v.to_s }.map(&:strip).reject(&:blank?)
+      if definition.boolean?
+        values = values.map { |v| { "1" => "true", "0" => "false" }.fetch(v, v) }
+      elsif definition.selection_like?
+        allowed = definition.option_values
+        values = values.select { |v| allowed.include?(v) }
+      end
+      clean[key.to_s] = values.uniq if values.any?
+    end
   end
 
   def featured_now?
@@ -418,6 +445,20 @@ class Listing < ApplicationRecord
       allowed = definition.boolean? ? %w[true false] : definition.option_values
       invalid = values - allowed
       errors.add(:specs, :unknown_filter_value, key: key, value: invalid.join(", ")) if invalid.any?
+    end
+  end
+
+  # Drafts may be incomplete; submitting for review (or publishing) is only
+  # allowed once every required spec of the category has a value.
+  def entering_review_or_published?
+    will_save_change_to_status? && %w[pending_review published].include?(status)
+  end
+
+  def required_specs_present
+    return if category.blank?
+
+    category.effective_filter_definitions.select(&:required_in_form).each do |definition|
+      errors.add(:specs, :missing_required_spec, label: definition.label) if specs[definition.key].blank?
     end
   end
 

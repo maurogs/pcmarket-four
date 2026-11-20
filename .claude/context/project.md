@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-20 (Phase 3 step 1 — seller listings CRUD,
+_Last updated: 2026-11-20 (Phase 3 step 2 — sell-form specification fields,
 uncommitted)_
 
 ## What this is
@@ -511,16 +511,51 @@ FR/GB/DE/IT/PT seeded but disabled.
   (`Seller::ListingsHelper#grouped_category_options`, active leaves grouped
   by translated parent name), title with `char-count` Stimulus counter,
   condition radio cards with short descriptions, euro price fields,
-  shipping/location/offers sections, and clearly marked Specifications
-  (Phase 3 step 2) + Photos (step 3) placeholders. `form_with` needs an
-  explicit `url:` — there is no top-level listings route.
+  shipping/location/offers sections, and clearly marked Photos (step 3)
+  placeholder (the Specifications placeholder became the real specs frame in
+  step 2). `form_with` needs an explicit `url:` — there is no top-level
+  listings route.
 - i18n: `seller.listings.*`, `seller.sidebar.*`, condition short
   descriptions, and full `activerecord.attributes.listing` label set in
   all 6 locales.
 
+## Code map (Phase 3 step 2 — sell-form specification fields)
+
+- Routes: `namespace :seller { resource :listing_spec_fields, only: :show }`
+  — Turbo Frame endpoint `GET /seller/listing_spec_fields?category_id=…
+  [&listing_id=…]`.
+- `Seller::ListingSpecFieldsController`: auth required, `layout false`,
+  renders only the `listing_specs` frame; `category_id` resolved via
+  `Category.active`, optional `listing_id` looked up in `current_user.store`
+  (foreign ids 404 so another seller's specs never leak).
+- `seller/listings/_specs_fields.html.erb` (shared by the form and the
+  endpoint): every inherited `FilterDefinition` with `show_in_listing_form`
+  via `Category#effective_filter_definitions`, grouped by translated group,
+  options featured-first. multi_select → checkbox chips
+  (`listing[specs][key][]`), single_select → select, boolean → hidden
+  "false" + checkbox "true" (scalar names), range → number input + unit.
+  `required_in_form` fields get a `*` + note. NOTE: option lists must start
+  from `FilterOption.featured_first.where(...)` — chaining `featured_first`
+  onto the `has_many` (default-scoped `ordered`) merges orders and the
+  association's `position, id` wins.
+- `frame_src_controller.js` (Stimulus, on the category+specs wrapper):
+  `change->frame-src#refresh` points the frame's `src` at the endpoint with
+  the chosen `category_id` (+ `listing_id` when editing); blank category
+  clears the frame without a request. The frame is server-rendered on
+  new/edit when the listing has a category.
+- `Listing.sanitize_specs(category, raw)`: sell-form whitelist — keeps only
+  the category's form-visible definitions, drops unknown keys/values, maps
+  "1"/"0" → "true"/"false", keeps range values as typed. Called from
+  `Seller::ListingsController#listing_params` (`specs: {}` permitted via
+  `params.expect`).
+- `Listing` required-specs validation: `required_specs_present` runs when
+  `will_save_change_to_status?` and the new status is pending_review or
+  published (so AASM `submit!` enforces it; drafts stay incomplete). Error
+  key `errors.messages.missing_required_spec`.
+
 ## Testing
 
-- `bin/rails test` — **391 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **401 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -567,7 +602,14 @@ FR/GB/DE/IT/PT seeded but disabled.
   price, edit/update own listing, published edit returns to review, foreign
   listing 404 on edit/patch/delete, draft/rejected hard delete vs published
   archive, index status filter + counts + rejection reason + bogus-status
-  fallback).
+  fallback); Phase 3 step 2 adds
+  `test/controllers/seller/listing_spec_fields_controller_test.rb` (6 tests —
+  auth, inherited definitions rendered, featured-first options, prompt
+  without category, own-listing values prefilled, foreign listing 404), two
+  specs create/update tests in the listings controller test (stored +
+  unknown keys/values dropped, boolean "1" → "true") and two `Listing`
+  tests (`.sanitize_specs` whitelist, required spec enforced on `submit!`
+  but not on drafts).
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -580,9 +622,9 @@ FR/GB/DE/IT/PT seeded but disabled.
   pending Phase 7 (admin UI); game tiles show initial-letter placeholders
   until real game images are attached (`Game#image`, nothing seeded).
 - Phase 1b-ii+: submit-for-review button on the sell form (create/update
-  only save drafts for now), listing specs inputs (Phase 3 step 2) and
-  photos (step 3), seller dashboard, admin UI for
-  categories/filters/labels/settings (seeds cover data now).
+  only save drafts for now — the required-specs validation already fires on
+  `submit!`), listing photos (Phase 3 step 3), seller dashboard, admin UI
+  for categories/filters/labels/settings (seeds cover data now).
 - Store follow button + reviews tab (rating distribution, cards, pagination)
   ship (Phase 2 step 4); the store **message** button is still a `#`
   placeholder (Phase 6 messages).

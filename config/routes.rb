@@ -57,6 +57,9 @@ Rails.application.routes.draw do
     namespace :seller do
       resource :store, only: %i[new create edit update]
       resources :listings, only: %i[index new create edit update destroy]
+      # Turbo Frame endpoint for the sell form's category-driven spec fields
+      # (GET /seller/listing_spec_fields?category_id=…[&listing_id=…]).
+      resource :listing_spec_fields, only: :show
     end
   end
 end

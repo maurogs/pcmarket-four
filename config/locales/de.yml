@@ -26,6 +26,7 @@ de:
       too_many_images: Du kannst maximal %{max} Bilder hochladen
       unknown_filter_key: "%{key} ist kein gültiger Filter"
       unknown_filter_value: "„%{value}“ ist kein gültiger Wert für %{key}"
+      missing_required_spec: "%{label} ist vor der Übermittlung zur Prüfung erforderlich"
       unsupported_content_type: "%{content_type} wird als Bildformat nicht unterstützt"
     throttled: Zu viele Anfragen. Bitte in %{retry_after} Sekunden erneut versuchen.
   footer:
@@ -878,10 +879,13 @@ de:
         province_prompt: Provinz auswählen
         offers_title: Angebote
         specs_title: Technische Daten
-        specs_placeholder: Demnächst — hier folgen kategoriespezifische Daten.
         photos_title: Fotos
         photos_placeholder: Demnächst — du kannst bis zu 12 Fotos hochladen.
         submit: Anzeige speichern
+      specs_fields:
+        prompt: Wähle zuerst eine Kategorie — die dazugehörigen Daten erscheinen hier.
+        select_prompt: Auswählen…
+        required_note: Erforderlich bei der Übermittlung zur Prüfung.
       create:
         success: Anzeige als Entwurf gespeichert.
       update:

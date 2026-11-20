@@ -80,6 +80,40 @@ class ListingTest < ActiveSupport::TestCase
     assert_not build_listing(specs: { "rgb_lighting" => "maybe" }).valid?
   end
 
+  test ".sanitize_specs keeps only the category's form fields and known values" do
+    raw = ActionController::Parameters.new(
+      "gpu_chipset" => [ "nvidia", "banana" ], "rgb_lighting" => "1",
+      "cpu_brand" => [ "arm" ], "console_platform" => [ "steam_deck" ]
+    ).permit!
+
+    clean = Listing.sanitize_specs(categories(:gpus), raw)
+
+    # "banana"/"arm" are unknown options and console_platform is not attached
+    # to the gpus subtree — all dropped; the checkbox "1" becomes "true".
+    assert_equal({ "gpu_chipset" => [ "nvidia" ], "rgb_lighting" => [ "true" ] }, clean)
+  end
+
+  test "required specs are enforced on submit but not on drafts" do
+    memory = FilterDefinition.create!(key: "gpu_memory", input_type: :single_select,
+                                      required_in_form: true, position: 4,
+                                      label_translations: { "en": "Memory" },
+                                      group_translations: { "en": "Graphics" })
+    memory.filter_options.create!(value: "8gb", label_translations: { "en": "8 GB" })
+    CategoryFilter.create!(category: categories(:gpus), filter_definition: memory)
+
+    # Drafts may be incomplete — saving without the required spec is fine.
+    listing = create_listing(specs: { "gpu_chipset" => [ "nvidia" ] })
+    assert_predicate listing, :draft?
+
+    assert_raises(ActiveRecord::RecordInvalid) { listing.submit! }
+    assert_includes listing.errors[:specs],
+      I18n.t("errors.messages.missing_required_spec", label: "Memory")
+
+    listing.update!(specs: { "gpu_chipset" => [ "nvidia" ], "gpu_memory" => [ "8gb" ] })
+    listing.submit!
+    assert_predicate listing, :pending_review?
+  end
+
   test "with_specs ORs within a key and ANDs across keys" do
     nvidia = create_listing(specs: { "gpu_chipset" => [ "nvidia" ] })
     both = create_listing(title: "Sapphire RX 6600 Pulse", specs: { "gpu_chipset" => %w[nvidia amd] })

@@ -26,6 +26,7 @@ en:
       too_many_images: You can upload at most %{max} images
       unknown_filter_key: "%{key} is not a valid filter"
       unknown_filter_value: "'%{value}' is not a valid value for %{key}"
+      missing_required_spec: "%{label} is required before submitting for review"
       unsupported_content_type: "%{content_type} is not a supported image format"
     throttled: Too many requests. Please try again in %{retry_after} seconds.
   footer:
@@ -869,10 +870,13 @@ en:
         province_prompt: Select a province
         offers_title: Offers
         specs_title: Specifications
-        specs_placeholder: Coming soon — category-specific specs will go here.
         photos_title: Photos
         photos_placeholder: Coming soon — you'll be able to upload up to 12 photos.
         submit: Save listing
+      specs_fields:
+        prompt: Choose a category first — its specification fields will appear here.
+        select_prompt: Select…
+        required_note: Required when you submit for review.
       create:
         success: Listing saved as a draft.
       update:

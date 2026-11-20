@@ -816,3 +816,60 @@ Uncommitted files (this step):
 ?? app/views/seller/listings/
 ?? test/controllers/seller/listings_controller_test.rb
 ```
+
+## 2026-11-20 — Phase 3 step 2: dynamic specification fields in the sell form (uncommitted)
+
+**What changed**
+- `Seller::ListingsController#listing_params` now permits `specs: {}` (hash of
+  arrays/strings) and pipes it through `Listing.sanitize_specs(category, raw)`:
+  only the category's form-visible definitions survive; unknown keys, options
+  outside the category subtree and unknown option values are dropped; checkbox
+  "1"/"0" booleans map to "true"/"false"; range values kept as typed.
+- `Listing`: new `.sanitize_specs` whitelist; new validation
+  `required_specs_present` guarded by `entering_review_or_published?`
+  (status change to pending_review/published — AASM's `submit!` runs it,
+  drafts stay incomplete). Error key `errors.messages.missing_required_spec`.
+- New Turbo Frame endpoint: `resource :listing_spec_fields, only: :show` →
+  `Seller::ListingSpecFieldsController#show` (layout false, auth required,
+  `category_id` + optional `listing_id` scoped to `current_user.store` —
+  foreign listing ids 404). Renders only the `listing_specs` frame.
+- New partial `seller/listings/_specs_fields.html.erb`: every inherited
+  `FilterDefinition` with `show_in_listing_form`, grouped by translated group,
+  options featured-first (`FilterOption.featured_first` — the association's
+  default order scope would otherwise win over a chained `featured_first`).
+  multi_select → checkbox chips (`listing[specs][key][]`), single_select →
+  select, boolean → hidden "false" + checkbox "true", range → number input +
+  unit. `required_in_form` fields marked with *.
+- `_form.html.erb`: placeholder replaced by the server-rendered frame; new
+  Stimulus `frame_src_controller.js` sets the frame's src on category change
+  (clears it when the select is blank).
+- i18n: `seller.listings.specs_fields.{prompt,select_prompt,required_note}` +
+  `missing_required_spec` in all 6 locales; `form.specs_placeholder` removed.
+
+**Why**: category-driven specs are the last Phase 3 sell-form input before
+photos; sanitizing in the model keeps the controller thin and the jsonb
+containment queries uniform.
+
+**Files**: `config/routes.rb`, `app/controllers/seller/{listings,listing_spec_fields}_controller.rb`,
+`app/models/listing.rb`, `app/views/seller/listings/{_form,_specs_fields}.html.erb`,
+`app/views/seller/listing_spec_fields/show.html.erb`,
+`app/javascript/controllers/frame_src_controller.js`, `config/locales/*.yml`,
+`test/controllers/seller/{listings,listing_spec_fields}_controller_test.rb`,
+`test/models/listing_test.rb`.
+
+Verified: `bin/rails test` 401 green; `bin/rubocop` clean (180 files).
+Uncommitted files (this step):
+```
+ M app/controllers/seller/listings_controller.rb
+ M app/models/listing.rb
+ M app/views/seller/listings/_form.html.erb
+ M config/locales/{de,en,es,fr,it,pt}.yml
+ M config/routes.rb
+ M test/controllers/seller/listings_controller_test.rb
+ M test/models/listing_test.rb
+?? app/controllers/seller/listing_spec_fields_controller.rb
+?? app/javascript/controllers/frame_src_controller.js
+?? app/views/seller/listing_spec_fields/
+?? app/views/seller/listings/_specs_fields.html.erb
+?? test/controllers/seller/listing_spec_fields_controller_test.rb
+```

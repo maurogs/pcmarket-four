@@ -1,21 +1,35 @@
-<%# Sell form — Phase 3 step 1 covers the basic fields only. Specs and photos
-    land in the next steps; their placeholder sections are marked at the end.
-    Price fields work in euros and convert to cents via the model's virtual
-    attributes (Listing#price=, #original_price=, #shipping_price=). %>
+<%# Sell form — Phase 3. Specs (step 2) reload from the category select through
+    the listing_specs Turbo Frame; photos (step 3) are still a placeholder at
+    the end. Price fields work in euros and convert to cents via the model's
+    virtual attributes (Listing#price=, #original_price=, #shipping_price=). %>
 <%= form_with model: listing,
       url: listing.persisted? ? seller_listing_path(listing) : seller_listings_path,
       class: "mt-6 space-y-8" do |f| %>
   <%= render "devise/shared/error_messages", resource: listing %>
 
-  <section>
-    <h2 class="text-lg font-semibold"><%= t(".category_title") %></h2>
+  <%# Category choice drives the specs frame below (frame_src_controller). %>
+  <div data-controller="frame-src"
+       data-frame-src-url-value="<%= seller_listing_spec_fields_path %>"
+       data-frame-src-listing-id-value="<%= listing.persisted? ? listing.id : "" %>">
+    <section>
+      <h2 class="text-lg font-semibold"><%= t(".category_title") %></h2>
 
-    <div class="mt-4">
-      <%= f.label :category_id, class: "block text-sm font-medium" %>
-      <%= f.select :category_id, grouped_category_options,
-            { include_blank: t(".category_prompt") }, class: "input-field mt-1" %>
-    </div>
-  </section>
+      <div class="mt-4">
+        <%= f.label :category_id, class: "block text-sm font-medium" %>
+        <%= f.select :category_id, grouped_category_options,
+              { include_blank: t(".category_prompt") }, class: "input-field mt-1",
+              data: { frame_src_target: "select", action: "change->frame-src#refresh" } %>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="mt-8 text-lg font-semibold"><%= t(".specs_title") %></h2>
+
+      <%= turbo_frame_tag "listing_specs", data: { frame_src_target: "frame" } do %>
+        <%= render "specs_fields", listing: listing, category: listing.category %>
+      <% end %>
+    </section>
+  </div>
 
   <section>
     <h2 class="text-lg font-semibold"><%= t(".details_title") %></h2>
@@ -141,14 +155,6 @@
       <%= f.check_box :allow_offers, class: "h-4 w-4 rounded border-line accent-primary-600" %>
       <%= f.label :allow_offers, class: "text-sm font-medium" %>
     </div>
-  </section>
-
-  <%# TODO Phase 3 step 2: category-driven specification inputs (specs jsonb). %>
-  <section>
-    <h2 class="text-lg font-semibold"><%= t(".specs_title") %></h2>
-    <p class="mt-4 rounded-2xl border border-dashed border-line-strong p-6 text-center text-sm text-muted">
-      <%= t(".specs_placeholder") %>
-    </p>
   </section>
 
   <%# TODO Phase 3 step 3: image upload (Listing#images). %>

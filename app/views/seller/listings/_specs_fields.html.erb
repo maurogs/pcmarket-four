@@ -1,0 +1,72 @@
+<%# Locals: listing (may be nil), category (may be nil). One input per
+    form-visible FilterDefinition inherited by the category, ordered and
+    grouped by the translated group name. Names match Listing#normalize_specs:
+    `listing[specs][key][]` for multi_select, a scalar for the rest. %>
+<% if category.blank? %>
+  <p class="mt-4 rounded-2xl border border-dashed border-line-strong p-6 text-center text-sm text-muted">
+    <%= t(".prompt") %>
+  </p>
+<% else %>
+  <% definitions = category.effective_filter_definitions.select(&:show_in_listing_form) %>
+  <% current = listing&.specs.presence || {} %>
+  <% if definitions.any?(&:required_in_form?) %>
+    <p class="mt-4 text-xs text-muted">
+      <span class="font-semibold text-primary-600">*</span> <%= t(".required_note") %>
+    </p>
+  <% end %>
+  <% definitions.group_by { |definition| definition.group.presence || definition.label }.each do |group, group_definitions| %>
+    <fieldset class="mt-5 first:mt-4">
+      <legend class="text-sm font-semibold"><%= group %></legend>
+      <div class="mt-2 space-y-4">
+        <% group_definitions.each do |definition| %>
+          <% name = "listing[specs][#{definition.key}]" %>
+          <% values = Array(current[definition.key]).map(&:to_s) %>
+          <% field_id = "listing_specs_#{definition.key}" %>
+          <% options = FilterOption.featured_first.where(filter_definition_id: definition.id).active %>
+          <% required_mark = tag.span(" *", class: "font-semibold text-primary-600") if definition.required_in_form? %>
+          <div>
+            <% if definition.multi_select? %>
+              <span class="block text-sm font-medium"><%= definition.label %><%= required_mark %></span>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <% options.each do |option| %>
+                  <label class="flex cursor-pointer items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-sm transition-colors has-[:checked]:border-primary-600 has-[:checked]:bg-primary-50 dark:has-[:checked]:border-primary-400 dark:has-[:checked]:bg-primary-950">
+                    <%= check_box_tag "#{name}[]", option.value, values.include?(option.value),
+                          id: "#{field_id}_#{option.value}",
+                          class: "h-4 w-4 shrink-0 rounded border-line-strong accent-primary-600" %>
+                    <span><%= option.label %></span>
+                  </label>
+                <% end %>
+              </div>
+            <% elsif definition.single_select? %>
+              <label class="block text-sm font-medium" for="<%= field_id %>">
+                <%= definition.label %><%= required_mark %>
+              </label>
+              <%= select_tag name,
+                    options_from_collection_for_select(options, :value, :label, values.first),
+                    include_blank: t(".select_prompt"), id: field_id, class: "input-field mt-1 max-w-xs" %>
+            <% elsif definition.boolean? %>
+              <div class="flex items-center gap-2">
+                <%= hidden_field_tag name, "false" %>
+                <%= check_box_tag name, "true", values.include?("true"),
+                      id: field_id, class: "h-4 w-4 rounded border-line-strong accent-primary-600" %>
+                <label class="text-sm font-medium" for="<%= field_id %>">
+                  <%= definition.label %><%= required_mark %>
+                </label>
+              </div>
+            <% else %>
+              <label class="block text-sm font-medium" for="<%= field_id %>">
+                <%= definition.label %><%= required_mark %>
+              </label>
+              <div class="mt-1 flex items-center gap-2">
+                <%= number_field_tag name, values.first, min: 0, id: field_id, class: "input-field max-w-32" %>
+                <% if definition.unit.present? %>
+                  <span class="text-sm text-muted"><%= definition.unit %></span>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </fieldset>
+  <% end %>
+<% end %>

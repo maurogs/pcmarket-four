@@ -84,10 +84,18 @@ module Seller
     end
 
     def listing_params
-      params.expect(listing: %i[category_id title description price original_price
-                                quantity condition shipping_method shipping_price
-                                free_shipping ships_within_days local_pickup
-                                province city postal_code allow_offers])
+      permitted = params.expect(listing: %i[category_id title description price original_price
+                                            quantity condition shipping_method shipping_price
+                                            free_shipping ships_within_days local_pickup
+                                            province city postal_code allow_offers] +
+                                [ { specs: {} } ])
+      # specs is an arbitrary { key => value | [values] } hash; the model
+      # filters it down to the category's known definitions and values.
+      if permitted[:specs].present?
+        category = Category.find_by(id: permitted[:category_id]) || @listing&.category
+        permitted[:specs] = Listing.sanitize_specs(category, permitted[:specs])
+      end
+      permitted
     end
   end
 end

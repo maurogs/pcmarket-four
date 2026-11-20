@@ -26,6 +26,7 @@ fr:
       too_many_images: Vous pouvez téléverser au plus %{max} images
       unknown_filter_key: "%{key} n'est pas un filtre valide"
       unknown_filter_value: "« %{value} » n'est pas une valeur valide pour %{key}"
+      missing_required_spec: "%{label} est obligatoire avant l'envoi en révision"
       unsupported_content_type: "%{content_type} n'est pas un format d'image pris
         en charge"
     throttled: Trop de requêtes. Réessayez dans %{retry_after} secondes.
@@ -877,10 +878,13 @@ fr:
         province_prompt: Choisir une province
         offers_title: Offres
         specs_title: Caractéristiques
-        specs_placeholder: Bientôt disponible — les caractéristiques par catégorie arriveront ici.
         photos_title: Photos
         photos_placeholder: Bientôt disponible — vous pourrez téléverser jusqu'à 12 photos.
         submit: Enregistrer l'annonce
+      specs_fields:
+        prompt: "Choisissez d'abord une catégorie — ses caractéristiques apparaîtront ici."
+        select_prompt: Sélectionner…
+        required_note: Obligatoire lors de l'envoi en révision.
       create:
         success: Annonce enregistrée en brouillon.
       update:

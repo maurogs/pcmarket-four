@@ -26,6 +26,7 @@ it:
       too_many_images: Puoi caricare al massimo %{max} immagini
       unknown_filter_key: "%{key} non è un filtro valido"
       unknown_filter_value: "'%{value}' non è un valore valido per %{key}"
+      missing_required_spec: "%{label} è obbligatorio prima dell'invio per la revisione"
       unsupported_content_type: "%{content_type} non è un formato immagine supportato"
     throttled: Troppe richieste. Riprova tra %{retry_after} secondi.
   footer:
@@ -874,10 +875,13 @@ it:
         province_prompt: Seleziona una provincia
         offers_title: Offerte
         specs_title: Specifiche
-        specs_placeholder: Prossimamente — qui arriveranno le specifiche per categoria.
         photos_title: Foto
         photos_placeholder: Prossimamente — potrai caricare fino a 12 foto.
         submit: Salva annuncio
+      specs_fields:
+        prompt: Scegli prima una categoria — le specifiche corrispondenti appariranno qui.
+        select_prompt: Seleziona…
+        required_note: Obbligatorio all'invio per la revisione.
       create:
         success: Annuncio salvato in bozza.
       update:

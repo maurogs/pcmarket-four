@@ -146,6 +146,29 @@ class Seller::ListingsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to "/en/seller/listings/#{listing.to_param}/edit"
   end
 
+  test "create stores category specs and drops unknown keys and values" do
+    post "/en/seller/listings", params: listing_params(
+      specs: { "gpu_chipset" => [ "nvidia", "banana" ],
+               "console_platform" => [ "steam_deck" ], "totally_bogus" => [ "x" ] }
+    )
+
+    listing = @store.listings.find_by(title: "Gigabyte RTX 4070 Aorus Master 12 GB")
+    # "banana" is not a gpu_chipset option; console_platform is not attached
+    # to the gpus subtree; totally_bogus is no definition at all.
+    assert_equal({ "gpu_chipset" => [ "nvidia" ] }, listing.specs)
+  end
+
+  test "update replaces specs and maps checkbox booleans" do
+    listing = create_listing(title: "Gigabyte RTX 3060 Vision OC", specs: { "gpu_chipset" => [ "amd" ] })
+
+    patch "/en/seller/listings/#{listing.to_param}", params: listing_params(
+      specs: { "gpu_chipset" => [ "nvidia" ], "rgb_lighting" => "1" }
+    )
+
+    assert_redirected_to "/en/seller/listings/#{listing.to_param}/edit"
+    assert_equal({ "gpu_chipset" => [ "nvidia" ], "rgb_lighting" => [ "true" ] }, listing.reload.specs)
+  end
+
   # --- Edit / update --------------------------------------------------------------
 
   test "edit renders the seller's own listing prefilled" do
