@@ -402,6 +402,10 @@ fr:
           attributes:
             store:
               reviewing_own_store: Vous ne pouvez pas évaluer votre propre boutique
+        order:
+          attributes:
+            tracking_number:
+              required_for_shipping: est requis pour marquer la commande comme expédiée
         store:
           attributes:
             banner:
@@ -483,6 +487,21 @@ fr:
           rejected: Refusé
           sold: Vendu
         title: Titre
+      order:
+        payment_statuses:
+          paid: Payée
+          partially_refunded: Partiellement remboursée
+          refunded: Remboursée
+          unpaid: Impayée
+        statuses:
+          cancelled: Annulée
+          completed: Terminée
+          delivered: Livrée
+          disputed: En litige
+          paid: Payée
+          pending: Paiement en attente
+          refunded: Remboursée
+          shipped: Expédiée
       store:
         allow_offers_default: Autoriser les offres par défaut
         banner: Bannière
@@ -1207,3 +1226,13 @@ fr:
       not_available: Cet article n'est plus disponible.
       updated: Quantité mise à jour.
       removed: Article retiré de votre panier.
+  orders:
+    placer:
+      errors:
+        empty_cart: Votre panier est vide.
+        items_changed: Votre panier a changé pendant le paiement. Veuillez le vérifier et réessayer.
+        listing_unavailable: "%{title} n'est plus disponible à l'achat."
+        invalid_payment_method: Choisissez un moyen de paiement valide.
+        invalid_shipping_method: Choisissez un mode de livraison valide.
+        missing_shipping_address: Une adresse de livraison est requise.
+        missing_email: Une adresse e-mail est requise pour la confirmation de votre commande.

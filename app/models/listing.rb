@@ -51,6 +51,9 @@ class Listing < ApplicationRecord
   # Cart rows hold a FK to the listing, so they must go with it (a listing
   # can only be in carts while visible, but admins can still destroy one).
   has_many :cart_items, dependent: :destroy
+  # Order rows snapshot everything they need and nullify listing_id on
+  # delete, so no dependent strategy here.
+  has_many :order_items
 
   has_many_attached :images
 
@@ -87,6 +90,12 @@ class Listing < ApplicationRecord
 
     event :mark_sold, before: :set_sold_timestamp do
       transitions from: [ :published, :paused ], to: :sold
+    end
+
+    # Sold → published again when the order that sold it is cancelled or
+    # refunded before shipment (see Order#restock_listings).
+    event :relist, before: :set_published_timestamps do
+      transitions from: :sold, to: :published
     end
 
     event :archive do

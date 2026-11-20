@@ -396,6 +396,10 @@ en:
           attributes:
             store:
               reviewing_own_store: You can't review your own store
+        order:
+          attributes:
+            tracking_number:
+              required_for_shipping: is required to mark the order as shipped
         store:
           attributes:
             banner:
@@ -477,6 +481,21 @@ en:
           rejected: Rejected
           sold: Sold
         title: Title
+      order:
+        payment_statuses:
+          paid: Paid
+          partially_refunded: Partially refunded
+          refunded: Refunded
+          unpaid: Unpaid
+        statuses:
+          cancelled: Cancelled
+          completed: Completed
+          delivered: Delivered
+          disputed: Disputed
+          paid: Paid
+          pending: Awaiting payment
+          refunded: Refunded
+          shipped: Shipped
       store:
         allow_offers_default: Allow offers by default
         banner: Banner
@@ -1195,3 +1214,13 @@ en:
       not_available: This item is no longer available.
       updated: Quantity updated.
       removed: Item removed from your cart.
+  orders:
+    placer:
+      errors:
+        empty_cart: Your cart is empty.
+        items_changed: Your cart changed during checkout. Please review it and try again.
+        listing_unavailable: "%{title} is no longer available for purchase."
+        invalid_payment_method: Choose a valid payment method.
+        invalid_shipping_method: Choose a valid shipping method.
+        missing_shipping_address: A shipping address is required.
+        missing_email: An email address is required for your order confirmation.

@@ -1211,3 +1211,57 @@ Verified: `bin/rails test` 486 green; `bin/rubocop` clean (197 files).
 `test/controllers/{carts,cart_items,cart_sign_in_merge}_controller_test.rb`.
 
 Verified: `bin/rails test` 535 green; `bin/rubocop` clean (211 files).
+
+---
+
+## 2026-11-20 — Phase 4 step 2: orders data model + Orders::Placer
+
+**What**: orders/order_items tables (reversible migrations, migrate +
+rollback + re-migrate verified), `Order` + `OrderItem` models with the
+full AASM lifecycle, a `relist` event on `Listing`, and the
+`Orders::Placer` checkout service. No controllers/views yet (step 3).
+
+**Why**: the cart needs a real placement backend before any checkout UI:
+one Order per store from a multi-seller cart (shared `checkout_group`
+uuid), price/address snapshots, commission snapshot, and race-safe stock
+decrement.
+
+**Key decisions**:
+- `order_items.sold_listing` boolean (beyond the column spec): the only
+  honest way to "revert sold→published if this order sold it" — no other
+  marker exists (mark_sold never decrements quantity).
+- Restock on cancel (always: sources are pre-shipment) and on refund only
+  when `status_in_database` was pending/paid — `aasm.from_state` is NOT
+  reliable in event-level before callbacks (set after them).
+- AASM 6 gotchas hit and fixed: `before:` on `transitions` is silently
+  ignored (must go on the `event`, like Listing does); a positional arg
+  matching a to-state name is consumed as the target state, so
+  `resolve_dispute!` takes `outcome:` as a hash
+  (`resolve_dispute!(outcome: "refunded")`).
+- `Listing` gains `relist` (sold→published) for restock instead of
+  bypassing the state machine. `User has_many :orders, foreign_key:
+  :buyer_id, dependent: :nullify`; `Store has_many :orders,
+  dependent: :restrict_with_exception`.
+- Placer: ONE transaction; listings locked FOR UPDATE ordered by id
+  (deadlock avoidance); lock → stock/visibility check → `cart.refresh!`
+  (any notice = cart changed → abort); failures raise a
+  `Rollback < ActiveRecord::Rollback` subclass (a plain `return` inside
+  `transaction do` would COMMIT). Commission = (commission_enabled ?
+  commission_percent : 0) of subtotal, rounded to cents, snapshotted per
+  order. Shipping: pickup → 0, free_shipping → 0, else one
+  shipping_price_cents per distinct listing. `discount_code` accepted,
+  ignored (TODO step 7). Auto-complete: `auto_complete_at = delivered_at
+  + Order.auto_complete_days` (Setting `buyer_protection_days` fallback
+  to constant 2 — no such Setting is seeded).
+- i18n: `orders.placer.errors.*` (7 keys),
+  `activerecord.attributes.order.{statuses,payment_statuses}.*`,
+  `activerecord.errors.models.order.attributes.tracking_number.required_for_shipping`
+  — all 6 locales (parity test green).
+
+**Files**: `db/migrate/2026112016000{1,2}_*.rb`, `db/structure.sql`,
+`app/models/{order,order_item,listing,user,store}.rb`,
+`app/services/orders/placer.rb`, `config/locales/{en,es,fr,de,it,pt}.yml`,
+`test/models/order_test.rb` (21), `test/services/orders/placer_test.rb`
+(19).
+
+Verified: `bin/rails test` 575 green; `bin/rubocop` clean (218 files).

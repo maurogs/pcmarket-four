@@ -1,7 +1,7 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-20 (Phase 4 step 1 — cart,
-uncommitted)_
+_Last updated: 2026-11-20 (Phase 4 step 2 — orders data model +
+`Orders::Placer`; uncommitted)_
 
 ## What this is
 
@@ -753,6 +753,50 @@ FR/GB/DE/IT/PT seeded but disabled.
   tests POST to `/users/sign_in` for real; guest carts have `user_id` nil
   so the own-listing guard can't fire until the merge re-adds as the user.
 
+## Code map (Phase 4 step 2 — orders data model + placement)
+
+- `db/migrate/2026112016000{1,2}_*.rb`: `orders` (unique `number`
+  "PCM-YYMM-XXXXXX", nullable `buyer_id`→users for guest checkout +
+  NOT NULL `buyer_email`, money in cents with non-negative check
+  constraints, jsonb `shipping_address`/`billing_address` snapshots,
+  lifecycle timestamps incl. `auto_complete_at`, stripe ids,
+  `checkout_group`, indexes [store_id,status,placed_at desc] and
+  [buyer_id,placed_at desc]) and `order_items` (listing FK nullifies on
+  delete; title/price/condition/image snapshots + `sold_listing` flag,
+  check constraints).
+- `Order` (`app/models/order.rb`): AASM
+  pending→paid→shipped→delivered→completed + cancelled (pending/paid),
+  refunded (paid/shipped/delivered/disputed), disputed (shipped/delivered)
+  ⇄ resolve. **AASM 6 gotchas**: transition callbacks go on the `event`
+  (`before:`), NOT on `transitions` (silently ignored); a positional
+  event arg matching a to-state name is consumed as the target state →
+  `resolve_dispute!(outcome: "refunded"|"completed")` takes a hash;
+  `aasm.from_state` is unset in event-level before callbacks → restock
+  pre-shipment check uses `status_in_database`. `ship!` requires
+  tracking_number unless `shipping_method == "pickup"`.
+  `confirm_delivery!` sets `auto_complete_at = delivered_at +
+  Order.auto_complete_days` (Setting `buyer_protection_days`, not seeded;
+  constant 2). `can_be_cancelled_by?` = buyer && may_cancel?.
+- `Listing` gained `relist` (sold→published) for restock; `Order#restock_listings`
+  relists `sold_listing` items and adds quantity back for the rest
+  (skips deleted listings).
+- `Orders::Placer` (`app/services/orders/placer.rb`):
+  `call(cart:, buyer:, email:, shipping_address:, shipping_method:,
+  payment_method:, discount_code: nil)` → `Result(orders, errors,
+  checkout_group)` with `success?`. One transaction; listings locked FOR
+  UPDATE ordered by id; abort (via `Rollback < ActiveRecord::Rollback`)
+  on invalid input / empty cart / missing listing / not visible / short
+  stock / `cart.refresh!` notices. One Order per store sharing a uuid
+  checkout_group; commission snapshotted from AppSettings; shipping per
+  distinct listing (pickup/free → 0); clears purchased cart rows.
+  `discount_code` ignored (TODO step 7).
+- i18n: `orders.placer.errors.*`, `activerecord.attributes.order.{statuses,
+  payment_statuses}.*`, order `tracking_number.required_for_shipping` in
+  all 6 locales.
+- Tests: `test/models/order_test.rb` (21), `test/services/orders/placer_test.rb`
+  (19). Model tests must pre-decrement listing quantity to simulate
+  placement before asserting restock.
+
 ## Testing
 
 - `bin/rails test` — **535 tests green**: all Phase 0 checks plus model
@@ -871,15 +915,18 @@ FR/GB/DE/IT/PT seeded but disabled.
   (turbo_stream requests are treated as navigational → 302, not 401). Accepted
   behavior for now (tested); if follow buttons ever move to background/frame
   contexts, revisit with a turbo-aware failure response.
-- Reviews `order_id` has no FK until the `orders` table lands (Phase 5);
-  `verified_purchase` is never set true until then.
+- Reviews `order_id` has no FK yet — the `orders` table now exists
+  (Phase 4 step 2), so the FK + `verified_purchase` wiring can land with
+  the Phase 5 review UI.
 - Mega-menu budget/theme links need ProductLabel/SellerTag rows (seeds ship
   them; a bare fixture catalog silently drops those columns — demo seed
   `DEMO=1 bin/rails db:seed` fills everything).
 - Wishlist/offers/chat buttons are `#` placeholders gated by AppSettings
   flags (`payments_enabled`, `offers_enabled`, `chat_enabled`) — Phases 5/6.
-  The cart ships (Phase 4 step 1) but its **checkout CTA is a "Soon"
-  placeholder** until Phase 4 step 3 (orders), and "Buy now" just redirects
+  The cart ships (Phase 4 step 1) and the orders model + `Orders::Placer`
+  service ship (Phase 4 step 2), but there is **no checkout UI yet** — the
+  cart CTA is a "Soon" placeholder until Phase 4 step 3 (checkout
+  controller/views calling the Placer), and "Buy now" just redirects
   to the cart. The account menu's orders/messages/wishlist/admin-panel
   items are "Soon" pills until those pages land (Phases 5–7) — swap them
   for real links there.

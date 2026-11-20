@@ -19,6 +19,9 @@ class Store < ApplicationRecord
   has_many :follows, dependent: :destroy
   has_many :followers, through: :follows, source: :follower
   has_many :reviews, dependent: :destroy
+  # Orders outlive the store: the store_id FK is NOT NULL, so destroying a
+  # store with orders is refused instead of orphaning them.
+  has_many :orders, dependent: :restrict_with_exception
 
   has_one_attached :logo
   has_one_attached :banner

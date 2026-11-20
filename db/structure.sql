@@ -793,6 +793,117 @@ ALTER SEQUENCE public.listings_id_seq OWNED BY public.listings.id;
 
 
 --
+-- Name: order_items; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.order_items (
+    id bigint NOT NULL,
+    order_id bigint NOT NULL,
+    listing_id bigint,
+    title character varying NOT NULL,
+    unit_price_cents integer NOT NULL,
+    quantity integer DEFAULT 1 NOT NULL,
+    line_total_cents integer NOT NULL,
+    condition character varying,
+    image_blob_signed_id character varying,
+    sold_listing boolean DEFAULT false NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    CONSTRAINT chk_order_items_line_total_non_negative CHECK ((line_total_cents >= 0)),
+    CONSTRAINT chk_order_items_quantity_positive CHECK ((quantity > 0)),
+    CONSTRAINT chk_order_items_unit_price_non_negative CHECK ((unit_price_cents >= 0))
+);
+
+
+--
+-- Name: order_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.order_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: order_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.order_items_id_seq OWNED BY public.order_items.id;
+
+
+--
+-- Name: orders; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.orders (
+    id bigint NOT NULL,
+    number character varying NOT NULL,
+    buyer_id bigint,
+    buyer_email character varying NOT NULL,
+    store_id bigint NOT NULL,
+    status character varying DEFAULT 'pending'::character varying NOT NULL,
+    payment_method character varying NOT NULL,
+    payment_status character varying DEFAULT 'unpaid'::character varying NOT NULL,
+    currency character varying DEFAULT 'EUR'::character varying NOT NULL,
+    subtotal_cents integer DEFAULT 0 NOT NULL,
+    shipping_cents integer DEFAULT 0 NOT NULL,
+    discount_cents integer DEFAULT 0 NOT NULL,
+    total_cents integer DEFAULT 0 NOT NULL,
+    commission_cents integer DEFAULT 0 NOT NULL,
+    commission_percent numeric(5,2) DEFAULT 0.0 NOT NULL,
+    shipping_address jsonb NOT NULL,
+    billing_address jsonb,
+    shipping_method character varying,
+    tracking_number character varying,
+    tracking_carrier character varying,
+    tracking_url character varying,
+    buyer_note text,
+    cancel_reason character varying,
+    placed_at timestamp(6) without time zone,
+    paid_at timestamp(6) without time zone,
+    shipped_at timestamp(6) without time zone,
+    delivered_at timestamp(6) without time zone,
+    completed_at timestamp(6) without time zone,
+    cancelled_at timestamp(6) without time zone,
+    refunded_at timestamp(6) without time zone,
+    auto_complete_at timestamp(6) without time zone,
+    stripe_payment_intent_id character varying,
+    stripe_checkout_session_id character varying,
+    checkout_group character varying,
+    locale character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    CONSTRAINT chk_orders_commission_non_negative CHECK ((commission_cents >= 0)),
+    CONSTRAINT chk_orders_discount_non_negative CHECK ((discount_cents >= 0)),
+    CONSTRAINT chk_orders_shipping_non_negative CHECK ((shipping_cents >= 0)),
+    CONSTRAINT chk_orders_subtotal_non_negative CHECK ((subtotal_cents >= 0)),
+    CONSTRAINT chk_orders_total_non_negative CHECK ((total_cents >= 0))
+);
+
+
+--
+-- Name: orders_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.orders_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.orders_id_seq OWNED BY public.orders.id;
+
+
+--
 -- Name: probe_things; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1209,6 +1320,20 @@ ALTER TABLE ONLY public.listings ALTER COLUMN id SET DEFAULT nextval('public.lis
 
 
 --
+-- Name: order_items id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.order_items ALTER COLUMN id SET DEFAULT nextval('public.order_items_id_seq'::regclass);
+
+
+--
+-- Name: orders id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders ALTER COLUMN id SET DEFAULT nextval('public.orders_id_seq'::regclass);
+
+
+--
 -- Name: probe_things id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1399,6 +1524,22 @@ ALTER TABLE ONLY public.listing_seller_tags
 
 ALTER TABLE ONLY public.listings
     ADD CONSTRAINT listings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: order_items order_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.order_items
+    ADD CONSTRAINT order_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT orders_pkey PRIMARY KEY (id);
 
 
 --
@@ -1851,6 +1992,62 @@ CREATE INDEX index_listings_on_title ON public.listings USING gin (title public.
 
 
 --
+-- Name: index_order_items_on_listing_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_order_items_on_listing_id ON public.order_items USING btree (listing_id);
+
+
+--
+-- Name: index_order_items_on_order_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_order_items_on_order_id ON public.order_items USING btree (order_id);
+
+
+--
+-- Name: index_orders_on_buyer_id_and_placed_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_orders_on_buyer_id_and_placed_at ON public.orders USING btree (buyer_id, placed_at DESC);
+
+
+--
+-- Name: index_orders_on_checkout_group; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_orders_on_checkout_group ON public.orders USING btree (checkout_group);
+
+
+--
+-- Name: index_orders_on_number; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_orders_on_number ON public.orders USING btree (number);
+
+
+--
+-- Name: index_orders_on_store_status_and_placed_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_orders_on_store_status_and_placed_at ON public.orders USING btree (store_id, status, placed_at DESC);
+
+
+--
+-- Name: index_orders_on_stripe_checkout_session_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_orders_on_stripe_checkout_session_id ON public.orders USING btree (stripe_checkout_session_id);
+
+
+--
+-- Name: index_orders_on_stripe_payment_intent_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_orders_on_stripe_payment_intent_id ON public.orders USING btree (stripe_payment_intent_id);
+
+
+--
 -- Name: index_product_labels_on_active_and_position; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2038,6 +2235,14 @@ ALTER TABLE ONLY public.listing_seller_tags
 
 
 --
+-- Name: order_items fk_rails_2e2a2d0c16; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.order_items
+    ADD CONSTRAINT fk_rails_2e2a2d0c16 FOREIGN KEY (listing_id) REFERENCES public.listings(id) ON DELETE SET NULL;
+
+
+--
 -- Name: follows fk_rails_3975726f96; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2182,11 +2387,27 @@ ALTER TABLE ONLY public.listing_labels
 
 
 --
+-- Name: orders fk_rails_d3775977e3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT fk_rails_d3775977e3 FOREIGN KEY (buyer_id) REFERENCES public.users(id);
+
+
+--
 -- Name: addresses fk_rails_d873e14e27; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.addresses
     ADD CONSTRAINT fk_rails_d873e14e27 FOREIGN KEY (country_id) REFERENCES public.countries(id);
+
+
+--
+-- Name: order_items fk_rails_e3cb28f071; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.order_items
+    ADD CONSTRAINT fk_rails_e3cb28f071 FOREIGN KEY (order_id) REFERENCES public.orders(id);
 
 
 --
@@ -2206,6 +2427,14 @@ ALTER TABLE ONLY public.listing_seller_tags
 
 
 --
+-- Name: orders fk_rails_f0be2fda72; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT fk_rails_f0be2fda72 FOREIGN KEY (store_id) REFERENCES public.stores(id);
+
+
+--
 -- Name: listing_labels fk_rails_f7a124c136; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2220,6 +2449,8 @@ ALTER TABLE ONLY public.listing_labels
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261120160002'),
+('20261120160001'),
 ('20261120150002'),
 ('20261120150001'),
 ('20261120120001'),

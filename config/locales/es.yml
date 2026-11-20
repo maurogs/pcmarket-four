@@ -401,6 +401,10 @@ es:
           attributes:
             store:
               reviewing_own_store: No puedes reseñar tu propia tienda
+        order:
+          attributes:
+            tracking_number:
+              required_for_shipping: es obligatorio para marcar el pedido como enviado
         store:
           attributes:
             banner:
@@ -482,6 +486,21 @@ es:
           rejected: Rechazado
           sold: Vendido
         title: Título
+      order:
+        payment_statuses:
+          paid: Pagado
+          partially_refunded: Parcialmente reembolsado
+          refunded: Reembolsado
+          unpaid: Sin pagar
+        statuses:
+          cancelled: Cancelado
+          completed: Completado
+          delivered: Entregado
+          disputed: En disputa
+          paid: Pagado
+          pending: Pago pendiente
+          refunded: Reembolsado
+          shipped: Enviado
       store:
         allow_offers_default: Permitir ofertas por defecto
         banner: Banner
@@ -1206,3 +1225,13 @@ es:
       not_available: Este artículo ya no está disponible.
       updated: Cantidad actualizada.
       removed: Artículo quitado de tu cesta.
+  orders:
+    placer:
+      errors:
+        empty_cart: Tu carrito está vacío.
+        items_changed: Tu carrito cambió durante el pago. Revísalo e inténtalo de nuevo.
+        listing_unavailable: "%{title} ya no está disponible para la compra."
+        invalid_payment_method: Elige una forma de pago válida.
+        invalid_shipping_method: Elige un método de envío válido.
+        missing_shipping_address: Se necesita una dirección de envío.
+        missing_email: Se necesita un correo electrónico para la confirmación del pedido.

@@ -23,6 +23,9 @@ class User < ApplicationRecord
   has_many :followed_stores, through: :follows, source: :store
   has_many :reviews_written, class_name: "Review", foreign_key: :author_id, dependent: :destroy
   has_many :addresses, dependent: :destroy
+  # Purchases (guest orders keep buyer_id NULL); GDPR deletion anonymises
+  # users in place, so orders are never destroyed with them.
+  has_many :orders, foreign_key: :buyer_id, inverse_of: :buyer, dependent: :nullify
   has_one :default_address, -> { where(default_shipping: true) }, class_name: "Address"
   has_one :cart, dependent: :destroy
   has_one_attached :avatar
