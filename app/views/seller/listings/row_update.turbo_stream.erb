@@ -1,0 +1,6 @@
+<%# Shared turbo_stream response for the listing lifecycle actions
+    (Seller::Listings::BaseController): refresh the index row — its action
+    buttons depend on the state — and re-render the toast area with the
+    flash set via flash.now. %>
+<%= turbo_stream.replace listing, partial: "seller/listings/row", locals: { listing: listing } %>
+<%= turbo_stream.replace "toasts", partial: "shared/toasts" %>

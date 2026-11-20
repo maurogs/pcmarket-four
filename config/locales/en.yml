@@ -28,6 +28,7 @@ en:
       unknown_filter_value: "'%{value}' is not a valid value for %{key}"
       missing_required_spec: "%{label} is required before submitting for review"
       unsupported_content_type: "%{content_type} is not a supported image format"
+      image_required_for_review: Add at least one photo before submitting for review
     throttled: Too many requests. Please try again in %{retry_after} seconds.
   footer:
     tagline: The European marketplace to buy and sell tech with confidence.
@@ -829,15 +830,23 @@ en:
       update:
         success: Store settings updated.
     listings:
+      invalid_transition: That action is not available for this listing in its current state.
       index:
         title: My listings
         new_listing: New listing
         statuses_label: Filter by status
         empty: Nothing here yet.
-        rejection_reason: Rejection reason
+      row:
         quantity: "%{count} in stock"
         updated: Updated %{date}
+        rejection_reason: Rejection reason
         edit: Edit
+        submit: Submit for review
+        confirm_submit: Submit this listing for review?
+        pause: Pause
+        resume: Resume
+        mark_sold: Mark as sold
+        confirm_sold: Mark this listing as sold?
         delete: Delete
         archive: Archive
         confirm_delete: Delete this listing for good? This cannot be undone.
@@ -849,6 +858,17 @@ en:
       edit:
         title: Edit listing
         status_note: "Current status: %{status}"
+        banner_draft: This listing is a draft — only you can see it. Add photos
+          and submit it for review when it's ready.
+        banner_pending_review: We'll review your listing shortly. You'll get an
+          email once it's approved.
+        banner_rejected: Your listing was rejected. Fix the issues below and
+          submit it again.
+        banner_rejected_reason: "Reason: %{reason}"
+        banner_published: Your listing is live and visible to buyers.
+        banner_public_link: View public page
+        banner_paused: This listing is paused — hidden from buyers but kept as
+          it is. Resume it any time.
       form:
         category_title: Category
         category_prompt: Select a category
@@ -884,7 +904,8 @@ en:
           first_is_cover: The first photo is the cover shown in search results.
           good_light: Shoot in good light against a plain background.
           show_defects: Photograph any defects honestly to avoid disputes.
-        submit: Save listing
+        submit: Save draft
+        submit_for_review: Save & submit
       specs_fields:
         prompt: Choose a category first — its specification fields will appear here.
         select_prompt: Select…
@@ -893,9 +914,22 @@ en:
         success: Listing saved as a draft.
       update:
         success: Listing updated.
+        submitted: Listing submitted for review.
       destroy:
         destroyed: Listing deleted.
         archived: Listing archived.
+      submissions:
+        create:
+          submitted: Listing submitted for review.
+      pauses:
+        create:
+          paused: Listing paused.
+        destroy:
+          resumed: Listing is published again.
+      sales:
+        create:
+          sold: Listing marked as sold.
+          reduced: Sale recorded — %{count} left in stock.
     sidebar:
       title: Seller area
       dashboard: Dashboard

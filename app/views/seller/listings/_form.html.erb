@@ -274,5 +274,16 @@
     </div>
   </section>
 
-  <%= f.submit t(".submit"), class: "btn-primary w-full cursor-pointer" %>
+  <%# "Save & submit" rides on the same form: the button posts the fields
+      plus submit_for_review=1, and the update action runs the submission
+      through Listings::Submitter right after saving. A <button> (not an
+      input[type=submit]) so the label text and the submitted value differ. %>
+  <div class="flex flex-wrap gap-3">
+    <%= f.submit t(".submit"), class: "btn-primary flex-1 cursor-pointer" %>
+    <% if listing.persisted? && listing.may_submit? %>
+      <button type="submit" name="submit_for_review" value="1" class="btn-secondary flex-1 cursor-pointer">
+        <%= t(".submit_for_review") %>
+      </button>
+    <% end %>
+  </div>
 <% end %>

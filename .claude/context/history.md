@@ -946,3 +946,73 @@ Uncommitted files (3a + 3b):
 ?? app/javascript/controllers/image_uploader_controller.js
 ?? db/migrate/20261120120001_add_image_order_to_listings.rb
 ```
+
+## 2026-11-20 — Phase 3 step 4: seller listing lifecycle (submit/pause/sale) (uncommitted)
+
+**What**: lifecycle actions as singular nested resources under the seller
+listings, a `Listings::Submitter` service, a turbo-stream row refresh, an
+edit-page status banner and a "Save & submit" form button.
+
+- Routes: inside `namespace :seller { resources :listings }` →
+  `resource :submission, only: :create`, `resource :pause, only: %i[create
+  destroy]` (create = pause, destroy = resume), `resource :sale, only:
+  :create` — all `controller: "listings/<plural>"`.
+- `Seller::Listings::BaseController`: authenticate_user! + `set_listing` via
+  `store.listings.find_by_param` with an ownership re-check (historical-slug
+  fallback escapes the store scope); `rescue_from AASM::InvalidTransition` →
+  alert; `render_row`/`render_row_alert` respond turbo_stream (replace
+  `dom_id(listing)` via `seller/listings/row_update` + the `toasts` area,
+  flash.now) or redirect for plain HTML.
+- `Listings::Submitter` (service): keeps the `may_submit?` guard (invalid
+  transition → Result with the translated `seller.listings.invalid_transition`
+  message + `invalid_transition?` flag), then AASM **bang** event `submit!` —
+  the non-bang event only changes the state in memory and never saves
+  (AASM default persistence: bang = `save!`), so validation failures come
+  back as `ActiveRecord::RecordInvalid` → Result with
+  `listing.errors.full_messages`. `approve!` afterwards when
+  `listing_auto_approve` is on.
+- `Seller::Listings::SubmissionsController#create`: success → row refresh /
+  index redirect; failure → HTML redirect to **edit** on validation errors
+  (fix the listing) or to the **index** on an invalid transition (nothing to
+  fix there). `PausesController` (`pause!`/`resume!`) and `SalesController`
+  (`Listing#record_offline_sale!`, `reduced` notice with `%{count}`) are thin.
+- `Listing`: `record_offline_sale!` (quantity > 1 → decrement, else
+  `mark_sold!` → true); `mark_sold` now also transitions **from paused**;
+  `image_present_for_review` validation (errors.add(:base,
+  :image_required_for_review)) runs with `required_specs_present` when
+  `entering_review_or_published?` — submitting without photos is refused.
+- `Seller::ListingsController#update`: with the form's `submit_for_review=1`
+  button param (top-level, not nested under `listing:`) runs
+  `Listings::Submitter` after saving; both outcomes redirect to edit.
+- Views: `seller/listings/_row.html.erb` extracted from the index (dom_id =
+  turbo target; state-dependent buttons: Submit for review / Pause / Resume /
+  Mark as sold / Delete / Archive), `row_update.turbo_stream.erb` (row +
+  toasts), edit.html.erb status banner per state (rejected shows the reason,
+  published a public link), `_form.html.erb` "Save & submit" secondary
+  button (a `<button name value>` so label ≠ submitted value, only when
+  `persisted? && may_submit?`); submit label now "Save draft".
+- i18n: `seller.listings.invalid_transition`, `row.{submit,confirm_submit,
+  pause,resume,mark_sold,confirm_sold}`, `edit.banner_*`, `form.submit_for_
+  review`, `update.submitted`, `submissions.create.submitted`,
+  `pauses.{create,destroy}`, `sales.create.{sold,reduced}`,
+  `errors.messages.image_required_for_review` — all 6 locales.
+- Tests: `test/controllers/seller/listings/{submissions,pauses,sales}_
+  controller_test.rb` (23), Save & submit + banner tests in the listings
+  controller test, model tests for `record_offline_sale!` / paused→sold /
+  submit-needs-photo; `catalog_helpers.rb` gained `attach_photo` and
+  `publish` now attaches a stub photo first (submit! requires one).
+- Gotchas: AASM non-bang events do NOT persist (use bang + rescue
+  RecordInvalid); `response.media_type` never includes the charset (assert
+  `"text/vnd.turbo-stream.html"`); test param helpers must merge top-level
+  flags outside the `listing:` hash.
+
+**Files**: `config/routes.rb`,
+`app/controllers/seller/listings/{base,submissions,pauses,sales}_controller.rb`,
+`app/controllers/seller/listings_controller.rb`,
+`app/services/listings/submitter.rb`, `app/models/listing.rb`,
+`app/views/seller/listings/{_row,_form,edit,index,row_update}.html.erb|turbo_stream.erb`,
+`config/locales/*.yml`, `test/support/catalog_helpers.rb`,
+`test/models/listing_test.rb`,
+`test/controllers/seller/{listings_controller_test.rb,listings/*}`.
+
+Verified: `bin/rails test` 447 green; `bin/rubocop` clean (189 files).

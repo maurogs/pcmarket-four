@@ -29,6 +29,7 @@ fr:
       missing_required_spec: "%{label} est obligatoire avant l'envoi en révision"
       unsupported_content_type: "%{content_type} n'est pas un format d'image pris
         en charge"
+      image_required_for_review: Ajoutez au moins une photo avant l'envoi en révision
     throttled: Trop de requêtes. Réessayez dans %{retry_after} secondes.
   footer:
     tagline: La marketplace européenne pour acheter et vendre de la tech en toute
@@ -837,15 +838,24 @@ fr:
       update:
         success: Réglages de la boutique mis à jour.
     listings:
+      invalid_transition: Cette action n'est pas disponible pour cette annonce dans
+        son état actuel.
       index:
         title: Mes annonces
         new_listing: Nouvelle annonce
         statuses_label: Filtrer par statut
         empty: Rien ici pour le moment.
-        rejection_reason: Motif du refus
+      row:
         quantity: "%{count} en stock"
         updated: Mis à jour le %{date}
+        rejection_reason: Motif du refus
         edit: Modifier
+        submit: Soumettre à la révision
+        confirm_submit: Soumettre cette annonce à la révision ?
+        pause: Mettre en pause
+        resume: Republier
+        mark_sold: Marquer comme vendu
+        confirm_sold: Marquer cette annonce comme vendue ?
         delete: Supprimer
         archive: Archiver
         confirm_delete: Supprimer définitivement cette annonce ? Action irréversible.
@@ -857,6 +867,17 @@ fr:
       edit:
         title: Modifier l'annonce
         status_note: "Statut actuel : %{status}"
+        banner_draft: "Cette annonce est un brouillon : elle n'est visible que par
+          vous. Ajoutez des photos et envoyez-la en révision quand elle est prête."
+        banner_pending_review: Nous examinons votre annonce sous peu. Vous recevrez
+          un e-mail une fois approuvée.
+        banner_rejected: Votre annonce a été refusée. Corrigez les problèmes ci-dessous
+          et renvoyez-la.
+        banner_rejected_reason: "Motif : %{reason}"
+        banner_published: Votre annonce est en ligne et visible par les acheteurs.
+        banner_public_link: Voir la page publique
+        banner_paused: Cette annonce est en pause — invisible pour les acheteurs
+          mais intacte. Republiez-la quand vous voulez.
       form:
         category_title: Catégorie
         category_prompt: Choisir une catégorie
@@ -892,7 +913,8 @@ fr:
           first_is_cover: La première photo est la photo principale dans les résultats.
           good_light: Photographiez avec une bonne lumière sur un fond neutre.
           show_defects: Montrez honnêtement les défauts pour éviter les litiges.
-        submit: Enregistrer l'annonce
+        submit: Enregistrer le brouillon
+        submit_for_review: Enregistrer et soumettre
       specs_fields:
         prompt: "Choisissez d'abord une catégorie — ses caractéristiques apparaîtront ici."
         select_prompt: Sélectionner…
@@ -901,9 +923,22 @@ fr:
         success: Annonce enregistrée en brouillon.
       update:
         success: Annonce mise à jour.
+        submitted: Annonce soumise à la révision.
       destroy:
         destroyed: Annonce supprimée.
         archived: Annonce archivée.
+      submissions:
+        create:
+          submitted: Annonce soumise à la révision.
+      pauses:
+        create:
+          paused: Annonce mise en pause.
+        destroy:
+          resumed: L'annonce est de nouveau publiée.
+      sales:
+        create:
+          sold: Annonce marquée comme vendue.
+          reduced: Vente enregistrée — %{count} restants en stock.
     sidebar:
       title: Espace vendeur
       dashboard: Tableau de bord

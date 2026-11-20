@@ -28,6 +28,7 @@ de:
       unknown_filter_value: "„%{value}“ ist kein gültiger Wert für %{key}"
       missing_required_spec: "%{label} ist vor der Übermittlung zur Prüfung erforderlich"
       unsupported_content_type: "%{content_type} wird als Bildformat nicht unterstützt"
+      image_required_for_review: Füge mindestens ein Foto hinzu, bevor du zur Prüfung einreichst
     throttled: Zu viele Anfragen. Bitte in %{retry_after} Sekunden erneut versuchen.
   footer:
     tagline: Der europäische Marktplatz, um Technik sicher zu kaufen und zu verkaufen.
@@ -838,15 +839,24 @@ de:
       update:
         success: Shop-Einstellungen aktualisiert.
     listings:
+      invalid_transition: Diese Aktion ist für diese Anzeige im aktuellen Status
+        nicht verfügbar.
       index:
         title: Meine Anzeigen
         new_listing: Neue Anzeige
         statuses_label: Nach Status filtern
         empty: Hier ist noch nichts.
-        rejection_reason: Ablehnungsgrund
+      row:
         quantity: "%{count} auf Lager"
         updated: Aktualisiert am %{date}
+        rejection_reason: Ablehnungsgrund
         edit: Bearbeiten
+        submit: Zur Prüfung einreichen
+        confirm_submit: Diese Anzeige zur Prüfung einreichen?
+        pause: Pausieren
+        resume: Fortsetzen
+        mark_sold: Als verkauft markieren
+        confirm_sold: Diese Anzeige als verkauft markieren?
         delete: Löschen
         archive: Archivieren
         confirm_delete: Diese Anzeige endgültig löschen? Das kann nicht rückgängig gemacht werden.
@@ -858,6 +868,17 @@ de:
       edit:
         title: Anzeige bearbeiten
         status_note: "Aktueller Status: %{status}"
+        banner_draft: Diese Anzeige ist ein Entwurf — nur du kannst sie sehen. Füge
+          Fotos hinzu und reiche sie zur Prüfung ein, wenn sie bereit ist.
+        banner_pending_review: Wir prüfen deine Anzeige in Kürze. Du bekommst eine
+          E-Mail, sobald sie genehmigt wurde.
+        banner_rejected: Deine Anzeige wurde abgelehnt. Behebe die unten genannten
+          Probleme und reiche sie erneut ein.
+        banner_rejected_reason: "Grund: %{reason}"
+        banner_published: Deine Anzeige ist live und für Käufer sichtbar.
+        banner_public_link: Öffentliche Seite ansehen
+        banner_paused: Diese Anzeige ist pausiert — für Käufer verborgen, aber
+          unverändert. Setze sie jederzeit fort.
       form:
         category_title: Kategorie
         category_prompt: Kategorie auswählen
@@ -893,7 +914,8 @@ de:
           first_is_cover: Das erste Foto ist das Titelbild in den Suchergebnissen.
           good_light: Fotografiere bei gutem Licht vor einem neutralen Hintergrund.
           show_defects: Zeige Mängel ehrlich, um Streitigkeiten zu vermeiden.
-        submit: Anzeige speichern
+        submit: Entwurf speichern
+        submit_for_review: Speichern & einreichen
       specs_fields:
         prompt: Wähle zuerst eine Kategorie — die dazugehörigen Daten erscheinen hier.
         select_prompt: Auswählen…
@@ -902,9 +924,22 @@ de:
         success: Anzeige als Entwurf gespeichert.
       update:
         success: Anzeige aktualisiert.
+        submitted: Anzeige zur Prüfung eingereicht.
       destroy:
         destroyed: Anzeige gelöscht.
         archived: Anzeige archiviert.
+      submissions:
+        create:
+          submitted: Anzeige zur Prüfung eingereicht.
+      pauses:
+        create:
+          paused: Anzeige pausiert.
+        destroy:
+          resumed: Anzeige ist wieder veröffentlicht.
+      sales:
+        create:
+          sold: Anzeige als verkauft markiert.
+          reduced: Verkauf erfasst — noch %{count} auf Lager.
     sidebar:
       title: Verkäuferbereich
       dashboard: Dashboard

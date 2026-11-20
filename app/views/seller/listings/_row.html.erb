@@ -1,0 +1,53 @@
+<%# One row of the seller listings index. The dom_id is the turbo_stream
+    replace target for the lifecycle actions (see row_update.turbo_stream),
+    so the action buttons here depend on the listing's current state. %>
+<li id="<%= dom_id(listing) %>" class="card flex flex-wrap items-center gap-x-6 gap-y-3 p-4">
+  <div class="min-w-0 flex-1">
+    <%= link_to listing.title, edit_seller_listing_path(listing),
+          class: "font-semibold hover:text-primary-700 dark:hover:text-primary-300" %>
+    <p class="mt-1 text-sm text-muted">
+      <%= listing.category.name %> · <%= format_euros(listing.price_cents) %> ·
+      <%= t(".quantity", count: listing.quantity) %> ·
+      <%= t(".updated", date: l(listing.updated_at.to_date)) %>
+    </p>
+    <% if listing.rejected? && listing.rejection_reason.present? %>
+      <p class="mt-1 text-sm text-rose-700 dark:text-rose-400">
+        <span class="font-semibold"><%= t(".rejection_reason") %>:</span>
+        <%= listing.rejection_reason %>
+      </p>
+    <% end %>
+  </div>
+
+  <div class="flex shrink-0 items-center gap-2">
+    <%= link_to t(".edit"), edit_seller_listing_path(listing), class: "btn-secondary" %>
+
+    <% if listing.may_submit? %>
+      <%= button_to t(".submit"), seller_listing_submission_path(listing),
+            class: "btn-primary",
+            form: { data: { turbo_confirm: t(".confirm_submit") } } %>
+    <% end %>
+
+    <% if listing.published? %>
+      <%= button_to t(".pause"), seller_listing_pause_path(listing), class: "btn-secondary" %>
+    <% elsif listing.paused? %>
+      <%= button_to t(".resume"), seller_listing_pause_path(listing), method: :delete,
+            class: "btn-secondary" %>
+    <% end %>
+
+    <% if listing.published? || listing.paused? %>
+      <%= button_to t(".mark_sold"), seller_listing_sale_path(listing),
+            class: "btn-secondary",
+            form: { data: { turbo_confirm: t(".confirm_sold") } } %>
+    <% end %>
+
+    <% if listing.deletable? %>
+      <%= button_to t(".delete"), seller_listing_path(listing), method: :delete,
+            class: "btn-ghost text-rose-700 dark:text-rose-400",
+            form: { data: { turbo_confirm: t(".confirm_delete") } } %>
+    <% elsif !listing.archived? %>
+      <%= button_to t(".archive"), seller_listing_path(listing), method: :delete,
+            class: "btn-ghost",
+            form: { data: { turbo_confirm: t(".confirm_archive") } } %>
+    <% end %>
+  </div>
+</li>

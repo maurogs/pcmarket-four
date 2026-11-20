@@ -1,7 +1,16 @@
 # Factories shared across catalog tests (see test/test_helper.rb).
 module CatalogHelpers
+  # Attaches a stub photo (submitting for review requires one, see
+  # Listing#image_present_for_review).
+  def attach_photo(listing)
+    listing.images.attach(io: File.open(image_file), filename: "photo.png", content_type: "image/png")
+  end
+
   # Publishes a listing the way the state machine would, with timestamps.
+  # Attaches a stub photo first: submitting for review requires one (see
+  # Listing#image_present_for_review).
   def publish(listing, published_at: Time.current)
+    attach_photo(listing) unless listing.images.attached?
     listing.submit!
     listing.approve!
     listing.update_columns(published_at: published_at)
@@ -52,6 +61,7 @@ module CatalogHelpers
       specs: { "gpu_chipset" => [ "amd" ] }
     ), published_at: 2.days.ago)
     gpu_hidden = create_listing(title: "Pending Graphics Card Should Not Show", price_cents: 44_900)
+    attach_photo(gpu_hidden)
     gpu_hidden.submit!
     cpu_i5 = publish(create_listing(
       title: "Intel Core i5-12400 Processor", category: categories(:cpus), price_cents: 12_900,

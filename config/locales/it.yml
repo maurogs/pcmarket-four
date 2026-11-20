@@ -28,6 +28,7 @@ it:
       unknown_filter_value: "'%{value}' non è un valore valido per %{key}"
       missing_required_spec: "%{label} è obbligatorio prima dell'invio per la revisione"
       unsupported_content_type: "%{content_type} non è un formato immagine supportato"
+      image_required_for_review: Aggiungi almeno una foto prima dell'invio per la revisione
     throttled: Troppe richieste. Riprova tra %{retry_after} secondi.
   footer:
     tagline: Il marketplace europeo per comprare e vendere tecnologia in tutta sicurezza.
@@ -834,15 +835,24 @@ it:
       update:
         success: Impostazioni del negozio aggiornate.
     listings:
+      invalid_transition: Questa azione non è disponibile per questo annuncio nel
+        suo stato attuale.
       index:
         title: I miei annunci
         new_listing: Nuovo annuncio
         statuses_label: Filtra per stato
         empty: Ancora niente qui.
-        rejection_reason: Motivo del rifiuto
+      row:
         quantity: "%{count} in magazzino"
         updated: Aggiornato il %{date}
+        rejection_reason: Motivo del rifiuto
         edit: Modifica
+        submit: Invia in revisione
+        confirm_submit: Inviare questo annuncio in revisione?
+        pause: Metti in pausa
+        resume: Riprendi
+        mark_sold: Segna come venduto
+        confirm_sold: Segnare questo annuncio come venduto?
         delete: Elimina
         archive: Archivia
         confirm_delete: Eliminare definitivamente questo annuncio? Non si può annullare.
@@ -854,6 +864,17 @@ it:
       edit:
         title: Modifica annuncio
         status_note: "Stato attuale: %{status}"
+        banner_draft: "Questo annuncio è una bozza: solo tu puoi vederlo. Aggiungi
+          delle foto e invialo in revisione quando è pronto."
+        banner_pending_review: Esamineremo il tuo annuncio a breve. Riceverai una
+          e-mail quando sarà approvato.
+        banner_rejected: Il tuo annuncio è stato rifiutato. Correggi i problemi qui
+          sotto e invialo di nuovo.
+        banner_rejected_reason: "Motivo: %{reason}"
+        banner_published: Il tuo annuncio è pubblicato e visibile agli acquirenti.
+        banner_public_link: Vedi la pagina pubblica
+        banner_paused: Questo annuncio è in pausa — nascosto agli acquirenti ma
+          intatto. Riprendilo quando vuoi.
       form:
         category_title: Categoria
         category_prompt: Seleziona una categoria
@@ -889,7 +910,8 @@ it:
           first_is_cover: La prima foto è la copertina mostrata nei risultati di ricerca.
           good_light: Scatta con buona luce su uno sfondo neutro.
           show_defects: Mostra i difetti con onestà per evitare contestazioni.
-        submit: Salva annuncio
+        submit: Salva bozza
+        submit_for_review: Salva e invia
       specs_fields:
         prompt: Scegli prima una categoria — le specifiche corrispondenti appariranno qui.
         select_prompt: Seleziona…
@@ -898,9 +920,22 @@ it:
         success: Annuncio salvato in bozza.
       update:
         success: Annuncio aggiornato.
+        submitted: Annuncio inviato in revisione.
       destroy:
         destroyed: Annuncio eliminato.
         archived: Annuncio archiviato.
+      submissions:
+        create:
+          submitted: Annuncio inviato in revisione.
+      pauses:
+        create:
+          paused: Annuncio in pausa.
+        destroy:
+          resumed: L'annuncio è di nuovo pubblicato.
+      sales:
+        create:
+          sold: Annuncio segnato come venduto.
+          reduced: Vendita registrata — %{count} rimasti in magazzino.
     sidebar:
       title: Area venditore
       dashboard: Dashboard

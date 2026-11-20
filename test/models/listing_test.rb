@@ -110,6 +110,7 @@ class ListingTest < ActiveSupport::TestCase
       I18n.t("errors.messages.missing_required_spec", label: "Memory")
 
     listing.update!(specs: { "gpu_chipset" => [ "nvidia" ], "gpu_memory" => [ "8gb" ] })
+    attach_photo(listing)
     listing.submit!
     assert_predicate listing, :pending_review?
   end
@@ -223,7 +224,8 @@ class ListingTest < ActiveSupport::TestCase
     @listing.update!(remove_image_ids: [ @listing.images.first.id ])
 
     assert_predicate @listing.reload, :pending_review?
-    assert_equal 1, @listing.images.count
+    # publish() attached a stub photo, so the gallery is 3 → removing one leaves 2.
+    assert_equal 2, @listing.images.count
   end
 
   test "with auto-approve enabled, image changes keep the listing published" do
@@ -238,6 +240,7 @@ class ListingTest < ActiveSupport::TestCase
   # --- State machine --------------------------------------------------------
 
   test "happy path draft → pending_review → published stamps timestamps" do
+    attach_photo(@listing)
     @listing.submit!
 
     assert_predicate @listing, :pending_review?
@@ -251,6 +254,7 @@ class ListingTest < ActiveSupport::TestCase
   end
 
   test "reject and resubmit and archive" do
+    attach_photo(@listing)
     @listing.submit!
     @listing.reject!
 
@@ -280,6 +284,57 @@ class ListingTest < ActiveSupport::TestCase
 
     assert_predicate @listing, :sold?
     assert_not_nil @listing.sold_at
+  end
+
+  test "a paused listing can be marked as sold" do
+    publish(@listing)
+    @listing.pause!
+    @listing.mark_sold!
+
+    assert_predicate @listing, :sold?
+    assert_not_nil @listing.sold_at
+  end
+
+  test "submitting without photos is refused with the image error" do
+    assert_raises(ActiveRecord::RecordInvalid) { @listing.submit! }
+    assert_includes @listing.errors[:base],
+      I18n.t("errors.messages.image_required_for_review")
+
+    attach_photo(@listing)
+    @listing.submit!
+    assert_predicate @listing, :pending_review?
+  end
+
+  # --- record_offline_sale! ---------------------------------------------------
+
+  test "record_offline_sale! sells the last unit and stamps sold_at" do
+    publish(@listing)
+
+    assert @listing.record_offline_sale!
+
+    assert_predicate @listing, :sold?
+    assert_not_nil @listing.sold_at
+  end
+
+  test "record_offline_sale! only decrements when stock is left" do
+    publish(@listing)
+    @listing.update!(quantity: 3)
+
+    assert_not @listing.record_offline_sale!
+
+    @listing.reload
+    assert_equal 2, @listing.quantity
+    assert_predicate @listing, :published?
+    assert_nil @listing.sold_at
+  end
+
+  test "record_offline_sale! works on a paused listing" do
+    publish(@listing)
+    @listing.pause!
+
+    assert @listing.record_offline_sale!
+
+    assert_predicate @listing, :sold?
   end
 
   test "invalid transitions raise" do

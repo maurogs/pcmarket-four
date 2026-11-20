@@ -1,6 +1,6 @@
 # PCMarket — Project Context
 
-_Last updated: 2026-11-20 (Phase 3 step 3 — listing photos in the sell form,
+_Last updated: 2026-11-20 (Phase 3 step 4 — seller listing lifecycle,
 uncommitted)_
 
 ## What this is
@@ -61,7 +61,11 @@ FR/GB/DE/IT/PT seeded but disabled.
   Editing a published listing (REVIEWABLE_FIELDS title/description/
   price_cents/specs or image blob ids) auto-fires `return_to_review` from
   `after_save` unless `listing_auto_approve` flag is on; before/after image
-  snapshot in `before_save`.
+  snapshot in `before_save`. **AASM gotcha**: non-bang events only change
+  the state in memory — persistence requires the bang event (`submit!` =
+  `save!`, raises `ActiveRecord::RecordInvalid` on validation failure; no
+  whiny_* config is used). Submitting/publishing additionally requires ≥1
+  photo (`image_present_for_review`) + all required category specs.
 - **Specs filters**: `specs` jsonb `{ key => [values] }`; DB filter is
   `@>` containment — OR within a key, AND across keys (Arel-built).
   `FilterOption#value` is a machine token `/\A[a-z0-9][a-z0-9._-]*\z/`;
@@ -589,9 +593,41 @@ FR/GB/DE/IT/PT seeded but disabled.
 - `IconHelper` gained the `grip` icon; i18n keys `form.photos_*` +
   `form.photos_tips.*` in all 6 locales (`photos_placeholder` removed).
 
+## Code map (Phase 3 step 4 — seller listing lifecycle)
+
+- Routes: singular nested resources under `seller/resources :listings` —
+  `resource :submission, only: :create` / `resource :pause, only: %i[create
+  destroy]` (create = pause, destroy = resume) / `resource :sale, only:
+  :create`, all `controller: "listings/<plural>"`.
+- `Seller::Listings::BaseController`: `set_listing` via
+  `current_user.store.listings.find_by_param` + ownership re-check (the
+  FriendlyId history fallback escapes store scope); `rescue_from
+  AASM::InvalidTransition` → alert; `render_row`/`render_row_alert` =
+  turbo_stream (`seller/listings/row_update` replaces `dom_id(listing)` +
+  the `toasts` area, flash.now) or HTML redirect.
+- `Listings::Submitter` service: `may_submit?` guard → Result
+  (`invalid_transition?` flag + translated message); `submit!` (bang —
+  non-bang never persists) rescued as `ActiveRecord::RecordInvalid` →
+  Result with `errors.full_messages`; `approve!` when `listing_auto_approve`.
+  SubmissionsController redirects HTML failures to **edit** (validation) or
+  **index** (invalid transition). Pauses/Sales controllers are thin
+  (`pause!`/`resume!`/`record_offline_sale!`).
+- `Listing`: `record_offline_sale!` (decrement or `mark_sold!`), `mark_sold`
+  from paused too, `image_present_for_review` validation on
+  `entering_review_or_published?`.
+- `Seller::ListingsController#update` + form "Save & submit" button
+  (top-level `submit_for_review=1` param) run the same Submitter after
+  saving. `_row.html.erb` (index row, dom_id turbo target, state-dependent
+  action buttons) + `row_update.turbo_stream.erb`; edit.html.erb per-status
+  banner (rejection reason, public link when published).
+- Tests: `test/controllers/seller/listings/{submissions,pauses,sales}_
+  controller_test.rb`; `attach_photo` helper + `publish` now attaches a stub
+  photo (submit! requires one). Gotchas: `response.media_type` has no
+  charset; top-level params must be merged outside the `listing:` hash.
+
 ## Testing
 
-- `bin/rails test` — **413 tests green**: all Phase 0 checks plus model
+- `bin/rails test` — **447 tests green**: all Phase 0 checks plus model
   validations, AASM transitions (incl. edit-returns-to-review and
   auto-approve), search (accents, spec AND/OR, price/condition filters,
   sorts, facets, N+1, category descendants), seeds idempotency (twice +
@@ -652,7 +688,15 @@ FR/GB/DE/IT/PT seeded but disabled.
   → 422, non-image upload → 422) and 5 to the listing model test
   (`ordered_images` follows image_order, appends missing ids at the end,
   `remove_image_ids` purges only the match, image change on a published
-  listing returns it to pending_review, auto-approve keeps it published).
+  listing returns it to pending_review, auto-approve keeps it published);
+  Phase 3 step 4 adds
+  `test/controllers/seller/listings/{submissions,pauses,sales}_controller_test.rb`
+  (23 tests — submit draft/rejected, missing photos/specs alerts + edit
+  redirect, invalid transition → index redirect, auto-approve publishes,
+  turbo row+toasts stream, ownership 404, auth; pause/resume round-trip +
+  invalid-state alerts; sale sold/decrement/invalid-state; HTML fallbacks)
+  plus Save & submit + status-banner tests in the listings controller test
+  and `record_offline_sale!`/paused→sold/submit-needs-photo model tests.
 - Acceptance: `bin/rails db:migrate:redo STEP=12` + `db:migrate` + `db:seed`
   ×2 verified clean.
 - Remember `env -u BUNDLE_FORCE_RUBY_PLATFORM` for any bundler/rake command
@@ -664,9 +708,7 @@ FR/GB/DE/IT/PT seeded but disabled.
 - PC Finder: admin CRUD for `Game` rows and listing `performance_score`
   pending Phase 7 (admin UI); game tiles show initial-letter placeholders
   until real game images are attached (`Game#image`, nothing seeded).
-- Phase 1b-ii+: submit-for-review button on the sell form (create/update
-  only save drafts for now — the required-specs validation already fires on
-  `submit!`), seller dashboard, admin UI
+- Phase 1b-ii+: seller dashboard, admin UI
   for categories/filters/labels/settings (seeds cover data now).
 - Store follow button + reviews tab (rating distribution, cards, pagination)
   ship (Phase 2 step 4); the store **message** button is still a `#`
@@ -698,5 +740,5 @@ FR/GB/DE/IT/PT seeded but disabled.
   messages, offers, saved searches). GDPR deletion + data export ship
   (Phase 2 step 6); the export-ready **email notification** is still TODO
   (Phase 6 mailer wiring).
-- No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a/2.2b/2.3/2.4/2.5/2.6 —
-  awaiting user review.
+- No commit made for Phases 0/1a/1b-i/1b-ii/2.1/2.2a/2.2b/2.3/2.4/2.5/2.6/
+  3.1/3.2/3.3/3.4 — awaiting user review.

@@ -6,7 +6,8 @@
 #
 # Editing the content (title/description/price/images/specs) of a published
 # listing sends it back to pending_review unless the `listing_auto_approve`
-# setting is on.
+# setting is on. Submitting for review (and publishing) additionally requires
+# at least one photo plus every required spec of the category.
 class Listing < ApplicationRecord
   include ActionView::Helpers::NumberHelper
   extend FriendlyId
@@ -82,7 +83,7 @@ class Listing < ApplicationRecord
     end
 
     event :mark_sold, before: :set_sold_timestamp do
-      transitions from: :published, to: :sold
+      transitions from: [ :published, :paused ], to: :sold
     end
 
     event :archive do
@@ -135,6 +136,7 @@ class Listing < ApplicationRecord
   validate :original_price_above_price
   validate :specs_are_valid
   validate :required_specs_present, if: :entering_review_or_published?
+  validate :image_present_for_review, if: :entering_review_or_published?
   validate :images_are_valid
 
   before_validation :normalize_specs
@@ -285,6 +287,19 @@ class Listing < ApplicationRecord
   # is only archived (see Seller::ListingsController#destroy).
   def deletable?
     draft? || rejected?
+  end
+
+  # Records an in-person (offline) sale: a single-item listing goes sold
+  # (mark_sold stamps sold_at), one with stock left just loses a unit and
+  # keeps its state. Returns true when the listing went sold.
+  def record_offline_sale!
+    if quantity > 1
+      update!(quantity: quantity - 1)
+      false
+    else
+      mark_sold!
+      true
+    end
   end
 
   # --- Euro amounts for the sell form (the DB stores cents) ------------------
@@ -521,7 +536,8 @@ class Listing < ApplicationRecord
   end
 
   # Drafts may be incomplete; submitting for review (or publishing) is only
-  # allowed once every required spec of the category has a value.
+  # allowed once every required spec of the category has a value and the
+  # gallery has at least one photo (see #image_present_for_review).
   def entering_review_or_published?
     will_save_change_to_status? && %w[pending_review published].include?(status)
   end
@@ -532,6 +548,14 @@ class Listing < ApplicationRecord
     category.effective_filter_definitions.select(&:required_in_form).each do |definition|
       errors.add(:specs, :missing_required_spec, label: definition.label) if specs[definition.key].blank?
     end
+  end
+
+  # Gate on the submit event: a listing without photos cannot enter review.
+  # Added to :base so the full message reads as a standalone instruction.
+  def image_present_for_review
+    return if images.attached?
+
+    errors.add(:base, :image_required_for_review)
   end
 
   def images_are_valid

@@ -305,6 +305,79 @@ class Seller::ListingsControllerTest < ActionDispatch::IntegrationTest
     assert_predicate listing.reload, :pending_review?
   end
 
+  # --- Save & submit --------------------------------------------------------------
+
+  test "update with submit_for_review saves and submits in one step" do
+    listing = create_listing(title: "Lexar NM790 2 TB NVMe")
+    attach_photo(listing)
+
+    patch "/en/seller/listings/#{listing.to_param}",
+      params: listing_params(title: "Lexar NM790 2 TB NVMe SSD").merge(submit_for_review: "1")
+
+    assert_predicate listing.reload, :pending_review?
+    assert_redirected_to "/en/seller/listings/#{listing.to_param}/edit"
+    assert_equal "Listing submitted for review.", flash[:notice]
+    assert_equal "Lexar NM790 2 TB NVMe SSD", listing.title
+  end
+
+  test "update with submit_for_review without photos saves the draft and alerts" do
+    listing = create_listing(title: "Lexar NM790 2 TB NVMe")
+
+    patch "/en/seller/listings/#{listing.to_param}",
+      params: listing_params(title: "Lexar NM790 2 TB NVMe SSD").merge(submit_for_review: "1")
+
+    assert_predicate listing.reload, :draft?
+    assert_redirected_to "/en/seller/listings/#{listing.to_param}/edit"
+    assert_equal I18n.t("errors.messages.image_required_for_review"), flash[:alert]
+    assert_equal "Lexar NM790 2 TB NVMe SSD", listing.title
+  end
+
+  test "with listing_auto_approve on, save & submit publishes" do
+    set_setting("listing_auto_approve", true)
+    listing = create_listing(title: "Lexar NM790 2 TB NVMe")
+    attach_photo(listing)
+
+    patch "/en/seller/listings/#{listing.to_param}",
+      params: listing_params.merge(submit_for_review: "1")
+
+    assert_predicate listing.reload, :published?
+  end
+
+  # --- Edit status banner -----------------------------------------------------------
+
+  test "edit shows the pending review banner" do
+    listing = create_listing(title: "Western Digital Black SN850X 1 TB")
+    attach_photo(listing)
+    listing.submit!
+
+    get "/en/seller/listings/#{listing.to_param}/edit"
+
+    assert_response :success
+    assert_select "div[role=status]", text: /review your listing shortly/
+  end
+
+  test "edit shows the rejection reason in the banner" do
+    listing = create_listing(title: "Counterfeit Looking RAM")
+    attach_photo(listing)
+    listing.submit!
+    listing.reject!
+    listing.update!(rejection_reason: "Photos do not match the item.")
+
+    get "/en/seller/listings/#{listing.to_param}/edit"
+
+    assert_response :success
+    assert_select "div[role=status]", text: /Photos do not match the item\./
+  end
+
+  test "edit shows the published banner with the public link" do
+    listing = publish(create_listing(title: "Samsung 990 Pro 2 TB NVMe"))
+
+    get "/en/seller/listings/#{listing.to_param}/edit"
+
+    assert_response :success
+    assert_select "div[role=status] a[href=?]", "/en/l/#{listing.slug}", text: "View public page"
+  end
+
   # --- Ownership --------------------------------------------------------------------
 
   test "another seller's listing is a 404 on every member route" do
@@ -348,6 +421,7 @@ class Seller::ListingsControllerTest < ActionDispatch::IntegrationTest
 
   test "destroy deletes a rejected listing for good" do
     listing = create_listing(title: "Noisy Blower Cooler Clearance")
+    attach_photo(listing)
     listing.submit!
     listing.reject!
 
@@ -399,6 +473,7 @@ class Seller::ListingsControllerTest < ActionDispatch::IntegrationTest
 
   test "index shows the rejection reason on rejected listings" do
     listing = create_listing(title: "Counterfeit Looking RAM")
+    attach_photo(listing)
     listing.submit!
     listing.reject!
     listing.update!(rejection_reason: "Photos do not match the item.")

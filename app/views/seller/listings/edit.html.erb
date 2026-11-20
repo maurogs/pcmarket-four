@@ -1,7 +1,38 @@
 <% content_for :seller_body do %>
   <div class="card max-w-3xl p-8">
     <h1 class="font-display text-2xl font-bold"><%= t(".title") %></h1>
-    <p class="mt-2 text-sm text-muted"><%= t(".status_note", status: @listing.status_label) %></p>
+
+    <%# Status banner: what happens next for this listing. Sold / archived
+        fall back to the plain status note. %>
+    <% banner =
+      case @listing.status
+      when "draft"
+        { tone: "bg-cream-100 text-body dark:bg-cream-surface", key: ".banner_draft" }
+      when "pending_review"
+        { tone: "bg-primary-50 text-primary-900 dark:bg-primary-950 dark:text-primary-100", key: ".banner_pending_review" }
+      when "rejected"
+        { tone: "bg-rose-50 text-rose-900 dark:bg-rose-950 dark:text-rose-100", key: ".banner_rejected" }
+      when "published"
+        { tone: "bg-emerald-50 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100", key: ".banner_published" }
+      when "paused"
+        { tone: "bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-100", key: ".banner_paused" }
+      end %>
+    <% if banner %>
+      <div class="mt-4 rounded-2xl px-4 py-3 text-sm font-medium <%= banner[:tone] %>" role="status">
+        <p><%= t(banner[:key]) %></p>
+        <% if @listing.rejected? && @listing.rejection_reason.present? %>
+          <p class="mt-1 font-normal"><%= t(".banner_rejected_reason", reason: @listing.rejection_reason) %></p>
+        <% end %>
+        <% if @listing.published? %>
+          <p class="mt-1">
+            <%= link_to t(".banner_public_link"), listing_path(@listing),
+                  target: "_blank", rel: "noopener", class: "font-semibold underline" %>
+          </p>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="mt-2 text-sm text-muted"><%= t(".status_note", status: @listing.status_label) %></p>
+    <% end %>
 
     <%= render "form", listing: @listing %>
   </div>

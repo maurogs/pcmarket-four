@@ -28,6 +28,7 @@ es:
       unknown_filter_value: "'%{value}' no es un valor válido para %{key}"
       missing_required_spec: "%{label} es obligatorio antes de enviar para revisión"
       unsupported_content_type: "%{content_type} no es un formato de imagen compatible"
+      image_required_for_review: Añade al menos una foto antes de enviar para revisión
     throttled: Demasiadas peticiones. Vuelve a intentarlo en %{retry_after} segundos.
   footer:
     tagline: El mercado europeo donde comprar y vender tecnología con total confianza.
@@ -835,15 +836,24 @@ es:
       update:
         success: Ajustes de la tienda actualizados.
     listings:
+      invalid_transition: Esa acción no está disponible para este anuncio en su
+        estado actual.
       index:
         title: Mis anuncios
         new_listing: Nuevo anuncio
         statuses_label: Filtrar por estado
         empty: Aún no hay nada aquí.
-        rejection_reason: Motivo del rechazo
+      row:
         quantity: "%{count} en stock"
         updated: Actualizado el %{date}
+        rejection_reason: Motivo del rechazo
         edit: Editar
+        submit: Enviar a revisión
+        confirm_submit: "¿Enviar este anuncio a revisión?"
+        pause: Pausar
+        resume: Reactivar
+        mark_sold: Marcar como vendido
+        confirm_sold: "¿Marcar este anuncio como vendido?"
         delete: Eliminar
         archive: Archivar
         confirm_delete: "¿Eliminar este anuncio definitivamente? No se puede deshacer."
@@ -855,6 +865,17 @@ es:
       edit:
         title: Editar anuncio
         status_note: "Estado actual: %{status}"
+        banner_draft: "Este anuncio es un borrador: solo tú puedes verlo. Añade
+          fotos y envíalo a revisión cuando esté listo."
+        banner_pending_review: Revisaremos tu anuncio en breve. Recibirás un
+          correo cuando se apruebe.
+        banner_rejected: Tu anuncio ha sido rechazado. Corrige los problemas y
+          vuelve a enviarlo.
+        banner_rejected_reason: "Motivo: %{reason}"
+        banner_published: Tu anuncio está publicado y visible para los compradores.
+        banner_public_link: Ver página pública
+        banner_paused: "Este anuncio está en pausa: oculto para los compradores
+          pero intacto. Reactívalo cuando quieras."
       form:
         category_title: Categoría
         category_prompt: Selecciona una categoría
@@ -890,7 +911,8 @@ es:
           first_is_cover: La primera foto es la portada que se muestra en los resultados.
           good_light: Haz las fotos con buena luz y un fondo neutro.
           show_defects: Muestra los defectos con honestidad para evitar disputas.
-        submit: Guardar anuncio
+        submit: Guardar borrador
+        submit_for_review: Guardar y enviar
       specs_fields:
         prompt: Elige primero una categoría; sus características aparecerán aquí.
         select_prompt: Seleccionar…
@@ -899,9 +921,22 @@ es:
         success: Anuncio guardado como borrador.
       update:
         success: Anuncio actualizado.
+        submitted: Anuncio enviado a revisión.
       destroy:
         destroyed: Anuncio eliminado.
         archived: Anuncio archivado.
+      submissions:
+        create:
+          submitted: Anuncio enviado a revisión.
+      pauses:
+        create:
+          paused: Anuncio en pausa.
+        destroy:
+          resumed: El anuncio vuelve a estar publicado.
+      sales:
+        create:
+          sold: Anuncio marcado como vendido.
+          reduced: "Venta registrada: quedan %{count} en stock."
     sidebar:
       title: Zona de vendedor
       dashboard: Panel

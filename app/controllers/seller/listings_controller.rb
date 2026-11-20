@@ -1,9 +1,12 @@
 # Seller listing manager: /:locale/seller/listings. Everything is scoped to
 # current_user.store — other sellers' listings 404. First-time sellers get
 # their store created lazily (Stores::EnsureForUser) on new/create so the
-# header's "List an item" button never dead-ends. create/update only ever
-# save drafts; a published listing edited here goes back to pending_review
-# through the model's own re-review logic.
+# header's "List an item" button never dead-ends. create always saves a
+# draft; update saves and, with the form's "Save & submit" button
+# (submit_for_review=1), also submits for review through Listings::Submitter
+# — the lifecycle endpoints themselves live under Seller::Listings::*. A
+# published listing edited here goes back to pending_review through the
+# model's own re-review logic.
 module Seller
   class ListingsController < ApplicationController
     before_action :authenticate_user!
@@ -40,7 +43,11 @@ module Seller
 
     def update
       if @listing.update(listing_params)
-        redirect_to edit_seller_listing_path(@listing), notice: t(".success")
+        if params[:submit_for_review].present?
+          submit_for_review
+        else
+          redirect_to edit_seller_listing_path(@listing), notice: t(".success")
+        end
       else
         render :edit, status: :unprocessable_entity
       end
@@ -71,6 +78,19 @@ module Seller
     def set_listing
       @listing = @store&.listings&.find_by_param(params[:id])
       render_not_found unless @listing && @listing.store_id == @store.id
+    end
+
+    # The sell form's "Save & submit" button posts the fields plus
+    # submit_for_review=1; the same Listings::Submitter the submissions
+    # controller uses runs right after the save.
+    def submit_for_review
+      result = ::Listings::Submitter.call(@listing)
+
+      if result.success?
+        redirect_to edit_seller_listing_path(@listing), notice: t(".submitted")
+      else
+        redirect_to edit_seller_listing_path(@listing), alert: result.errors.to_sentence
+      end
     end
 
     # Draft defaults copied from the seller's store settings.
