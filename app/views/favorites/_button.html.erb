@@ -1,0 +1,31 @@
+<% favorited = local_assigns.fetch(:favorited, false) %>
+<% favorite_id = local_assigns[:favorite_id] %>
+<span class="js-favorite-<%= listing.id %> inline-flex" data-controller="favorite_toggle">
+  <% if user_signed_in? %>
+    <% if favorited && favorite_id %>
+      <%= button_to favorite_path(id: favorite_id), method: :delete,
+                    form: { class: "block", data: { turbo_stream: true } },
+                    class: "inline-flex size-11 items-center justify-center rounded-full bg-white/90 text-rose-600 shadow-sm backdrop-blur transition hover:text-rose-700 dark:bg-zinc-900/90 dark:text-rose-400",
+                    data: { action: "click->favorite_toggle#toggle" },
+                    aria: { label: t("listings.show.remove_favourite"), pressed: "true" } do %>
+        <%= icon "heart", class: "size-5 fill-current" %>
+      <% end %>
+    <% else %>
+      <%= button_to favorites_path(listing_id: listing.id), method: :post,
+                    form: { class: "block", data: { turbo_stream: true } },
+                    class: "inline-flex size-11 items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-sm backdrop-blur transition hover:text-rose-600 dark:bg-zinc-900/90 dark:text-zinc-300 dark:hover:text-rose-400",
+                    data: { action: "click->favorite_toggle#toggle" },
+                    aria: { label: t("listings.show.add_favourite"), pressed: "false" } do %>
+        <%= icon "heart", class: "size-5" %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= button_to favorites_path(listing_id: listing.id), method: :post,
+                  form: { class: "block", data: { turbo: false } },
+                  class: "inline-flex size-11 items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-sm backdrop-blur transition hover:text-rose-600 dark:bg-zinc-900/90 dark:text-zinc-300 dark:hover:text-rose-400",
+                  aria: { label: t("listings.card.login_to_favourite") },
+                  title: t("listings.card.login_to_favourite") do %>
+      <%= icon "heart", class: "size-5" %>
+    <% end %>
+  <% end %>
+</span>

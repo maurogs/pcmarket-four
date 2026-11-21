@@ -104,7 +104,7 @@ module ApplicationHelper
   end
 
   def listing_condition_label(listing)
-    t("activerecord.attributes.listing.condition.#{listing.condition}")
+    t("listings.conditions.#{listing.condition}")
   end
 
   def listing_condition_tone(listing)
@@ -125,7 +125,8 @@ module ApplicationHelper
   end
 
   def spec_chips(listing)
-    return [] unless %w[gaming-pcs workstations laptops].include?(listing.category.root.slug)
+    root_slug = Category.root_slug_map[listing.category.root_id]
+    return [] unless %w[gaming-pcs workstations laptops].include?(root_slug)
 
     keys = %w[gpu_model cpu cpu_brand memory_capacity storage_capacity]
     keys.filter_map do |key|
@@ -139,10 +140,9 @@ module ApplicationHelper
   def cart_items_count
     if current_user
       CartItem.where(user_id: current_user.id).sum(:quantity)
-    elsif cookies[:cart_token].present?
-      CartItem.where(cart_token: cookies[:cart_token]).sum(:quantity)
     else
-      0
+      token = cookies.signed[:cart_token]
+      token.present? ? CartItem.where(cart_token: token).sum(:quantity) : 0
     end
   end
 
@@ -184,7 +184,7 @@ module ApplicationHelper
   end
 
   def nav_link_classes(active = false)
-    base = "inline-flex min-h-11 items-center gap-1 px-3 text-sm font-medium transition-colors"
+    base = "inline-flex min-h-11 shrink-0 items-center gap-1 whitespace-nowrap px-2.5 text-sm font-medium transition-colors xl:px-3"
     if active
       "#{base} text-brand-700 dark:text-brand-300"
     else
@@ -194,6 +194,263 @@ module ApplicationHelper
 
   def current_path_matches?(path)
     request.path == path
+  end
+
+  def price_in_euros(cents)
+    format("%.2f", cents.to_i / 100.0)
+  end
+
+  def localized_count(count)
+    number_with_delimiter(count.to_i)
+  end
+
+  def listing_results_count(result)
+    t("search.results.count", count: result.total_count,
+      formatted: localized_count(result.total_count))
+  end
+
+  def sort_options
+    ListingSearch::SORTS.map { |sort| [ t("search.sort.#{sort}"), sort ] }
+  end
+
+  def filter_option_rows(definition, result)
+    selected = result.selected_specs(definition.key)
+    definition.filter_options.filter_map do |option|
+      count = result.facets.dig(definition.key, option.value) || 0
+      next if count.zero? && !selected.include?(option.value)
+
+      { value: option.value, label: option.label, count: count, selected: selected.include?(option.value) }
+    end
+  end
+
+  def category_option_tree(category)
+    return [] if category.nil?
+
+    category.path
+  end
+
+  def hidden_search_fields(params_hash, except: [])
+    safe_join(
+      params_hash.to_h.except(*Array(except).map(&:to_s)).flat_map do |key, value|
+        case value
+        when Array
+          value.map { |item| hidden_field_tag("#{key}[]", item, id: nil) }
+        when Hash
+          value.flat_map do |nested_key, nested_value|
+            Array(nested_value).map do |item|
+              hidden_field_tag("#{key}[#{nested_key}][]", item, id: nil)
+            end
+          end
+        else
+          hidden_field_tag(key, value, id: nil)
+        end
+      end
+    )
+  end
+
+  def listing_favorite_ids(listings)
+    return Set.new unless current_user
+    return @favorited_listing_ids if defined?(@favorited_listing_ids) && @favorited_listing_ids
+
+    current_user.favorites.where(listing_id: listings.map(&:id)).pluck(:listing_id).to_set
+  end
+
+  def favourites_toggle_path(listing)
+    favorites_path(listing_id: listing.id)
+  end
+
+  def saved_search_toggle_label(saved_search)
+    t(saved_search.notify? ? "saved_searches.notify_on" : "saved_searches.notify_off")
+  end
+
+  def search_path_with(params_hash)
+    query = params_hash.to_h.to_query
+    query.present? ? "#{request.path}?#{query}" : request.path
+  end
+
+  def saved_search_link_params(search)
+    { search_query: search.query_params.to_query,
+      category_id: search.category&.id }
+  end
+
+  def saved_search_results_path(saved_search)
+    stored = saved_search.filters["_search"].is_a?(Hash) ? saved_search.filters["_search"] : {}
+    path = saved_search.category ? category_path(path: saved_search.category.path_slugs) : search_path
+    query = stored.except("category_id", "page", "sort").to_query
+    query.present? ? "#{path}?#{query}" : path
+  end
+
+  def listing_schema_condition(listing)
+    case listing.condition
+    when "new_sealed", "new_open_box" then "https://schema.org/NewCondition"
+    when "for_parts" then "https://schema.org/DamagedCondition"
+    when "used_like_new" then "https://schema.org/RefurbishedCondition"
+    else "https://schema.org/UsedCondition"
+    end
+  end
+
+  def breadcrumb_json_ld(items)
+    {
+      "@context" => "https://schema.org",
+      "@type" => "BreadcrumbList",
+      "itemListElement" => items.each_with_index.map do |item, index|
+        {
+          "@type" => "ListItem",
+          "position" => index + 1,
+          "name" => item[:name],
+          "item" => item[:url]
+        }
+      end
+    }
+  end
+
+  def breadcrumbs_for_listing(listing)
+    items = [ { name: t("layout.tab_bar.home"), url: root_url(locale: I18n.locale) } ]
+    listing.category.path.each do |category|
+      items << {
+        name: category.name,
+        url: category_url(path: category.path_slugs, locale: I18n.locale)
+      }
+    end
+    items << { name: listing.title, url: listing_url(listing, locale: I18n.locale) }
+    items
+  end
+
+  def search_structured_data
+    return "".html_safe if @result.nil?
+
+    breadcrumbs = [ { name: t("layout.tab_bar.home"), url: root_url(locale: I18n.locale) } ]
+    if @category
+      @category.path.each do |category|
+        breadcrumbs << {
+          name: category.name,
+          url: category_url(path: category.path_slugs, locale: I18n.locale)
+        }
+      end
+    end
+
+    item_list = {
+      "@context" => "https://schema.org",
+      "@type" => "ItemList",
+      "numberOfItems" => @result.total_count,
+      "itemListElement" => @listings.each_with_index.map do |listing, index|
+        {
+          "@type" => "ListItem",
+          "position" => index + 1,
+          "url" => listing_url(listing, locale: I18n.locale),
+          "name" => listing.title
+        }
+      end
+    }
+
+    {
+      "@context" => "https://schema.org",
+      "@graph" => [ breadcrumb_json_ld(breadcrumbs), item_list, url_property_link ]
+    }.to_json.html_safe
+  end
+
+  def listing_structured_data(listing)
+    data = {
+      "@context" => "https://schema.org",
+      "@type" => "Product",
+      "name" => listing.title,
+      "description" => ActionController::Base.helpers.strip_tags(listing.description.to_s).squish.first(500),
+      "sku" => listing.slug,
+      "url" => listing_url(listing, locale: I18n.locale),
+      "brand" => { "@type" => "Brand", "name" => listing.brand.presence || listing.category.name },
+      "itemCondition" => listing_schema_condition(listing),
+      "offers" => {
+        "@type" => "Offer",
+        "price" => price_in_euros(listing.price_cents),
+        "priceCurrency" => listing.currency.presence || "EUR",
+        "availability" => listing.sold? ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
+        "url" => listing_url(listing, locale: I18n.locale),
+        "seller" => {
+          "@type" => "Organization",
+          "name" => listing_seller_name(listing)
+        }
+      }
+    }
+    if listing.images.attached?
+      data["image"] = listing.images.map do |image|
+        rails_blob_url(image, only_path: false)
+      end
+    end
+    if listing.store && listing.store.reviews_count.to_i.positive?
+      data["aggregateRating"] = {
+        "@type" => "AggregateRating",
+        "ratingValue" => listing.store.rating_avg.to_f,
+        "reviewCount" => listing.store.reviews_count
+      }
+    end
+    data.to_json.html_safe
+  end
+
+  def store_structured_data(store)
+    data = {
+      "@context" => "https://schema.org",
+      "@type" => "Organization",
+      "name" => store.name,
+      "url" => store_url(store, locale: I18n.locale),
+      "description" => store.description.to_s.squish.first(300),
+      "address" => {
+        "@type" => "PostalAddress",
+        "addressLocality" => store.city,
+        "addressCountry" => store.country_code
+      }
+    }
+    if store.logo.attached?
+      data["logo"] = rails_blob_url(store.logo, only_path: false)
+    end
+    if store.reviews_count.to_i.positive?
+      data["aggregateRating"] = {
+        "@type" => "AggregateRating",
+        "ratingValue" => store.rating_avg.to_f,
+        "reviewCount" => store.reviews_count
+      }
+    end
+    data.to_json.html_safe
+  end
+
+  def url_property_link
+    {
+      "@type" => "WebPage",
+      "url" => "#{request.base_url}#{request.path}",
+      "name" => @category ? @category.name : t("search.meta.title")
+    }
+  end
+
+  def humanized_spec_key(key)
+    key.to_s.tr("_", " ").capitalize
+  end
+
+  def month_year(date)
+    date ? I18n.l(date.to_date, format: "%B %Y") : ""
+  end
+
+  def formatted_description(text)
+    escaped = ERB::Util.html_escape(text.to_s)
+    linked = escaped.gsub(%r{https?://[^\s<]+}) do |url|
+      link_to(url, url, target: "_blank", rel: "nofollow ugc noopener")
+    end
+    simple_format(linked, {}, sanitize: false)
+  end
+
+  def listing_condition_tooltip(listing)
+    t("listings.show.condition_tooltips.#{listing.condition}")
+  end
+
+  def status_banner_tone(status)
+    %w[published sold].include?(status) ? :success : :accent
+  end
+
+  def spec_display_value(key, value)
+    definition = @spec_labels&.[](key)
+    label = Array(value).map do |item|
+      option = @option_labels&.[]([ definition&.id, item.to_s ])
+      option&.label || item.to_s
+    end.join(", ")
+    [ definition&.name || humanized_spec_key(key), label ]
   end
 
   def structured_data

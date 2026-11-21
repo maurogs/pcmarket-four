@@ -5,6 +5,36 @@ class SavedSearch < ApplicationRecord
   validates :name, presence: true
   validate :price_range_is_ordered
 
+  # Builds a saved search from a ListingSearch result. The normalised search
+  # parameters are stored under a reserved `_search` key so future alert jobs
+  # can replay exactly the same query.
+  def self.build_from(user:, search:, name: nil)
+    normalized = search.normalized_params
+    new(
+      user: user,
+      name: name.presence || default_name_for(search),
+      query: normalized[:q],
+      category_id: normalized[:category_id],
+      min_price_cents: normalized[:min_price_cents],
+      max_price_cents: normalized[:max_price_cents],
+      filters: normalized[:specs].merge("_search" => search.query_params.deep_stringify_keys),
+      notify: true
+    )
+  end
+
+  def self.default_name_for(search)
+    normalized = search.normalized_params
+    parts = [ normalized[:q] ]
+    if normalized[:category_id].present?
+      parts << Category.find_by(id: normalized[:category_id])&.name
+    end
+    parts.compact_blank.join(" · ").presence || I18n.t("saved_searches.default_name")
+  end
+
+  def spec_filters
+    filters.reject { |key, _value| key.to_s.start_with?("_") }
+  end
+
   def matches?(listing)
     return false if listing.blank?
     return false unless Listing.visible.where(id: listing.id).exists?
@@ -14,7 +44,7 @@ class SavedSearch < ApplicationRecord
     return false if category_id.present? && !category.subtree_ids.include?(listing.category_id)
     return false if query.present? && !query_matches?(listing)
 
-    filters.all? { |key, value| filter_matches?(listing, key, value) }
+    spec_filters.all? { |key, value| filter_matches?(listing, key, value) }
   end
 
   private

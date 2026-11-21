@@ -12,8 +12,25 @@ class ApplicationController < ActionController::Base
 
   around_action :switch_locale
   before_action :set_default_meta_tags
+  before_action :complete_pending_favorite, if: :user_signed_in?
+  before_action :configure_permitted_parameters, if: :devise_controller?
 
-  helper_method :menu_categories
+  helper_method :menu_categories, :primary_menu_categories, :more_menu_categories,
+                :filters_applied?
+
+  SEARCH_PARAMS = %i[q min_price max_price free_shipping on_sale deals sort page seller
+                     category_id include_sold].freeze
+  SEARCH_ARRAY_PARAMS = %i[condition labels tags region_id shipping].freeze
+
+  def search_params
+    permitted = params.permit(*SEARCH_PARAMS, **SEARCH_ARRAY_PARAMS.index_with { [] })
+    permitted[:f] = params[:f].to_unsafe_h if params[:f].present?
+    permitted
+  end
+
+  def filters_applied?
+    search_params.to_h.except("page", "sort").values.any?(&:present?)
+  end
 
   def default_url_options
     { locale: I18n.locale }
@@ -21,6 +38,14 @@ class ApplicationController < ActionController::Base
 
   def menu_categories
     @menu_categories ||= MenuBuilder.new(locale: I18n.locale).call
+  end
+
+  def primary_menu_categories
+    menu_categories.first(MenuBuilder::PRIMARY_LIMIT)
+  end
+
+  def more_menu_categories
+    menu_categories.drop(MenuBuilder::PRIMARY_LIMIT)
   end
 
   private
@@ -86,5 +111,20 @@ class ApplicationController < ActionController::Base
   def user_not_authorized
     flash[:alert] = t("errors.not_authorized")
     redirect_back_or_to(root_path)
+  end
+
+  def complete_pending_favorite
+    listing_id = session.delete(:pending_favorite_id)
+    return if listing_id.blank?
+
+    listing = Listing.find_by(id: listing_id)
+    current_user.favorites.find_or_create_by!(listing: listing) if listing
+  end
+
+  def configure_permitted_parameters
+    keys = %i[first_name last_name username email password password_confirmation
+              terms_accepted accepts_marketing country_code locale]
+    devise_parameter_sanitizer.permit(:sign_up, keys: keys)
+    devise_parameter_sanitizer.permit(:account_update, keys: keys)
   end
 end

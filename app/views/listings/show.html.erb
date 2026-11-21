@@ -1,102 +1,553 @@
-<% content_for :title, @listing.title %>
+<% content_for :head do %>
+  <script type="application/ld+json" nonce="<%= content_security_policy_nonce %>"><%= @listing_json_ld %></script>
+  <script type="application/ld+json" nonce="<%= content_security_policy_nonce %>"><%= breadcrumb_json_ld(@breadcrumbs).to_json.html_safe %></script>
+<% end %>
 
-<div class="page-container py-8 sm:py-10">
-  <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-400" aria-label="<%= t("layout.nav.view_all") %>">
+<div class="page-container py-6 pb-24 sm:py-8 md:pb-8">
+  <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-400"
+       aria-label="<%= t("listings.show.breadcrumb_label") %>">
     <%= link_to t("layout.tab_bar.home"), root_path, class: "hover:text-brand-700 dark:hover:text-brand-300" %>
-    <span>/</span>
     <% @listing.category.path.each do |category| %>
-      <%= link_to category.name, category_path(path: category.path_slugs), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
-      <span>/</span>
+      <span aria-hidden="true">/</span>
+      <%= link_to category.name, category_path(path: category.path_slugs),
+                  class: "hover:text-brand-700 dark:hover:text-brand-300" %>
     <% end %>
+    <span aria-hidden="true">/</span>
     <span class="truncate text-slate-700 dark:text-zinc-200"><%= @listing.title %></span>
   </nav>
 
-  <div class="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(20rem,1fr)]">
-    <div>
-      <div class="surface overflow-hidden">
-        <div class="aspect-[4/3] bg-slate-100 dark:bg-zinc-800">
-          <% if @listing.images.attached? %>
-            <%= image_tag @listing.images.first.variant(resize_to_limit: [ 1200, 900 ], format: :webp),
-                          alt: t("listings.card.image_alt", title: @listing.title),
-                          width: 1200, height: 900, loading: "eager",
-                          class: "h-full w-full object-cover" %>
+  <% unless @listing.published? %>
+    <div class="mb-5 flex flex-wrap items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+      <%= icon "eye", class: "size-5 shrink-0" %>
+      <p class="flex-1"><%= t("listings.show.status_banner",
+                             status: t("listings.statuses.#{@listing.status}")) %></p>
+    </div>
+  <% end %>
+
+  <div class="grid gap-8 lg:grid-cols-12">
+    <div class="min-w-0 lg:col-span-7">
+      <section data-controller="gallery"
+               data-action="keydown->gallery#keydown"
+               tabindex="0"
+               aria-roledescription="<%= t("listings.show.gallery.role") %>"
+               aria-label="<%= t("listings.show.gallery.label") %>"
+               class="surface overflow-hidden">
+        <% images = @listing.images.to_a %>
+        <div class="relative aspect-[4/3] bg-slate-100 dark:bg-zinc-800"
+             data-action="pointerdown->gallery#pointerDown pointerup->gallery#pointerUp">
+          <% if images.any? %>
+            <% images.each_with_index do |image, index| %>
+              <button type="button" data-gallery-target="slide" data-action="gallery#openLightbox"
+                      <%= "hidden" unless index.zero? %>
+                      class="absolute inset-0 h-full w-full cursor-zoom-in"
+                      aria-label="<%= t("listings.show.gallery.open") %>">
+                <%= image_tag image.variant(resize_to_limit: [ 1600, 1200 ], format: :webp),
+                              alt: t("listings.card.image_alt", title: @listing.title),
+                              width: 1600, height: 1200,
+                              loading: index.zero? ? "eager" : "lazy",
+                              fetchpriority: index.zero? ? "high" : "auto",
+                              decoding: "async",
+                              data: { full_src: url_for(image.variant(resize_to_limit: [ 2400, 1800 ], format: :webp)) },
+                              class: "h-full w-full object-cover" %>
+              </button>
+            <% end %>
           <% else %>
             <%= image_tag "listing-placeholder.svg", alt: "", width: 640, height: 480,
-                          class: "h-full w-full object-cover" %>
+                          loading: "eager", class: "h-full w-full object-cover" %>
+          <% end %>
+
+          <span class="pointer-events-none absolute right-3 top-3 rounded-full bg-slate-950/70 px-2.5 py-1 text-xs font-semibold text-white">
+            <span data-gallery-target="counter"></span>
+          </span>
+
+          <% if images.size > 1 %>
+            <div class="absolute inset-x-3 top-1/2 flex -translate-y-1/2 justify-between">
+              <button type="button" data-action="gallery#previous"
+                      class="inline-flex size-10 items-center justify-center rounded-full bg-white/90 text-slate-800 shadow-sm backdrop-blur transition hover:bg-white dark:bg-zinc-900/90 dark:text-zinc-100"
+                      aria-label="<%= t("listings.show.gallery.previous") %>">
+                <%= icon "chevron-left", class: "size-5" %>
+              </button>
+              <button type="button" data-action="gallery#next"
+                      class="inline-flex size-10 items-center justify-center rounded-full bg-white/90 text-slate-800 shadow-sm backdrop-blur transition hover:bg-white dark:bg-zinc-900/90 dark:text-zinc-100"
+                      aria-label="<%= t("listings.show.gallery.next") %>">
+                <%= icon "chevron-right", class: "size-5" %>
+              </button>
+            </div>
           <% end %>
         </div>
-      </div>
+
+        <% if images.size > 1 %>
+          <div class="flex gap-2 overflow-x-auto p-3 scrollbar-hide">
+            <% images.each_with_index do |image, index| %>
+              <button type="button" data-gallery-target="thumb" data-index="<%= index %>"
+                      data-action="gallery#goTo"
+                      class="h-16 w-20 shrink-0 overflow-hidden rounded-lg border border-slate-200 transition aria-[current=true]:border-brand-600 dark:border-zinc-700"
+                      aria-label="<%= t("listings.show.gallery.thumb", number: index + 1) %>">
+                <%= image_tag image.variant(resize_to_limit: [ 160, 120 ], format: :webp),
+                              alt: t("listings.show.gallery.thumb", number: index + 1),
+                              width: 160, height: 120, loading: "lazy",
+                              class: "h-full w-full object-cover" %>
+              </button>
+            <% end %>
+          </div>
+        <% end %>
+
+        <dialog data-gallery-target="lightbox" data-action="click->gallery#closeLightbox"
+                class="max-h-[92dvh] w-[min(96vw,72rem)] rounded-2xl border-0 bg-transparent p-0">
+          <img data-gallery-target="lightboxImage" alt=""
+               class="max-h-[88dvh] w-full rounded-2xl object-contain">
+          <button type="button" data-action="gallery#closeLightbox"
+                  class="absolute right-4 top-4 inline-flex size-11 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-sm"
+                  aria-label="<%= t("listings.show.gallery.close") %>">
+            <%= icon "x", class: "size-5" %>
+          </button>
+        </dialog>
+      </section>
 
       <div class="mt-6 flex flex-wrap items-center gap-2">
-        <span class="<%= ui_badge_classes(tone: listing_condition_tone(@listing)) %>"><%= listing_condition_label(@listing) %></span>
-        <span class="<%= ui_badge_classes(tone: :neutral) %>"><%= @listing.category.name %></span>
+        <span class="<%= ui_badge_classes(tone: listing_condition_tone(@listing)) %>"
+              title="<%= listing_condition_tooltip(@listing) %>">
+          <%= listing_condition_label(@listing) %>
+        </span>
+        <%= link_to @listing.category.name, category_path(path: @listing.category.path_slugs),
+                    class: ui_badge_classes(tone: :neutral) %>
+        <% @listing.labels.each do |label| %>
+          <% if I18n.exists?("listings.labels.#{label}") %>
+            <span class="<%= ui_badge_classes(tone: :accent) %>"><%= t("listings.labels.#{label}") %></span>
+          <% end %>
+        <% end %>
         <% if @listing.sold? %>
           <span class="<%= ui_badge_classes(tone: :danger) %>"><%= t("listings.card.sold") %></span>
         <% end %>
       </div>
 
-      <h1 class="mt-4 font-heading text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl dark:text-white"><%= @listing.title %></h1>
-      <div class="mt-3"><%= render "shared/price_tag", listing: @listing %></div>
+      <h1 class="mt-4 font-heading text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl dark:text-white">
+        <%= @listing.title %>
+      </h1>
 
-      <div class="prose-pcm mt-6">
-        <%= simple_format(@listing.description) %>
+      <div class="mt-4 flex items-center gap-3 text-sm text-slate-500 dark:text-zinc-400">
+        <span class="inline-flex items-center gap-1"><%= icon "eye", class: "size-4" %>
+          <%= t("listings.show.views", count: @listing.views_count, formatted: localized_count(@listing.views_count)) %></span>
+        <%= render "favorites/count", listing: @listing, count: @listing.favorites_count %>
+        <span class="inline-flex items-center gap-1"><%= icon "clock", class: "size-4" %>
+          <% if @listing.published_at %>
+            <%= t("listings.show.published_on", date: l(@listing.published_at.to_date, format: :long)) %>
+          <% else %>
+            <%= t("listings.show.unpublished") %>
+          <% end %></span>
       </div>
 
-      <% specs = @listing.specs.reject { |_key, value| value.blank? } %>
-      <% if specs.any? %>
-        <section class="mt-8">
-          <h2 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("activerecord.attributes.listing.specs") %></h2>
-          <dl class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <% specs.first(12).each do |key, value| %>
-              <div class="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
-                <dt class="text-slate-500 dark:text-zinc-400"><%= @spec_labels[key]&.name || key.to_s.humanize %></dt>
-                <dd class="font-medium text-slate-900 dark:text-zinc-100"><%= Array(value).join(", ") %></dd>
+      <section class="mt-8" aria-labelledby="listing-specs-title">
+        <h2 id="listing-specs-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
+          <%= t("listings.show.overview_title") %>
+        </h2>
+        <dl class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
+            <dt class="text-slate-500 dark:text-zinc-400"><%= t("listings.show.condition") %></dt>
+            <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= listing_condition_label(@listing) %></dd>
+          </div>
+          <% if @listing.brand.present? %>
+            <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
+              <dt class="text-slate-500 dark:text-zinc-400"><%= t("activerecord.attributes.listing.brand") %></dt>
+              <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= @listing.brand %></dd>
+            </div>
+          <% end %>
+          <% if @listing.model_name_text.present? %>
+            <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
+              <dt class="text-slate-500 dark:text-zinc-400"><%= t("activerecord.attributes.listing.model_name_text") %></dt>
+              <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= @listing.model_name_text %></dd>
+            </div>
+          <% end %>
+          <% @listing.specs.reject { |_key, value| value.blank? }.each do |key, value| %>
+            <% label, display = spec_display_value(key, value) %>
+            <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
+              <dt class="text-slate-500 dark:text-zinc-400"><%= label %></dt>
+              <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= display %></dd>
+            </div>
+          <% end %>
+        </dl>
+      </section>
+
+      <section class="mt-8" aria-labelledby="listing-description-title">
+        <h2 id="listing-description-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
+          <%= t("listings.show.description_title") %>
+        </h2>
+        <div class="prose-pcm mt-3"><%= formatted_description(@listing.description) %></div>
+      </section>
+
+      <% if @listing.category.root.slug.in?(%w[gaming-pcs workstations]) && @listing.game_fps.any? %>
+        <section class="mt-8" aria-labelledby="listing-performance-title">
+          <h2 id="listing-performance-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
+            <%= t("listings.show.performance_title") %>
+          </h2>
+          <p class="mt-1 text-sm text-slate-500 dark:text-zinc-400"><%= t("listings.show.performance_hint") %></p>
+          <div class="mt-4 space-y-4">
+            <% @listing.game_fps.each do |slug, resolutions| %>
+              <% game = @games[slug] %>
+              <div>
+                <p class="text-sm font-semibold text-slate-800 dark:text-zinc-100">
+                  <%= game&.name || slug.to_s.tr("-", " ").titleize %>
+                </p>
+                <div class="mt-1.5 space-y-1">
+                  <% resolutions.each do |resolution, fps| %>
+                    <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400">
+                      <span class="w-12 shrink-0"><%= resolution %></span>
+                      <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-zinc-800">
+                        <div class="h-full rounded-full bg-brand-600"
+                             style="width: <%= [ (fps.to_f / 240 * 100).round, 100 ].min %>%"></div>
+                      </div>
+                      <span class="w-14 text-right font-semibold text-slate-800 dark:text-zinc-100"><%= t("listings.show.fps_value", fps: fps) %></span>
+                    </div>
+                  <% end %>
+                </div>
               </div>
             <% end %>
-          </dl>
+          </div>
         </section>
       <% end %>
-    </div>
 
-    <aside class="space-y-4">
-      <div class="surface p-5">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("layout.header.account") %></p>
-        <div class="mt-3 flex items-center gap-3">
-          <span class="flex size-11 items-center justify-center rounded-full bg-brand-100 font-heading text-lg font-bold text-brand-800 dark:bg-brand-900/50 dark:text-brand-200">
-            <%= listing_seller_name(@listing).to_s.first.upcase %>
-          </span>
-          <div>
-            <p class="flex items-center gap-1 text-sm font-semibold text-slate-950 dark:text-white">
-              <%= listing_seller_name(@listing) %>
-              <% if @listing.store&.verified? %>
-                <span class="text-brand-600 dark:text-brand-400" title="<%= t("listings.card.verified_seller") %>"><%= icon "badge-check", class: "size-4" %></span>
+      <section class="mt-8" aria-labelledby="listing-shipping-title">
+        <h2 id="listing-shipping-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
+          <%= t("listings.show.shipping_title") %>
+        </h2>
+        <div class="mt-3 grid gap-3 sm:grid-cols-2">
+          <div class="surface p-4 text-sm">
+            <p class="flex items-center gap-2 font-semibold text-slate-900 dark:text-zinc-100">
+              <%= icon "truck", class: "size-4 text-brand-600" %><%= t("listings.show.shipping_method") %>
+            </p>
+            <p class="mt-1.5 text-slate-600 dark:text-zinc-400">
+              <% if @listing.free_shipping? %>
+                <%= t("listings.show.free_shipping") %>
+              <% elsif @listing.shipping_available? %>
+                <%= t("listings.show.shipping_cost", price: format_price(@listing.shipping_price_cents)) %>
+              <% end %>
+              <% if @listing.local_pickup? %>
+                <span class="block"><%= t("listings.show.local_pickup", city: @listing.city.presence || listing_location(@listing)) %></span>
               <% end %>
             </p>
-            <p class="text-xs text-slate-500 dark:text-zinc-400"><%= listing_location(@listing) %></p>
+          </div>
+          <div class="surface p-4 text-sm">
+            <p class="flex items-center gap-2 font-semibold text-slate-900 dark:text-zinc-100">
+              <%= icon "rotate-ccw", class: "size-4 text-brand-600" %><%= t("listings.show.returns_title") %>
+            </p>
+            <p class="mt-1.5 text-slate-600 dark:text-zinc-400">
+              <%= @store&.return_policy.presence || t("listings.show.default_return_policy") %>
+            </p>
           </div>
         </div>
-        <%= link_to conversations_path, class: ui_button_classes(variant: :primary, size: :md, extra: "mt-5 w-full") do %>
-          <%= icon "message-circle", class: "size-4" %><%= t("layout.account_menu.inbox") %>
-        <% end %>
-      </div>
+      </section>
+    </div>
 
-      <div class="surface p-5 text-sm">
-        <p class="flex items-center gap-2 font-semibold text-slate-900 dark:text-zinc-100"><%= icon "truck", class: "size-4 text-brand-600 dark:text-brand-400" %><%= t("layout.footer.shipping") %></p>
-        <p class="mt-2 text-slate-600 dark:text-zinc-400">
-          <% if @listing.free_shipping? %>
-            <%= t("listings.labels.free_shipping") %>
-          <% elsif @listing.shipping_price_cents.positive? %>
-            <%= format_price(@listing.shipping_price_cents) %>
-          <% else %>
-            <%= t("layout.footer.shipping") %>
+    <aside class="lg:col-span-5">
+      <div class="space-y-4 lg:sticky lg:top-28">
+        <div class="surface p-5">
+          <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white">
+              <%= format_price(@listing.price_cents) %>
+            </span>
+            <% if @listing.original_price_cents.present? && @listing.original_price_cents > @listing.price_cents %>
+              <span class="text-sm text-slate-500 line-through dark:text-zinc-500">
+                <%= format_price(@listing.original_price_cents) %>
+              </span>
+              <span class="<%= ui_badge_classes(tone: :danger) %>">
+                <%= t("listings.card.discount", percent: discount_percent(@listing)) %>
+              </span>
+            <% end %>
+          </div>
+          <% if @listing.original_price_cents.present? && @listing.original_price_cents > @listing.price_cents %>
+            <p class="mt-1 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+              <%= t("listings.show.you_save", amount: format_price(@listing.original_price_cents - @listing.price_cents)) %>
+            </p>
           <% end %>
-        </p>
-      </div>
 
-      <div class="surface p-5 text-sm">
-        <p class="flex items-center gap-2 font-semibold text-slate-900 dark:text-zinc-100"><%= icon "shield-check", class: "size-4 text-brand-600 dark:text-brand-400" %><%= t("home.trust.buyer_protection_title") %></p>
-        <p class="mt-2 text-slate-600 dark:text-zinc-400"><%= t("home.trust.buyer_protection_body") %></p>
+          <p class="mt-3 text-sm text-slate-600 dark:text-zinc-400">
+            <% if @listing.sold? %>
+              <span class="font-semibold text-rose-600 dark:text-rose-400"><%= t("listings.show.sold_notice") %></span>
+            <% elsif @listing.quantity.to_i.positive? %>
+              <span class="inline-flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
+                <%= icon "check", class: "size-4" %>
+                <%= t("listings.show.in_stock", count: @listing.quantity) %>
+              </span>
+            <% else %>
+              <span class="font-semibold text-rose-600 dark:text-rose-400"><%= t("listings.show.out_of_stock") %></span>
+            <% end %>
+          </p>
+
+          <div class="mt-4 space-y-2 text-sm text-slate-600 dark:text-zinc-400">
+            <p class="flex items-start gap-2">
+              <%= icon "truck", class: "mt-0.5 size-4 shrink-0 text-brand-600" %>
+              <span>
+                <% if @listing.free_shipping? %>
+                  <%= t("listings.show.free_shipping") %>
+                <% elsif @listing.shipping_available? %>
+                  <%= t("listings.show.shipping_cost", price: format_price(@listing.shipping_price_cents)) %>
+                <% else %>
+                  <%= t("listings.show.pickup_only") %>
+                <% end %>
+                <span class="block text-xs text-slate-500 dark:text-zinc-500">
+                  <%= t("listings.show.ships_within", days: @listing.ships_within_days) %>
+                </span>
+              </span>
+            </p>
+            <% window = @listing.estimated_delivery_window %>
+            <% if window %>
+              <p class="flex items-center gap-2">
+                <%= icon "clock", class: "size-4 shrink-0 text-brand-600" %>
+                <span><%= t("listings.show.estimated_delivery",
+                            start: l(window.begin, format: :short),
+                            finish: l(window.end, format: :short)) %></span>
+              </p>
+            <% end %>
+            <p class="flex items-center gap-2">
+              <%= icon "map-pin", class: "size-4 shrink-0 text-brand-600" %>
+              <span><%= listing_location(@listing) %></span>
+            </p>
+          </div>
+
+          <div class="mt-5 space-y-2.5">
+            <% unavailable = @listing.sold? || @listing.quantity.to_i.zero? %>
+            <%= button_to cart_items_path(listing_id: @listing.id, buy_now: 1), method: :post,
+                          form: { data: { turbo: false } },
+                          disabled: unavailable,
+                          class: ui_button_classes(variant: :accent, size: :lg, extra: "w-full"),
+                          aria: { label: t("listings.show.buy_now") } do %>
+              <%= t("listings.show.buy_now") %>
+            <% end %>
+            <%= button_to cart_items_path(listing_id: @listing.id), method: :post,
+                          form: { data: { turbo_stream: true } },
+                          disabled: unavailable,
+                          class: ui_button_classes(variant: :outline, size: :lg, extra: "w-full") do %>
+              <%= icon "shopping-cart", class: "size-4" %><%= t("listings.show.add_to_cart") %>
+            <% end %>
+            <% if @listing.accepts_offers? %>
+              <% if user_signed_in? %>
+                <%= button_to conversations_path(listing_id: @listing.id), method: :post,
+                              disabled: unavailable,
+                              form: { data: { turbo: false } },
+                              class: ui_button_classes(variant: :outline, size: :md, extra: "w-full") do %>
+                  <%= t("listings.show.make_offer") %>
+                <% end %>
+              <% else %>
+                <%= link_to new_user_session_path, data: { turbo_frame: "auth-modal" },
+                            class: ui_button_classes(variant: :outline, size: :md, extra: "w-full") do %>
+                  <%= t("listings.show.make_offer") %>
+                <% end %>
+              <% end %>
+            <% end %>
+            <% if user_signed_in? && current_user.id != @listing.user_id %>
+              <%= button_to conversations_path(listing_id: @listing.id), method: :post,
+                            form: { data: { turbo: false } },
+                            class: ui_button_classes(variant: :outline, size: :md, extra: "w-full") do %>
+                <%= icon "message-circle", class: "size-4" %><%= t("listings.show.message_seller") %>
+              <% end %>
+            <% elsif !user_signed_in? %>
+              <%= link_to new_user_session_path, data: { turbo_frame: "auth-modal" },
+                          class: ui_button_classes(variant: :outline, size: :md, extra: "w-full") do %>
+                <%= icon "message-circle", class: "size-4" %><%= t("listings.show.message_seller") %>
+              <% end %>
+            <% end %>
+          </div>
+
+          <div class="mt-4 flex items-center gap-2">
+            <%= render "favorites/button", listing: @listing,
+                       favorited: @favorite.present?, favorite_id: @favorite&.id %>
+            <button type="button" data-controller="share"
+                    data-share-title-value="<%= @listing.title %>"
+                    data-share-text-value="<%= t("listings.show.share_text", title: @listing.title) %>"
+                    data-share-url-value="<%= listing_url(@listing, locale: I18n.locale) %>"
+                    data-copy-prompt="<%= t("listings.show.copy_link") %>"
+                    data-action="share#share"
+                    class="<%= ui_button_classes(variant: :outline, size: :md, extra: "flex-1") %>">
+              <%= icon "arrow-up-right", class: "size-4" %>
+              <span data-share-label data-copied-label="<%= t("listings.show.link_copied") %>">
+                <%= t("listings.show.share") %>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div class="surface p-5">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+            <%= t("listings.show.seller") %>
+          </p>
+          <div class="mt-3 flex items-center gap-3">
+            <% if @store&.logo&.attached? %>
+              <%= image_tag @store.logo.variant(resize_to_limit: [ 96, 96 ], format: :webp),
+                            alt: @store.name, width: 48, height: 48, loading: "lazy",
+                            class: "size-12 rounded-full object-cover" %>
+            <% elsif @store %>
+              <span class="flex size-12 items-center justify-center rounded-full bg-brand-100 font-heading text-lg font-bold text-brand-800 dark:bg-brand-900/50 dark:text-brand-200">
+                <%= @store.name.first.upcase %>
+              </span>
+            <% else %>
+              <span class="flex size-12 items-center justify-center rounded-full bg-slate-100 font-heading text-lg font-bold text-slate-700 dark:bg-zinc-800 dark:text-zinc-200">
+                <%= @listing.user.initials %>
+              </span>
+            <% end %>
+            <div class="min-w-0">
+              <p class="flex items-center gap-1 truncate text-sm font-semibold text-slate-950 dark:text-white">
+                <%= listing_seller_name(@listing) %>
+                <% if @store&.verified? %>
+                  <span class="text-brand-600 dark:text-brand-400" title="<%= t("listings.show.verified") %>">
+                    <%= icon "badge-check", class: "size-4" %>
+                  </span>
+                <% end %>
+              </p>
+              <p class="text-xs text-slate-500 dark:text-zinc-400"><%= listing_location(@listing) %></p>
+            </div>
+          </div>
+
+          <% if @store %>
+            <div class="mt-3 flex items-center gap-2 text-sm">
+              <%= render "shared/star_rating", rating: @store.rating_avg.round,
+                         label: t("listings.show.rating_label", rating: @store.rating_avg) %>
+              <span class="text-xs text-slate-500 dark:text-zinc-400">
+                <%= t("listings.show.review_count", count: @store.reviews_count) %>
+              </span>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-zinc-400">
+              <span><%= t("listings.show.member_since", date: month_year(@store.user.created_at)) %></span>
+              <span><%= t("listings.show.sales_count", count: @store.sales_count) %></span>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <%= render "stores/follow_button", store: @store,
+                         follow: current_user&.follows&.find_by(store_id: @store.id), compact: true %>
+              <% if user_signed_in? && current_user.id != @listing.user_id %>
+                <%= button_to conversations_path(listing_id: @listing.id), method: :post,
+                              form: { data: { turbo: false } },
+                              class: ui_button_classes(variant: :outline, size: :md, extra: "flex-1") do %>
+                  <%= icon "message-circle", class: "size-4" %><%= t("stores.header.message") %>
+                <% end %>
+              <% end %>
+              <%= link_to store_path(@store), class: ui_button_classes(variant: :outline, size: :md, extra: "flex-1") do %>
+                <%= t("listings.show.visit_store") %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="surface p-5 text-sm">
+          <p class="flex items-center gap-2 font-semibold text-slate-900 dark:text-zinc-100">
+            <%= icon "shield-check", class: "size-4 text-brand-600" %>
+            <%= t("home.trust.buyer_protection_title") %>
+          </p>
+          <p class="mt-2 text-slate-600 dark:text-zinc-400"><%= t("home.trust.buyer_protection_body") %></p>
+          <%= link_to t("listings.show.trust_link"), trust_path,
+                      class: "mt-2 inline-block text-xs font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+        </div>
+
+        <div data-controller="modal">
+          <button type="button" data-action="modal#open"
+                  class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 transition hover:text-rose-600 dark:text-zinc-400 dark:hover:text-rose-400">
+            <%= icon "shield-check", class: "size-3.5" %><%= t("listings.show.report") %>
+          </button>
+
+          <%= render "shared/modal", id: "report-modal", title: t("reports.modal_title") do %>
+            <%= form_with url: reports_path, method: :post, class: "space-y-4" do |form| %>
+              <%= hidden_field_tag :listing_id, @listing.id %>
+              <div>
+                <label for="report-reason" class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300">
+                  <%= t("reports.reason") %>
+                </label>
+                <%= select_tag :reason,
+                               options_for_select(Report.reasons.keys.map { |reason| [ t("reports.reasons.#{reason}"), reason ] }),
+                               id: "report-reason", class: ui_input_classes %>
+              </div>
+              <div>
+                <label for="report-details" class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300">
+                  <%= t("reports.details") %>
+                </label>
+                <%= text_area_tag :details, nil, id: "report-details", rows: 3,
+                                   class: ui_input_classes, placeholder: t("reports.details_placeholder") %>
+              </div>
+              <div class="flex justify-end gap-2">
+                <button type="button" data-action="modal#close" class="<%= ui_button_classes(variant: :ghost) %>">
+                  <%= t("reports.cancel") %>
+                </button>
+                <%= form.submit t("reports.submit"), class: ui_button_classes(variant: :primary) %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
       </div>
     </aside>
   </div>
+
+  <% if @similar_listings.any? %>
+    <section class="mt-14">
+      <%= render "shared/listing_row", title: t("listings.show.similar_title"),
+                 subtitle: t("listings.show.similar_subtitle"),
+                 listings: @similar_listings,
+                 view_all_path: category_path(path: @listing.category.path_slugs) %>
+    </section>
+  <% end %>
+
+  <% if @more_from_seller.any? %>
+    <section class="mt-14">
+      <%= render "shared/listing_row", title: t("listings.show.more_from_seller", store: listing_seller_name(@listing)),
+                 listings: @more_from_seller,
+                 view_all_path: @store ? store_path(@store) : nil %>
+    </section>
+  <% end %>
+
+  <% if @reviews.any? %>
+    <section class="mt-14 surface p-5 sm:p-6">
+      <div class="flex items-end justify-between gap-4">
+        <h2 class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
+          <%= t("listings.show.reviews_title") %>
+        </h2>
+        <% if @store %>
+          <%= link_to t("listings.show.see_all_reviews"), store_path(@store, tab: "reviews"),
+                      class: "text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+        <% end %>
+      </div>
+      <div class="mt-4 space-y-4">
+        <% @reviews.each do |review| %>
+          <article class="border-b border-slate-200 pb-4 last:border-0 last:pb-0 dark:border-zinc-800">
+            <div class="flex items-center gap-2">
+              <%= render "shared/star_rating", rating: review.rating %>
+              <span class="text-xs text-slate-500 dark:text-zinc-400"><%= month_year(review.created_at) %></span>
+            </div>
+            <% if review.body.present? %>
+              <p class="mt-1.5 text-sm text-slate-600 dark:text-zinc-400"><%= review.body %></p>
+            <% end %>
+            <p class="mt-1 text-xs font-medium text-slate-500 dark:text-zinc-500"><%= review.reviewer.display_name %></p>
+          </article>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <% if @recently_viewed.any? %>
+    <section class="mt-14">
+      <%= render "shared/listing_row", title: t("listings.show.recently_viewed"), listings: @recently_viewed %>
+    </section>
+  <% end %>
+
+  <div class="fixed inset-x-0 bottom-14 z-30 border-t border-slate-200 bg-white/95 px-4 py-2 backdrop-blur md:hidden dark:border-zinc-800 dark:bg-zinc-950/95">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-3">
+      <div class="min-w-0">
+        <p class="font-heading text-lg font-bold text-slate-950 dark:text-white"><%= format_price(@listing.price_cents) %></p>
+        <p class="truncate text-xs text-slate-500 dark:text-zinc-400"><%= listing_condition_label(@listing) %> · <%= listing_location(@listing) %></p>
+      </div>
+      <% unavailable = @listing.sold? || @listing.quantity.to_i.zero? %>
+      <%= button_to cart_items_path(listing_id: @listing.id, buy_now: 1), method: :post,
+                    form: { data: { turbo: false } }, disabled: unavailable,
+                    class: ui_button_classes(variant: :accent, size: :md, extra: "shrink-0") do %>
+        <%= t("listings.show.buy_now") %>
+      <% end %>
+    </div>
+  </div>
+
+  <section class="mt-14 rounded-2xl bg-brand-900 p-6 text-brand-50 sm:p-8 dark:bg-brand-950">
+    <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+      <div>
+        <h2 class="font-heading text-xl font-semibold text-white"><%= t("listings.show.sell_similar_title") %></h2>
+        <p class="mt-1 text-sm text-brand-200"><%= t("listings.show.sell_similar_body") %></p>
+      </div>
+      <%= link_to new_listing_path, class: ui_button_classes(variant: :accent, size: :lg) do %>
+        <%= icon "plus", class: "size-4" %><%= t("listings.show.sell_similar_cta") %>
+      <% end %>
+    </div>
+  </section>
 </div>

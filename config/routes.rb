@@ -11,8 +11,13 @@ Rails.application.routes.draw do
   devise_for :users, only: :omniauth_callbacks,
                      controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
+  end
+
   scope "(:locale)", locale: /es|en|fr|de|it|pt/ do
-    devise_for :users, skip: :omniauth_callbacks
+    devise_for :users, skip: :omniauth_callbacks,
+                       controllers: { registrations: "users/registrations" }
 
     root "home#index"
 
@@ -23,8 +28,12 @@ Rails.application.routes.draw do
 
     resources :stores, only: :show, path: "s"
     resource :cart, only: :show, controller: "cart"
+    resources :cart_items, only: %i[create update destroy]
     resources :favorites, only: %i[index create destroy]
-    resources :conversations, only: %i[index show]
+    resources :follows, only: %i[create destroy]
+    resources :reports, only: %i[create]
+    resources :saved_searches, only: %i[index create update destroy]
+    resources :conversations, only: %i[index show create]
     resources :orders, only: %i[index show]
     resource :account, only: :show, controller: "account"
 

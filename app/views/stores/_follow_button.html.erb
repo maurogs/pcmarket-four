@@ -1,0 +1,27 @@
+<% following = follow.present? && follow.persisted? %>
+<% compact = local_assigns.fetch(:compact, false) %>
+<span id="store-follow-<%= store.id %>" class="inline-flex">
+  <% if user_signed_in? %>
+    <% if following %>
+      <%= button_to follow_path(id: follow.id), method: :delete,
+                    form: { data: { turbo_stream: true } },
+                    class: ui_button_classes(variant: :outline, size: compact ? :md : :md,
+                                             extra: compact ? "flex-1" : nil) do %>
+        <%= icon "check", class: "size-4" %><%= t("stores.header.following") %>
+      <% end %>
+    <% else %>
+      <%= button_to follows_path(store_id: store.id), method: :post,
+                    form: { data: { turbo_stream: true } },
+                    class: ui_button_classes(variant: :primary, size: :md,
+                                             extra: compact ? "flex-1" : nil) do %>
+        <%= icon "plus", class: "size-4" %><%= t("stores.header.follow") %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= link_to new_user_session_path, data: { turbo_frame: "auth-modal" },
+                class: ui_button_classes(variant: :primary, size: :md,
+                                         extra: compact ? "flex-1" : nil) do %>
+      <%= icon "plus", class: "size-4" %><%= t("stores.header.follow") %>
+    <% end %>
+  <% end %>
+</span>

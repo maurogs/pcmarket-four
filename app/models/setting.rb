@@ -31,11 +31,17 @@ class Setting < ApplicationRecord
   class << self
     def get(key, default = nil)
       key = key.to_s
-      value = Rails.cache.fetch(cache_key(key)) do
-        record = find_by(key: key)
-        record ? record.typed_value : DEFAULTS[key]
-      end
+      value = cached_values.fetch(key) { DEFAULTS[key] }
       value.nil? ? default : value
+    end
+
+    # One query (and one cache entry) for the whole settings table. The table
+    # is tiny and read on every request, so per-key lookups would multiply
+    # queries unnecessarily.
+    def cached_values
+      Rails.cache.fetch("#{CACHE_PREFIX}/all") do
+        all.to_h { |record| [ record.key, record.typed_value ] }
+      end
     end
 
     def enabled?(key)
@@ -95,5 +101,6 @@ class Setting < ApplicationRecord
 
   def expire_cache
     Rails.cache.delete(self.class.cache_key(key))
+    Rails.cache.delete("#{CACHE_PREFIX}/all")
   end
 end

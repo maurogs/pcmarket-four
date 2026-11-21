@@ -1,0 +1,81 @@
+<turbo-frame id="store-panel">
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+    <div class="space-y-6">
+      <section class="surface p-5 sm:p-6">
+        <h2 class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
+          <%= t("stores.about.title") %>
+        </h2>
+        <div class="prose-pcm mt-3">
+          <% if @store.description.present? %>
+            <%= formatted_description(@store.description) %>
+          <% else %>
+            <p class="text-slate-500 dark:text-zinc-400"><%= t("stores.about.description_empty") %></p>
+          <% end %>
+        </div>
+      </section>
+
+      <section class="surface p-5 sm:p-6">
+        <h2 class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
+          <%= t("stores.about.policies_title") %>
+        </h2>
+        <dl class="mt-4 space-y-4 text-sm">
+          <div>
+            <dt class="font-semibold text-slate-900 dark:text-zinc-100"><%= t("stores.about.shipping_policy") %></dt>
+            <dd class="mt-1 text-slate-600 dark:text-zinc-400">
+              <%= @store.shipping_policy.presence || t("stores.about.no_policy") %>
+            </dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-slate-900 dark:text-zinc-100"><%= t("stores.about.return_policy") %></dt>
+            <dd class="mt-1 text-slate-600 dark:text-zinc-400">
+              <%= @store.return_policy.presence || t("stores.about.no_policy") %>
+            </dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+
+    <aside class="space-y-4">
+      <section class="surface p-5 text-sm">
+        <h2 class="font-heading text-base font-semibold text-slate-950 dark:text-white">
+          <%= t("stores.about.business_title") %>
+        </h2>
+        <p class="mt-2 <%= ui_badge_classes(tone: @store.professional? ? :dark : :neutral) %>">
+          <%= t("stores.header.#{@store.professional? ? 'professional' : 'private'}") %>
+        </p>
+        <dl class="mt-3 space-y-2">
+          <% if @store.professional? %>
+            <div>
+              <dt class="text-xs font-medium text-slate-500 dark:text-zinc-400"><%= t("stores.about.company_name") %></dt>
+              <dd class="font-medium text-slate-900 dark:text-zinc-100"><%= @store.company_name.presence || @store.name %></dd>
+            </div>
+            <div>
+              <dt class="text-xs font-medium text-slate-500 dark:text-zinc-400"><%= t("stores.about.tax_id") %></dt>
+              <dd class="font-medium text-slate-900 dark:text-zinc-100"><%= @store.tax_id.presence || t("stores.about.not_provided") %></dd>
+            </div>
+          <% else %>
+            <p class="text-slate-600 dark:text-zinc-400"><%= t("stores.about.private_note") %></p>
+          <% end %>
+          <div>
+            <dt class="text-xs font-medium text-slate-500 dark:text-zinc-400"><%= t("stores.about.location") %></dt>
+            <dd class="font-medium text-slate-900 dark:text-zinc-100"><%= @store.location.presence || t("stores.about.not_provided") %></dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-slate-500 dark:text-zinc-400"><%= t("stores.about.member_since") %></dt>
+            <dd class="font-medium text-slate-900 dark:text-zinc-100"><%= month_year(@store.user.created_at) %></dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="surface p-5 text-sm">
+        <p class="flex items-center gap-2 font-semibold text-slate-900 dark:text-zinc-100">
+          <%= icon "shield-check", class: "size-4 text-brand-600" %>
+          <%= t("stores.about.buyer_protection") %>
+        </p>
+        <p class="mt-2 text-slate-600 dark:text-zinc-400"><%= t("home.trust.buyer_protection_body") %></p>
+        <%= link_to t("listings.show.trust_link"), trust_path,
+                    class: "mt-2 inline-block text-xs font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+      </section>
+    </aside>
+  </div>
+</turbo-frame>

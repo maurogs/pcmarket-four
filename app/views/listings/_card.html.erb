@@ -1,5 +1,5 @@
 <article class="surface card-lift group relative flex h-full flex-col overflow-hidden">
-  <% cache [ listing, I18n.locale ] do %>
+  <% cache [ listing, listing.store, I18n.locale ] do %>
     <div class="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-zinc-800">
       <%= link_to listing_path(listing), tabindex: -1,
                   aria: { label: t("listings.card.image_alt", title: listing.title) } do %>
@@ -75,20 +75,7 @@
   <% end %>
 
   <div class="absolute right-2 top-2 z-10">
-    <% if user_signed_in? %>
-      <%= button_to favorites_path(listing_id: listing.id), method: :post,
-                    form: { class: "block" },
-                    class: "inline-flex size-11 items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-sm backdrop-blur transition hover:text-rose-600 dark:bg-zinc-900/90 dark:text-zinc-300 dark:hover:text-rose-400",
-                    aria: { label: t("listings.card.favourite") } do %>
-        <%= icon "heart", class: "size-5" %>
-      <% end %>
-    <% else %>
-      <%= link_to new_user_session_path,
-                  class: "inline-flex size-11 items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-sm backdrop-blur transition hover:text-rose-600 dark:bg-zinc-900/90 dark:text-zinc-300 dark:hover:text-rose-400",
-                  aria: { label: t("listings.card.login_to_favourite") },
-                  title: t("listings.card.login_to_favourite") do %>
-        <%= icon "heart", class: "size-5" %>
-      <% end %>
-    <% end %>
+    <% favorited = local_assigns.key?(:favorited) ? local_assigns[:favorited] : false %>
+    <%= render "favorites/button", listing: listing, favorited: favorited %>
   </div>
 </article>

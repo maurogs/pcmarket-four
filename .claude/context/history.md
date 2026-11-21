@@ -115,3 +115,60 @@ stores, checkout) without reshaping the UI or reference data.
 `config/initializers/{content_security_policy,security_headers}.rb`,
 `config/environments/production.rb`, `public/*`, `test/**`, `README.md`,
 `.claude/context/project.md`.
+
+## 2026-11-21 — Phase 2B: search, category, detail, stores, favourites, auth
+
+### What changed
+
+- Added `ListingSearch` (params, price conversion, JSONB containment, facets,
+  active filter chips, sorting, Pagy pagination, cached counts) plus search
+  performance indexes and `script/search_explain.rb`.
+- Rebuilt `/search`, category pages and store listing tabs around one Turbo
+  Frame results partial with a sticky desktop sidebar, mobile filter sheet,
+  auto-submitting forms, skeleton loading, grid/list toggle, empty states,
+  save-search, pagination and load-more.
+- Added category label tabs, breadcrumbs, SEO copy, canonical/noindex/prev/next
+  rules, BreadcrumbList and ItemList JSON-LD, and anonymous HTTP caching.
+- Built the listing detail page: WebP gallery with swipe/keyboard/lightbox,
+  sticky buy box, cart/report/favourite/share actions, seller card, specs,
+  description auto-linking, game FPS bars, shipping/returns, similar and
+  seller rows, reviews, recently viewed and mobile sticky CTA.
+- Added slug-history 301s, owner/staff previews for hidden listings, sold
+  listings for SEO, view counters and Product/Breadcrumb JSON-LD.
+- Built store pages with professional/private disclosure, vacation banner,
+  follow/message/share, listings/about/reviews tabs and review distribution.
+- Implemented favourites with Turbo Stream heart replacement, optimistic UI,
+  guest favourite intents, grid filters and sold/unavailable states.
+- Implemented guest/user carts, `CartMerger` + Warden hook, stock caps,
+  own/non-visible listing guards, header badge streams and cart page.
+- Added follows, reports and saved searches resources with Turbo Stream
+  toggles and translated feedback.
+- Styled all Devise screens in a two-column shell, added terms acceptance,
+  marketing opt-in, registration flag support, password hints, the header
+  login dialog and `letter_opener_web` in development.
+- Fixed header/nav overflow: removed nav icons, limited the bar to seven roots
+  plus a "More" mega menu, made items nowrap with hidden-scroll overflow,
+  removed the duplicate nav theme toggle and hid the publish button below
+  desktop. Fixed mobile overflow and added a responsive system test.
+- Added service tests, integration tests for every new flow, an N+1 guard
+  (<25 queries for 24 listing cards) and responsive/auth-modal system tests.
+- Added `phase2.*` locale files in es/en/fr/de/it/pt and `listings.conditions`
+  / `listings.statuses` translations that the pre-existing duplicate YAML keys
+  made unreachable.
+
+### Why
+
+Phase 2B turns the shell into a usable marketplace: buyers can search, filter,
+inspect listings and stores, save searches and favourites, and sign in, while
+the query/facet/caching architecture stays ready for the API and alert jobs.
+
+### Files touched
+
+`app/services/listing_search.rb`, `app/services/cart_merger.rb`,
+`app/controllers/**`, `app/models/{listing,category,store,user,saved_search,report}.rb`,
+`app/helpers/application_helper.rb`, `app/views/**`, `app/javascript/controllers/*`,
+`config/routes.rb`, `config/initializers/{warden_hooks,devise}.rb`,
+`config/environments/development.rb`, `config/locales/phase2.*.yml`,
+`db/migrate/20261121220000_add_search_performance_indexes.rb`,
+`db/seeds/categories.rb`, `script/search_explain.rb`, `test/**`,
+`.claude/context/project.md`.

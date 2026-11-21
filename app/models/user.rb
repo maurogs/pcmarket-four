@@ -26,6 +26,7 @@ class User < ApplicationRecord
 
   has_many :listings, dependent: :destroy, inverse_of: :user
   has_many :favorites, dependent: :destroy, inverse_of: :user
+  has_many :cart_items, dependent: :destroy, inverse_of: false
   has_many :favorite_listings, through: :favorites, source: :listing
   has_many :follows, foreign_key: :follower_id, dependent: :destroy, inverse_of: :follower
   has_many :followed_stores, through: :follows, source: :store
@@ -52,12 +53,16 @@ class User < ApplicationRecord
   has_many :orders_as_seller, class_name: "Order", foreign_key: :seller_id,
                               dependent: :restrict_with_error, inverse_of: :seller
 
+  attr_accessor :terms_accepted, :terms_required
+
   validates :username, presence: true, uniqueness: { case_sensitive: false }, length: { maximum: 40 }
   validates :country_code, presence: true
   validates :locale, inclusion: { in: ->(_) { I18n.available_locales.map(&:to_s) } }
 
   before_validation :assign_username, on: :create, if: -> { username.blank? }
   before_validation :normalise_locale
+  before_validation :stamp_terms_acceptance, on: :create
+  validate :terms_must_be_accepted, on: :create, if: -> { terms_required }
 
   scope :visible, -> { where(status: :active, deleted_at: nil) }
   scope :staff, -> { where(role: %i[moderator admin]) }
@@ -91,6 +96,13 @@ class User < ApplicationRecord
     store&.name.presence || username
   end
 
+  def initials
+    source = [ first_name, last_name ].compact_blank
+    return source.map { |part| part.first.upcase }.join if source.any?
+
+    username.to_s.first(2).upcase
+  end
+
   def full_name
     [ first_name, last_name ].compact_blank.join(" ").presence || username
   end
@@ -122,5 +134,19 @@ class User < ApplicationRecord
 
   def normalise_locale
     self.locale = I18n.default_locale.to_s if locale.blank?
+  end
+
+  def stamp_terms_acceptance
+    self.terms_accepted_at = Time.current if accepted_terms?
+  end
+
+  def accepted_terms?
+    ActiveModel::Type::Boolean.new.cast(terms_accepted) == true
+  end
+
+  def terms_must_be_accepted
+    return if terms_accepted_at.present? || accepted_terms?
+
+    errors.add(:terms_accepted, :accepted)
   end
 end

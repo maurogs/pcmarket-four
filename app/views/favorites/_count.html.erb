@@ -1,0 +1,4 @@
+<span id="favorite-count-<%= listing.id %>" class="inline-flex items-center gap-1">
+  <%= icon "heart", class: "size-4 text-rose-500" %>
+  <%= t("listings.show.saved_count", count: count, formatted: localized_count(count)) %>
+</span>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_21_195000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_21_220000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -313,7 +313,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_195000) do
     t.index ["reviewed_by_id"], name: "index_listings_on_reviewed_by_id"
     t.index ["slug"], name: "index_listings_on_slug", unique: true
     t.index ["specs"], name: "index_listings_on_specs", using: :gin
+    t.index ["status", "category_id", "published_at"], name: "index_listings_search_category", order: { published_at: :desc }
+    t.index ["status", "favorites_count"], name: "index_listings_search_popular", order: { favorites_count: :desc }
+    t.index ["status", "price_cents"], name: "index_listings_search_price"
     t.index ["status", "published_at"], name: "index_listings_on_status_and_published_at"
+    t.index ["status", "published_at"], name: "index_listings_published_feed", order: { published_at: :desc }, where: "((status = 2) AND (quantity > 0))"
+    t.index ["status", "region_id", "published_at"], name: "index_listings_search_region", order: { published_at: :desc }
+    t.index ["status", "store_id", "published_at"], name: "index_listings_search_store", order: { published_at: :desc }
     t.index ["status"], name: "index_listings_on_status"
     t.index ["store_id"], name: "index_listings_on_store_id"
     t.index ["tags"], name: "index_listings_on_tags", using: :gin

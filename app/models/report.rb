@@ -7,6 +7,11 @@ class Report < ApplicationRecord
   enum :status, { open: 0, resolved: 1, dismissed: 2 }
 
   validates :reason, presence: true
+  validates :reportable_id, uniqueness: {
+    scope: [ :reporter_id, :reportable_type ],
+    conditions: -> { where(status: :open) },
+    message: :already_reported
+  }, if: -> { reporter_id.present? && reportable_id.present? }
 
   scope :pending, -> { where(status: :open) }
 

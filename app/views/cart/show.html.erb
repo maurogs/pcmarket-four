@@ -1,3 +1,40 @@
-<%= render "shared/placeholder_page", title: t("pages.cart.title"),
-           body: t("pages.cart.body"), cta_path: listings_path,
-           cta_label: t("pages.coming_soon.listings_cta") %>
+<% content_for :title, t("cart.title") %>
+
+<div class="page-container py-8 sm:py-10">
+  <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("cart.title") %></h1>
+
+  <% if @items.any? %>
+    <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div class="space-y-3">
+        <% @items.each do |item| %>
+          <%= render "cart/item", item: item %>
+        <% end %>
+      </div>
+
+      <aside class="surface h-fit p-5 lg:sticky lg:top-28">
+        <h2 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("cart.summary") %></h2>
+        <dl class="mt-4 space-y-2 text-sm">
+          <div class="flex items-center justify-between">
+            <dt class="text-slate-600 dark:text-zinc-400"><%= t("cart.subtotal") %></dt>
+            <dd class="font-semibold text-slate-950 dark:text-white"><%= format_price(@subtotal_cents) %></dd>
+          </div>
+          <div class="flex items-center justify-between">
+            <dt class="text-slate-600 dark:text-zinc-400"><%= t("cart.shipping") %></dt>
+            <dd class="text-slate-600 dark:text-zinc-400"><%= t("cart.shipping_at_checkout") %></dd>
+          </div>
+        </dl>
+        <button type="button" disabled class="<%= ui_button_classes(variant: :primary, size: :lg, extra: "mt-5 w-full") %>">
+          <%= t("cart.checkout") %>
+        </button>
+        <p class="mt-2 text-xs text-slate-500 dark:text-zinc-500"><%= t("cart.checkout_soon") %></p>
+        <%= link_to t("cart.keep_shopping"), listings_path,
+                    class: "mt-4 inline-block text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+      </aside>
+    </div>
+  <% else %>
+    <div class="surface mt-8">
+      <%= render "shared/empty_state", title: t("cart.empty_title"), body: t("cart.empty_body"),
+                 cta_label: t("cart.empty_cta"), cta_path: listings_path %>
+    </div>
+  <% end %>
+</div>

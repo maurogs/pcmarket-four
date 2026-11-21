@@ -1,0 +1,42 @@
+<% prefix = local_assigns.fetch(:prefix, "desktop") %>
+<% long = rows.size > 15 %>
+<% collapsible = rows.size > 8 %>
+
+<details class="group border-t border-slate-200 py-3 dark:border-zinc-800" <%= "open" if open %>>
+  <summary class="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-slate-800 dark:text-zinc-100">
+    <span class="truncate"><%= definition.name %></span>
+    <span class="text-slate-400 transition group-open:rotate-180"><%= icon "chevron-down", class: "size-4" %></span>
+  </summary>
+
+  <div class="mt-3" data-controller="option_list" data-option-list-collapsible-value="<%= collapsible %>">
+    <% if long %>
+      <input type="search" placeholder="<%= t("search.filters.search_options") %>"
+             class="<%= ui_input_classes("!min-h-9 text-sm") %>"
+             data-option-list-target="search"
+             data-action="input->option_list#search"
+             aria-label="<%= t("search.filters.search_options") %>">
+    <% end %>
+
+    <div class="mt-2 space-y-2">
+      <% rows.each_with_index do |row, index| %>
+        <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-zinc-300"
+               data-option-list-target="item" data-search-text="<%= row[:label].downcase %>">
+          <%= check_box_tag "f[#{definition.key}][]", row[:value], row[:selected],
+                            id: "#{prefix}-#{definition.key}-#{row[:value].to_s.parameterize}",
+                            class: "size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800",
+                            data: { action: "change->filters#submit" } %>
+          <span class="flex-1"><%= row[:label] %></span>
+          <span class="text-xs text-slate-400 dark:text-zinc-500"><%= localized_count(row[:count]) %></span>
+        </label>
+      <% end %>
+    </div>
+
+    <% if collapsible %>
+      <button type="button" data-action="option_list#toggle"
+              class="mt-2 text-xs font-semibold text-brand-700 hover:underline dark:text-brand-300">
+        <span data-option-list-target="moreLabel"><%= t("search.filters.show_all", count: rows.size) %></span>
+        <span data-option-list-target="lessLabel" class="hidden"><%= t("search.filters.show_less") %></span>
+      </button>
+    <% end %>
+  </div>
+</details>

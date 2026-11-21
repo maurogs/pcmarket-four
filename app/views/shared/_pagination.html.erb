@@ -1,7 +1,47 @@
 <% if pagy.present? && pagy.pages > 1 %>
-  <nav class="mt-10 flex justify-center" aria-label="<%= t("common.pagination") %>">
-    <div class="pagy-nav flex flex-wrap items-center gap-1 text-sm">
-      <%= raw pagy_nav(pagy) %>
+  <% frame = local_assigns[:frame] %>
+  <nav class="mt-10 flex flex-col items-center gap-4" aria-label="<%= t("common.pagination") %>">
+    <div class="flex flex-wrap items-center justify-center gap-1 text-sm">
+      <% if pagy.prev %>
+        <%= link_to pagy_url_for(pagy, pagy.prev),
+                    class: "inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:border-brand-400 hover:text-brand-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300",
+                    data: frame ? { turbo_frame: frame } : {},
+                    aria: { label: t("search.pagination.previous") } do %>
+          <%= icon "chevron-left", class: "size-4" %>
+        <% end %>
+      <% end %>
+
+      <% pagy.series.each do |item| %>
+        <% if item == :gap %>
+          <span class="inline-flex min-h-9 min-w-9 items-center justify-center px-1 text-slate-400">…</span>
+        <% elsif item == pagy.page %>
+          <span aria-current="page"
+                class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-brand-700 bg-brand-700 px-3 text-sm font-semibold text-white dark:border-brand-600 dark:bg-brand-600">
+            <%= item %>
+          </span>
+        <% else %>
+          <%= link_to item, pagy_url_for(pagy, item),
+                      class: "inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:border-brand-400 hover:text-brand-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300",
+                      data: frame ? { turbo_frame: frame } : {} %>
+        <% end %>
+      <% end %>
+
+      <% if pagy.next %>
+        <%= link_to pagy_url_for(pagy, pagy.next),
+                    class: "inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:border-brand-400 hover:text-brand-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300",
+                    data: frame ? { turbo_frame: frame } : {},
+                    aria: { label: t("search.pagination.next") } do %>
+          <%= icon "chevron-right", class: "size-4" %>
+        <% end %>
+      <% end %>
     </div>
+
+    <% if frame && pagy.next %>
+      <%= link_to pagy_url_for(pagy, pagy.next),
+                  class: ui_button_classes(variant: :outline, size: :md, extra: "w-full md:hidden"),
+                  data: { turbo_frame: frame } do %>
+        <%= t("search.pagination.load_more") %>
+      <% end %>
+    <% end %>
   </nav>
 <% end %>

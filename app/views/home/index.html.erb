@@ -7,7 +7,7 @@
         <%= icon "flame", class: "size-3.5" %>
         <%= t("home.hero.eyebrow") %>
       </span>
-      <h1 id="home-hero-title" class="mt-3 font-heading text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl dark:text-white">
+      <h1 id="home-hero-title" class="mt-3 break-words text-balance font-heading text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl dark:text-white">
         <%= t("home.hero.title") %>
       </h1>
       <p class="mt-3 text-base text-slate-600 dark:text-zinc-400"><%= t("home.hero.subtitle") %></p>
@@ -23,7 +23,7 @@
           <% hero.each_with_index do |listing, index| %>
             <div data-carousel-target="slide" <%= "hidden" unless index.zero? %>
                  role="group" aria-roledescription="<%= t("home.hero.slide_role") %>" aria-label="<%= t("home.hero.slide", number: index + 1) %>"
-                 class="relative min-h-[380px] sm:min-h-[440px]">
+                 class="relative min-h-[380px] w-full min-w-0 sm:min-h-[440px]">
               <% if listing.images.attached? %>
                 <%= image_tag listing.images.first.variant(resize_to_limit: [ 1600, 900 ], format: :webp),
                               alt: t("listings.card.image_alt", title: listing.title),
@@ -33,7 +33,7 @@
               <% end %>
               <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/65 to-slate-950/20"></div>
 
-              <div class="relative flex min-h-[380px] max-w-2xl flex-col justify-end p-6 sm:min-h-[440px] sm:p-10">
+              <div class="relative flex min-h-[380px] w-full max-w-2xl min-w-0 flex-col justify-end p-6 sm:min-h-[440px] sm:p-10">
                 <span class="<%= ui_badge_classes(tone: :dark, extra: "w-fit") %>">
                   <%= listing.category.name %>
                 </span>
@@ -60,7 +60,7 @@
           <% end %>
 
           <% if hero.size > 1 %>
-            <div class="absolute bottom-5 right-5 z-10 flex items-center gap-2">
+            <div class="absolute bottom-5 right-5 z-10 hidden items-center gap-2 sm:flex">
               <button type="button" data-action="carousel#previous"
                       class="inline-flex size-11 items-center justify-center rounded-full border border-white/30 bg-slate-950/40 text-white backdrop-blur transition hover:bg-slate-950/70"
                       aria-label="<%= t("home.hero.previous") %>">
@@ -92,7 +92,7 @@
     <% cache "home/#{I18n.locale}/promos", expires_in: 5.minutes do %>
       <div class="grid gap-4 md:grid-cols-3">
         <%= link_to listings_path(sort: "popular"),
-                    class: "group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] dark:border-zinc-800 dark:bg-zinc-900" do %>
+                    class: "group relative w-full min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] dark:border-zinc-800 dark:bg-zinc-900" do %>
           <span class="inline-flex size-12 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:text-rose-300">
             <%= icon "heart", class: "size-6" %>
           </span>
@@ -104,7 +104,7 @@
         <% end %>
 
         <%= link_to category_path(path: "gaming-pcs"),
-                    class: "group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] dark:border-zinc-800 dark:bg-zinc-900" do %>
+                    class: "group relative w-full min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] dark:border-zinc-800 dark:bg-zinc-900" do %>
           <span class="inline-flex size-12 items-center justify-center rounded-full bg-brand-100 text-brand-700 dark:bg-brand-900/50 dark:text-brand-300">
             <%= icon "truck", class: "size-6" %>
           </span>
@@ -116,7 +116,7 @@
         <% end %>
 
         <%= link_to listings_path(deals: 1),
-                    class: "group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] dark:border-zinc-800 dark:bg-zinc-900" do %>
+                    class: "group relative w-full min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] dark:border-zinc-800 dark:bg-zinc-900" do %>
           <span class="inline-flex size-12 items-center justify-center rounded-full bg-accent-100 text-accent-700 dark:bg-accent-500/15 dark:text-accent-300">
             <%= icon "tag", class: "size-6" %>
           </span>
@@ -184,8 +184,7 @@
                view_all_path: listings_path(deals: 1) %>
     <%= render "shared/listing_row", title: t("home.rows.newest"), listings: @feed.newest,
                view_all_path: listings_path %>
-    <%= render "shared/listing_row", title: t("home.rows.recently_sold"), listings: @feed.recently_sold,
-               view_all_path: listings_path(status: "sold") %>
+    <%= render "shared/listing_row", title: t("home.rows.recently_sold"), listings: @feed.recently_sold %>
   <% end %>
 
   <section class="surface overflow-hidden">
@@ -274,6 +273,13 @@
       <% end %>
     <% end %>
   </section>
+
+  <% if @recently_viewed.present? %>
+    <section>
+      <%= render "shared/listing_row", title: t("listings.show.recently_viewed"),
+                 listings: @recently_viewed, view_all_path: listings_path %>
+    </section>
+  <% end %>
 
   <section class="overflow-hidden rounded-2xl bg-slate-900 px-6 py-10 text-white sm:px-10 lg:px-14 lg:py-12 dark:bg-zinc-900">
     <div class="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">

@@ -1,0 +1,206 @@
+<% compact = local_assigns.fetch(:compact, false) %>
+<% prefix = local_assigns.fetch(:prefix, "desktop") %>
+<% frame_id = local_assigns.fetch(:frame_id, "listing_results") %>
+<% definitions = search.filter_definitions %>
+<% rendered_keys = %i[q min_price max_price condition labels tags f region_id shipping free_shipping on_sale] %>
+<% hidden_except = compact ? %i[q min_price max_price condition f] : rendered_keys %>
+
+<%= form_with url: request.path, method: :get,
+              data: { turbo_frame: frame_id, turbo_action: "advance",
+                      action: "turbo:before-fetch-request->filters#loading turbo:submit-end->filters#loaded" },
+              html: { id: "#{prefix}-filters-form", class: "surface p-4" } do %>
+  <%= hidden_search_fields(search.query_params, except: hidden_except) %>
+
+  <div class="flex items-center justify-between gap-3">
+    <h2 class="font-heading text-base font-semibold text-slate-950 dark:text-white">
+      <%= t("search.filters.title") %>
+    </h2>
+    <%= link_to t("search.filters.clear_all"), request.path,
+                class: "text-xs font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+  </div>
+
+  <div class="mt-4">
+    <label for="<%= prefix %>-filter-q" class="sr-only"><%= t("search.filters.filter_listings") %></label>
+    <div class="relative">
+      <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-zinc-500">
+        <%= icon "search", class: "size-4" %>
+      </span>
+      <%= search_field_tag :q, search.query, id: "#{prefix}-filter-q",
+                           placeholder: t("search.filters.filter_listings"),
+                           class: ui_input_classes("!min-h-10 rounded-full pl-9 text-sm"),
+                           data: { action: "input->filters#debouncedSubmit" } %>
+    </div>
+  </div>
+
+  <div class="mt-4 border-t border-slate-200 pt-3 dark:border-zinc-800">
+    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+      <%= t("search.filters.categories") %>
+    </p>
+    <div class="mt-2 space-y-1 text-sm">
+      <% if search.category %>
+        <% parent = search.category_parent %>
+        <% if parent %>
+          <% branch_path = search.category_ancestors[0...-1].map(&:slug) %>
+          <%= link_to parent.name, category_path(path: branch_path),
+                      class: "flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-slate-600 hover:bg-slate-50 hover:text-brand-700 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-brand-300" %>
+        <% end %>
+        <p class="rounded-lg bg-brand-50 px-2 py-1.5 font-semibold text-brand-800 dark:bg-brand-900/30 dark:text-brand-200">
+          <%= search.category.name %>
+        </p>
+        <% search.child_categories.each do |child| %>
+          <%= link_to child.name, category_path(path: search.category_ancestors.map(&:slug) + [ child.slug ]),
+                      class: "flex items-center gap-1.5 rounded-lg px-2 py-1.5 pl-4 text-slate-600 hover:bg-slate-50 hover:text-brand-700 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-brand-300" %>
+        <% end %>
+      <% end %>
+      <%= link_to t("search.filters.all_categories"), listings_path,
+                  class: "block rounded-lg px-2 py-1.5 text-slate-600 hover:bg-slate-50 hover:text-brand-700 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-brand-300" %>
+    </div>
+  </div>
+
+  <div class="mt-4 border-t border-slate-200 pt-3 dark:border-zinc-800">
+    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+      <%= t("search.filters.price") %>
+    </p>
+    <div class="mt-2 grid grid-cols-2 gap-2">
+      <div class="relative">
+        <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">€</span>
+        <%= number_field_tag :min_price, search.min_price_cents ? search.min_price_cents / 100.0 : nil,
+                             id: "#{prefix}-min-price", min: 0, placeholder: t("search.filters.min_price"),
+                             class: ui_input_classes("!min-h-10 !pl-7 text-sm"),
+                             data: { action: "input->filters#debouncedSubmit" },
+                             aria: { label: t("search.filters.min_price") } %>
+      </div>
+      <div class="relative">
+        <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">€</span>
+        <%= number_field_tag :max_price, search.max_price_cents ? search.max_price_cents / 100.0 : nil,
+                             id: "#{prefix}-max-price", min: 0, placeholder: t("search.filters.max_price"),
+                             class: ui_input_classes("!min-h-10 !pl-7 text-sm"),
+                             data: { action: "input->filters#debouncedSubmit" },
+                             aria: { label: t("search.filters.max_price") } %>
+      </div>
+    </div>
+  </div>
+
+  <details class="group border-t border-slate-200 py-3 dark:border-zinc-800"
+           <%= "open" if result.conditions.any? %>>
+    <summary class="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-slate-800 dark:text-zinc-100">
+      <%= t("search.filters.condition") %>
+      <span class="text-slate-400 transition group-open:rotate-180"><%= icon "chevron-down", class: "size-4" %></span>
+    </summary>
+    <div class="mt-3 space-y-2">
+      <% result.supported_condition_counts.each do |condition, count| %>
+        <% next if count.zero? && !result.conditions.include?(condition) %>
+        <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-zinc-300">
+          <%= check_box_tag "condition[]", condition, result.conditions.include?(condition),
+                            id: "#{prefix}-condition-#{condition}",
+                            class: "size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800",
+                            data: { action: "change->filters#submit" } %>
+          <span class="flex-1"><%= t("listings.conditions.#{condition}") %></span>
+          <span class="text-xs text-slate-400 dark:text-zinc-500"><%= count %></span>
+        </label>
+      <% end %>
+    </div>
+  </details>
+
+  <% definitions.each_with_index do |definition, index| %>
+    <% rows = filter_option_rows(definition, result) %>
+    <% next if rows.empty? %>
+    <%= render "listings/filter_section", definition: definition, rows: rows, prefix: prefix,
+               open: result.selected_specs(definition.key).any? || index < 3 %>
+  <% end %>
+
+  <details class="group border-t border-slate-200 py-3 dark:border-zinc-800"
+           <%= "open" if result.labels.any? %>>
+    <summary class="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-slate-800 dark:text-zinc-100">
+      <%= t("search.filters.labels") %>
+      <span class="text-slate-400 transition group-open:rotate-180"><%= icon "chevron-down", class: "size-4" %></span>
+    </summary>
+    <div class="mt-3 space-y-2">
+      <% Listing::LABELS.each do |label| %>
+        <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-zinc-300">
+          <%= check_box_tag "labels[]", label, result.labels.include?(label),
+                            id: "#{prefix}-label-#{label}",
+                            class: "size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800",
+                            data: { action: "change->filters#submit" } %>
+          <span class="flex-1"><%= t("listings.labels.#{label}") %></span>
+        </label>
+      <% end %>
+    </div>
+  </details>
+
+  <details class="group border-t border-slate-200 py-3 dark:border-zinc-800"
+           <%= "open" if result.tags.any? %>>
+    <summary class="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-slate-800 dark:text-zinc-100">
+      <%= t("search.filters.tags") %>
+      <span class="text-slate-400 transition group-open:rotate-180"><%= icon "chevron-down", class: "size-4" %></span>
+    </summary>
+    <div class="mt-3 grid grid-cols-2 gap-x-2 gap-y-1">
+      <% Listing::TAGS.each do |tag| %>
+        <label class="flex cursor-pointer items-center gap-1.5 text-sm text-slate-600 dark:text-zinc-300">
+          <%= check_box_tag "tags[]", tag, result.tags.include?(tag),
+                            id: "#{prefix}-tag-#{tag}",
+                            class: "size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800",
+                            data: { action: "change->filters#submit" } %>
+          <span class="truncate"><%= t("listings.tags.#{tag}") %></span>
+        </label>
+      <% end %>
+    </div>
+  </details>
+
+  <div class="border-t border-slate-200 pt-3 dark:border-zinc-800">
+    <label for="<%= prefix %>-region" class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+      <%= t("search.filters.location") %>
+    </label>
+    <%
+      regions = search.regions
+      selected_region = result.region_ids.first
+    %>
+    <%= select_tag "region_id", options_from_collection_for_select(regions, :id, :name, selected_region),
+                   id: "#{prefix}-region", include_blank: t("search.filters.all_regions"),
+                   class: ui_input_classes("mt-1.5 !min-h-10 text-sm"),
+                   data: { action: "change->filters#submit" } %>
+  </div>
+
+  <div class="mt-4 border-t border-slate-200 pt-3 dark:border-zinc-800">
+    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+      <%= t("search.filters.shipping") %>
+    </p>
+    <div class="mt-2 space-y-2">
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-zinc-300">
+        <%= check_box_tag "shipping[]", "ship", result.shipping.include?("ship"),
+                          id: "#{prefix}-ship",
+                          class: "size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800",
+                          data: { action: "change->filters#submit" } %>
+        <span class="flex-1"><%= t("search.filters.ship") %></span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-zinc-300">
+        <%= check_box_tag "shipping[]", "pickup", result.shipping.include?("pickup"),
+                          id: "#{prefix}-pickup",
+                          class: "size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800",
+                          data: { action: "change->filters#submit" } %>
+        <span class="flex-1"><%= t("search.filters.pickup") %></span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-zinc-300">
+        <%= check_box_tag :free_shipping, "1", result.free_shipping?,
+                          id: "#{prefix}-free-shipping",
+                          class: "size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800",
+                          data: { action: "change->filters#submit" } %>
+        <span class="flex-1"><%= t("search.filters.free_shipping") %></span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-zinc-300">
+        <%= check_box_tag :on_sale, "1", result.on_sale?,
+                          id: "#{prefix}-on-sale",
+                          class: "size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800",
+                          data: { action: "change->filters#submit" } %>
+        <span class="flex-1"><%= t("search.filters.on_sale") %></span>
+      </label>
+    </div>
+  </div>
+
+  <% if local_assigns[:submit_label].present? %>
+    <div class="sticky bottom-0 mt-4 border-t border-slate-200 bg-white pt-3 dark:border-zinc-800 dark:bg-zinc-900">
+      <%= submit_tag submit_label,
+                     class: ui_button_classes(variant: :primary, size: :md, extra: "w-full") %>
+    </div>
+  <% end %>
+<% end %>

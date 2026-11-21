@@ -1,0 +1,12 @@
+<% alert = type.to_s == "alert" %>
+<div data-controller="toast" data-toast data-toast-delay-value="5000"
+     role="<%= alert ? "alert" : "status" %>"
+     class="pointer-events-auto flex w-full items-start gap-3 rounded-xl border px-4 py-3 shadow-[var(--shadow-panel)] transition duration-200 <%= alert ? "border-rose-200 bg-rose-50 text-rose-900 dark:border-rose-500/30 dark:bg-rose-950/80 dark:text-rose-100" : "border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-950/80 dark:text-emerald-100" %>">
+  <span class="mt-0.5 shrink-0"><%= icon alert ? "x" : "check", class: "size-4" %></span>
+  <p class="flex-1 text-sm font-medium"><%= message %></p>
+  <button type="button" data-action="toast#dismiss"
+          class="-m-1 rounded-full p-1 opacity-70 transition hover:opacity-100"
+          aria-label="<%= t("layout.flash.close") %>">
+    <%= icon "x", class: "size-4" %>
+  </button>
+</div>

@@ -79,10 +79,22 @@ class Listing < ApplicationRecord
       .where(users: { status: User.statuses[:active], deleted_at: nil })
       .where(countries: { enabled: true })
   }
+  # Publicly browsable listings: published items plus sold items that stay
+  # online for SEO and price history. Used by store pages, which expose sold
+  # items behind an explicit toggle.
+  scope :storefront, lambda {
+    where(status: [ statuses[:published], statuses[:sold] ])
+      .where(quantity: 1..)
+      .joins(:user, :country)
+      .where(users: { status: User.statuses[:active], deleted_at: nil })
+      .where(countries: { enabled: true })
+  }
   scope :featured, -> { where("listings.featured_until > ?", Time.current) }
   scope :recent, -> { order(published_at: :desc, created_at: :desc) }
   scope :in_category, ->(category) { where(category_id: category.subtree_ids) }
-  scope :on_sale, -> { where.not(original_price_cents: nil) }
+  scope :on_sale, lambda {
+    where("listings.original_price_cents IS NOT NULL AND listings.original_price_cents > listings.price_cents")
+  }
   scope :recently_sold, lambda {
     sold
       .joins(:user, :country)
@@ -168,6 +180,57 @@ class Listing < ApplicationRecord
 
   def price
     price_cents.to_i / 100.0
+  end
+
+  def viewable_by?(viewer)
+    return true if sold?
+    return true if visible?
+
+    viewer.present? && (viewer.id == user_id || viewer.staff?)
+  end
+
+  def editable_by?(viewer)
+    viewer.present? && (viewer.id == user_id || viewer.staff?)
+  end
+
+  def sold_out?
+    sold? || quantity.to_i.zero?
+  end
+
+  def location
+    [ city, region&.name ].compact_blank.uniq.join(", ")
+  end
+
+  def estimated_delivery_window
+    return nil unless shipping_available?
+
+    start_date = self.class.add_business_days(Date.current, ships_within_days.to_i + 2)
+    end_date = self.class.add_business_days(start_date, 2)
+    start_date..end_date
+  end
+
+  def self.add_business_days(date, days)
+    date = date.to_date
+    remaining = days.to_i
+    while remaining.positive?
+      date += 1
+      remaining -= 1 unless date.saturday? || date.sunday?
+    end
+    date
+  end
+
+  def self.similar_to(listing, limit: 8)
+    visible
+      .where(category_id: listing.category.subtree_ids)
+      .where.not(id: listing.id)
+      .order(Arel.sql(sanitize_sql_array([ "ABS(listings.price_cents - ?)", listing.price_cents ])))
+      .limit(limit)
+  end
+
+  # Increments the view counter with a single UPDATE. The caller decides
+  # whether the current visitor counts as a view.
+  def self.register_view!(id)
+    where(id: id).update_all("views_count = views_count + 1, updated_at = updated_at")
   end
 
   private

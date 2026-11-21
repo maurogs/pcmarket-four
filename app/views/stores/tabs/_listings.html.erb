@@ -1,0 +1,33 @@
+<turbo-frame id="store-panel">
+  <div data-controller="filters">
+    <%= form_with url: request.path, method: :get,
+                  data: { turbo_frame: "store_listing_results", turbo_action: "advance" },
+                  class: "mb-4 flex flex-wrap items-end gap-3" do %>
+      <%= hidden_search_fields(@search.query_params, except: %i[category_id include_sold]) %>
+      <% if @store_categories.size > 1 %>
+        <div>
+          <label for="store-category" class="mb-1 block text-xs font-medium text-slate-500 dark:text-zinc-400">
+            <%= t("stores.listings.category") %>
+          </label>
+          <%= select_tag :category_id,
+                         options_from_collection_for_select(@store_categories, :id, :name,
+                                                            @search.category&.id),
+                         id: "store-category", include_blank: t("stores.listings.all_categories"),
+                         class: ui_input_classes("!min-h-10 !w-auto text-sm"),
+                         data: { action: "change->filters#submit" } %>
+        </div>
+      <% end %>
+      <% if @sold_count.positive? %>
+        <label class="flex cursor-pointer items-center gap-2 pb-2 text-sm text-slate-600 dark:text-zinc-300">
+          <%= check_box_tag :include_sold, "1", @include_sold,
+                            id: "store-include-sold",
+                            class: "size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800",
+                            data: { action: "change->filters#submit" } %>
+          <%= t("stores.listings.include_sold") %>
+        </label>
+      <% end %>
+    <% end %>
+
+    <%= render "listings/results", frame_id: "store_listing_results", compact: true %>
+  </div>
+</turbo-frame>

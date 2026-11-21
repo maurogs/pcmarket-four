@@ -15,18 +15,41 @@ class Category < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :menu_roots, -> { active.roots.where(show_in_menu: true).order(:position, :id) }
 
+  # Root id => slug, cached alongside the taxonomy timestamp. Used by listing
+  # cards to decide whether spec chips apply without loading the whole path.
+  def self.root_slug_map
+    Rails.cache.fetch("category-root-slugs/v1", expires_in: 1.hour) do
+      roots.pluck(:id, :slug).to_h
+    end
+  end
+
   def self.find_by_path_slugs(slugs)
     slugs = Array(slugs).map(&:to_s).reject(&:blank?)
     return nil if slugs.empty?
 
-    category = find_by(slug: slugs.last)
-    return nil unless category && category.active?
+    chain = where(slug: slugs).index_by(&:slug).then do |records|
+      slugs.map { |slug| records[slug] }
+    end
+    return nil if chain.any?(&:nil?)
 
-    category.path_slugs == slugs ? category : nil
+    category = chain.last
+    return nil unless category.active?
+    return nil unless chain.first.is_root?
+    return nil unless chain.each_cons(2).all? { |parent, child| child.parent_id.to_s == parent.id.to_s }
+
+    category
+  end
+
+  def path
+    @path ||= super
   end
 
   def path_slugs
-    path.map(&:slug)
+    @path_slugs ||= path.map(&:slug)
+  end
+
+  def subtree_ids
+    @subtree_ids ||= super
   end
 
   def name(locale = I18n.locale)
@@ -39,8 +62,8 @@ class Category < ApplicationRecord
   # ordered by position.
   def effective_filters
     CategoryFilter
-      .where(category_id: path_ids)
-      .includes(:filter_definition)
+      .where(category_id: [ id ] + ancestor_ids)
+      .includes(filter_definition: :filter_options)
       .order(:position, :id)
       .filter_map { |category_filter| category_filter.filter_definition if category_filter.filter_definition.active? }
       .uniq(&:id)

@@ -1,0 +1,4 @@
+<% count = cart_items_count %>
+<span id="cart-count" class="<%= "absolute right-1 top-1 flex size-5 items-center justify-center rounded-full bg-accent-500 text-[10px] font-bold text-slate-950 #{'hidden' if count.zero?}" %>">
+  <%= count > 9 ? "9+" : count %>
+</span>

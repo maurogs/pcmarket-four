@@ -1,0 +1,32 @@
+<div id="saved-search-<%= saved_search.id %>" class="surface flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+  <div class="min-w-0">
+    <p class="truncate text-sm font-semibold text-slate-950 dark:text-white"><%= saved_search.name %></p>
+    <p class="mt-0.5 text-xs text-slate-500 dark:text-zinc-400">
+      <%= saved_search.category&.name || t("saved_searches.all_categories") %>
+      <% if saved_search.min_price_cents || saved_search.max_price_cents %>
+        · <%= t("saved_searches.price_range",
+               min: saved_search.min_price_cents ? format_price(saved_search.min_price_cents) : t("saved_searches.any"),
+               max: saved_search.max_price_cents ? format_price(saved_search.max_price_cents) : t("saved_searches.any")) %>
+      <% end %>
+      · <%= t("saved_searches.created_on", date: l(saved_search.created_at.to_date, format: :short)) %>
+    </p>
+  </div>
+
+  <div class="flex shrink-0 items-center gap-2">
+    <%= link_to t("saved_searches.view"), saved_search_results_path(saved_search),
+                class: ui_button_classes(variant: :outline, size: :sm) %>
+    <%= button_to saved_search_path(saved_search), method: :patch,
+                  form: { data: { turbo_stream: true } },
+                  class: "inline-flex size-9 items-center justify-center rounded-full border #{saved_search.notify? ? 'border-brand-300 bg-brand-50 text-brand-700 dark:border-brand-700 dark:bg-brand-900/30 dark:text-brand-200' : 'border-slate-200 text-slate-500 dark:border-zinc-700 dark:text-zinc-400'}",
+                  aria: { label: saved_search_toggle_label(saved_search), pressed: saved_search.notify?.to_s },
+                  title: saved_search_toggle_label(saved_search) do %>
+      <%= icon "bell", class: "size-4" %>
+    <% end %>
+    <%= button_to saved_search_path(saved_search), method: :delete,
+                  form: { data: { turbo_confirm: t("saved_searches.confirm_delete") } },
+                  class: "inline-flex size-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-rose-300 hover:text-rose-600 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-rose-500 dark:hover:text-rose-400",
+                  aria: { label: t("saved_searches.delete") } do %>
+      <%= icon "x", class: "size-4" %>
+    <% end %>
+  </div>
+</div>

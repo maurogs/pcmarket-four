@@ -2,9 +2,11 @@
 
 ## Status
 
-Phase 2 complete: full taxonomy seeds, design system, global layout, home page
-and SEO infrastructure. Listing, store, cart, checkout and account pages have
-localised routes and placeholder screens ready for Phase 3.
+Phase 2B complete: marketplace discovery. Search, category browsing, listing
+detail, store pages, favourites, cart, saved searches, reports, follows and
+authentication screens are implemented with fragment/HTTP caching and an
+N+1 guard. Checkout, messaging, offers, reviews creation and seller/admin
+workflows remain for later phases.
 
 ## Stack
 
@@ -117,6 +119,110 @@ localised routes and placeholder screens ready for Phase 3.
 - `listings/_card.html.erb` is the shared card used by home, search and
   favourites.
 
+### Search and filtering (Phase 2B)
+
+- `ListingSearch` (`app/services/listing_search.rb`) is the single entry point
+  for web, API and saved-search alerts. It normalises params, clamps the query
+  to 100 chars and the page to 100, and converts euro inputs to cents. It
+  accepts `q`, `category`, `min_price`, `max_price`, `condition[]`, `labels[]`,
+  `tags[]`, `f[key][]`, `region_id[]`, `shipping[]`, `free_shipping`,
+  `on_sale`, `seller`, `sort` and `page`.
+- Spec filters use JSONB containment (`listings.specs @> '{"key":"value"}'`),
+  OR-ed inside a key and AND-ed across keys. Only `FilterDefinition` keys that
+  are effective for the current category are accepted, which also neutralises
+  injection attempts in filter keys.
+- `Result` exposes paginated records (Pagy, 24/page), total count (cached 60s),
+  active filter chips with removable params, facet counts for effective
+  checkbox filters and condition counts.
+- Facets are computed with ONE grouped query over
+  `jsonb_each_text(listings.specs)` against the relation filtered by category,
+  query, price and condition (everything except spec filters), cached 5 minutes
+  per (category, q, price, condition, filter keys) digest. Options with zero
+  count are hidden unless selected.
+- Search UI runs inside a single `turbo-frame#listing_results`; the sidebar,
+  toolbar, grid and pagination all live inside it, so filtering only replaces
+  the frame. Forms use `data-turbo-action="advance"` for shareable URLs and
+  back-button support. Stimulus `filters_controller` submits checkboxes/selects
+  immediately and debounces text/price inputs by 400ms, showing skeleton cards
+  while loading. The mobile filter sheet contains the same form partial.
+- Category pages, `/search` and store listings all reuse the same results
+  partial. Store pages pass a store-scoped base relation and an `include_sold`
+  toggle, and hide the spec/label/region sections (`compact` mode).
+- Indexes added for search: `(status, category_id, published_at DESC)`,
+  `(status, price_cents)`, `(status, favorites_count DESC)`,
+  `(status, store_id, published_at DESC)`, `(status, region_id, published_at
+  DESC)` and a partial `(status, published_at DESC)` for published in-stock
+  rows. The existing GIN indexes cover `specs`, `labels`, `tags` and trigram
+  title/description.
+- Query plan with 5,000 generated listings (rolled back):
+  `RAILS_ENV=test bin/rails db:test:prepare` then
+  `RAILS_ENV=test bin/rails runner script/search_explain.rb`. The combined
+  category + condition + price + shipping + spec query (1,917 matches) uses
+  `Index Scan using index_listings_search_category` with the remaining
+  predicates as filters; planning 1.7ms, execution 13.5ms, 238 shared buffers
+  for the listings scan. The GIN `index_listings_on_specs` remains available
+  when the planner prefers containment over the composite index.
+
+### Listing detail, stores and favourites (Phase 2B)
+
+- Detail pages use a 7/5 desktop grid with a sticky buy box, a Stimulus gallery
+  (pointer swipe, arrow keys, thumbnails, `<dialog>` lightbox) and a mobile
+  sticky price/CTA bar. Images use `resize_to_limit` WebP variants; the first
+  is eager + `fetchpriority=high`, the rest lazy.
+- View counters use a single `UPDATE` via `Listing.register_view!`, skip bots
+  and owners, and remember the last 50 listing ids in the session (also used
+  for "recently viewed" on home and detail pages).
+- Old slugs resolve through `friendly_id_slugs` and 301 to the current URL.
+  Non-visible listings are 404 for strangers but viewable by owners/staff with
+  a status banner; sold listings remain public and render SoldOut offers.
+- Structured data: Product + Offer (price, currency, availability, item
+  condition), BreadcrumbList, and aggregateRating from the store. Search pages
+  emit BreadcrumbList + ItemList.
+- Store pages have a banner/logo header, professional vs private badge,
+  company/tax details, vacation banner, tabs (listings/about/reviews) loaded
+  through `turbo-frame#store-panel`, an `include_sold` toggle, review
+  distribution bars, sorting and paginated reviews with seller replies.
+- Favourites toggle through Turbo Streams: `replace_all` updates every heart
+  instance for a listing, the count is replaced separately and cards are
+  removed from the favourites grid. A Stimulus controller toggles the heart
+  optimistically and restores it if the request fails. Guest intents are stored
+  in the session, completed after sign-in and then return to the listing.
+- Store follows use a counter cache and Turbo Stream replacement of the button
+  and follower count.
+
+### Cart and authentication (Phase 2B)
+
+- Guest carts use a signed permanent `cart_token`; user carts use `user_id`.
+  A Warden `after_authentication` hook merges guest items into the user cart,
+  capping quantities by stock and deleting the guest rows.
+- Cart item creation rejects own and non-visible listings, caps quantity by
+  stock and responds with Turbo Streams that update the header badge and append
+  a toast. "Buy now" adds the item, then redirects to the cart.
+- Devise views use a two-column shell with rotating testimonials. Sign-up
+  requires the terms checkbox (`users.terms_accepted_at`), records marketing
+  opt-in and respects `Setting registrations_enabled`. The header login link
+  opens the same form inside a Turbo Frame `<dialog>` with a full-page fallback.
+  Development mail uses `letter_opener` mounted at `/letter_opener`.
+- Saved searches are created from the current query string, listed under
+  `/saved_searches` and in the account page, and can toggle notifications with
+  Turbo Streams. Reports are one-open-per-user-and-listing.
+
+### Performance guardrails
+
+- `ListingSearch::INCLUDES` preloads store, category, region, user and image
+  attachments/blobs. Cards never call `category.root` or `user.store`; root
+  slugs come from a cached `Category.root_slug_map` and seller names prefer the
+  preloaded store.
+- `MenuBuilder` fetches roots and direct children in two queries and builds
+  paths from slugs without walking ancestry.
+- `Setting` caches the whole small settings table under one key.
+- Anonymous search pages send `Cache-Control: public, max-age=60` and
+  `fresh_when` on `[locale, params digest, Listing.maximum(:updated_at)]`;
+  listing pages use `fresh_when` on `[listing, locale, store.updated_at]`.
+- N+1 guard: `test/integration/search_performance_test.rb` renders a category
+  page with 24 listings and asserts fewer than 25 SQL queries via
+  `ActiveSupport::Notifications`.
+
 ### SEO and security
 
 - `ApplicationController#set_default_meta_tags` sets title, description,
@@ -145,53 +251,77 @@ localised routes and placeholder screens ready for Phase 3.
 ## Code map
 
 ```
-app/controllers/application_controller.rb   locale, meta tags, menu, staff guard
-app/controllers/home_controller.rb          home feed
-app/controllers/listings_controller.rb      index/show + placeholders, Pagy
+app/controllers/application_controller.rb   locale, meta tags, menu, staff guard,
+                                            search params
+app/controllers/concerns/search_rendering.rb shared search/category/store rendering
+app/controllers/home_controller.rb          home feed + recently viewed
+app/controllers/listings_controller.rb      index/show, views, SEO, HTTP caching
 app/controllers/categories_controller.rb    category path resolution
-app/controllers/search_suggestions_controller.rb
-app/controllers/seo_controller.rb           robots.txt + sitemap.xml
-app/controllers/newsletter_subscribers_controller.rb
-app/controllers/{cart,favorites,conversations,orders,account,pc_finder,pages,legal_pages,sell_offers}_controller.rb
+app/controllers/stores_controller.rb        store header, tabs, reviews
+app/controllers/{cart,cart_items,favorites,follows,reports,saved_searches}_controller.rb
+app/controllers/users/registrations_controller.rb
+app/controllers/{conversations,orders,account,pc_finder,pages,legal_pages,sell_offers}_controller.rb
+app/controllers/{search_suggestions,seo,newsletter_subscribers}_controller.rb
 app/controllers/admin/dashboard_controller.rb
 app/controllers/seller/dashboard_controller.rb
+app/services/listing_search.rb              search, facets, chips, sorting
+app/services/cart_merger.rb                 guest -> user cart merge
 app/services/menu_builder.rb                cached mega-menu payload
 app/services/home_feed.rb                   home queries
 app/services/search_suggestions.rb          listing/category/store suggestions
 app/services/newsletter_subscription.rb     idempotent subscription statuses
 app/services/sitemap_builder.rb             XML sitemap + index
-app/helpers/application_helper.rb           icons, UI classes, money, consent, JSON-LD
-app/views/layouts/application.html.erb      global head, header, main, footer
-app/views/shared/                           layout partials and UI primitives
+app/helpers/application_helper.rb           icons, UI classes, money, JSON-LD, specs
+app/views/layouts/application.html.erb      global head, header, main, footer, auth dialog
+app/views/shared/                           layout partials, pagination, filters, toasts
+app/views/listings/index.html.erb           search/category page
+app/views/listings/_results.html.erb        Turbo Frame results + sidebar + sheet
+app/views/listings/_filters.html.erb        shared desktop/mobile filter form
+app/views/listings/show.html.erb            detail page, gallery, buy box
+app/views/stores/show.html.erb              store header, tabs
+app/views/stores/tabs/                      listings/about/reviews panels
+app/views/favorites/                        heart button/count partials
+app/views/devise/                           styled authentication screens
 app/views/listings/_card.html.erb           shared listing card
-app/views/home/index.html.erb               home sections
+app/views/home/index.html.erb               home sections + recently viewed
 app/assets/tailwind/application.css         design tokens and base styles
 app/assets/images/icons/                    vendored Lucide SVGs
 app/javascript/controllers/                 theme, drawer, mega-menu, autocomplete,
                                             carousel, dropdown, modal, tabs, toasts,
-                                            cookie consent, scroll rows, back-to-top
-config/routes.rb                            locale scope + SEO endpoints
+                                            cookie consent, scroll rows, back-to-top,
+                                            filters, option list, view toggle,
+                                            favourite toggle, gallery, share, auth modal
+config/routes.rb                            locale scope + SEO + phase 2B resources
+config/initializers/warden_hooks.rb         guest cart merge on sign-in
 config/initializers/content_security_policy.rb
 config/initializers/security_headers.rb
-config/locales/                             six-language UI strings
+config/locales/                             six-language UI strings (+ phase2.*)
 db/seeds.rb                                 loader
 db/seeds/*.rb                               taxonomy and reference data
-test/integration/                           home, SEO, suggestions, newsletter, admin
+script/search_explain.rb                    5k listing EXPLAIN ANALYZE
+test/integration/                           home, SEO, search pages, auth, performance
+test/services/listing_search_test.rb
+test/system/                                responsive + auth modal
 test/i18n/locale_parity_test.rb
 test/seeds_test.rb
 ```
 
 ## Open items for later phases
 
-- Full listing search with filters, sorting, pagination controls and saved
-  search alerts.
-- Listing detail, store pages, listing creation/edit forms and image uploads.
-- Authentication screens styling and profile management.
-- Cart, checkout, orders and reviews workflows.
-- Seller dashboard, sell-to-us flow and admin moderation screens.
-- Conversations, notifications and offers.
-- Newsletter double opt-in templates can be styled further; delivery currently
-  uses `deliver_later`.
-- Background jobs for saved-search alerts and notifications.
+- Listing creation/edit forms, image uploads and moderation screens.
+- Checkout, payments, orders and review creation flows.
+- Messaging: conversations render placeholders; `conversations#create` only
+  opens the thread. Offers, unread counters and notifications are pending.
+- Saved-search alert delivery (the model stores exact replay params under
+  `filters["_search"]`, but no background job sends alerts yet).
+- Seller dashboard, sell-to-us flow and profile management.
+- Store tabs currently render the active panel inline for SEO and load other
+  tabs through Turbo Frame navigation; `loading="lazy"` placeholders can be
+  added if the panels grow heavier.
+- Mobile "Load more" navigates to the next page inside the results frame
+  instead of appending; true infinite append can be added with a stream
+  endpoint.
+- Google sign-in is shown only when `GOOGLE_CLIENT_ID` and
+  `GOOGLE_CLIENT_SECRET` are configured.
 - Real social profile URLs and legal copy per locale.
-- API endpoints.
+- API endpoints (ListingSearch is already API-ready).

@@ -1,18 +1,41 @@
-<% content_for :title, t("pages.favorites.title") %>
+<% content_for :title, t("favorites.title") %>
 
 <div class="page-container py-8 sm:py-10">
-  <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("pages.favorites.title") %></h1>
-  <p class="mt-2 max-w-2xl text-sm text-slate-600 dark:text-zinc-400"><%= t("pages.favorites.body") %></p>
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white">
+        <%= t("favorites.title") %>
+      </h1>
+      <p class="mt-2 max-w-2xl text-sm text-slate-600 dark:text-zinc-400"><%= t("favorites.body") %></p>
+    </div>
+    <nav class="flex gap-1 rounded-full border border-slate-200 p-1 dark:border-zinc-700"
+         aria-label="<%= t("favorites.filters_label") %>">
+      <%= link_to t("favorites.filters.available"), favorites_path,
+                  class: "rounded-full px-3 py-1.5 text-sm font-medium #{@filter == 'available' ? 'bg-brand-700 text-white' : 'text-slate-600 hover:bg-slate-100 dark:text-zinc-300 dark:hover:bg-zinc-800'}" %>
+      <%= link_to t("favorites.filters.sold"), favorites_path(status: "sold"),
+                  class: "rounded-full px-3 py-1.5 text-sm font-medium #{@filter == 'sold' ? 'bg-brand-700 text-white' : 'text-slate-600 hover:bg-slate-100 dark:text-zinc-300 dark:hover:bg-zinc-800'}" %>
+    </nav>
+  </div>
 
   <% if @favorites.any? %>
-    <div class="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+    <div class="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
       <% @favorites.each do |favorite| %>
-        <% next if favorite.listing.nil? %>
-        <%= render "listings/card", listing: favorite.listing %>
+        <% listing = favorite.listing %>
+        <div id="favorite-card-<%= listing.id %>" class="relative <%= "opacity-60" unless listing.published? && listing.quantity.to_i.positive? %>">
+          <%= render "listings/card", listing: listing, favorited: true, favorite_id: favorite.id %>
+          <% unless listing.published? && listing.quantity.to_i.positive? %>
+            <span class="pointer-events-none absolute inset-x-2 top-2 z-20 rounded-full bg-slate-900/90 px-3 py-1 text-center text-[11px] font-semibold text-white">
+              <%= t("favorites.unavailable") %>
+            </span>
+          <% end %>
+        </div>
       <% end %>
     </div>
   <% else %>
-    <%= render "shared/empty_state", title: t("pages.favorites.title"), body: t("pages.favorites.body"),
-               cta_label: t("pages.coming_soon.listings_cta"), cta_path: listings_path %>
+    <div class="surface mt-8">
+      <%= render "shared/empty_state", title: t("favorites.empty_title"),
+                 body: t("favorites.empty_body"),
+                 cta_label: t("favorites.empty_cta"), cta_path: listings_path %>
+    </div>
   <% end %>
 </div>

@@ -9,6 +9,7 @@ class Store < ApplicationRecord
   has_many :follows, dependent: :destroy, inverse_of: :store
   has_many :followers, through: :follows, source: :follower
   has_many :orders, dependent: :nullify, inverse_of: :store
+  has_many :reviews, dependent: :destroy, inverse_of: false
 
   has_one_attached :logo
   has_one_attached :banner
@@ -28,6 +29,22 @@ class Store < ApplicationRecord
       reviews_count: published_reviews.count,
       updated_at: Time.current
     )
+  end
+
+  def on_vacation?
+    vacation_mode?
+  end
+
+  def for_sale_count
+    listings.visible.count
+  end
+
+  def sold_count
+    listings.sold.count
+  end
+
+  def location
+    [ city, region&.name, country_code ].compact_blank.uniq.join(", ")
   end
 
   def to_s

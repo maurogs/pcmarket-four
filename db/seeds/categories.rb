@@ -375,6 +375,14 @@ root_categories.each do |attributes|
   categories_by_slug[attributes[:slug]] = seed_category(**attributes, show_in_menu: true)
 end
 
+# Navigation order: the first seven roots fit the desktop bar; the remaining
+# roots are grouped under the "More" mega-menu item.
+%w[gaming-pcs workstations components peripherals laptops phones consoles-handhelds
+   tablets accessories games-software].each_with_index do |slug, index|
+  category = Category.find_by(slug: slug)
+  category&.update_columns(position: index + 1, show_in_menu: true, updated_at: Time.current)
+end
+
 child_categories.each do |attributes|
   parent = categories_by_slug.fetch(attributes[:parent])
   categories_by_slug[attributes[:slug]] = seed_category(

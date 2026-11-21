@@ -1,3 +1,63 @@
-<%= render "shared/placeholder_page", title: t("pages.account.title"),
-           body: t("pages.account.body"), cta_path: orders_path,
-           cta_label: t("layout.account_menu.my_orders") %>
+<% content_for :title, t("account.title") %>
+
+<div class="page-container py-8 sm:py-10">
+  <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center gap-4">
+      <span class="flex size-16 items-center justify-center rounded-full bg-brand-100 font-heading text-xl font-bold text-brand-800 dark:bg-brand-900/50 dark:text-brand-200">
+        <%= current_user.initials %>
+      </span>
+      <div>
+        <h1 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
+          <%= current_user.display_name %>
+        </h1>
+        <p class="text-sm text-slate-500 dark:text-zinc-400"><%= current_user.email %></p>
+      </div>
+    </div>
+    <%= link_to t("account.edit_profile"), "#", class: ui_button_classes(variant: :outline, size: :md) %>
+  </div>
+
+  <div class="mt-8 grid gap-4 sm:grid-cols-3">
+    <%= link_to favorites_path, class: "surface card-lift flex items-center justify-between p-5" do %>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("account.favourites") %></p>
+        <p class="mt-1 font-heading text-2xl font-bold text-slate-950 dark:text-white"><%= @favorites_count %></p>
+      </div>
+      <%= icon "heart", class: "size-6 text-rose-500" %>
+    <% end %>
+    <%= link_to saved_searches_path, class: "surface card-lift flex items-center justify-between p-5" do %>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("account.saved_searches") %></p>
+        <p class="mt-1 font-heading text-2xl font-bold text-slate-950 dark:text-white"><%= @saved_searches.size %></p>
+      </div>
+      <%= icon "bookmark", class: "size-6 text-brand-600" %>
+    <% end %>
+    <%= link_to orders_path, class: "surface card-lift flex items-center justify-between p-5" do %>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("account.orders") %></p>
+        <p class="mt-1 font-heading text-2xl font-bold text-slate-950 dark:text-white"><%= @orders_count %></p>
+      </div>
+      <%= icon "package", class: "size-6 text-slate-500" %>
+    <% end %>
+  </div>
+
+  <section id="saved-searches" class="mt-10">
+    <div class="flex items-end justify-between gap-3">
+      <div>
+        <h2 class="font-heading text-xl font-semibold text-slate-950 dark:text-white"><%= t("saved_searches.title") %></h2>
+        <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("saved_searches.body") %></p>
+      </div>
+      <%= link_to t("saved_searches.manage"), saved_searches_path,
+                  class: "text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+    </div>
+
+    <% if @saved_searches.any? %>
+      <div class="mt-4 space-y-3">
+        <% @saved_searches.first(5).each do |saved_search| %>
+          <%= render "saved_searches/saved_search", saved_search: saved_search %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="mt-4 text-sm text-slate-500 dark:text-zinc-400"><%= t("saved_searches.empty_body") %></p>
+    <% end %>
+  </section>
+</div>
