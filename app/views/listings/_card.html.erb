@@ -4,7 +4,7 @@
       <%= link_to listing_path(listing), tabindex: -1,
                   aria: { label: t("listings.card.image_alt", title: listing.title) } do %>
         <% if listing.images.attached? %>
-          <%= image_tag listing.images.first.variant(resize_to_limit: [ 640, 480 ], format: :webp),
+          <%= image_tag listing.ordered_images.first.variant(resize_to_limit: [ 640, 480 ], format: :webp),
                         alt: t("listings.card.image_alt", title: listing.title),
                         width: 640, height: 480, loading: "lazy", decoding: "async",
                         class: "h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" %>

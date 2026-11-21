@@ -2,6 +2,8 @@ class ListingsController < ApplicationController
   include SearchRendering
 
   before_action :authenticate_user!, only: %i[new create edit update destroy]
+  before_action :ensure_active_account, only: %i[new create edit update destroy]
+  before_action :set_listing, only: %i[edit update destroy]
 
   def index
     @category = nil
@@ -23,24 +25,143 @@ class ListingsController < ApplicationController
   end
 
   def new
+    @listing = build_listing
+    @listing.category = selected_category
+    prepare_form
+    return unless specs_frame_request?
+
+    render_specs_frame
   end
 
   def create
-    redirect_to listings_path, notice: t("pages.coming_soon.default_body")
+    @listing = build_listing
+    authorize @listing
+
+    return handle_saved if save_listing
+
+    prepare_form
+    render :new, status: :unprocessable_entity
   end
 
   def edit
+    authorize @listing
+    @listing.category = selected_category if selected_category
+
+    prepare_form
+    return unless specs_frame_request?
+
+    render_specs_frame
   end
 
   def update
-    redirect_to listing_path(params[:id]), notice: t("pages.coming_soon.default_body")
+    authorize @listing
+    return handle_saved if save_listing
+
+    prepare_form
+    render :edit, status: :unprocessable_entity
   end
 
   def destroy
-    redirect_to listings_path, notice: t("pages.coming_soon.default_body")
+    authorize @listing
+
+    if @listing.order_items.exists?
+      @listing.update!(status: :archived)
+      redirect_to seller_listings_path, notice: t("listings.flash.archived")
+    else
+      @listing.destroy!
+      redirect_to seller_listings_path, notice: t("listings.flash.destroyed")
+    end
   end
 
   private
+
+  def build_listing
+    current_user.listings.new(
+      country_code: current_user.country_code.presence || "ES",
+      region_id: current_user.region_id,
+      city: current_user.city,
+      condition: :used_good,
+      accepts_offers: current_user.store.nil? || current_user.store.allow_offers_default
+    )
+  end
+
+  def set_listing
+    @listing = Listing.find_by(slug: params[:id])
+    raise ActiveRecord::RecordNotFound if @listing.nil?
+  end
+
+  def save_listing
+    @form = ListingForm.new(listing: @listing, params: listing_params, submit: submit?)
+    @form.save
+  end
+
+  def handle_saved
+    flash[:notice] = success_message
+    flash[:alert] = t("listings.flash.sent_back") if @form.sent_back_for_review?
+    redirect_to seller_listings_path
+  end
+
+  def success_message
+    if @form.submitted?
+      t("listings.flash.submitted")
+    elsif @form.sent_back_for_review?
+      t("listings.flash.updated")
+    elsif @listing.published?
+      t("listings.flash.updated")
+    else
+      t("listings.flash.draft_saved")
+    end
+  end
+
+  def prepare_form
+    @categories = Category.active.roots_ordered
+    @selected_category = @listing.category if @listing.category&.leaf?
+    @effective_filters = @selected_category&.effective_filters || []
+    @regions = Region.where(country_code: @listing.country_code.presence || "ES").order(:name)
+    @max_images = Setting.get("max_images_per_listing", 12).to_i
+    @max_image_bytes = Listing::MAX_IMAGE_BYTES
+    @image_types = Listing::IMAGE_CONTENT_TYPES
+    @require_approval = Setting.enabled?("listings_require_approval")
+  end
+
+  def render_specs_frame
+    render partial: "listings/specs", layout: false,
+           locals: { listing: @listing, effective_filters: @effective_filters,
+                     category: @selected_category }
+  end
+
+  def selected_category
+    return nil if params[:category_id].blank?
+
+    category = Category.active.find_by(id: params[:category_id])
+    return nil if category.nil? || !category.leaf?
+
+    category
+  end
+
+  def specs_frame_request?
+    request.headers["Turbo-Frame"] == "listing_specs"
+  end
+
+  def submit?
+    params[:commit].to_s == "submit"
+  end
+
+  def ensure_active_account
+    return if current_user.nil? || current_user.active_account?
+
+    redirect_to root_path, alert: t("errors.account_inactive")
+  end
+
+  def listing_params
+    params.require(:listing).permit(
+      :category_id, :title, :brand, :model_name_text, :condition, :quantity,
+      :description, :price, :original_price, :accepts_offers,
+      :shipping_available, :free_shipping, :shipping_price, :ships_within_days,
+      :local_pickup, :region_id, :city, :postal_code, :image_order,
+      images: [], tags: [], remove_image_ids: [], specs: {}
+    )
+  end
 
   def find_listing!
     Listing
@@ -169,7 +290,7 @@ class ListingsController < ApplicationController
   def listing_image_url(listing)
     return nil unless listing.images.attached?
 
-    url_for(listing.images.first.variant(resize_to_limit: [ 1200, 900 ], format: :webp),
+    url_for(listing.ordered_images.first.variant(resize_to_limit: [ 1200, 900 ], format: :webp),
             only_path: false)
   rescue StandardError
     nil

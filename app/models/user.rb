@@ -123,6 +123,22 @@ class User < ApplicationRecord
     update_columns(deleted_at: Time.current, updated_at: Time.current)
   end
 
+  # Every listing needs a store: the first listing creates an individual store
+  # named after the username.
+  def ensure_store!
+    return store if store.present?
+
+    create_store!(
+      name: username.to_s.first(80),
+      store_type: :individual,
+      country_code: country_code.presence || "ES",
+      region_id: region_id,
+      city: city
+    )
+  rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+    reload.store
+  end
+
   private
 
   def assign_username

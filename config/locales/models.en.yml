@@ -411,6 +411,8 @@ en:
       models:
         listing:
           attributes:
+            base:
+              quota_exceeded: "you have reached the limit of %{max} active listings"
             original_price_cents:
               greater_than_price: must be greater than the selling price
             country_code:
@@ -418,6 +420,7 @@ en:
             category:
               not_a_leaf: must be a leaf category
             images:
+              required: "must include at least one image"
               invalid_format: must be JPEG, PNG or WebP
               too_large: must not exceed 10 MB
               too_many: must not have more than %{count} images

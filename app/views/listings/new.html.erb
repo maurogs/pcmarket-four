@@ -1,3 +1,9 @@
-<%= render "shared/placeholder_page", title: t("pages.coming_soon.default_title"),
-           body: t("pages.coming_soon.default_body"), cta_path: listings_path,
-           cta_label: t("pages.coming_soon.listings_cta") %>
+<div class="page-container py-6 sm:py-10">
+  <div class="mb-6">
+    <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300"><%= t("listings.form.sell_label") %></p>
+    <h1 class="mt-1 font-heading text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl dark:text-white"><%= t("listings.form.new_title") %></h1>
+    <p class="mt-2 max-w-2xl text-sm text-slate-600 dark:text-zinc-400"><%= t("listings.form.new_subtitle") %></p>
+  </div>
+
+  <%= render "form", listing: @listing %>
+</div>

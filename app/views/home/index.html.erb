@@ -25,7 +25,7 @@
                  role="group" aria-roledescription="<%= t("home.hero.slide_role") %>" aria-label="<%= t("home.hero.slide", number: index + 1) %>"
                  class="relative min-h-[380px] w-full min-w-0 sm:min-h-[440px]">
               <% if listing.images.attached? %>
-                <%= image_tag listing.images.first.variant(resize_to_limit: [ 1600, 900 ], format: :webp),
+                <%= image_tag listing.ordered_images.first.variant(resize_to_limit: [ 1600, 900 ], format: :webp),
                               alt: t("listings.card.image_alt", title: listing.title),
                               class: "absolute inset-0 h-full w-full object-cover", loading: "eager" %>
               <% else %>

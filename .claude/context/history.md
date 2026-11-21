@@ -172,3 +172,69 @@ the query/facet/caching architecture stays ready for the API and alert jobs.
 `db/migrate/20261121220000_add_search_performance_indexes.rb`,
 `db/seeds/categories.rb`, `script/search_explain.rb`, `test/**`,
 `.claude/context/project.md`.
+
+## 2026-11-21 — Phase 3A: listing creation, image uploads and seller board
+
+### What changed
+
+- Implemented the seller listing form (`new`/`create`/`edit`/`update`/`destroy`)
+  as a five-section page with a sticky section nav, progress bar, inline field
+  errors and an anchored error summary. The form works without JavaScript and
+  is enhanced by `listing_form_controller` (counters, drag reorder, file
+  previews, client-side type/size checks, progress tracking).
+- Added a two-step category picker (root `<details>` cards → leaf links). Leaf
+  selection loads only the `listing_specs` Turbo Frame from
+  `new_listing_path(category_id:)` / `edit_listing_path(category_id:)`, so
+  typed values elsewhere in the form survive.
+- Spec fields are generated from the leaf category's effective filter
+  definitions and stored as strings in `listings.specs`. `ListingForm` drops
+  any key that is not an effective filter for the chosen category.
+- Active Storage direct uploads are wired through importmap (`@rails/activestorage`)
+  with previews, removal and drag ordering. Order is persisted in blob
+  `metadata["position"]`; every image render uses `Listing#ordered_images`.
+- Added `Listing#price=`, `#original_price=` and `#shipping_price=` virtual
+  attributes accepting `1.299,50`, `1299.50` and `1299`. Enforced private-seller
+  quantity of 1, image limits, ES postcode format and the
+  `max_active_listings_per_user` quota.
+- Added the first-listing store bootstrap: `User#ensure_store!` creates an
+  individual store named after the username for listings created without one.
+- Published edits that change title, category or images call
+  `Listing#requires_re_review?` (based on `saved_changes` plus media changes)
+  and return the listing to `pending_review` when approval is required.
+- Archiving: destroying a listing with order items sets `status: archived`;
+  otherwise it is destroyed.
+- Added RESTful member resources: `listing_submission` (submit for review),
+  `listing_pause` (POST pause / DELETE resume) and `listing_sale` (mark sold).
+- Added `Seller::ListingsController#index` with status tabs and counts, search,
+  responsive table/cards, per-listing actions (view, edit, pause/resume, mark
+  sold, duplicate, delete) and a bulk-actions form. Duplication reuses image
+  blobs and creates a draft.
+- Added `Seller::BulkListingActionsController` backed by
+  `BulkListingAction` with a `pause`/`resume`/`delete` whitelist.
+- Fixed free shipping display (zero shipping or the free flag now renders the
+  translated "Free shipping" in the buy box and cards) and reworked the listing
+  detail grid so the buy box follows the title on mobile. The stats row wraps
+  by group instead of breaking labels.
+- Added `test/fixtures/files/gpu.jpg` (generated with vips), integration tests
+  covering the full lifecycle and a system test that creates, uploads and
+  submits a listing end to end. Locale keys added in all six languages and the
+  Tailwind build refreshed.
+
+### Why
+
+Phase 3A closes the listing supply loop: sellers can create, submit, edit and
+manage listings, images upload directly and the moderation workflow stays
+intact for published content.
+
+### Files touched
+
+`app/controllers/listings_controller.rb`, `app/controllers/listings/*`,
+`app/controllers/seller/*`, `app/models/{listing,user}.rb`,
+`app/services/{listing_form,bulk_listing_action}.rb`,
+`app/views/listings/{_form,_specs,_actions,new,edit,show}.html.erb`,
+`app/views/seller/listings/index.html.erb`, `app/views/shared/_price_tag.html.erb`,
+`app/helpers/application_helper.rb`, `app/javascript/controllers/{listing_form,bulk_select}_controller.js`,
+`app/javascript/application.js`, `config/{routes.rb,importmap.rb}`,
+`config/locales/{listings,models,errors}.*.yml`,
+`test/{integration/listings_management_test.rb,system/listing_creation_test.rb}`,
+`.claude/context/project.md`.

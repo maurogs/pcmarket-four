@@ -25,7 +25,7 @@
   <% end %>
 
   <div class="grid gap-8 lg:grid-cols-12">
-    <div class="min-w-0 lg:col-span-7">
+    <div class="min-w-0 lg:col-span-7 lg:row-start-1">
       <section data-controller="gallery"
                data-action="keydown->gallery#keydown"
                tabindex="0"
@@ -125,11 +125,11 @@
         <%= @listing.title %>
       </h1>
 
-      <div class="mt-4 flex items-center gap-3 text-sm text-slate-500 dark:text-zinc-400">
-        <span class="inline-flex items-center gap-1"><%= icon "eye", class: "size-4" %>
+      <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500 dark:text-zinc-400">
+        <span class="inline-flex items-center gap-1 whitespace-nowrap"><%= icon "eye", class: "size-4" %>
           <%= t("listings.show.views", count: @listing.views_count, formatted: localized_count(@listing.views_count)) %></span>
-        <%= render "favorites/count", listing: @listing, count: @listing.favorites_count %>
-        <span class="inline-flex items-center gap-1"><%= icon "clock", class: "size-4" %>
+        <span class="whitespace-nowrap"><%= render "favorites/count", listing: @listing, count: @listing.favorites_count %></span>
+        <span class="inline-flex items-center gap-1 whitespace-nowrap"><%= icon "clock", class: "size-4" %>
           <% if @listing.published_at %>
             <%= t("listings.show.published_on", date: l(@listing.published_at.to_date, format: :long)) %>
           <% else %>
@@ -137,108 +137,9 @@
           <% end %></span>
       </div>
 
-      <section class="mt-8" aria-labelledby="listing-specs-title">
-        <h2 id="listing-specs-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
-          <%= t("listings.show.overview_title") %>
-        </h2>
-        <dl class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
-            <dt class="text-slate-500 dark:text-zinc-400"><%= t("listings.show.condition") %></dt>
-            <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= listing_condition_label(@listing) %></dd>
-          </div>
-          <% if @listing.brand.present? %>
-            <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
-              <dt class="text-slate-500 dark:text-zinc-400"><%= t("activerecord.attributes.listing.brand") %></dt>
-              <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= @listing.brand %></dd>
-            </div>
-          <% end %>
-          <% if @listing.model_name_text.present? %>
-            <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
-              <dt class="text-slate-500 dark:text-zinc-400"><%= t("activerecord.attributes.listing.model_name_text") %></dt>
-              <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= @listing.model_name_text %></dd>
-            </div>
-          <% end %>
-          <% @listing.specs.reject { |_key, value| value.blank? }.each do |key, value| %>
-            <% label, display = spec_display_value(key, value) %>
-            <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
-              <dt class="text-slate-500 dark:text-zinc-400"><%= label %></dt>
-              <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= display %></dd>
-            </div>
-          <% end %>
-        </dl>
-      </section>
-
-      <section class="mt-8" aria-labelledby="listing-description-title">
-        <h2 id="listing-description-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
-          <%= t("listings.show.description_title") %>
-        </h2>
-        <div class="prose-pcm mt-3"><%= formatted_description(@listing.description) %></div>
-      </section>
-
-      <% if @listing.category.root.slug.in?(%w[gaming-pcs workstations]) && @listing.game_fps.any? %>
-        <section class="mt-8" aria-labelledby="listing-performance-title">
-          <h2 id="listing-performance-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
-            <%= t("listings.show.performance_title") %>
-          </h2>
-          <p class="mt-1 text-sm text-slate-500 dark:text-zinc-400"><%= t("listings.show.performance_hint") %></p>
-          <div class="mt-4 space-y-4">
-            <% @listing.game_fps.each do |slug, resolutions| %>
-              <% game = @games[slug] %>
-              <div>
-                <p class="text-sm font-semibold text-slate-800 dark:text-zinc-100">
-                  <%= game&.name || slug.to_s.tr("-", " ").titleize %>
-                </p>
-                <div class="mt-1.5 space-y-1">
-                  <% resolutions.each do |resolution, fps| %>
-                    <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400">
-                      <span class="w-12 shrink-0"><%= resolution %></span>
-                      <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-zinc-800">
-                        <div class="h-full rounded-full bg-brand-600"
-                             style="width: <%= [ (fps.to_f / 240 * 100).round, 100 ].min %>%"></div>
-                      </div>
-                      <span class="w-14 text-right font-semibold text-slate-800 dark:text-zinc-100"><%= t("listings.show.fps_value", fps: fps) %></span>
-                    </div>
-                  <% end %>
-                </div>
-              </div>
-            <% end %>
-          </div>
-        </section>
-      <% end %>
-
-      <section class="mt-8" aria-labelledby="listing-shipping-title">
-        <h2 id="listing-shipping-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
-          <%= t("listings.show.shipping_title") %>
-        </h2>
-        <div class="mt-3 grid gap-3 sm:grid-cols-2">
-          <div class="surface p-4 text-sm">
-            <p class="flex items-center gap-2 font-semibold text-slate-900 dark:text-zinc-100">
-              <%= icon "truck", class: "size-4 text-brand-600" %><%= t("listings.show.shipping_method") %>
-            </p>
-            <p class="mt-1.5 text-slate-600 dark:text-zinc-400">
-              <% if @listing.free_shipping? %>
-                <%= t("listings.show.free_shipping") %>
-              <% elsif @listing.shipping_available? %>
-                <%= t("listings.show.shipping_cost", price: format_price(@listing.shipping_price_cents)) %>
-              <% end %>
-              <% if @listing.local_pickup? %>
-                <span class="block"><%= t("listings.show.local_pickup", city: @listing.city.presence || listing_location(@listing)) %></span>
-              <% end %>
-            </p>
-          </div>
-          <div class="surface p-4 text-sm">
-            <p class="flex items-center gap-2 font-semibold text-slate-900 dark:text-zinc-100">
-              <%= icon "rotate-ccw", class: "size-4 text-brand-600" %><%= t("listings.show.returns_title") %>
-            </p>
-            <p class="mt-1.5 text-slate-600 dark:text-zinc-400">
-              <%= @store&.return_policy.presence || t("listings.show.default_return_policy") %>
-            </p>
-          </div>
-        </div>
-      </section>
     </div>
 
-    <aside class="lg:col-span-5">
+    <aside class="lg:col-span-5 lg:row-start-1 lg:row-span-2">
       <div class="space-y-4 lg:sticky lg:top-28">
         <div class="surface p-5">
           <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -277,7 +178,7 @@
             <p class="flex items-start gap-2">
               <%= icon "truck", class: "mt-0.5 size-4 shrink-0 text-brand-600" %>
               <span>
-                <% if @listing.free_shipping? %>
+                <% if listing_ships_free?(@listing) %>
                   <%= t("listings.show.free_shipping") %>
                 <% elsif @listing.shipping_available? %>
                   <%= t("listings.show.shipping_cost", price: format_price(@listing.shipping_price_cents)) %>
@@ -471,6 +372,108 @@
         </div>
       </div>
     </aside>
+
+    <div class="min-w-0 lg:col-span-7 lg:row-start-2">
+      <section class="mt-8" aria-labelledby="listing-specs-title">
+        <h2 id="listing-specs-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
+          <%= t("listings.show.overview_title") %>
+        </h2>
+        <dl class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
+            <dt class="text-slate-500 dark:text-zinc-400"><%= t("listings.show.condition") %></dt>
+            <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= listing_condition_label(@listing) %></dd>
+          </div>
+          <% if @listing.brand.present? %>
+            <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
+              <dt class="text-slate-500 dark:text-zinc-400"><%= t("activerecord.attributes.listing.brand") %></dt>
+              <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= @listing.brand %></dd>
+            </div>
+          <% end %>
+          <% if @listing.model_name_text.present? %>
+            <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
+              <dt class="text-slate-500 dark:text-zinc-400"><%= t("activerecord.attributes.listing.model_name_text") %></dt>
+              <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= @listing.model_name_text %></dd>
+            </div>
+          <% end %>
+          <% @listing.specs.reject { |_key, value| value.blank? }.each do |key, value| %>
+            <% label, display = spec_display_value(key, value) %>
+            <div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-zinc-800">
+              <dt class="text-slate-500 dark:text-zinc-400"><%= label %></dt>
+              <dd class="text-right font-medium text-slate-900 dark:text-zinc-100"><%= display %></dd>
+            </div>
+          <% end %>
+        </dl>
+      </section>
+
+      <section class="mt-8" aria-labelledby="listing-description-title">
+        <h2 id="listing-description-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
+          <%= t("listings.show.description_title") %>
+        </h2>
+        <div class="prose-pcm mt-3"><%= formatted_description(@listing.description) %></div>
+      </section>
+
+      <% if @listing.category.root.slug.in?(%w[gaming-pcs workstations]) && @listing.game_fps.any? %>
+        <section class="mt-8" aria-labelledby="listing-performance-title">
+          <h2 id="listing-performance-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
+            <%= t("listings.show.performance_title") %>
+          </h2>
+          <p class="mt-1 text-sm text-slate-500 dark:text-zinc-400"><%= t("listings.show.performance_hint") %></p>
+          <div class="mt-4 space-y-4">
+            <% @listing.game_fps.each do |slug, resolutions| %>
+              <% game = @games[slug] %>
+              <div>
+                <p class="text-sm font-semibold text-slate-800 dark:text-zinc-100">
+                  <%= game&.name || slug.to_s.tr("-", " ").titleize %>
+                </p>
+                <div class="mt-1.5 space-y-1">
+                  <% resolutions.each do |resolution, fps| %>
+                    <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400">
+                      <span class="w-12 shrink-0"><%= resolution %></span>
+                      <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-zinc-800">
+                        <div class="h-full rounded-full bg-brand-600"
+                             style="width: <%= [ (fps.to_f / 240 * 100).round, 100 ].min %>%"></div>
+                      </div>
+                      <span class="w-14 text-right font-semibold text-slate-800 dark:text-zinc-100"><%= t("listings.show.fps_value", fps: fps) %></span>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </section>
+      <% end %>
+
+      <section class="mt-8" aria-labelledby="listing-shipping-title">
+        <h2 id="listing-shipping-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
+          <%= t("listings.show.shipping_title") %>
+        </h2>
+        <div class="mt-3 grid gap-3 sm:grid-cols-2">
+          <div class="surface p-4 text-sm">
+            <p class="flex items-center gap-2 font-semibold text-slate-900 dark:text-zinc-100">
+              <%= icon "truck", class: "size-4 text-brand-600" %><%= t("listings.show.shipping_method") %>
+            </p>
+            <p class="mt-1.5 text-slate-600 dark:text-zinc-400">
+              <% if listing_ships_free?(@listing) %>
+                <%= t("listings.show.free_shipping") %>
+              <% elsif @listing.shipping_available? %>
+                <%= t("listings.show.shipping_cost", price: format_price(@listing.shipping_price_cents)) %>
+              <% end %>
+              <% if @listing.local_pickup? %>
+                <span class="block"><%= t("listings.show.local_pickup", city: @listing.city.presence || listing_location(@listing)) %></span>
+              <% end %>
+            </p>
+          </div>
+          <div class="surface p-4 text-sm">
+            <p class="flex items-center gap-2 font-semibold text-slate-900 dark:text-zinc-100">
+              <%= icon "rotate-ccw", class: "size-4 text-brand-600" %><%= t("listings.show.returns_title") %>
+            </p>
+            <p class="mt-1.5 text-slate-600 dark:text-zinc-400">
+              <%= @store&.return_policy.presence || t("listings.show.default_return_policy") %>
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
 
   <% if @similar_listings.any? %>

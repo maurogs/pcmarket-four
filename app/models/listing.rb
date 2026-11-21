@@ -8,6 +8,9 @@ class Listing < ApplicationRecord
   MIN_DESCRIPTION_LENGTH = 30
   MAX_PRICE_CENTS = 100_000_000
 
+  REVIEW_TRIGGER_ATTRIBUTES = %w[title category_id].freeze
+  ACTIVE_STATUSES = %i[draft pending_review published paused rejected].freeze
+
   LABELS = %w[value mid_range pro_gamer rare featured deal free_shipping].freeze
   TAGS = %w[minimalist rgb white black anime retro compact cozy glass luxe noctua
             sci_fi space steampunk wood whiteout blackout sakura superhero rainbow].freeze
@@ -67,10 +70,16 @@ class Listing < ApplicationRecord
   validates :ships_within_days, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :shipping_price_cents, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  attr_accessor :media_changed
+
+  before_validation :assign_store, on: :create
+
   validate :original_price_must_exceed_price
+  validate :postal_code_format
   validate :country_must_be_enabled
   validate :category_must_be_leaf
   validate :images_within_limits
+  validate :within_active_listing_quota, on: :create
 
   scope :visible, lambda {
     published
@@ -169,6 +178,29 @@ class Listing < ApplicationRecord
     true
   end
 
+  # Price/quantity/shipping/description edits keep a published listing live.
+  # Title, category and image changes need a moderator to look at it again.
+  def requires_re_review?
+    return false unless Setting.enabled?("listings_require_approval")
+    return false unless published?
+
+    (saved_changes.keys & REVIEW_TRIGGER_ATTRIBUTES).any? || !!media_changed
+  end
+
+  def send_back_for_review!
+    update_columns(
+      status: self.class.statuses[:pending_review],
+      rejection_reason: nil,
+      updated_at: Time.current
+    )
+    self.status = "pending_review"
+    true
+  end
+
+  def ordered_images
+    images.includes(:blob).to_a.sort_by { |image| [ image.blob.metadata["position"].to_i, image.id.to_i ] }
+  end
+
   def featured?
     featured_until.present? && featured_until > Time.current
   end
@@ -180,6 +212,38 @@ class Listing < ApplicationRecord
 
   def price
     price_cents.to_i / 100.0
+  end
+
+  def price=(value)
+    self.price_cents = self.class.parse_price_cents(value)
+  end
+
+  def original_price=(value)
+    self.original_price_cents = self.class.parse_price_cents(value)
+  end
+
+  def shipping_price=(value)
+    self.shipping_price_cents = self.class.parse_price_cents(value) || 0
+  end
+
+  # Accepts "1.299,50", "1299.50", "1299" and "€ 1.299" and returns cents.
+  def self.parse_price_cents(value)
+    return nil if value.nil?
+    return value.to_i if value.is_a?(Numeric)
+
+    raw = value.to_s.strip.delete("€").delete(" ").delete("\u00A0")
+    return nil if raw.empty?
+
+    raw = if raw.include?(",")
+      raw.delete(".").tr(",", ".")
+    else
+      raw.delete(",")
+    end
+    return nil unless raw.match?(/\A\d+(\.\d{1,2})?\z/)
+
+    (BigDecimal(raw) * 100).round
+  rescue ArgumentError
+    nil
   end
 
   def viewable_by?(viewer)
@@ -219,6 +283,16 @@ class Listing < ApplicationRecord
     date
   end
 
+  def self.seller_board(user, status: "all", query: nil)
+    scope = user.listings.includes(:category, :store, images_attachments: :blob)
+    scope = scope.where(status: status) if statuses.key?(status)
+    if query.present?
+      pattern = "%#{sanitize_sql_like(query.to_s.strip)}%"
+      scope = scope.where("listings.title ILIKE :q OR listings.brand ILIKE :q", q: pattern)
+    end
+    scope.order(updated_at: :desc)
+  end
+
   def self.similar_to(listing, limit: 8)
     visible
       .where(category_id: listing.category.subtree_ids)
@@ -247,6 +321,14 @@ class Listing < ApplicationRecord
     errors.add(:original_price_cents, :greater_than_price)
   end
 
+  def postal_code_format
+    return if postal_code.blank?
+    return unless country_code == "ES"
+    return if postal_code.match?(/\A\d{5}\z/)
+
+    errors.add(:postal_code, :invalid)
+  end
+
   def country_must_be_enabled
     return if country_code.blank?
     return if Country.enabled.exists?(code: country_code)
@@ -259,6 +341,22 @@ class Listing < ApplicationRecord
     return unless category.children.exists?
 
     errors.add(:category, :not_a_leaf)
+  end
+
+  def assign_store
+    return if store.present? || user.blank?
+
+    self.store = user.ensure_store!
+  end
+
+  def within_active_listing_quota
+    return if user.blank?
+
+    max = Setting.get("max_active_listings_per_user", 50).to_i
+    return unless max.positive?
+    return if user.listings.where(status: ACTIVE_STATUSES).count < max
+
+    errors.add(:base, :quota_exceeded, max: max)
   end
 
   def images_within_limits

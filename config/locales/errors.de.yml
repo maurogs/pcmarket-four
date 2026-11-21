@@ -1,6 +1,7 @@
 ---
 de:
   errors:
+    account_inactive: "Dein Konto ist nicht aktiv. Kontaktiere den Support für weitere Informationen."
     not_authorized: Sie sind nicht berechtigt, diese Aktion auszuführen.
     omniauth_failure: Die Anmeldung mit Google ist fehlgeschlagen. Bitte versuchen
       Sie es erneut.

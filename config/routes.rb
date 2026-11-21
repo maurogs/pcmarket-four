@@ -21,7 +21,11 @@ Rails.application.routes.draw do
 
     root "home#index"
 
-    resources :listings, path: "l", only: %i[index show new create edit update destroy]
+    resources :listings, path: "l", only: %i[index show new create edit update destroy] do
+      resource :submission, only: :create, module: :listings
+      resource :pause, only: %i[create destroy], module: :listings
+      resource :sale, only: :create, module: :listings
+    end
     get "c/*path" => "categories#show", as: :category, format: false
     get "search" => "listings#index", as: :search
     get "search/suggestions" => "search_suggestions#index", as: :search_suggestions
@@ -39,6 +43,10 @@ Rails.application.routes.draw do
 
     namespace :seller do
       root "dashboard#show"
+      resources :listings, only: :index do
+        resource :duplication, only: :create, module: :listings
+      end
+      resources :bulk_listing_actions, only: :create
     end
 
     get "pc-finder" => "pc_finder#show", as: :pc_finder

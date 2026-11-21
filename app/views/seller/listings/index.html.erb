@@ -1,0 +1,180 @@
+<div class="page-container py-6 sm:py-10">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300"><%= t("listings.seller.label") %></p>
+      <h1 class="mt-1 font-heading text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl dark:text-white"><%= t("listings.seller.title") %></h1>
+      <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("listings.seller.subtitle") %></p>
+    </div>
+    <%= link_to new_listing_path, class: ui_button_classes(variant: :primary, size: :md) do %>
+      <%= icon "plus", class: "size-4" %><%= t("listings.seller.new_listing") %>
+    <% end %>
+  </div>
+
+  <nav class="mt-6 flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide" aria-label="<%= t("listings.seller.tabs_label") %>">
+    <% %w[all published pending_review draft rejected paused sold archived].each do |status| %>
+      <% count = status == "all" ? @counts.values.sum : @counts.fetch(status, 0) %>
+      <%= link_to seller_listings_path(status: status == "all" ? nil : status, q: @query.presence),
+                  aria: { current: @status == status ? "page" : nil },
+                  class: "inline-flex min-h-9 shrink-0 items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium transition #{@status == status ? 'border-brand-600 bg-brand-700 text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-brand-400 hover:text-brand-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-brand-500'}" do %>
+        <%= listing_status_tab_label(status) %>
+        <span class="rounded-full px-1.5 py-0.5 text-[11px] font-semibold <%= @status == status ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-300' %>"><%= count %></span>
+      <% end %>
+    <% end %>
+  </nav>
+
+  <div class="mt-5 flex flex-wrap items-center gap-3">
+    <%= form_with url: seller_listings_path, method: :get, class: "flex flex-1 flex-wrap items-center gap-2", data: { turbo_frame: "_top" } do |form| %>
+      <%= hidden_field_tag :status, @status == "all" ? nil : @status %>
+      <div class="relative min-w-56 flex-1">
+        <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><%= icon "search", class: "size-4" %></span>
+        <%= search_field_tag :q, @query, id: "seller-listings-search",
+                             placeholder: t("listings.seller.search_placeholder"),
+                             class: ui_input_classes("!pl-9") %>
+      </div>
+      <%= button_tag type: "submit", class: ui_button_classes(variant: :outline, size: :md) do %>
+        <%= t("listings.seller.search") %>
+      <% end %>
+      <% if @query.present? %>
+        <%= link_to t("listings.seller.clear_search"), seller_listings_path(status: @status == "all" ? nil : @status),
+                    class: "text-xs font-medium text-slate-500 hover:underline dark:text-zinc-400" %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= form_with url: seller_bulk_listing_actions_path, method: :post, id: "bulk-actions-form", class: "mt-5",
+                data: { controller: "bulk-select" } do %>
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <label class="flex cursor-pointer items-center gap-2 font-medium text-slate-700 dark:text-zinc-300">
+        <input type="checkbox" class="size-4 rounded text-brand-700 focus:ring-brand-500"
+               data-bulk-select-target="toggle" data-action="bulk-select#toggleAll">
+        <%= t("listings.seller.select_all") %>
+      </label>
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="submit" name="bulk_action" value="pause" class="<%= ui_button_classes(variant: :ghost, size: :sm) %>"><%= t("listings.seller.bulk_pause") %></button>
+        <button type="submit" name="bulk_action" value="resume" class="<%= ui_button_classes(variant: :ghost, size: :sm) %>"><%= t("listings.seller.bulk_resume") %></button>
+        <button type="submit" name="bulk_action" value="delete"
+                data-turbo-confirm="<%= t("listings.seller.bulk_delete_confirm") %>"
+                class="<%= ui_button_classes(variant: :ghost, size: :sm, extra: "text-rose-600 dark:text-rose-400") %>"><%= t("listings.seller.bulk_delete") %></button>
+      </div>
+    </div>
+  <% end %>
+
+    <% if @listings.none? %>
+      <%= render "shared/empty_state", title: t("listings.seller.empty_title"),
+                 body: t("listings.seller.empty_body"), cta_label: t("listings.seller.new_listing"),
+                 cta_path: new_listing_path %>
+    <% else %>
+      <div class="hidden overflow-hidden rounded-xl border border-slate-200 bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
+        <table class="w-full table-auto text-left text-sm">
+          <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400">
+            <tr>
+              <th scope="col" class="w-10 px-3 py-3"></th>
+              <th scope="col" class="px-3 py-3"><%= t("listings.seller.columns.listing") %></th>
+              <th scope="col" class="px-3 py-3"><%= t("listings.seller.columns.price") %></th>
+              <th scope="col" class="px-3 py-3"><%= t("listings.seller.columns.status") %></th>
+              <th scope="col" class="px-3 py-3 text-right"><%= t("listings.seller.columns.views") %></th>
+              <th scope="col" class="px-3 py-3 text-right"><%= t("listings.seller.columns.favourites") %></th>
+              <th scope="col" class="px-3 py-3"><%= t("listings.seller.columns.updated") %></th>
+              <th scope="col" class="w-12 px-3 py-3"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+            <% @listings.each do |listing| %>
+              <tr class="align-middle hover:bg-slate-50/70 dark:hover:bg-zinc-800/40">
+                <td class="px-3 py-3">
+                  <input type="checkbox" name="listing_ids[]" value="<%= listing.id %>" form="bulk-actions-form"
+                         class="size-4 rounded text-brand-700 focus:ring-brand-500"
+                         data-bulk-select-target="checkbox" data-action="bulk-select#changed"
+                         aria-label="<%= t("listings.seller.select_listing", title: listing.title) %>">
+                </td>
+                <td class="px-3 py-3">
+                  <div class="flex items-center gap-3">
+                    <span class="size-12 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800">
+                      <% thumbnail = listing.ordered_images.first %>
+                      <% if thumbnail %>
+                        <%= image_tag thumbnail.variant(resize_to_limit: [ 96, 96 ], format: :webp),
+                                      alt: "", width: 48, height: 48, loading: "lazy",
+                                      class: "size-12 object-cover" %>
+                      <% else %>
+                        <%= image_tag "listing-placeholder.svg", alt: "", width: 48, height: 48,
+                                      loading: "lazy", class: "size-12 object-cover" %>
+                      <% end %>
+                    </span>
+                    <div class="min-w-0">
+                      <%= link_to listing.title, listing_path(listing),
+                                  class: "line-clamp-2 font-medium text-slate-900 hover:text-brand-700 dark:text-zinc-100 dark:hover:text-brand-300" %>
+                      <p class="text-xs text-slate-500 dark:text-zinc-400"><%= listing.category.name %></p>
+                      <% if listing.rejected? && listing.rejection_reason.present? %>
+                        <p class="mt-1 line-clamp-2 text-xs font-medium text-rose-600 dark:text-rose-400">
+                          <%= t("listings.seller.rejection_reason", reason: listing.rejection_reason) %>
+                        </p>
+                        <%= link_to t("listings.seller.edit_and_resubmit"), edit_listing_path(listing),
+                                    class: "text-xs font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+                      <% end %>
+                    </div>
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-3 py-3 font-medium text-slate-900 dark:text-zinc-100"><%= format_price(listing.price_cents) %></td>
+                <td class="px-3 py-3">
+                  <span class="<%= ui_badge_classes(tone: seller_listing_status_tone(listing.status)) %>">
+                    <%= t("listings.statuses.#{listing.status}") %>
+                  </span>
+                </td>
+                <td class="px-3 py-3 text-right text-slate-600 dark:text-zinc-300"><%= listing.views_count %></td>
+                <td class="px-3 py-3 text-right text-slate-600 dark:text-zinc-300"><%= listing.favorites_count %></td>
+                <td class="whitespace-nowrap px-3 py-3 text-xs text-slate-500 dark:text-zinc-400"><%= l(listing.updated_at.to_date, format: :short) %></td>
+                <td class="px-3 py-3 text-right">
+                  <%= render "listings/actions", listing: listing %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid gap-3 md:hidden">
+        <% @listings.each do |listing| %>
+          <article class="surface p-3">
+            <div class="flex gap-3">
+              <input type="checkbox" name="listing_ids[]" value="<%= listing.id %>" form="bulk-actions-form"
+                     class="mt-1 size-4 shrink-0 rounded text-brand-700 focus:ring-brand-500"
+                     data-bulk-select-target="checkbox" data-action="bulk-select#changed"
+                     aria-label="<%= t("listings.seller.select_listing", title: listing.title) %>">
+              <span class="size-16 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800">
+                <% thumbnail = listing.ordered_images.first %>
+                <% if thumbnail %>
+                  <%= image_tag thumbnail.variant(resize_to_limit: [ 128, 128 ], format: :webp),
+                                alt: "", width: 64, height: 64, loading: "lazy",
+                                class: "size-16 object-cover" %>
+                <% else %>
+                  <%= image_tag "listing-placeholder.svg", alt: "", width: 64, height: 64,
+                                loading: "lazy", class: "size-16 object-cover" %>
+                <% end %>
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-start justify-between gap-2">
+                  <%= link_to listing.title, listing_path(listing),
+                              class: "line-clamp-2 text-sm font-semibold text-slate-900 dark:text-zinc-100" %>
+                  <%= render "listings/actions", listing: listing %>
+                </div>
+                <p class="mt-1 text-sm font-medium text-slate-700 dark:text-zinc-300"><%= format_price(listing.price_cents) %></p>
+                <div class="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-zinc-400">
+                  <span class="<%= ui_badge_classes(tone: seller_listing_status_tone(listing.status), extra: "!px-2 !py-0.5") %>">
+                    <%= t("listings.statuses.#{listing.status}") %>
+                  </span>
+                  <span class="whitespace-nowrap"><%= t("listings.seller.stats", views: listing.views_count, favourites: listing.favorites_count) %></span>
+                </div>
+                <% if listing.rejected? && listing.rejection_reason.present? %>
+                  <p class="mt-2 text-xs font-medium text-rose-600 dark:text-rose-400">
+                    <%= t("listings.seller.rejection_reason", reason: listing.rejection_reason) %>
+                  </p>
+                  <%= link_to t("listings.seller.edit_and_resubmit"), edit_listing_path(listing),
+                              class: "text-xs font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+                <% end %>
+              </div>
+            </div>
+          </article>
+        <% end %>
+      </div>
+    <% end %>
+</div>

@@ -411,6 +411,8 @@ es:
       models:
         listing:
           attributes:
+            base:
+              quota_exceeded: "has alcanzado el límite de %{max} anuncios activos"
             original_price_cents:
               greater_than_price: debe ser mayor que el precio de venta
             country_code:
@@ -418,6 +420,7 @@ es:
             category:
               not_a_leaf: debe ser una categoría final
             images:
+              required: "debe incluir al menos una imagen"
               invalid_format: debe ser JPEG, PNG o WebP
               too_large: no puede superar los 10 MB
               too_many: no puede tener más de %{count} imágenes

@@ -1,0 +1,418 @@
+<% form_url = listing.persisted? ? listing_path(listing) : listings_path %>
+<%= form_with model: listing, url: form_url, method: listing.persisted? ? :patch : :post,
+              html: { multipart: true, id: "listing-form", class: "space-y-6", novalidate: true },
+              data: {
+                controller: "listing-form",
+                listing_form_max_images_value: @max_images,
+                listing_form_max_bytes_value: @max_image_bytes,
+                listing_form_accept_value: @image_types.join(","),
+                listing_form_invalid_type_value: t("listings.form.photos.invalid_type"),
+                listing_form_too_large_value: t("listings.form.photos.too_large", size: 10),
+                listing_form_too_many_value: t("listings.form.photos.too_many", max: @max_images),
+                listing_form_progress_value: t("listings.form.progress", step: "%{step}", total: 5)
+              } do |f| %>
+  <div class="grid gap-6 lg:grid-cols-12 lg:items-start">
+    <nav class="hidden lg:col-span-3 lg:block" aria-label="<%= t("listings.form.nav_label") %>">
+      <div class="sticky top-28 space-y-4">
+        <div class="surface p-4">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+            <%= t("listings.form.progress_label") %>
+          </p>
+          <div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-zinc-800">
+            <div class="h-full rounded-full bg-brand-600 transition-all dark:bg-brand-400"
+                 style="width: 20%" data-listing-form-target="progressBar"></div>
+          </div>
+          <p class="mt-2 text-xs text-slate-500 dark:text-zinc-400" data-listing-form-target="progressText">
+            <%= t("listings.form.progress", step: 1, total: 5) %>
+          </p>
+        </div>
+        <ol class="surface divide-y divide-slate-100 text-sm dark:divide-zinc-800">
+          <% [
+               [ "section-category", "listings.form.steps.category" ],
+               [ "section-photos", "listings.form.steps.photos" ],
+               [ "section-details", "listings.form.steps.details" ],
+               [ "section-price", "listings.form.steps.price" ],
+               [ "section-delivery", "listings.form.steps.delivery" ]
+             ].each_with_index do |(anchor, key), index| %>
+            <li>
+              <%= link_to "##{anchor}", data: { action: "listing-form#goTo", anchor: anchor },
+                          class: "flex items-center gap-3 px-4 py-3 text-slate-700 transition hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" do %>
+                <span class="flex size-7 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold dark:bg-zinc-800"><%= index + 1 %></span>
+                <%= t(key) %>
+              <% end %>
+            </li>
+          <% end %>
+        </ol>
+      </div>
+    </nav>
+
+    <div class="space-y-6 lg:col-span-9">
+      <% if listing.errors.any? %>
+        <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-950/60 dark:text-rose-100"
+             role="alert" aria-live="polite">
+          <p class="flex items-center gap-2 font-semibold">
+            <%= icon "x", class: "size-4" %>
+            <%= t("listings.form.error_summary", count: listing.errors.count) %>
+          </p>
+          <ul class="mt-2 list-inside list-disc space-y-1">
+            <% listing.errors.messages.each do |attribute, messages| %>
+              <% messages.each do |message| %>
+                <li>
+                  <a href="<%= listing_error_anchor(attribute) %>" class="underline underline-offset-2">
+                    <%= listing.errors.full_message(attribute, message) %>
+                  </a>
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <% if listing.persisted? && @require_approval && listing.published? %>
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+          <p class="flex items-start gap-2">
+            <%= icon "eye", class: "mt-0.5 size-4 shrink-0" %>
+            <span><%= t("listings.form.re_review_warning") %></span>
+          </p>
+        </div>
+      <% end %>
+
+      <section id="section-category" class="surface scroll-mt-28 p-5 sm:p-6">
+        <header class="mb-4">
+          <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300"><%= t("listings.form.step_number", number: 1) %></p>
+          <h2 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("listings.form.category.title") %></h2>
+          <p class="mt-1 text-sm text-slate-500 dark:text-zinc-400"><%= t("listings.form.category.hint") %></p>
+        </header>
+
+        <% if @selected_category %>
+          <p class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1.5 text-sm font-medium text-brand-800 dark:bg-brand-900/40 dark:text-brand-200">
+            <%= icon "tag", class: "size-4" %>
+            <%= @selected_category.name %>
+          </p>
+        <% end %>
+
+        <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          <% @categories.each do |root| %>
+            <details class="group rounded-xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+                     <%= "open" if @selected_category&.ancestor_ids&.include?(root.id) %>>
+              <summary class="flex cursor-pointer list-none items-center gap-2.5 px-4 py-3 text-sm font-semibold text-slate-800 dark:text-zinc-100">
+                <span class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
+                  <%= icon(root.icon.presence || "layout-grid", class: "size-4") %>
+                </span>
+                <span class="flex-1"><%= root.name %></span>
+                <%= icon "chevron-down", class: "size-4 text-slate-400 transition group-open:rotate-180" %>
+              </summary>
+              <div class="border-t border-slate-100 p-2 dark:border-zinc-800">
+                <ul class="space-y-0.5">
+                  <% root.children.active.order(:position, :id).each do |leaf| %>
+                    <li>
+                      <%= link_to leaf.name,
+                                  listing.persisted? ? edit_listing_path(listing, category_id: leaf.id) : new_listing_path(category_id: leaf.id),
+                                  data: { turbo_frame: "listing_specs", category_id: leaf.id,
+                                          action: "listing-form#categorySelected" },
+                                  aria: { current: @selected_category&.id == leaf.id ? "true" : nil },
+                                  class: "flex items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-sm #{@selected_category&.id == leaf.id ? 'bg-brand-50 font-semibold text-brand-800 dark:bg-brand-900/40 dark:text-brand-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white'}" %>
+                      <span><%= leaf.name %></span>
+                      <%= icon "chevron-right", class: "size-3.5 opacity-50" %>
+                    <% end %>
+                  </li>
+                </ul>
+              </div>
+            </details>
+          <% end %>
+        </div>
+        <%= listing_field_error(listing, :category) %>
+        <%= listing_field_error(listing, :category_id) %>
+      </section>
+
+      <section id="section-photos" class="surface scroll-mt-28 p-5 sm:p-6">
+        <header class="mb-4">
+          <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300"><%= t("listings.form.step_number", number: 2) %></p>
+          <h2 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("listings.form.photos.title") %></h2>
+          <p class="mt-1 text-sm text-slate-500 dark:text-zinc-400"><%= t("listings.form.photos.hint", max: @max_images) %></p>
+        </header>
+
+        <% existing = listing.persisted? ? listing.ordered_images : [] %>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 min-h-4"
+             data-listing-form-target="sortable"
+             data-action="dragover->listing-form#dragover drop->listing-form#drop">
+          <% existing.each_with_index do |image, index| %>
+            <div class="group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800"
+                 draggable="true" data-listing-form-target="preview"
+                 data-attachment-id="<%= image.id %>" data-action="dragstart->listing-form#dragstart dragend->listing-form#dragend">
+              <%= image_tag image.variant(resize_to_limit: [ 320, 240 ], format: :webp),
+                            alt: t("listings.card.image_alt", title: listing.title.presence || t("listings.form.photos.alt")),
+                            width: 320, height: 240, class: "aspect-[4/3] w-full object-cover" %>
+              <span class="absolute left-2 top-2 rounded-full bg-slate-950/70 px-2 py-0.5 text-[11px] font-semibold text-white"><%= index + 1 %></span>
+              <label class="absolute right-2 top-2 inline-flex cursor-pointer items-center gap-1 rounded-full bg-white/95 px-2 py-1 text-[11px] font-semibold text-rose-700 shadow-sm dark:bg-zinc-900/95 dark:text-rose-300">
+                <%= check_box_tag "listing[remove_image_ids][]", image.id, false,
+                                  id: "remove-image-#{image.id}", class: "size-3.5",
+                                  data: { action: "listing-form#toggleRemoval" } %>
+                <%= t("listings.form.photos.remove") %>
+              </label>
+            </div>
+          <% end %>
+        </div>
+
+        <%= hidden_field_tag "listing[image_order]", existing.map(&:id).join(","),
+                             data: { listing_form_target: "order" } %>
+
+        <div class="mt-4 rounded-xl border-2 border-dashed border-slate-300 p-6 text-center transition hover:border-brand-400 dark:border-zinc-700"
+             data-listing-form-target="dropzone"
+             data-action="dragover->listing-form#dragover drop->listing-form#drop">
+          <%= f.file_field :images, multiple: true, direct_upload: true,
+                           accept: @image_types.join(","),
+                           id: "listing-images-input",
+                           class: "sr-only",
+                           data: { listing_form_target: "input", action: "change->listing-form#filesSelected" } %>
+          <label for="listing-images-input" class="inline-flex cursor-pointer flex-col items-center gap-2">
+            <span class="flex size-11 items-center justify-center rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
+              <%= icon "plus", class: "size-5" %>
+            </span>
+            <span class="text-sm font-semibold text-slate-800 dark:text-zinc-100"><%= t("listings.form.photos.add") %></span>
+            <span class="text-xs text-slate-500 dark:text-zinc-400"><%= t("listings.form.photos.formats", size: 10) %></span>
+          </label>
+        </div>
+
+        <ul class="mt-3 grid grid-cols-2 gap-2 text-xs text-slate-500 sm:grid-cols-3 dark:text-zinc-400"
+            data-listing-form-target="previews"></ul>
+        <p class="mt-2 hidden text-xs font-medium text-rose-600 dark:text-rose-400"
+           role="alert" data-listing-form-target="error"></p>
+        <%= listing_field_error(listing, :images) %>
+
+        <div class="mt-5 rounded-xl bg-brand-50 p-4 text-sm text-brand-900 dark:bg-brand-900/20 dark:text-brand-100">
+          <p class="flex items-center gap-2 font-semibold"><%= icon "sparkles", class: "size-4" %><%= t("listings.form.photos.tips_title") %></p>
+          <ul class="mt-2 list-inside list-disc space-y-1">
+            <li><%= t("listings.form.photos.tip_light") %></li>
+            <li><%= t("listings.form.photos.tip_serial") %></li>
+            <li><%= t("listings.form.photos.tip_accessories") %></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="section-details" class="surface scroll-mt-28 p-5 sm:p-6">
+        <header class="mb-4">
+          <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300"><%= t("listings.form.step_number", number: 3) %></p>
+          <h2 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("listings.form.details.title") %></h2>
+        </header>
+
+        <div class="space-y-5">
+          <div>
+            <div class="mb-1.5 flex items-center justify-between gap-3">
+              <%= f.label :title, class: "text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+              <span class="text-xs text-slate-400 dark:text-zinc-500" data-listing-form-target="titleCounter">0 / <%= Listing::MAX_TITLE_LENGTH %></span>
+            </div>
+            <%= f.text_field :title, maxlength: Listing::MAX_TITLE_LENGTH, required: true,
+                              class: ui_input_classes,
+                              placeholder: t("listings.form.details.title_placeholder"),
+                              data: { listing_form_target: "title", action: "input->listing-form#count" } %>
+            <%= listing_field_error(listing, :title) %>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <%= f.label :brand, class: "mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+              <%= f.text_field :brand, class: ui_input_classes, placeholder: t("listings.form.details.brand_placeholder") %>
+            </div>
+            <div>
+              <%= f.label :model_name_text, class: "mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+              <%= f.text_field :model_name_text, class: ui_input_classes, placeholder: t("listings.form.details.model_placeholder") %>
+            </div>
+          </div>
+
+          <fieldset>
+            <legend class="mb-2 text-sm font-medium text-slate-700 dark:text-zinc-300"><%= t("listings.form.details.condition") %></legend>
+            <div class="grid gap-2 sm:grid-cols-2">
+              <% Listing.conditions.keys.each do |condition| %>
+                <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-3 text-sm transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 dark:border-zinc-700 dark:has-[:checked]:border-brand-400 dark:has-[:checked]:bg-brand-900/20">
+                  <%= f.radio_button :condition, condition, class: "mt-0.5 size-4 text-brand-700 focus:ring-brand-500" %>
+                  <span>
+                    <span class="block font-medium text-slate-900 dark:text-zinc-100"><%= t("listings.conditions.#{condition}") %></span>
+                    <span class="block text-xs text-slate-500 dark:text-zinc-400"><%= t("listings.form.conditions.#{condition}") %></span>
+                  </span>
+                </label>
+              <% end %>
+            </div>
+            <%= listing_field_error(listing, :condition) %>
+          </fieldset>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <%= f.label :quantity, class: "mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+              <% if listing.store&.professional? %>
+                <%= f.number_field :quantity, min: 1, step: 1, class: ui_input_classes %>
+              <% else %>
+                <%= f.hidden_field :quantity, value: 1 %>
+                <p class="rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-500 dark:border-zinc-700 dark:text-zinc-400">
+                  <%= t("listings.form.details.single_quantity") %>
+                </p>
+              <% end %>
+            </div>
+            <div>
+              <span class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300"><%= t("listings.form.details.tags") %></span>
+              <div class="flex max-h-40 flex-wrap gap-1.5 overflow-y-auto">
+                <%= hidden_field_tag "listing[tags][]", "" %>
+                <% Listing::TAGS.each do |tag| %>
+                  <label class="<%= ui_chip_classes(active: listing.tags.include?(tag), extra: "!min-h-8 cursor-pointer !px-2.5 !py-1 !text-xs") %>">
+                    <%= check_box_tag "listing[tags][]", tag, listing.tags.include?(tag),
+                                      id: "listing-tag-#{tag}", class: "sr-only",
+                                      data: { action: "change->listing-form#tagToggled" } %>
+                    <%= t("listings.tags.#{tag}") %>
+                  </label>
+                <% end %>
+              </div>
+              <p class="mt-1.5 text-xs text-slate-500 dark:text-zinc-400"><%= t("listings.form.details.tags_hint") %></p>
+            </div>
+          </div>
+
+          <div>
+            <div class="mb-1.5 flex items-center justify-between gap-3">
+              <%= f.label :description, class: "text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+              <span class="text-xs text-slate-400 dark:text-zinc-500" data-listing-form-target="descriptionCounter">
+                0 / <%= Listing::MIN_DESCRIPTION_LENGTH %>
+              </span>
+            </div>
+            <%= f.text_area :description, rows: 8, required: true, class: ui_input_classes,
+                              placeholder: t("listings.form.details.description_placeholder",
+                                             category: @selected_category&.name || t("listings.form.details.this_category")),
+                              data: { listing_form_target: "description", action: "input->listing-form#count" } %>
+            <%= listing_field_error(listing, :description) %>
+            <p class="mt-1.5 text-xs text-slate-500 dark:text-zinc-400"><%= t("listings.form.details.description_hint", min: Listing::MIN_DESCRIPTION_LENGTH) %></p>
+          </div>
+
+          <div>
+            <p class="mb-2 text-sm font-medium text-slate-700 dark:text-zinc-300"><%= t("listings.form.details.specs") %></p>
+            <%= render "listings/specs", listing: listing, effective_filters: @effective_filters,
+                       category: @selected_category %>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-price" class="surface scroll-mt-28 p-5 sm:p-6">
+        <header class="mb-4">
+          <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300"><%= t("listings.form.step_number", number: 4) %></p>
+          <h2 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("listings.form.price.title") %></h2>
+        </header>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <%= f.label :price, class: "mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+            <div class="relative">
+              <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400">€</span>
+              <%= f.text_field :price, inputmode: "decimal", required: true,
+                                value: listing.price_cents.present? ? format("%.2f", listing.price_cents / 100.0) : nil,
+                                class: ui_input_classes("!pl-8"), placeholder: "1299.50" %>
+            </div>
+            <%= listing_field_error(listing, :price_cents) %>
+            <p class="mt-1.5 text-xs text-slate-500 dark:text-zinc-400"><%= t("listings.form.price.price_hint") %></p>
+          </div>
+          <div>
+            <%= f.label :original_price, class: "mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+            <div class="relative">
+              <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400">€</span>
+              <%= f.text_field :original_price, inputmode: "decimal",
+                                value: listing.original_price_cents.present? ? format("%.2f", listing.original_price_cents / 100.0) : nil,
+                                class: ui_input_classes("!pl-8"), placeholder: "1499.00" %>
+            </div>
+            <%= listing_field_error(listing, :original_price_cents) %>
+            <p class="mt-1.5 text-xs text-slate-500 dark:text-zinc-400"><%= t("listings.form.price.original_hint") %></p>
+          </div>
+        </div>
+
+        <label class="mt-5 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-3.5 text-sm dark:border-zinc-700">
+          <%= f.check_box :accepts_offers, class: "mt-0.5 size-4 rounded text-brand-700 focus:ring-brand-500" %>
+          <span>
+            <span class="block font-medium text-slate-900 dark:text-zinc-100"><%= t("listings.form.price.accepts_offers") %></span>
+            <span class="block text-xs text-slate-500 dark:text-zinc-400"><%= t("listings.form.price.accepts_offers_hint") %></span>
+          </span>
+        </label>
+      </section>
+
+      <section id="section-delivery" class="surface scroll-mt-28 p-5 sm:p-6">
+        <header class="mb-4">
+          <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300"><%= t("listings.form.step_number", number: 5) %></p>
+          <h2 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("listings.form.delivery.title") %></h2>
+        </header>
+
+        <div class="space-y-4">
+          <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-3.5 text-sm dark:border-zinc-700">
+            <%= f.check_box :shipping_available, class: "mt-0.5 size-4 rounded text-brand-700 focus:ring-brand-500",
+                            data: { action: "change->listing-form#shippingToggled" } %>
+            <span class="flex-1">
+              <span class="block font-medium text-slate-900 dark:text-zinc-100"><%= t("listings.form.delivery.shipping_available") %></span>
+              <span class="block text-xs text-slate-500 dark:text-zinc-400"><%= t("listings.form.delivery.shipping_hint") %></span>
+            </span>
+          </label>
+
+          <div class="grid gap-4 sm:grid-cols-2" data-listing-form-target="shippingFields">
+            <div>
+              <%= f.label :shipping_price, class: "mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+              <div class="relative">
+                <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400">€</span>
+                <%= f.text_field :shipping_price, inputmode: "decimal",
+                                  value: format("%.2f", listing.shipping_price_cents.to_i / 100.0),
+                                  class: ui_input_classes("!pl-8"), placeholder: "5.95" %>
+              </div>
+              <%= listing_field_error(listing, :shipping_price_cents) %>
+            </div>
+            <div class="flex items-end pb-2">
+              <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700 dark:text-zinc-300">
+                <%= f.check_box :free_shipping, class: "size-4 rounded text-brand-700 focus:ring-brand-500",
+                                data: { action: "change->listing-form#freeShippingToggled" } %>
+                <%= t("listings.form.delivery.free_shipping") %>
+              </label>
+            </div>
+            <div>
+              <%= f.label :ships_within_days, class: "mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+              <%= f.select :ships_within_days, options_for_select((1..7).map { |days| [ t("listings.form.delivery.days", count: days), days ] }, listing.ships_within_days),
+                           {}, class: ui_input_classes %>
+            </div>
+            <div class="flex items-end pb-2">
+              <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700 dark:text-zinc-300">
+                <%= f.check_box :local_pickup, class: "size-4 rounded text-brand-700 focus:ring-brand-500" %>
+                <%= t("listings.form.delivery.local_pickup") %>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <%= f.label :region_id, class: "mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+              <%= f.collection_select :region_id, @regions, :id, :name,
+                                      { include_blank: t("listings.form.delivery.province_prompt") },
+                                      class: ui_input_classes %>
+            </div>
+            <div>
+              <%= f.label :city, class: "mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+              <%= f.text_field :city, class: ui_input_classes, placeholder: t("listings.form.delivery.city_placeholder") %>
+            </div>
+            <div>
+              <%= f.label :postal_code, class: "mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+              <%= f.text_field :postal_code, inputmode: "numeric", maxlength: 5,
+                                pattern: "[0-9]{5}", class: ui_input_classes,
+                                placeholder: "28001" %>
+              <%= listing_field_error(listing, :postal_code) %>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sticky bottom-0 z-20 -mx-4 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 dark:border-zinc-800 dark:bg-zinc-950/95">
+        <div class="flex flex-wrap items-center justify-end gap-3">
+          <%= link_to t("listings.form.cancel"), seller_listings_path,
+                      class: ui_button_classes(variant: :ghost, size: :md) %>
+          <%= button_tag type: "submit", name: "commit", value: "draft",
+                        class: ui_button_classes(variant: :outline, size: :md) do %>
+            <%= listing.persisted? && listing.published? ? t("listings.form.save_changes") : t("listings.form.save_draft") %>
+          <% end %>
+          <% unless listing.persisted? && listing.published? %>
+            <%= button_tag type: "submit", name: "commit", value: "submit",
+                          class: ui_button_classes(variant: :primary, size: :md) do %>
+              <%= @require_approval ? t("listings.form.submit_review") : t("listings.form.publish") %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

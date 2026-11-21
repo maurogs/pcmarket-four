@@ -12,7 +12,7 @@
                       class: "flex items-center gap-3 rounded-lg px-3 py-2 transition hover:bg-slate-100 dark:hover:bg-zinc-800" do %>
             <span class="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800">
               <% if listing.images.attached? %>
-                <%= image_tag listing.images.first.variant(resize_to_limit: [ 72, 72 ], format: :webp),
+                <%= image_tag listing.ordered_images.first.variant(resize_to_limit: [ 72, 72 ], format: :webp),
                               alt: "", loading: "lazy", class: "h-full w-full object-cover" %>
               <% else %>
                 <%= icon "package", class: "size-4 text-slate-400 dark:text-zinc-500" %>

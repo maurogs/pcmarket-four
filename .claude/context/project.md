@@ -2,11 +2,12 @@
 
 ## Status
 
-Phase 2B complete: marketplace discovery. Search, category browsing, listing
-detail, store pages, favourites, cart, saved searches, reports, follows and
-authentication screens are implemented with fragment/HTTP caching and an
-N+1 guard. Checkout, messaging, offers, reviews creation and seller/admin
-workflows remain for later phases.
+Phase 3A complete: listing creation and the seller board. Sellers can create,
+edit, submit, pause, resume, duplicate, archive and bulk-manage listings,
+upload and reorder photos through Active Storage direct uploads, and browse
+their listings by status. Discovery (Phase 2B) remains intact. Checkout,
+messaging, offers, review creation and admin moderation screens remain for
+later phases.
 
 ## Stack
 
@@ -207,6 +208,47 @@ workflows remain for later phases.
   `/saved_searches` and in the account page, and can toggle notifications with
   Turbo Streams. Reports are one-open-per-user-and-listing.
 
+### Listing creation and seller board (Phase 3A)
+
+- The seller form is a single page with five sections (category, photos,
+  details, price, delivery). `listing_form_controller` adds counters, progress,
+  drag ordering, file previews and client-side type/size validation; the form
+  remains usable without JavaScript.
+- The category picker uses root `<details>` cards and leaf links. A leaf link
+  navigates only `turbo-frame#listing_specs` to
+  `new_listing_path(category_id:)` / `edit_listing_path(category_id:)`, so
+  already typed fields are untouched. The frame carries the hidden
+  `listing[category_id]`.
+- `ListingForm` is the single writer for the seller form: it assigns scalars,
+  keeps specs only for the category's effective filter keys (stored as
+  strings), attaches/removes/reorders images, forces quantity 1 for private
+  sellers, enforces the image requirement on submit and applies the
+  draft → pending_review/published transition.
+- Images are uploaded through Active Storage direct uploads
+  (`@rails/activestorage` pinned in the import map). Display order is stored in
+  blob `metadata["position"]` and every image render uses
+  `Listing#ordered_images`.
+- Money inputs use virtual attributes (`price=`, `original_price=`,
+  `shipping_price=`) that accept `1.299,50`, `1299.50` and `1299`.
+- A listing created without a store calls `User#ensure_store!`, which creates
+  an individual store named after the username.
+- Published listings stay live after price, quantity, shipping or description
+  edits. Title, category or image changes set `Listing#requires_re_review?`
+  from `saved_changes` plus media changes and return the listing to
+  `pending_review` when approval is enabled.
+- Destroy archives (`status: archived`) when order items exist and hard-deletes
+  otherwise. Duplication copies the listing as a draft and reuses image blobs.
+- Nested member routes model lifecycle actions: `listing_submission` (submit),
+  `listing_pause` (POST pause, DELETE resume) and `listing_sale` (mark sold).
+  `Seller::ListingsController#index` filters by status with counts and search;
+  bulk pause/resume/delete go through `Seller::BulkListingActionsController`
+  and the `BulkListingAction` service, which whitelists the action.
+- Listing detail uses grid placement so the buy box follows the title on
+  mobile and sits beside the gallery on desktop; the stats row wraps by group
+  with `whitespace-nowrap` items. Zero-cost shipping with shipping enabled
+  renders the translated "Free shipping" label in the buy box, cards and
+  shipping section.
+
 ### Performance guardrails
 
 - `ListingSearch::INCLUDES` preloads store, category, region, user and image
@@ -255,7 +297,13 @@ app/controllers/application_controller.rb   locale, meta tags, menu, staff guard
                                             search params
 app/controllers/concerns/search_rendering.rb shared search/category/store rendering
 app/controllers/home_controller.rb          home feed + recently viewed
-app/controllers/listings_controller.rb      index/show, views, SEO, HTTP caching
+app/controllers/listings_controller.rb      index/show/new/create/edit/update/destroy,
+                                            specs Turbo Frame, views, SEO, caching
+app/controllers/listings/                   submissions, pauses, sales member resources
+app/controllers/seller/listings_controller.rb  seller board (tabs, counts, search)
+app/controllers/seller/bulk_listing_actions_controller.rb
+app/services/listing_form.rb                seller form writer (specs/images/status)
+app/services/bulk_listing_action.rb          whitelisted bulk pause/resume/delete
 app/controllers/categories_controller.rb    category path resolution
 app/controllers/stores_controller.rb        store header, tabs, reviews
 app/controllers/{cart,cart_items,favorites,follows,reports,saved_searches}_controller.rb
@@ -278,6 +326,10 @@ app/views/listings/index.html.erb           search/category page
 app/views/listings/_results.html.erb        Turbo Frame results + sidebar + sheet
 app/views/listings/_filters.html.erb        shared desktop/mobile filter form
 app/views/listings/show.html.erb            detail page, gallery, buy box
+app/views/listings/_form.html.erb           five-section seller form
+app/views/listings/_specs.html.erb          category-driven specs Turbo Frame
+app/views/listings/_actions.html.erb        seller row actions menu
+app/views/seller/listings/index.html.erb    tabs, table/cards, bulk actions
 app/views/stores/show.html.erb              store header, tabs
 app/views/stores/tabs/                      listings/about/reviews panels
 app/views/favorites/                        heart button/count partials
@@ -308,7 +360,8 @@ test/seeds_test.rb
 
 ## Open items for later phases
 
-- Listing creation/edit forms, image uploads and moderation screens.
+- Admin moderation screens (approve/reject queue) for listings; seller-side
+  submission already exists.
 - Checkout, payments, orders and review creation flows.
 - Messaging: conversations render placeholders; `conversations#create` only
   opens the thread. Offers, unread counters and notifications are pending.

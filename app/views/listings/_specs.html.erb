@@ -1,0 +1,37 @@
+<% specs_src = if category && request.headers["Turbo-Frame"].blank?
+                 listing.persisted? ? edit_listing_path(listing, category_id: category.id) : new_listing_path(category_id: category.id)
+               end %>
+<%= turbo_frame_tag "listing_specs", src: specs_src do %>
+  <%= hidden_field_tag "listing[category_id]", category&.id, id: "listing-category-id" %>
+
+  <% if category.nil? %>
+    <p class="rounded-xl border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-500 dark:border-zinc-700 dark:text-zinc-400">
+      <%= t("listings.form.details.select_category") %>
+    </p>
+  <% elsif effective_filters.empty? %>
+    <p class="rounded-xl border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-500 dark:border-zinc-700 dark:text-zinc-400">
+      <%= t("listings.form.details.no_specs") %>
+    </p>
+  <% else %>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <% effective_filters.each do |filter| %>
+        <div>
+          <%= label_tag "listing-spec-#{filter.key}", filter.label,
+                        class: "mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-300" %>
+          <% options = filter.filter_options %>
+          <% if options.any? %>
+            <%= select_tag "listing[specs][#{filter.key}]",
+                           options_for_select([[ t("listings.form.details.any_option"), "" ]] +
+                                              options.map { |option| [ option.label, option.value ] },
+                                              listing.specs[filter.key].to_s),
+                           id: "listing-spec-#{filter.key}", class: ui_input_classes %>
+          <% else %>
+            <%= text_field_tag "listing[specs][#{filter.key}]", listing.specs[filter.key],
+                               id: "listing-spec-#{filter.key}", class: ui_input_classes,
+                               placeholder: filter.unit.presence || t("listings.form.details.spec_placeholder") %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

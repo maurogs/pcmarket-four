@@ -1,6 +1,7 @@
 ---
 pt:
   errors:
+    account_inactive: "A tua conta não está ativa. Contacta o suporte para mais informações."
     not_authorized: Não tem permissão para realizar esta ação.
     omniauth_failure: Não foi possível iniciar sessão com o Google. Tente novamente.
     rate_limited: Demasiados pedidos. Tente novamente mais tarde.

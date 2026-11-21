@@ -3,7 +3,7 @@
   <%= link_to listing_path(listing), class: "shrink-0" do %>
     <div class="h-24 w-24 overflow-hidden rounded-lg bg-slate-100 sm:h-28 sm:w-28 dark:bg-zinc-800">
       <% if listing.images.attached? %>
-        <%= image_tag listing.images.first.variant(resize_to_limit: [ 240, 240 ], format: :webp),
+        <%= image_tag listing.ordered_images.first.variant(resize_to_limit: [ 240, 240 ], format: :webp),
                       alt: t("listings.card.image_alt", title: listing.title),
                       width: 240, height: 240, loading: "lazy",
                       class: "h-full w-full object-cover" %>

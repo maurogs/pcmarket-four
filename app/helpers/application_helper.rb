@@ -119,6 +119,61 @@ module ApplicationHelper
     listing.store&.name.presence || listing.user&.display_name
   end
 
+  LISTING_ERROR_SECTIONS = {
+    "category" => "section-category", "category_id" => "section-category",
+    "images" => "section-photos",
+    "title" => "section-details", "description" => "section-details",
+    "brand" => "section-details", "model_name_text" => "section-details",
+    "condition" => "section-details", "quantity" => "section-details",
+    "tags" => "section-details",
+    "price_cents" => "section-price", "price" => "section-price",
+    "original_price_cents" => "section-price",
+    "shipping_price_cents" => "section-delivery", "postal_code" => "section-delivery",
+    "region" => "section-delivery", "city" => "section-delivery",
+    "ships_within_days" => "section-delivery"
+  }.freeze
+
+  def listing_error_anchor(attribute)
+    "##{LISTING_ERROR_SECTIONS.fetch(attribute.to_s, 'listing-form')}"
+  end
+
+  def listing_field_error(listing, attribute)
+    messages = listing.errors[attribute]
+    return if messages.empty?
+
+    content_tag(:p, messages.first,
+                id: "error-#{attribute}",
+                class: "mt-1.5 text-xs font-medium text-rose-600 dark:text-rose-400")
+  end
+
+  def listing_ships_free?(listing)
+    listing.shipping_available? && (listing.free_shipping? || listing.shipping_price_cents.to_i.zero?)
+  end
+
+  def listing_shipping_summary(listing)
+    return t("listings.show.free_shipping") if listing_ships_free?(listing)
+    return t("listings.show.pickup_only") unless listing.shipping_available?
+
+    t("listings.show.shipping_cost", price: format_price(listing.shipping_price_cents))
+  end
+
+  def seller_listing_status_tone(status)
+    case status.to_s
+    when "published" then :success
+    when "pending_review" then :accent
+    when "rejected" then :danger
+    when "sold" then :dark
+    when "paused" then :neutral
+    else :brand
+    end
+  end
+
+  def listing_status_tab_label(status)
+    return t("listings.seller.tabs.all") if status == "all"
+
+    t("listings.statuses.#{status}")
+  end
+
   def listing_location(listing)
     location = [ listing.city, listing.region&.name ].compact_blank.uniq.join(", ")
     location.presence || t("listings.card.location_unknown")

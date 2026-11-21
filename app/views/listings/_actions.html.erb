@@ -1,0 +1,55 @@
+<%= render "shared/dropdown", id: "listing-actions-#{listing.id}",
+           trigger: icon("settings", class: "size-4") do %>
+  <ul class="space-y-0.5 text-sm">
+    <li>
+      <%= link_to listing_path(listing), class: "flex items-center gap-2 rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+        <%= icon "eye", class: "size-4" %><%= t("listings.seller.actions.view") %>
+      <% end %>
+    </li>
+    <li>
+      <%= link_to edit_listing_path(listing), class: "flex items-center gap-2 rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+        <%= icon "settings", class: "size-4" %><%= t("listings.seller.actions.edit") %>
+      <% end %>
+    </li>
+    <% if listing.published? %>
+      <li>
+        <%= button_to listing_pause_path(listing), method: :post,
+                      form: { class: "block" },
+                      class: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+          <%= icon "lock", class: "size-4" %><%= t("listings.seller.actions.pause") %>
+        <% end %>
+      </li>
+    <% elsif listing.paused? %>
+      <li>
+        <%= button_to listing_pause_path(listing), method: :delete,
+                      form: { class: "block" },
+                      class: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+          <%= icon "rotate-ccw", class: "size-4" %><%= t("listings.seller.actions.resume") %>
+        <% end %>
+      </li>
+    <% end %>
+    <% if listing.published? || listing.paused? %>
+      <li>
+        <%= button_to listing_sale_path(listing), method: :post,
+                      form: { class: "block" },
+                      class: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+          <%= icon "check", class: "size-4" %><%= t("listings.seller.actions.mark_sold") %>
+        <% end %>
+      </li>
+    <% end %>
+    <li>
+      <%= button_to seller_listing_duplication_path(listing), method: :post,
+                    form: { class: "block" },
+                    class: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+        <%= icon "package", class: "size-4" %><%= t("listings.seller.actions.duplicate") %>
+      <% end %>
+    </li>
+    <li class="border-t border-slate-100 pt-0.5 dark:border-zinc-800">
+      <%= button_to listing_path(listing), method: :delete,
+                    form: { class: "block", data: { turbo_confirm: t("listings.seller.actions.delete_confirm") } },
+                    class: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10" do %>
+        <%= icon "x", class: "size-4" %><%= t("listings.seller.actions.delete") %>
+      <% end %>
+    </li>
+  </ul>
+<% end %>
