@@ -11,6 +11,13 @@ class SeoTest < ActionDispatch::IntegrationTest
   end
 
   test "sitemap.xml lists categories, listings, stores and legal pages" do
+    article = HelpArticle.create!(
+      slug: "sitemap-help-article", category: "buying", position: 99,
+      titles: { "es" => "Guía del sitemap", "en" => "Sitemap guide" },
+      bodies: { "es" => "<p>Guía</p>", "en" => "<p>Guide</p>" },
+      published: true
+    )
+
     get "/sitemap.xml"
 
     assert_response :success
@@ -21,6 +28,7 @@ class SeoTest < ActionDispatch::IntegrationTest
     assert_includes body, "/es/l/#{listings(:published_gpu).slug}"
     assert_includes body, "/es/s/#{stores(:seller_store).slug}"
     assert_includes body, "/es/legal/terms"
+    assert_includes body, "/es/help/#{article.slug}"
     assert_includes body, "hreflang=\"en\""
     assert_includes body, "hreflang=\"x-default\""
   end

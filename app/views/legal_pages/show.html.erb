@@ -1,19 +1,83 @@
 <% content_for :title, @legal_page.title %>
 
-<div class="page-container py-8 sm:py-12">
-  <nav class="mb-5 text-xs text-slate-500 dark:text-zinc-400">
+<div class="page-container py-8 sm:py-12" data-controller="print">
+  <nav class="mb-5 text-xs text-slate-500 dark:text-zinc-400" aria-label="<%= t("content.legal_page.breadcrumb") %>">
     <%= link_to t("layout.tab_bar.home"), root_path, class: "hover:text-brand-700 dark:hover:text-brand-300" %>
     <span class="mx-1">/</span>
     <span><%= t("layout.footer.legal") %></span>
+    <span class="mx-1">/</span>
+    <span class="text-slate-700 dark:text-zinc-300"><%= @legal_page.title %></span>
   </nav>
 
-  <article class="surface mx-auto max-w-3xl p-6 sm:p-10">
-    <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= @legal_page.title %></h1>
-    <p class="mt-2 text-xs text-slate-500 dark:text-zinc-500">
-      <%= @legal_page.updated_at.to_date.to_fs(:long) %>
-    </p>
-    <div class="prose-pcm mt-8">
-      <%= @legal_page.body_html %>
-    </div>
-  </article>
+  <div class="grid gap-8 lg:grid-cols-[17rem_minmax(0,1fr)]">
+    <aside class="lg:sticky lg:top-24 lg:self-start" aria-labelledby="legal-nav-title">
+      <div class="surface p-4">
+        <h2 id="legal-nav-title" class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+          <%= t("content.legal_page.sidebar_title", country: @country.name) %>
+        </h2>
+        <nav class="mt-3 space-y-1">
+          <% @legal_pages.each do |page| %>
+            <% active = page.id == @legal_page.id %>
+            <%= link_to page.title, legal_page_path(page.slug, country: (@country.code unless @country.code == "ES")),
+                        class: "block rounded-lg px-3 py-2 text-sm transition #{active ? "bg-brand-50 font-semibold text-brand-800 dark:bg-brand-900/30 dark:text-brand-200" : "text-slate-600 hover:bg-slate-50 hover:text-brand-700 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-brand-300"}",
+                        aria: { current: active ? "page" : nil } %>
+          <% end %>
+        </nav>
+        <% if @country.code != "ES" %>
+          <p class="mt-4 border-t border-slate-100 pt-3 text-[11px] text-slate-500 dark:border-zinc-800 dark:text-zinc-500">
+            <%= t("content.legal_page.market_note", country: @country.name) %>
+          </p>
+        <% end %>
+      </div>
+    </aside>
+
+    <article class="surface max-w-none p-6 sm:p-10">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= @legal_page.title %></h1>
+          <p class="mt-2 text-xs text-slate-500 dark:text-zinc-500">
+            <%= t("content.legal_page.last_updated", date: l(@legal_page.updated_at.to_date, format: :long)) %>
+            <span class="mx-1">·</span>
+            <%= t("content.legal_page.version", version: @legal_page.version) %>
+          </p>
+        </div>
+        <button type="button" data-action="print#print"
+                class="<%= ui_button_classes(variant: :outline, size: :sm) %>">
+          <%= icon "package", class: "size-4" %>
+          <%= t("content.legal_page.print") %>
+        </button>
+      </div>
+
+      <% if @legal_page.toc.any? %>
+        <nav class="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/60"
+             aria-labelledby="legal-toc-title">
+          <h2 id="legal-toc-title" class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400">
+            <%= t("content.legal_page.toc_title") %>
+          </h2>
+          <ol class="mt-2 grid gap-1 text-sm sm:grid-cols-2">
+            <% @legal_page.toc.each do |entry| %>
+              <li>
+                <%= link_to entry[:title], "##{entry[:id]}",
+                            class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %>
+              </li>
+            <% end %>
+          </ol>
+        </nav>
+      <% end %>
+
+      <div class="prose-pcm mt-8">
+        <%= @legal_page.rendered_body %>
+      </div>
+
+      <% if @legal_page.slug == "cookies" %>
+        <div class="mt-8 rounded-xl border border-brand-200 bg-brand-50 p-4 dark:border-brand-800 dark:bg-brand-900/20">
+          <p class="text-sm text-slate-700 dark:text-zinc-200"><%= t("content.legal_page.cookie_cta_body") %></p>
+          <button type="button" data-action="cookie-consent#open"
+                  class="<%= ui_button_classes(variant: :primary, size: :sm, extra: "mt-3") %>">
+            <%= t("layout.footer.cookie_preferences") %>
+          </button>
+        </div>
+      <% end %>
+    </article>
+  </div>
 </div>

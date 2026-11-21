@@ -2,25 +2,11 @@
 
 ## Estado
 
-Fase 6C completada: catálogo, ajustes, países, contenido, marketing y auditoría
-del panel, sustituyendo todas las páginas provisionales restantes. Las
-operaciones de administración de la fase 6B para pedidos, pagos, disputas,
-denuncias y reseñas siguen intactas. La base del panel de la fase 6A (panel,
-moderación de anuncios, usuarios, tiendas, auditoría y suplantación) no ha
-cambiado. El chat interno de la fase 5 con conversaciones, contadores de no
-leídos y mensajes en tiempo real, ofertas con precio reservado en la cesta,
-bloqueos y avisos de seguridad en los mensajes; notificaciones a seguidores,
-alertas instantáneas y resumen diario de búsquedas guardadas y alertas de bajada
-de precio en favoritos siguen intactos. El ciclo de vida de pedidos de la fase
-4B (pagado, enviado, entregado, completado, cancelado, en disputa y
-reembolsado), las pantallas de gestión del vendedor, la confirmación de entrega,
-las disputas y las reseñas del comprador, las notificaciones de pedido con envío
-de correos y la actualización del contador en tiempo real siguen intactos. El
-descubrimiento (fase 2B), la creación de anuncios (fase 3A) y el pago (fase 4A)
-no han cambiado.
-
-Las modificaciones de catálogo y contenido son exclusivas de administradores;
-los moderadores mantienen acceso de solo lectura.
+Fase 7A completada: textos legales por país (ES, FR, GB, DE, IT, PT), página
+pública de confianza y seguridad, página sobre nosotros y centro de ayuda con
+buscador y valoración de artículos. Los ajustes de identidad de la empresa
+alimentan los marcadores de las páginas legales. El catálogo, los ajustes, los
+países, el contenido, el marketing y la auditoría de la fase 6C siguen intactos.
 
 ## Estado de las fases
 
@@ -36,6 +22,7 @@ los moderadores mantienen acceso de solo lectura.
 | 6A | Base de administración, panel, moderación, usuarios y tiendas | Completada |
 | 6B | Pedidos, pagos, disputas, denuncias y reseñas de administración | Completada |
 | 6C | Catálogo, ajustes, países, contenido, marketing y auditoría | Completada |
+| 7A | Textos legales, confianza, sobre nosotros y centro de ayuda | Completada |
 
 ## Stack
 
@@ -615,6 +602,48 @@ los moderadores mantienen acceso de solo lectura.
   y `settings.feature_flag`. Nuevo valor por defecto `allow_non_eur_countries`
   (falso).
 
+### Textos legales, confianza, sobre nosotros y centro de ayuda (fase 7A)
+
+- La identidad de la empresa vive en el grupo de ajustes `company`: razón
+  social, NIF, domicilio, datos registrales, correos de contacto, DPO y legal,
+  teléfono y horario de soporte. Los textos legales admiten marcadores
+  `{{clave}}`; `LegalPage#rendered_body` sanea el HTML, interpola los valores
+  escapados de `Setting` y añade ids estables a los `h2`. `LegalPage#toc`
+  alimenta el índice.
+- `LegalPage` tiene nueve slugs (`terms`, `privacy`, `cookies`, `legal_notice`,
+  `returns`, `buyer_protection`, `seller_terms`, `prohibited_items`,
+  `dsa_contact`). Las semillas incluyen textos nativos e ingleses para ES, FR,
+  DE, IT y PT, y solo inglés para GB (99 páginas). Crean las que faltan y solo
+  actualizan las de versión 1 sin `updated_by`, de modo que se conservan las
+  ediciones del administrador.
+- `LegalPagesController#show` resuelve la página del país de mercado del
+  visitante y cae al idioma solicitado, al idioma por defecto del país y al
+  inglés. El país llega por `?country=` solo si está activo, o para personal;
+  si no, ES. La vista añade navegación por país, índice de encabezados, fecha y
+  versión e impresión. La página de cookies abre el diálogo de consentimiento.
+  Canonical y hreflang solo cubren idiomas existentes para ese país.
+- `TrustStats` cachea una hora cuatro agregados (pedidos completados, tiendas
+  verificadas, valoración media y anuncios revisados). La página de confianza
+  muestra un texto alternativo traducido en lugar de cifras hasta que cada
+  mínimo es relevante, explica la protección en tres pasos, la premoderación
+  manual, los vendedores verificados, consejos de seguridad, tarjetas de
+  contacto desde Ajustes y ocho preguntas con JSON-LD `FAQPage`.
+  `PagesController#about` muestra misión, sostenibilidad, flujos de compra y
+  venta, valores y un equipo provisional con iniciales ilustradas.
+- `HelpArticle` guarda títulos y cuerpos en jsonb para seis idiomas.
+  `HelpArticlesController` ofrece la rejilla de categorías, los artículos
+  populares, búsqueda sin acentos mediante
+  `unaccent(titles ->> locale)`/`unaccent(bodies ->> locale)` y fichas con
+  JSON-LD Article y BreadcrumbList. Las semillas crean 18 artículos (3 por
+  categoría) con contenido completo ES/EN y versiones cortas FR/DE/IT/PT.
+- `HelpArticleFeedback` (artículo, útil, sesión) tiene un índice único por
+  artículo y sesión. `HelpArticleFeedbacksController` registra o actualiza un
+  voto por sesión de navegador; el listado de administración muestra los
+  recuentos sí/no.
+- El sitemap incluye artículos de ayuda y páginas legales; las URLs de ayuda se
+  añaden a la clave de caché. Los enlaces de academia del pie apuntan a
+  artículos reales.
+
 ### Límites de rendimiento
 
 - `ListingSearch::INCLUDES` precarga tienda, categoría, región, usuario y
@@ -859,6 +888,8 @@ app/controllers/stores_controller.rb        cabecera, pestañas y reseñas de ti
 app/controllers/{cart,cart_items,favorites,follows,reports,saved_searches}_controller.rb
 app/controllers/users/registrations_controller.rb
 app/controllers/{conversations,orders,account,pc_finder,pages,legal_pages,sell_offers}_controller.rb
+app/controllers/help_articles_controller.rb      índice, búsqueda y fichas de ayuda
+app/controllers/help_article_feedbacks_controller.rb  un voto por sesión
 app/controllers/{search_suggestions,seo,newsletter_subscribers}_controller.rb
 app/controllers/admin/base_controller.rb        acceso, guardia de personal, layout admin,
                                                 ayudantes Pundit y auditoría
@@ -966,6 +997,12 @@ config/initializers/security_headers.rb
 config/locales/                             textos de UI en seis idiomas (+ archivos por dominio)
 db/seeds.rb                                 cargador
 db/seeds/*.rb                               taxonomía y datos de referencia
+db/seeds/legal/*.rb                         textos legales por país
+db/seeds/help_articles.rb                   18 artículos de ayuda
+app/services/trust_stats.rb                 agregados cacheados de confianza
+app/views/pages/{trust,about}.html.erb      confianza y sobre nosotros
+app/views/help_articles/                    índice, ficha y valoración
+app/models/help_article_feedback.rb         votos de utilidad por sesión
 script/search_explain.rb                    EXPLAIN ANALYZE con 5k anuncios
 test/integration/                           portada, SEO, búsqueda, acceso, rendimiento
 test/services/listing_search_test.rb
@@ -983,6 +1020,8 @@ test/integration/admin_{orders,disputes,reports,reviews}_test.rb
 test/services/admin/sidebar_counts_test.rb
 test/system/admin_moderation_flow_test.rb
 test/seeds_test.rb
+test/models/legal_page_test.rb
+test/integration/{legal_pages,trust_and_about,help_centre}_test.rb
 ```
 
 ## Pendientes para fases posteriores
@@ -991,7 +1030,6 @@ test/seeds_test.rb
   no se automatiza el cobro por transferencia o Stripe.
 - La lista de lanzamiento es informativa salvo el bloqueo de monedas distintas
   de EUR; la falta de páginas legales o regiones no impide activar un país.
-- Las páginas públicas de ayuda y su búsqueda llegan en la fase 7.
 - Los reembolsos se registran manualmente con una referencia; todavía no se llama
   a la API de reembolsos del proveedor de pago.
 - No hay autenticación en dos pasos para administración; Devise lockable ya
@@ -1016,7 +1054,6 @@ test/seeds_test.rb
   endpoint de stream.
 - El acceso con Google solo se muestra cuando `GOOGLE_CLIENT_ID` y
   `GOOGLE_CLIENT_SECRET` están configurados.
-- URL reales de perfiles sociales y textos legales por idioma.
 - Endpoints de API (ListingSearch ya está preparado para API).
 - Sin indicador de escritura en las conversaciones (fuera de alcance de forma
   explícita).

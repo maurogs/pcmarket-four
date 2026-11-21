@@ -168,12 +168,11 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Contexto del proyecto</h1>
     <p class="lede">Arquitectura, decisiones y mapa de código</p>
-    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-22 00:04</p>
+    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-22 00:22</p>
   </header>
   <main><section class="card status">
 <h2><span>Estado</span><span class="badge badge-success">Complete</span></h2>
-<p>Fase 6C completada: catálogo, ajustes, países, contenido, marketing y auditoría del panel, sustituyendo todas las páginas provisionales restantes. Las operaciones de administración de la fase 6B para pedidos, pagos, disputas, denuncias y reseñas siguen intactas. La base del panel de la fase 6A (panel, moderación de anuncios, usuarios, tiendas, auditoría y suplantación) no ha cambiado. El chat interno de la fase 5 con conversaciones, contadores de no leídos y mensajes en tiempo real, ofertas con precio reservado en la cesta, bloqueos y avisos de seguridad en los mensajes; notificaciones a seguidores, alertas instantáneas y resumen diario de búsquedas guardadas y alertas de bajada de precio en favoritos siguen intactos. El ciclo de vida de pedidos de la fase 4B (pagado, enviado, entregado, completado, cancelado, en disputa y reembolsado), las pantallas de gestión del vendedor, la confirmación de entrega, las disputas y las reseñas del comprador, las notificaciones de pedido con envío de correos y la actualización del contador en tiempo real siguen intactos. El descubrimiento (fase 2B), la creación de anuncios (fase 3A) y el pago (fase 4A) no han cambiado.</p>
-<p>Las modificaciones de catálogo y contenido son exclusivas de administradores; los moderadores mantienen acceso de solo lectura.</p>
+<p>Fase 7A completada: textos legales por país (ES, FR, GB, DE, IT, PT), página pública de confianza y seguridad, página sobre nosotros y centro de ayuda con buscador y valoración de artículos. Los ajustes de identidad de la empresa alimentan los marcadores de las páginas legales. El catálogo, los ajustes, los países, el contenido, el marketing y la auditoría de la fase 6C siguen intactos.</p>
 </section>
 <section class="card status">
 <h2><span>Estado de las fases</span><span class="badge badge-success">Complete</span></h2>
@@ -190,6 +189,7 @@ footer {
 <tr><td>6A</td><td>Base de administración, panel, moderación, usuarios y tiendas</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>6B</td><td>Pedidos, pagos, disputas, denuncias y reseñas de administración</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>6C</td><td>Catálogo, ajustes, países, contenido, marketing y auditoría</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>7A</td><td>Textos legales, confianza, sobre nosotros y centro de ayuda</td><td><span class="badge badge-success">Completada</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -382,6 +382,16 @@ footer {
 <li>Las políticas de la fase 6C heredan de <code>Admin::CataloguePolicy</code>: el personal puede leer y solo los administradores pueden crear, actualizar o eliminar. Los permisos de moderación de las fases 6A/6B no cambian.</li>
 <li>Esquema nuevo: <code>feature_requests</code>, <code>help_articles</code>, <code>legal_pages.published_at</code> y <code>settings.feature_flag</code>. Nuevo valor por defecto <code>allow_non_eur_countries</code> (falso).</li>
 </ul>
+<h3>Textos legales, confianza, sobre nosotros y centro de ayuda (fase 7A)</h3>
+<ul>
+<li>La identidad de la empresa vive en el grupo de ajustes <code>company</code>: razón social, NIF, domicilio, datos registrales, correos de contacto, DPO y legal, teléfono y horario de soporte. Los textos legales admiten marcadores <code>{{clave}}</code>; <code>LegalPage#rendered_body</code> sanea el HTML, interpola los valores escapados de <code>Setting</code> y añade ids estables a los <code>h2</code>. <code>LegalPage#toc</code> alimenta el índice.</li>
+<li><code>LegalPage</code> tiene nueve slugs (<code>terms</code>, <code>privacy</code>, <code>cookies</code>, <code>legal_notice</code>, <code>returns</code>, <code>buyer_protection</code>, <code>seller_terms</code>, <code>prohibited_items</code>, <code>dsa_contact</code>). Las semillas incluyen textos nativos e ingleses para ES, FR, DE, IT y PT, y solo inglés para GB (99 páginas). Crean las que faltan y solo actualizan las de versión 1 sin <code>updated_by</code>, de modo que se conservan las ediciones del administrador.</li>
+<li><code>LegalPagesController#show</code> resuelve la página del país de mercado del visitante y cae al idioma solicitado, al idioma por defecto del país y al inglés. El país llega por <code>?country=</code> solo si está activo, o para personal; si no, ES. La vista añade navegación por país, índice de encabezados, fecha y versión e impresión. La página de cookies abre el diálogo de consentimiento. Canonical y hreflang solo cubren idiomas existentes para ese país.</li>
+<li><code>TrustStats</code> cachea una hora cuatro agregados (pedidos completados, tiendas verificadas, valoración media y anuncios revisados). La página de confianza muestra un texto alternativo traducido en lugar de cifras hasta que cada mínimo es relevante, explica la protección en tres pasos, la premoderación manual, los vendedores verificados, consejos de seguridad, tarjetas de contacto desde Ajustes y ocho preguntas con JSON-LD <code>FAQPage</code>. <code>PagesController#about</code> muestra misión, sostenibilidad, flujos de compra y venta, valores y un equipo provisional con iniciales ilustradas.</li>
+<li><code>HelpArticle</code> guarda títulos y cuerpos en jsonb para seis idiomas. <code>HelpArticlesController</code> ofrece la rejilla de categorías, los artículos populares, búsqueda sin acentos mediante <code>unaccent(titles -&gt;&gt; locale)</code>/<code>unaccent(bodies -&gt;&gt; locale)</code> y fichas con JSON-LD Article y BreadcrumbList. Las semillas crean 18 artículos (3 por categoría) con contenido completo ES/EN y versiones cortas FR/DE/IT/PT.</li>
+<li><code>HelpArticleFeedback</code> (artículo, útil, sesión) tiene un índice único por artículo y sesión. <code>HelpArticleFeedbacksController</code> registra o actualiza un voto por sesión de navegador; el listado de administración muestra los recuentos sí/no.</li>
+<li>El sitemap incluye artículos de ayuda y páginas legales; las URLs de ayuda se añaden a la clave de caché. Los enlaces de academia del pie apuntan a artículos reales.</li>
+</ul>
 <h3>Límites de rendimiento</h3>
 <ul>
 <li><code>ListingSearch::INCLUDES</code> precarga tienda, categoría, región, usuario y adjuntos/blobs de imágenes. Las tarjetas nunca llaman a <code>category.root</code> ni a <code>user.store</code>; los slugs raíz vienen de un <code>Category.root_slug_map</code> cacheado y los nombres de vendedor prefieren la tienda precargada.</li>
@@ -511,6 +521,8 @@ app/controllers/stores_controller.rb        cabecera, pestañas y reseñas de ti
 app/controllers/{cart,cart_items,favorites,follows,reports,saved_searches}_controller.rb
 app/controllers/users/registrations_controller.rb
 app/controllers/{conversations,orders,account,pc_finder,pages,legal_pages,sell_offers}_controller.rb
+app/controllers/help_articles_controller.rb      índice, búsqueda y fichas de ayuda
+app/controllers/help_article_feedbacks_controller.rb  un voto por sesión
 app/controllers/{search_suggestions,seo,newsletter_subscribers}_controller.rb
 app/controllers/admin/base_controller.rb        acceso, guardia de personal, layout admin,
                                                 ayudantes Pundit y auditoría
@@ -618,6 +630,12 @@ config/initializers/security_headers.rb
 config/locales/                             textos de UI en seis idiomas (+ archivos por dominio)
 db/seeds.rb                                 cargador
 db/seeds/*.rb                               taxonomía y datos de referencia
+db/seeds/legal/*.rb                         textos legales por país
+db/seeds/help_articles.rb                   18 artículos de ayuda
+app/services/trust_stats.rb                 agregados cacheados de confianza
+app/views/pages/{trust,about}.html.erb      confianza y sobre nosotros
+app/views/help_articles/                    índice, ficha y valoración
+app/models/help_article_feedback.rb         votos de utilidad por sesión
 script/search_explain.rb                    EXPLAIN ANALYZE con 5k anuncios
 test/integration/                           portada, SEO, búsqueda, acceso, rendimiento
 test/services/listing_search_test.rb
@@ -635,6 +653,8 @@ test/integration/admin_{orders,disputes,reports,reviews}_test.rb
 test/services/admin/sidebar_counts_test.rb
 test/system/admin_moderation_flow_test.rb
 test/seeds_test.rb
+test/models/legal_page_test.rb
+test/integration/{legal_pages,trust_and_about,help_centre}_test.rb
 </code></pre>
 </section>
 <section class="card open-items">
@@ -642,7 +662,6 @@ test/seeds_test.rb
 <ul>
 <li>El pago de anuncios destacados lo confirman manualmente los administradores; no se automatiza el cobro por transferencia o Stripe.</li>
 <li>La lista de lanzamiento es informativa salvo el bloqueo de monedas distintas de EUR; la falta de páginas legales o regiones no impide activar un país.</li>
-<li>Las páginas públicas de ayuda y su búsqueda llegan en la fase 7.</li>
 <li>Los reembolsos se registran manualmente con una referencia; todavía no se llama a la API de reembolsos del proveedor de pago.</li>
 <li>No hay autenticación en dos pasos para administración; Devise lockable ya limita los inicios de sesión fallidos. Decidir si el 2FA de personal es obligatorio.</li>
 <li>La suplantación se basa en sesión y queda auditada; no tiene caducidad automática.</li>
@@ -654,7 +673,6 @@ test/seeds_test.rb
 <li>Las pestañas de tienda renderizan el panel activo en línea para SEO y cargan las demás mediante Turbo Frame; se pueden añadir marcadores <code>loading=&quot;lazy&quot;</code> si los paneles crecen.</li>
 <li>&quot;Cargar más&quot; en móvil navega a la página siguiente dentro del frame de resultados en lugar de añadir; la adición infinita real puede añadirse con un endpoint de stream.</li>
 <li>El acceso con Google solo se muestra cuando <code>GOOGLE_CLIENT_ID</code> y <code>GOOGLE_CLIENT_SECRET</code> están configurados.</li>
-<li>URL reales de perfiles sociales y textos legales por idioma.</li>
 <li>Endpoints de API (ListingSearch ya está preparado para API).</li>
 <li>Sin indicador de escritura en las conversaciones (fuera de alcance de forma explícita).</li>
 <li>La detección de seguridad de mensajes es heurística; la revisión de moderación sigue siendo manual.</li>

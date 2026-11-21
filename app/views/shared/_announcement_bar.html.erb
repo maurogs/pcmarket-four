@@ -6,8 +6,8 @@
     <div class="page-container flex items-center gap-4 py-2">
       <p class="min-w-0 flex-1 truncate text-xs font-medium sm:text-sm"><%= text %></p>
       <nav class="hidden items-center gap-4 text-xs font-medium sm:flex" aria-label="<%= t("layout.announcement.help") %>">
-        <%= link_to t("layout.announcement.help"), help_path, class: "hover:underline" %>
-        <%= link_to t("layout.announcement.blog"), help_path, class: "hover:underline" %>
+        <%= link_to t("layout.announcement.help"), help_articles_path, class: "hover:underline" %>
+        <%= link_to t("layout.announcement.blog"), help_articles_path, class: "hover:underline" %>
         <%= link_to t("layout.announcement.pc_finder"), pc_finder_path, class: "hover:underline" %>
       </nav>
       <button type="button" data-action="announcement#dismiss"

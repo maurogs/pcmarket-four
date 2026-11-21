@@ -863,6 +863,7 @@ de:
       cannot_update: Diese Bewertung konnte nicht aktualisiert werden.
       deleted: Bewertung gelöscht.
       published: Veröffentlicht
+      feedback_counts: "%{yes} ja · %{no} nein"
       unpublished: Unveröffentlicht
       replied: Verkäufer hat geantwortet
       reply_visible: Antwort sichtbar
@@ -1023,6 +1024,7 @@ de:
         limits: Limits
         content: Inhalte
         communication: Kommunikation
+        company: Unternehmen
       keys:
         site_name:
           label: Site name
@@ -1108,6 +1110,33 @@ de:
         support_email:
           label: Support email
           help: Receives dispute and support notifications.
+        company_legal_name:
+          label: Firmenname
+          help: Rechtlicher Name in den Rechtstexten.
+        company_tax_id:
+          label: Steuer-ID
+          help: Steuerliche Kennung des Unternehmens.
+        company_address:
+          label: Firmensitz
+          help: Vollständige Anschrift im Impressum.
+        company_registry:
+          label: Registerdaten
+          help: Handelsregister und Eintragungsdaten.
+        contact_email:
+          label: Kontakt-E-Mail
+          help: Öffentliches allgemeines Postfach.
+        dpo_email:
+          label: DSB-E-Mail
+          help: Kontakt des Datenschutzbeauftragten.
+        legal_email:
+          label: Rechtliche E-Mail
+          help: Rechtliche Hinweise und DSA-Kontakt.
+        support_phone:
+          label: Support-Telefon
+          help: Öffentliche Supportnummer.
+        support_hours:
+          label: Supportzeiten
+          help: Zeiten neben der Telefonnummer.
       maintenance_confirm: Wartungsmodus aktivieren? Besucher sehen eine 503-Seite.
     countries:
       title: Länder
@@ -1156,6 +1185,7 @@ de:
       draft: Entwurf
       global: Global
       version_hint: Aktuelle Version %{version}. Speichern oder veröffentlichen erhöht sie.
+      placeholders_note: "Rechtstexte sind Vorlagen und müssen vor Veröffentlichung von einer Anwältin oder einem Anwalt geprüft werden. Platzhalter wie {{company_legal_name}} oder {{support_email}} werden automatisch aus den Unternehmenseinstellungen ersetzt."
       delete: Seite löschen
       confirm_delete: Diese Seite dauerhaft löschen?
       empty_title: Keine Rechtstexte

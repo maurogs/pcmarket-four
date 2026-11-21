@@ -6,6 +6,7 @@ module Admin
       authorize_admin!(HelpArticle, :index?)
 
       @articles = HelpArticle.ordered
+      @feedback_counts = HelpArticleFeedback.group(:help_article_id, :helpful).count
     end
 
     def show

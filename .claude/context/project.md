@@ -2,8 +2,11 @@
 
 ## Status
 
-Phase 6C complete: admin catalogue, settings, countries, content, marketing and
-audit screens, replacing all remaining admin placeholders. Phase 6B admin
+Phase 7A complete: per-country legal texts (ES, FR, GB, DE, IT, PT), a public
+trust and safety page, an about page and a searchable help centre with article
+feedback. Company identity settings feed legal placeholders. Phase 6C admin
+catalogue, settings, countries, content, marketing and audit screens replace
+all remaining admin placeholders and remain intact. Phase 6B admin
 operations for orders, payments, disputes, reports and review moderation remain
 intact. Phase 6A admin foundation (dashboard, listing moderation, users, stores,
 audit log and impersonation) is unchanged. Phase 5 internal chat
@@ -33,6 +36,7 @@ read access.
 | 6A | Admin foundation, dashboard, moderation, users and stores | Complete |
 | 6B | Admin orders, payments, disputes, reports and reviews | Complete |
 | 6C | Admin catalogue, settings, countries, content, marketing and audit | Complete |
+| 7A | Legal texts, trust, about and help centre | Complete |
 
 ## Stack
 
@@ -658,6 +662,43 @@ read access.
 - New schema: `feature_requests`, `help_articles`, `legal_pages.published_at`
   and `settings.feature_flag`. New default `allow_non_eur_countries` (false).
 
+### Legal texts, trust, about and help centre (Phase 7A)
+
+- Company identity lives in Settings group `company`: legal name, tax ID,
+  address, registry details, contact/DPO/legal emails, support phone and hours.
+  Legal bodies may use `{{placeholder}}` tokens; `LegalPage#rendered_body`
+  sanitises the HTML, interpolates escaped Setting values and adds stable ids to
+  `h2` headings. `LegalPage#toc` feeds the table of contents.
+- `LegalPage` has nine slugs (`terms`, `privacy`, `cookies`, `legal_notice`,
+  `returns`, `buyer_protection`, `seller_terms`, `prohibited_items`,
+  `dsa_contact`). Seeds provide native and English texts for ES, FR, DE, IT and
+  PT and English only for GB (99 pages). They create missing pages and update
+  only version-1 pages with no `updated_by`, so administrator edits survive.
+- `LegalPagesController#show` resolves the page for the visitor's market
+  country, then the requested locale, the country default and English. Country
+  comes from `?country=` only when enabled, or for staff preview; otherwise ES.
+  The view adds country navigation, a heading TOC, last-updated/version and a
+  print control. The cookie page opens the existing consent dialog. Canonical
+  and hreflang cover only locales that exist for that country.
+- `TrustStats` caches four DB aggregates for an hour (completed orders, verified
+  stores, average store rating, reviewed listings). The trust page shows a
+  translated fallback instead of a number until each minimum is meaningful,
+  explains three-step buyer protection, manual pre-moderation, verified sellers,
+  safety tips, contact cards from Settings and eight FAQ entries with
+  `FAQPage` JSON-LD. `PagesController#about` renders mission, sustainability,
+  buyer/seller flows, values and a team placeholder using illustrated initials.
+- `HelpArticle` stores six-locale titles/bodies as jsonb. `HelpArticlesController`
+  provides the category grid, popular list, accent-insensitive search through
+  `unaccent(titles ->> locale)`/`unaccent(bodies ->> locale)` and article pages
+  with Article + BreadcrumbList JSON-LD and related links. Seeds create 18
+  articles (3 per category) with full ES/EN content and short FR/DE/IT/PT
+  versions.
+- `HelpArticleFeedback` (article, helpful, session id) has a unique
+  article/session index. `HelpArticleFeedbacksController` records or updates one
+  vote per browser session; the admin article list shows yes/no counts.
+- Sitemap entries include help articles and legal pages; help URLs are added to
+  the cache key. Footer seller-academy and help links point to real articles.
+
 ### Performance guardrails
 
 - `ListingSearch::INCLUDES` preloads store, category, region, user and image
@@ -777,6 +818,8 @@ app/controllers/stores_controller.rb        store header, tabs, reviews
 app/controllers/{cart,cart_items,favorites,follows,reports,saved_searches}_controller.rb
 app/controllers/users/registrations_controller.rb
 app/controllers/{conversations,orders,account,pc_finder,pages,legal_pages,sell_offers}_controller.rb
+app/controllers/help_articles_controller.rb      help index/search/article pages
+app/controllers/help_article_feedbacks_controller.rb  one helpful vote per session
 app/controllers/{search_suggestions,seo,newsletter_subscribers}_controller.rb
 app/controllers/admin/base_controller.rb        auth, staff guard, admin layout,
                                                 Pundit + audit helpers
@@ -813,6 +856,14 @@ app/services/admin/{filter_option_merger,settings_updater}.rb
 app/services/admin/country_launch_checklist.rb
 app/jobs/cleanup_spec_key_job.rb
 app/models/{feature_request,help_article}.rb
+app/models/help_article_feedback.rb                article helpfulness votes
+app/services/trust_stats.rb                        cached trust page aggregates
+app/views/pages/{trust,about}.html.erb             public trust and about pages
+app/views/help_articles/                           help index, article and feedback
+db/seeds/legal/*.rb                                country legal copy
+db/seeds/help_articles.rb                          18 help articles
+test/integration/{legal_pages,trust_and_about,help_centre}_test.rb
+test/models/legal_page_test.rb
 app/policies/admin/catalogue_policy.rb             admin-only writes
 app/views/admin/{categories,filters,settings,countries,regions}/**
 app/views/admin/{legal_pages,games,help_articles,newsletter_subscribers}/**
@@ -936,7 +987,6 @@ test/seeds_test.rb
   transfer or Stripe collection is not automated for feature requests.
 - The launch checklist is informational except for the non-EUR currency gate;
   missing legal pages or regions do not block enabling a country.
-- Help article public pages and search are phase 7.
 - Refunds are recorded manually with a reference; no payment-provider refund
   API is called yet.
 - Admin two-factor authentication is not implemented; Devise lockable already
@@ -959,7 +1009,6 @@ test/seeds_test.rb
   endpoint.
 - Google sign-in is shown only when `GOOGLE_CLIENT_ID` and
   `GOOGLE_CLIENT_SECRET` are configured.
-- Real social profile URLs and legal copy per locale.
 - API endpoints (ListingSearch is already API-ready).
 - No typing indicator in conversations (explicitly out of scope).
 - Message safety detection is heuristic; moderation review is still manual.

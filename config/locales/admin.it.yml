@@ -863,6 +863,7 @@ it:
       cannot_update: Questa recensione non può essere aggiornata.
       deleted: Recensione eliminata.
       published: Pubblicata
+      feedback_counts: "%{yes} sì · %{no} no"
       unpublished: Non pubblicata
       replied: Il venditore ha risposto
       reply_visible: Risposta visibile
@@ -1023,6 +1024,7 @@ it:
         limits: Limiti
         content: Contenuti
         communication: Comunicazione
+        company: Azienda
       keys:
         site_name:
           label: Site name
@@ -1108,6 +1110,33 @@ it:
         support_email:
           label: Support email
           help: Receives dispute and support notifications.
+        company_legal_name:
+          label: Ragione sociale
+          help: Nome legale mostrato nei testi legali.
+        company_tax_id:
+          label: Codice fiscale
+          help: Identificativo fiscale dell’azienda.
+        company_address:
+          label: Sede legale
+          help: Indirizzo completo nelle note legali.
+        company_registry:
+          label: Dati di registro
+          help: Registro e dati di iscrizione.
+        contact_email:
+          label: Email di contatto
+          help: Casella generale pubblica.
+        dpo_email:
+          label: Email del DPO
+          help: Contatto del responsabile della protezione dei dati.
+        legal_email:
+          label: Email legale
+          help: Comunicazioni legali e contatto DSA.
+        support_phone:
+          label: Telefono assistenza
+          help: Numero pubblico di assistenza.
+        support_hours:
+          label: Orari assistenza
+          help: Orari mostrati accanto al telefono.
       maintenance_confirm: Attivare la manutenzione? I visitatori vedranno una pagina 503.
     countries:
       title: Paesi
@@ -1156,6 +1185,7 @@ it:
       draft: Bozza
       global: Globale
       version_hint: Versione attuale %{version}. Salvare o pubblicare la incrementa.
+      placeholders_note: "Le pagine legali sono modelli e devono essere riviste da un avvocato prima della pubblicazione. Puoi usare segnaposto come {{company_legal_name}} o {{support_email}}; vengono sostituiti automaticamente dalle impostazioni Azienda."
       delete: Elimina pagina
       confirm_delete: Eliminare definitivamente questa pagina?
       empty_title: Nessuna pagina legale

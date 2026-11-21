@@ -864,6 +864,7 @@ pt:
       cannot_update: Esta avaliação não pôde ser atualizada.
       deleted: Avaliação eliminada.
       published: Publicada
+      feedback_counts: "%{yes} sim · %{no} não"
       unpublished: Não publicada
       replied: O vendedor respondeu
       reply_visible: Resposta visível
@@ -1024,6 +1025,7 @@ pt:
         limits: Limites
         content: Conteúdo
         communication: Comunicação
+        company: Empresa
       keys:
         site_name:
           label: Site name
@@ -1109,6 +1111,33 @@ pt:
         support_email:
           label: Support email
           help: Receives dispute and support notifications.
+        company_legal_name:
+          label: Denominação social
+          help: Nome legal apresentado nos textos legais.
+        company_tax_id:
+          label: NIF
+          help: Identificador fiscal da empresa.
+        company_address:
+          label: Sede social
+          help: Morada completa nas informações legais.
+        company_registry:
+          label: Dados de registo
+          help: Registo e dados de inscrição.
+        contact_email:
+          label: Email de contacto
+          help: Caixa geral pública.
+        dpo_email:
+          label: Email do DPO
+          help: Contacto do encarregado de proteção de dados.
+        legal_email:
+          label: Email legal
+          help: Notificações legais e contacto DSA.
+        support_phone:
+          label: Telefone de apoio
+          help: Número público de apoio.
+        support_hours:
+          label: Horário de apoio
+          help: Horário apresentado junto ao telefone.
       maintenance_confirm: Ativar a manutenção? Os visitantes verão uma página 503.
     countries:
       title: Países
@@ -1157,6 +1186,7 @@ pt:
       draft: Rascunho
       global: Global
       version_hint: Versão atual %{version}. Guardar ou publicar incrementa-a.
+      placeholders_note: "As páginas legais são modelos e devem ser revistas por um advogado antes da publicação. Pode usar marcadores como {{company_legal_name}} ou {{support_email}}; são substituídos automaticamente pelas definições Empresa."
       delete: Eliminar página
       confirm_delete: Eliminar definitivamente esta página?
       empty_title: Sem páginas legais

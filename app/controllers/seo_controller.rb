@@ -22,7 +22,8 @@ class SeoController < ApplicationController
       Category.maximum(:updated_at)&.to_i,
       Listing.maximum(:updated_at)&.to_i,
       Store.maximum(:updated_at)&.to_i,
-      LegalPage.maximum(:updated_at)&.to_i
+      LegalPage.maximum(:updated_at)&.to_i,
+      HelpArticle.maximum(:updated_at)&.to_i
     ]
   end
 end

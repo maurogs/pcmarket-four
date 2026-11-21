@@ -105,7 +105,9 @@ Rails.application.routes.draw do
 
     get "legal/:slug" => "legal_pages#show", as: :legal_page
     get "trust" => "pages#trust", as: :trust
-    get "help" => "pages#help", as: :help
+    resources :help_articles, only: %i[index show], path: "help", param: :slug do
+      resource :feedback, only: :create, controller: "help_article_feedbacks"
+    end
     get "about" => "pages#about", as: :about
 
     namespace :admin do

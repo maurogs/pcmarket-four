@@ -7,8 +7,10 @@ load Rails.root.join("db/seeds/categories.rb")
 load Rails.root.join("db/seeds/filters.rb")
 load Rails.root.join("db/seeds/games.rb")
 load Rails.root.join("db/seeds/legal_pages.rb")
+load Rails.root.join("db/seeds/help_articles.rb")
 load Rails.root.join("db/seeds/demo.rb")
 
 puts "Seeds ready: #{Country.count} countries, #{Region.count} regions, " \
      "#{Category.count} categories, #{FilterDefinition.count} filters, " \
-     "#{FilterOption.count} filter options, #{Game.count} games."
+     "#{FilterOption.count} filter options, #{Game.count} games, " \
+     "#{LegalPage.count} legal pages, #{HelpArticle.count} help articles."

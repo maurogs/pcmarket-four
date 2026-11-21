@@ -29,7 +29,16 @@ class Setting < ApplicationRecord
     "seller_ship_deadline_days" => 3,
     "support_email" => "soporte@pcmarket.test",
     "blocked_words" => "",
-    "allow_non_eur_countries" => false
+    "allow_non_eur_countries" => false,
+    "company_legal_name" => "PCMarket Marketplace S.L.",
+    "company_tax_id" => "B00000000",
+    "company_address" => "Calle Ejemplo 1, 28001 Madrid, España",
+    "company_registry" => "Registro Mercantil de Madrid, Tomo 0000, Folio 0, Hoja M-000000",
+    "contact_email" => "hola@pcmarket.test",
+    "dpo_email" => "privacidad@pcmarket.test",
+    "legal_email" => "legal@pcmarket.test",
+    "support_phone" => "+34 900 000 000",
+    "support_hours" => "L-V 9:00-18:00 CET"
   }.freeze
 
   GROUPS = {
@@ -44,6 +53,8 @@ class Setting < ApplicationRecord
                    auto_delivered_after_shipping_days seller_ship_deadline_days],
     "limits" => %w[max_images_per_listing max_active_listings_per_user],
     "content" => %w[announcement_bar_text blocked_words],
+    "company" => %w[company_legal_name company_tax_id company_address company_registry
+                    contact_email dpo_email legal_email support_phone support_hours],
     "communication" => %w[support_email]
   }.freeze
 

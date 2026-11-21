@@ -17,7 +17,8 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   helper_method :menu_categories, :primary_menu_categories, :more_menu_categories,
-                :filters_applied?, :cart_summary, :current_impersonator, :impersonating?
+                :filters_applied?, :cart_summary, :current_impersonator, :impersonating?,
+                :market_country
 
   SEARCH_PARAMS = %i[q min_price max_price free_shipping on_sale deals sort page seller
                      category_id include_sold].freeze
@@ -31,6 +32,15 @@ class ApplicationController < ActionController::Base
 
   def filters_applied?
     search_params.to_h.except("page", "sort").values.any?(&:present?)
+  end
+
+  # Market country for public legal and trust content. Visitors stay on the
+  # Spanish market unless they explicitly ask for another enabled country.
+  # Staff may preview disabled markets before launch.
+  def market_country
+    return @market_country if defined?(@market_country)
+
+    @market_country = resolve_market_country
   end
 
   def cart_summary
@@ -179,6 +189,24 @@ class ApplicationController < ActionController::Base
       url_for(locale: locale, only_path: false)
     end
     urls.merge("x-default" => url_for(locale: I18n.default_locale, only_path: false))
+  end
+
+  def resolve_market_country
+    requested = params[:country].to_s.strip.upcase
+    if requested.present?
+      country = Country.find_by(code: requested)
+      return country if country && (country.enabled? || current_user&.staff?)
+
+      return nil
+    end
+
+    Country.find_by(code: "ES") || Country.enabled.order(:code).first
+  end
+
+  # Stable anonymous identity for "Was this article helpful?" votes. One vote
+  # per article and browser session is enforced by a unique database index.
+  def help_feedback_session_id
+    session[:help_feedback_session_id] ||= SecureRandom.hex(16)
   end
 
   def require_staff

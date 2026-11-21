@@ -863,6 +863,7 @@ es:
       cannot_update: No se ha podido actualizar esta reseña.
       deleted: Reseña eliminada.
       published: Publicada
+      feedback_counts: "%{yes} sí · %{no} no"
       unpublished: Despublicada
       replied: Vendedor respondió
       reply_visible: Respuesta visible
@@ -1024,6 +1025,7 @@ es:
         limits: Límites
         content: Contenido
         communication: Comunicación
+        company: Empresa
       keys:
         site_name:
           label: Nombre del sitio
@@ -1109,6 +1111,33 @@ es:
         support_email:
           label: Correo de soporte
           help: Recibe avisos de incidencias y soporte.
+        company_legal_name:
+          label: Razón social
+          help: Nombre legal que aparece en los textos legales.
+        company_tax_id:
+          label: NIF
+          help: Identificador fiscal de la empresa.
+        company_address:
+          label: Domicilio social
+          help: Dirección completa que aparece en los avisos legales.
+        company_registry:
+          label: Datos registrales
+          help: Registro mercantil y datos de inscripción.
+        contact_email:
+          label: Correo de contacto
+          help: Buzón general público.
+        dpo_email:
+          label: Correo del DPO
+          help: Contacto del delegado de protección de datos.
+        legal_email:
+          label: Correo legal
+          help: Notificaciones legales y contacto DSA.
+        support_phone:
+          label: Teléfono de soporte
+          help: Número público de atención.
+        support_hours:
+          label: Horario de soporte
+          help: Horario que se muestra junto al teléfono.
       maintenance_confirm: "¿Activar el modo mantenimiento? Los visitantes verán una página 503."
     countries:
       title: Países
@@ -1158,6 +1187,7 @@ es:
       draft: Borrador
       global: Global
       version_hint: Versión actual %{version}. Guardar contenido o publicar la incrementa.
+      placeholders_note: "Las páginas legales son plantillas y deben revisarse con un abogado antes de publicarlas. Puedes usar marcadores como {{company_legal_name}} o {{support_email}}; se sustituyen automáticamente con los ajustes de Empresa."
       delete: Eliminar página
       confirm_delete: "¿Eliminar esta página legal definitivamente?"
       empty_title: No se encontraron páginas legales

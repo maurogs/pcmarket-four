@@ -101,6 +101,10 @@ class SitemapBuilder
         rows << Entry.new("/legal/#{page.slug}", page.updated_at)
       end
 
+      HelpArticle.published.find_each do |article|
+        rows << Entry.new("/help/#{article.slug}", article.updated_at)
+      end
+
       rows
     end
   end

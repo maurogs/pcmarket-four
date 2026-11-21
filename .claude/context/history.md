@@ -629,3 +629,48 @@ placeholders, with audited configuration changes and safe catalogue editing.
 `app/views/{maintenance,shared}/**`, `app/javascript/controllers/**`,
 `config/routes.rb`, `config/locales/**`, `test/integration/admin_catalogue_test.rb`,
 `.claude/context/{project,project.es}.md`.
+
+## 2026-11-22 — Phase 7A: legal texts, trust, about and help centre
+
+### What changed
+
+- Added company identity settings (legal name, tax ID, address, registry,
+  contact/DPO/legal emails, support phone and hours) with six-locale admin
+  labels, plus `{{placeholder}}` interpolation in `LegalPage#rendered_body`
+  and a table-of-contents API.
+- Replaced the legal seed with 99 templates: nine slugs for ES, FR, DE, IT and
+  PT in the native language and English, and nine in English for GB. Seeding is
+  idempotent and preserves version-1 admin edits.
+- Reworked legal page routing for market country plus locale/default/English
+  fallback, staff preview of disabled countries, country sidebar, heading TOC,
+  print control, cookie preference button, canonical and per-country hreflang.
+- Added the public trust page with cached live stats and honest fallbacks,
+  three-step buyer protection, pre-moderation, verified sellers, safety tips,
+  contact cards and eight FAQ entries with FAQPage JSON-LD; added the about page.
+- Replaced the help placeholder with `HelpArticlesController` index/search/show,
+  accent-insensitive jsonb search, popular articles and Article/Breadcrumb
+  structured data. Added `HelpArticleFeedback` with one vote per session and
+  admin yes/no counts, plus 18 seeded articles (3 per category) in ES/EN with
+  short FR/DE/IT/PT versions.
+- Updated footer academy and help links, sitemap coverage and cache keys.
+
+### Why
+
+Phase 7A gives each market legally usable content and a trustworthy public help
+surface, while keeping legal data editable once in Settings and preserving
+administrator edits.
+
+### Files touched
+
+`db/migrate/20261122230000_create_help_article_feedbacks.rb`, `db/schema.rb`,
+`db/seeds.rb`, `db/seeds/legal_pages.rb`, `db/seeds/legal/*.rb`,
+`db/seeds/help_articles.rb`, `app/models/{legal_page,help_article,help_article_feedback,setting}.rb`,
+`app/controllers/{legal_pages,help_articles,help_article_feedbacks,pages,application}_controller.rb`,
+`app/services/{trust_stats,sitemap_builder}.rb`, `app/controllers/seo_controller.rb`,
+`app/helpers/application_helper.rb`, `app/views/legal_pages/show.html.erb`,
+`app/views/pages/{trust,about}.html.erb`, `app/views/help_articles/**`,
+`app/views/admin/{legal_pages,help_articles}/**`, `app/views/shared/_footer.html.erb`,
+`app/javascript/controllers/print_controller.js`, `config/routes.rb`,
+`config/locales/content.*.yml`, `config/locales/admin.*.yml`,
+`test/models/legal_page_test.rb`, `test/integration/{legal_pages,trust_and_about,help_centre,seo}_test.rb`,
+`test/seeds_test.rb`, `.claude/context/{project,project.es}.md`.

@@ -578,6 +578,52 @@ module ApplicationHelper
     [ definition&.name || humanized_spec_key(key), label ]
   end
 
+  def trust_stat_display(key, stat)
+    return t("content.trust.stats.#{key}.fallback") unless stat[:sufficient]
+
+    if key.to_sym == :average_rating
+      "#{number_with_precision(stat[:value].to_f, precision: 1)} / 5"
+    else
+      number_with_delimiter(stat[:value].to_i)
+    end
+  end
+
+  def trust_faq_json_ld
+    {
+      "@context" => "https://schema.org",
+      "@type" => "FAQPage",
+      "mainEntity" => t("content.trust.faq.items").map do |item|
+        {
+          "@type" => "Question",
+          "name" => item[:q] || item["q"],
+          "acceptedAnswer" => {
+            "@type" => "Answer",
+            "text" => item[:a] || item["a"]
+          }
+        }
+      end
+    }.to_json.html_safe
+  end
+
+  def legal_country_param
+    requested = params[:country].to_s.strip.upcase
+    return nil if requested.blank? || requested == "ES"
+
+    code = market_country&.code
+    code unless code.blank? || code == "ES"
+  end
+
+  def help_category_icon(category)
+    {
+      "buying" => "shopping-cart",
+      "selling" => "tag",
+      "shipping" => "truck",
+      "payments" => "credit-card",
+      "account" => "user",
+      "safety" => "shield-check"
+    }.fetch(category.to_s, "message-circle")
+  end
+
   def structured_data
     base = request.base_url
     locale_prefix = "/#{I18n.locale}"

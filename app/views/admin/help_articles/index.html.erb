@@ -18,6 +18,11 @@
               <%= t("admin.help_articles.categories.#{article.category}") %>
             </p>
           </div>
+          <span class="<%= ui_badge_classes(tone: :neutral, extra: '!px-2 !py-0.5') %>">
+            <%= t("admin.help_articles.feedback_counts",
+                  yes: @feedback_counts[[ article.id, true ]].to_i,
+                  no: @feedback_counts[[ article.id, false ]].to_i) %>
+          </span>
           <span class="<%= ui_badge_classes(tone: article.published? ? :success : :neutral, extra: '!px-2 !py-0.5') %>">
             <%= article.published? ? t("admin.help_articles.published") : t("admin.legal_pages.draft") %>
           </span>

@@ -863,6 +863,7 @@ fr:
       cannot_update: Cet avis n’a pas pu être mis à jour.
       deleted: Avis supprimé.
       published: Publié
+      feedback_counts: "%{yes} oui · %{no} non"
       unpublished: Dépublié
       replied: Le vendeur a répondu
       reply_visible: Réponse visible
@@ -1024,6 +1025,7 @@ fr:
         limits: Limites
         content: Contenu
         communication: Communication
+        company: Entreprise
       keys:
         site_name:
           label: Site name
@@ -1109,6 +1111,33 @@ fr:
         support_email:
           label: Support email
           help: Receives dispute and support notifications.
+        company_legal_name:
+          label: Raison sociale
+          help: Nom légal affiché dans les textes légaux.
+        company_tax_id:
+          label: Numéro fiscal
+          help: Identifiant fiscal de l’entreprise.
+        company_address:
+          label: Siège social
+          help: Adresse complète affichée dans les mentions légales.
+        company_registry:
+          label: Immatriculation
+          help: Registre et données d’immatriculation.
+        contact_email:
+          label: E-mail de contact
+          help: Boîte générale publique.
+        dpo_email:
+          label: E-mail du DPO
+          help: Contact du délégué à la protection des données.
+        legal_email:
+          label: E-mail juridique
+          help: Notifications légales et contact DSA.
+        support_phone:
+          label: Téléphone du support
+          help: Numéro public d’assistance.
+        support_hours:
+          label: Horaires du support
+          help: Horaires affichés à côté du téléphone.
       maintenance_confirm: Activer le mode maintenance ? Les visiteurs verront une page 503.
     countries:
       title: Pays
@@ -1158,6 +1187,7 @@ fr:
       draft: Brouillon
       global: Global
       version_hint: Version actuelle %{version}. Enregistrer le contenu ou publier l’incrémente.
+      placeholders_note: "Les pages légales sont des modèles et doivent être relues par un avocat avant publication. Vous pouvez utiliser des variables comme {{company_legal_name}} ou {{support_email}} ; elles sont remplacées depuis les réglages Entreprise."
       delete: Supprimer la page
       confirm_delete: Supprimer définitivement cette page ?
       empty_title: Aucune page légale

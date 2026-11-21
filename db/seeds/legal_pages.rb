@@ -1,46 +1,47 @@
-legal_pages = [
-  {
-    slug: "terms",
-    title: "Términos y condiciones",
-    body: <<~HTML
-      <p>PCMarket es un mercado de tecnología nueva y de segunda mano. Los vendedores son responsables de la exactitud de sus anuncios y de cumplir la legislación aplicable.</p>
-      <p>El uso de la plataforma implica la aceptación de estas condiciones.</p>
-    HTML
-  },
-  {
-    slug: "privacy",
-    title: "Política de privacidad",
-    body: <<~HTML
-      <p>Tratamos tus datos personales de acuerdo con el Reglamento General de Protección de Datos (RGPD) y la normativa española aplicable.</p>
-      <p>Puedes ejercer tus derechos de acceso, rectificación, supresión y portabilidad escribiendo a nuestro equipo de privacidad.</p>
-    HTML
-  },
-  {
-    slug: "cookies",
-    title: "Política de cookies",
-    body: <<~HTML
-      <p>Usamos cookies necesarias para el funcionamiento del sitio y, con tu consentimiento, cookies analíticas y de marketing.</p>
-      <p>Puedes cambiar tus preferencias en cualquier momento desde el enlace «Preferencias de cookies» del pie de página.</p>
-    HTML
-  },
-  {
-    slug: "legal_notice",
-    title: "Aviso legal",
-    body: <<~HTML
-      <p>Este sitio es operado por PCMarket. La información publicada por los vendedores es responsabilidad de cada vendedor.</p>
-    HTML
-  }
-].freeze
+module LegalSeed
+  module_function
 
-legal_pages.each do |attributes|
-  page = LegalPage.find_or_initialize_by(
-    slug: attributes[:slug], country_code: "ES", locale: "es"
-  )
-  page.assign_attributes(
-    title: attributes[:title],
-    body: attributes[:body],
-    version: 1,
-    published: true
-  )
-  page.save!
+  # Builds a consistent legal document. Sections are [heading, content] pairs;
+  # content may be a paragraph string or an array rendered as a bullet list.
+  def body(intro, sections)
+    parts = [ "<p>#{intro}</p>" ]
+    sections.each do |heading, content|
+      parts << "<h2>#{heading}</h2>"
+      parts << if content.is_a?(Array)
+        "<ul>#{content.map { |item| "<li>#{item}</li>" }.join}</ul>"
+      else
+        content
+      end
+    end
+    parts.join("\n")
+  end
+
+  def page(title, intro, sections)
+    { title: title, body: body(intro, sections) }
+  end
+end
+
+LEGAL_PAGE_CONTENT = {} unless defined?(LEGAL_PAGE_CONTENT)
+
+Dir[Rails.root.join("db/seeds/legal/*.rb")].sort.each { |file| load file }
+
+LEGAL_PAGE_CONTENT.each do |country_code, locales|
+  locales.each do |locale, pages|
+    pages.each do |slug, attributes|
+      page = LegalPage.find_or_initialize_by(
+        slug: slug.to_s, country_code: country_code, locale: locale.to_s
+      )
+      if page.persisted? && (page.version.to_i != 1 || page.updated_by_id.present?)
+        next
+      end
+
+      page.assign_attributes(
+        title: attributes.fetch(:title),
+        body: attributes.fetch(:body),
+        published: true
+      )
+      page.version = 1 if page.new_record?
+      page.save!
+    end
+  end
 end

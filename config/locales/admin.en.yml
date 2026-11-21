@@ -863,6 +863,7 @@ en:
       cannot_update: This review could not be updated.
       deleted: Review deleted.
       published: Published
+      feedback_counts: "%{yes} yes · %{no} no"
       unpublished: Unpublished
       replied: Seller replied
       reply_visible: Reply visible
@@ -1023,6 +1024,7 @@ en:
         limits: Limits
         content: Content
         communication: Communication
+        company: Company
       keys:
         site_name:
           label: Site name
@@ -1108,6 +1110,33 @@ en:
         support_email:
           label: Support email
           help: Receives dispute and support notifications.
+        company_legal_name:
+          label: Legal name
+          help: Legal name shown in the legal texts.
+        company_tax_id:
+          label: Tax ID
+          help: Company tax identifier.
+        company_address:
+          label: Registered address
+          help: Full address shown in legal notices.
+        company_registry:
+          label: Registry details
+          help: Company register and registration details.
+        contact_email:
+          label: Contact email
+          help: Public general inbox.
+        dpo_email:
+          label: DPO email
+          help: Data protection officer contact.
+        legal_email:
+          label: Legal email
+          help: Legal notices and DSA contact.
+        support_phone:
+          label: Support phone
+          help: Public support number.
+        support_hours:
+          label: Support hours
+          help: Hours shown next to the phone number.
       maintenance_confirm: Put the marketplace into maintenance mode? Visitors will see a 503 page.
     countries:
       title: Countries
@@ -1157,6 +1186,7 @@ en:
       draft: Draft
       global: Global
       version_hint: Current version %{version}. Saving content or publishing increments it.
+      placeholders_note: "Legal pages are templates and must be reviewed by a lawyer before publication. You can use placeholders such as {{company_legal_name}} or {{support_email}}; they are replaced automatically from the Company settings."
       delete: Delete page
       confirm_delete: Delete this legal page permanently?
       empty_title: No legal pages found

@@ -5,12 +5,18 @@ class PagesController < ApplicationController
   end
 
   def trust
-  end
-
-  def help
+    @trust_stats = TrustStats.call
+    set_meta_tags(
+      title: t("content.trust.title"),
+      description: t("content.trust.meta_description")
+    )
   end
 
   def about
+    set_meta_tags(
+      title: t("content.about.title"),
+      description: t("content.about.meta_description")
+    )
   end
 
   private

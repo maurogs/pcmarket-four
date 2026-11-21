@@ -168,11 +168,11 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Project Context</h1>
     <p class="lede">Architecture, decisions and code map</p>
-    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-22 00:04</p>
+    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-22 00:22</p>
   </header>
   <main><section class="card status">
 <h2><span>Status</span><span class="badge badge-success">Complete</span></h2>
-<p>Phase 6C complete: admin catalogue, settings, countries, content, marketing and audit screens, replacing all remaining admin placeholders. Phase 6B admin operations for orders, payments, disputes, reports and review moderation remain intact. Phase 6A admin foundation (dashboard, listing moderation, users, stores, audit log and impersonation) is unchanged. Phase 5 internal chat with conversations, unread counters and real-time messages, offers with accepted-offer cart pricing, blocks and message safety warnings; follower notifications, instant and daily saved-search alerts and favourite price-drop alerts are intact. Phase 4B order lifecycle (paid, shipped, delivered, completed, cancelled, disputed, refunded), seller fulfilment screens, buyer delivery confirmation/disputes/reviews, order notifications with email fan-out and real-time badge updates remain intact. Discovery (Phase 2B), listing creation (Phase 3A) and checkout/payments (Phase 4A) are unchanged.</p>
+<p>Phase 7A complete: per-country legal texts (ES, FR, GB, DE, IT, PT), a public trust and safety page, an about page and a searchable help centre with article feedback. Company identity settings feed legal placeholders. Phase 6C admin catalogue, settings, countries, content, marketing and audit screens replace all remaining admin placeholders and remain intact. Phase 6B admin operations for orders, payments, disputes, reports and review moderation remain intact. Phase 6A admin foundation (dashboard, listing moderation, users, stores, audit log and impersonation) is unchanged. Phase 5 internal chat with conversations, unread counters and real-time messages, offers with accepted-offer cart pricing, blocks and message safety warnings; follower notifications, instant and daily saved-search alerts and favourite price-drop alerts are intact. Phase 4B order lifecycle (paid, shipped, delivered, completed, cancelled, disputed, refunded), seller fulfilment screens, buyer delivery confirmation/disputes/reviews, order notifications with email fan-out and real-time badge updates remain intact. Discovery (Phase 2B), listing creation (Phase 3A) and checkout/payments (Phase 4A) are unchanged.</p>
 <p>Admin catalogue and content mutations are administrator-only; moderators keep read access.</p>
 </section>
 <section class="card status">
@@ -190,6 +190,7 @@ footer {
 <tr><td>6A</td><td>Admin foundation, dashboard, moderation, users and stores</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>6B</td><td>Admin orders, payments, disputes, reports and reviews</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>6C</td><td>Admin catalogue, settings, countries, content, marketing and audit</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>7A</td><td>Legal texts, trust, about and help centre</td><td><span class="badge badge-success">Complete</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -411,6 +412,16 @@ footer {
 <li>Phase 6C policies inherit <code>Admin::CataloguePolicy</code>: staff can read, only administrators can create/update/delete. Existing phase 6A/6B moderator permissions are unchanged.</li>
 <li>New schema: <code>feature_requests</code>, <code>help_articles</code>, <code>legal_pages.published_at</code> and <code>settings.feature_flag</code>. New default <code>allow_non_eur_countries</code> (false).</li>
 </ul>
+<h3>Legal texts, trust, about and help centre (Phase 7A)</h3>
+<ul>
+<li>Company identity lives in Settings group <code>company</code>: legal name, tax ID, address, registry details, contact/DPO/legal emails, support phone and hours. Legal bodies may use <code>{{placeholder}}</code> tokens; <code>LegalPage#rendered_body</code> sanitises the HTML, interpolates escaped Setting values and adds stable ids to <code>h2</code> headings. <code>LegalPage#toc</code> feeds the table of contents.</li>
+<li><code>LegalPage</code> has nine slugs (<code>terms</code>, <code>privacy</code>, <code>cookies</code>, <code>legal_notice</code>, <code>returns</code>, <code>buyer_protection</code>, <code>seller_terms</code>, <code>prohibited_items</code>, <code>dsa_contact</code>). Seeds provide native and English texts for ES, FR, DE, IT and PT and English only for GB (99 pages). They create missing pages and update only version-1 pages with no <code>updated_by</code>, so administrator edits survive.</li>
+<li><code>LegalPagesController#show</code> resolves the page for the visitor&#39;s market country, then the requested locale, the country default and English. Country comes from <code>?country=</code> only when enabled, or for staff preview; otherwise ES. The view adds country navigation, a heading TOC, last-updated/version and a print control. The cookie page opens the existing consent dialog. Canonical and hreflang cover only locales that exist for that country.</li>
+<li><code>TrustStats</code> caches four DB aggregates for an hour (completed orders, verified stores, average store rating, reviewed listings). The trust page shows a translated fallback instead of a number until each minimum is meaningful, explains three-step buyer protection, manual pre-moderation, verified sellers, safety tips, contact cards from Settings and eight FAQ entries with <code>FAQPage</code> JSON-LD. <code>PagesController#about</code> renders mission, sustainability, buyer/seller flows, values and a team placeholder using illustrated initials.</li>
+<li><code>HelpArticle</code> stores six-locale titles/bodies as jsonb. <code>HelpArticlesController</code> provides the category grid, popular list, accent-insensitive search through <code>unaccent(titles -&gt;&gt; locale)</code>/<code>unaccent(bodies -&gt;&gt; locale)</code> and article pages with Article + BreadcrumbList JSON-LD and related links. Seeds create 18 articles (3 per category) with full ES/EN content and short FR/DE/IT/PT versions.</li>
+<li><code>HelpArticleFeedback</code> (article, helpful, session id) has a unique article/session index. <code>HelpArticleFeedbacksController</code> records or updates one vote per browser session; the admin article list shows yes/no counts.</li>
+<li>Sitemap entries include help articles and legal pages; help URLs are added to the cache key. Footer seller-academy and help links point to real articles.</li>
+</ul>
 <h3>Performance guardrails</h3>
 <ul>
 <li><code>ListingSearch::INCLUDES</code> preloads store, category, region, user and image attachments/blobs. Cards never call <code>category.root</code> or <code>user.store</code>; root slugs come from a cached <code>Category.root_slug_map</code> and seller names prefer the preloaded store.</li>
@@ -511,6 +522,8 @@ app/controllers/stores_controller.rb        store header, tabs, reviews
 app/controllers/{cart,cart_items,favorites,follows,reports,saved_searches}_controller.rb
 app/controllers/users/registrations_controller.rb
 app/controllers/{conversations,orders,account,pc_finder,pages,legal_pages,sell_offers}_controller.rb
+app/controllers/help_articles_controller.rb      help index/search/article pages
+app/controllers/help_article_feedbacks_controller.rb  one helpful vote per session
 app/controllers/{search_suggestions,seo,newsletter_subscribers}_controller.rb
 app/controllers/admin/base_controller.rb        auth, staff guard, admin layout,
                                                 Pundit + audit helpers
@@ -547,6 +560,14 @@ app/services/admin/{filter_option_merger,settings_updater}.rb
 app/services/admin/country_launch_checklist.rb
 app/jobs/cleanup_spec_key_job.rb
 app/models/{feature_request,help_article}.rb
+app/models/help_article_feedback.rb                article helpfulness votes
+app/services/trust_stats.rb                        cached trust page aggregates
+app/views/pages/{trust,about}.html.erb             public trust and about pages
+app/views/help_articles/                           help index, article and feedback
+db/seeds/legal/*.rb                                country legal copy
+db/seeds/help_articles.rb                          18 help articles
+test/integration/{legal_pages,trust_and_about,help_centre}_test.rb
+test/models/legal_page_test.rb
 app/policies/admin/catalogue_policy.rb             admin-only writes
 app/views/admin/{categories,filters,settings,countries,regions}/**
 app/views/admin/{legal_pages,games,help_articles,newsletter_subscribers}/**
@@ -669,7 +690,6 @@ test/seeds_test.rb
 <ul>
 <li>Featured listing payments are confirmed manually by administrators; bank transfer or Stripe collection is not automated for feature requests.</li>
 <li>The launch checklist is informational except for the non-EUR currency gate; missing legal pages or regions do not block enabling a country.</li>
-<li>Help article public pages and search are phase 7.</li>
 <li>Refunds are recorded manually with a reference; no payment-provider refund API is called yet.</li>
 <li>Admin two-factor authentication is not implemented; Devise lockable already throttles failed sign-ins. Decide whether staff 2FA is required before phase 6C.</li>
 <li>Impersonation is session-based and audited; there is no automatic timeout.</li>
@@ -681,7 +701,6 @@ test/seeds_test.rb
 <li>Store tabs currently render the active panel inline for SEO and load other tabs through Turbo Frame navigation; <code>loading=&quot;lazy&quot;</code> placeholders can be added if the panels grow heavier.</li>
 <li>Mobile &quot;Load more&quot; navigates to the next page inside the results frame instead of appending; true infinite append can be added with a stream endpoint.</li>
 <li>Google sign-in is shown only when <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> are configured.</li>
-<li>Real social profile URLs and legal copy per locale.</li>
 <li>API endpoints (ListingSearch is already API-ready).</li>
 <li>No typing indicator in conversations (explicitly out of scope).</li>
 <li>Message safety detection is heuristic; moderation review is still manual.</li>

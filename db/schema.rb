@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_22_225000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_22_230000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -259,6 +259,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_225000) do
     t.datetime "updated_at", null: false
     t.index ["active", "position"], name: "index_games_on_active_and_position"
     t.index ["slug"], name: "index_games_on_slug", unique: true
+  end
+
+  create_table "help_article_feedbacks", force: :cascade do |t|
+    t.bigint "help_article_id", null: false
+    t.boolean "helpful", null: false
+    t.string "session_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["help_article_id", "session_id"], name: "index_help_article_feedbacks_on_article_and_session", unique: true
+    t.index ["help_article_id"], name: "index_help_article_feedbacks_on_help_article_id"
   end
 
   create_table "help_articles", force: :cascade do |t|
@@ -700,6 +710,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_225000) do
   add_foreign_key "filter_options", "filter_definitions"
   add_foreign_key "follows", "stores"
   add_foreign_key "follows", "users", column: "follower_id"
+  add_foreign_key "help_article_feedbacks", "help_articles"
   add_foreign_key "legal_pages", "users", column: "updated_by_id"
   add_foreign_key "listings", "categories"
   add_foreign_key "listings", "countries", column: "country_code", primary_key: "code"

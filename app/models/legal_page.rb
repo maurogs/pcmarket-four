@@ -11,6 +11,13 @@ class LegalPage < ApplicationRecord
 
   ALLOWED_ATTRIBUTES = %w[href title target rel class].freeze
 
+  PLACEHOLDER_KEYS = %w[
+    company_legal_name company_tax_id company_address company_registry contact_email
+    support_email dpo_email legal_email support_phone support_hours
+  ].freeze
+
+  PLACEHOLDER_PATTERN = /\{\{\s*([a-z0-9_]+)\s*\}\}/i
+
   belongs_to :updated_by, class_name: "User", optional: true, inverse_of: false
   belongs_to :country, foreign_key: :country_code, primary_key: :code, optional: true,
                        inverse_of: false
@@ -24,6 +31,23 @@ class LegalPage < ApplicationRecord
 
   scope :published, -> { where(published: true) }
   scope :for_locale, ->(locale) { where(locale: locale.to_s) }
+  scope :for_country, ->(country_code) { where(country_code: country_code.to_s.upcase) }
+
+  def self.resolve(country:, locale:, slug:)
+    return nil if country.nil?
+
+    scope = published.for_country(country.code).where(slug: slug.to_s)
+    candidates = [ locale.to_s, country.default_locale.to_s, "en" ].reject(&:blank?).uniq
+    candidates.each do |candidate|
+      page = scope.find_by(locale: candidate)
+      return page if page
+    end
+    nil
+  end
+
+  def self.available_locales_for(country_code:, slug:)
+    published.for_country(country_code).where(slug: slug.to_s).distinct.pluck(:locale)
+  end
 
   def to_param
     slug
@@ -37,7 +61,40 @@ class LegalPage < ApplicationRecord
     )
   end
 
+  def rendered_body
+    @rendered_body ||= begin
+      fragment = Nokogiri::HTML::DocumentFragment.parse(interpolated_body)
+      fragment.css("h2").each_with_index do |heading, index|
+        heading["id"] = heading_id(heading.text, index) if heading["id"].blank?
+      end
+      fragment.to_html.html_safe
+    end
+  end
+
+  def toc
+    @toc ||= begin
+      fragment = Nokogiri::HTML::DocumentFragment.parse(rendered_body.to_s)
+      fragment.css("h2").each_with_index.map do |heading, index|
+        { id: heading["id"].presence || "section-#{index + 1}", title: heading.text.squish }
+      end
+    end
+  end
+
   private
+
+  def interpolated_body
+    body_html.gsub(PLACEHOLDER_PATTERN) do
+      key = Regexp.last_match(1).to_s
+      next "" unless PLACEHOLDER_KEYS.include?(key)
+
+      ERB::Util.html_escape(Setting.get(key, "").to_s)
+    end
+  end
+
+  def heading_id(text, index)
+    base = text.to_s.parameterize.presence || "section-#{index + 1}"
+    "#{base}-#{index + 1}"
+  end
 
   def publishing_change?
     return false unless persisted?
