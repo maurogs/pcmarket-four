@@ -1,0 +1,11 @@
+fortnite:
+  slug: fortnite
+  name: Fortnite
+  position: 1
+  active: true
+
+counter_strike_2:
+  slug: counter-strike-2
+  name: Counter-Strike 2
+  position: 2
+  active: true

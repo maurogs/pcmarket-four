@@ -1,0 +1,200 @@
+class Listing < ApplicationRecord
+  extend FriendlyId
+
+  MAX_IMAGE_BYTES = 10.megabytes
+  IMAGE_CONTENT_TYPES = %w[image/jpeg image/png image/webp].freeze
+  MIN_TITLE_LENGTH = 10
+  MAX_TITLE_LENGTH = 120
+  MIN_DESCRIPTION_LENGTH = 30
+  MAX_PRICE_CENTS = 100_000_000
+
+  friendly_id :slug_candidates, use: [ :slugged, :history ]
+
+  belongs_to :user, inverse_of: :listings
+  belongs_to :store, optional: true, counter_cache: :listings_count, inverse_of: :listings
+  belongs_to :category, counter_cache: :listings_count, inverse_of: :listings
+  belongs_to :region, optional: true, inverse_of: :listings
+  belongs_to :country, foreign_key: :country_code, primary_key: :code, inverse_of: :listings,
+                       optional: true
+  belongs_to :reviewer, class_name: "User", foreign_key: :reviewed_by_id, optional: true,
+                        inverse_of: false
+
+  has_many_attached :images
+
+  has_many :favorites, dependent: :destroy, inverse_of: :listing
+  has_many :favorited_by_users, through: :favorites, source: :user
+  has_many :cart_items, dependent: :destroy, inverse_of: :listing
+  has_many :order_items, dependent: :restrict_with_error, inverse_of: :listing
+  has_many :conversations, dependent: :nullify, inverse_of: :listing
+
+  enum :condition, {
+    new_sealed: 0,
+    new_open_box: 1,
+    used_like_new: 2,
+    used_good: 3,
+    used_fair: 4,
+    for_parts: 5
+  }
+  enum :status, {
+    draft: 0,
+    pending_review: 1,
+    published: 2,
+    rejected: 3,
+    paused: 4,
+    sold: 5,
+    archived: 6
+  }
+
+  pg_search_scope :search_text,
+                  against: { title: "A", brand: "B", description: "C" },
+                  using: {
+                    tsearch: { prefix: true, dictionary: "simple" },
+                    trigram: { threshold: 0.2 }
+                  },
+                  ignoring: :accents
+
+  validates :title, presence: true,
+                    length: { minimum: MIN_TITLE_LENGTH, maximum: MAX_TITLE_LENGTH }
+  validates :description, presence: true, length: { minimum: MIN_DESCRIPTION_LENGTH }
+  validates :price_cents, presence: true,
+                          numericality: { only_integer: true, greater_than: 0,
+                                          less_than_or_equal_to: MAX_PRICE_CENTS }
+  validates :quantity, numericality: { only_integer: true, greater_than: 0 }
+  validates :ships_within_days, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :shipping_price_cents, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validate :original_price_must_exceed_price
+  validate :country_must_be_enabled
+  validate :category_must_be_leaf
+  validate :images_within_limits
+
+  scope :visible, lambda {
+    published
+      .where(quantity: 1..)
+      .joins(:user, :country)
+      .where(users: { status: User.statuses[:active], deleted_at: nil })
+      .where(countries: { enabled: true })
+  }
+  scope :featured, -> { where("listings.featured_until > ?", Time.current) }
+  scope :recent, -> { order(published_at: :desc, created_at: :desc) }
+  scope :in_category, ->(category) { where(category_id: category.subtree_ids) }
+
+  def submit_for_review!
+    return false unless draft? || rejected?
+
+    if Setting.enabled?("listings_require_approval")
+      update!(status: :pending_review, rejection_reason: nil)
+    else
+      publish!
+    end
+    true
+  end
+
+  def publish!
+    update!(
+      status: :published,
+      published_at: published_at || Time.current,
+      rejection_reason: nil
+    )
+    true
+  end
+
+  def approve!(reviewer)
+    return false unless pending_review?
+
+    update!(
+      status: :published,
+      reviewed_at: Time.current,
+      reviewed_by_id: reviewer.id,
+      published_at: published_at || Time.current,
+      rejection_reason: nil
+    )
+    true
+  end
+
+  def reject!(reviewer, reason)
+    return false unless pending_review?
+
+    update!(
+      status: :rejected,
+      reviewed_at: Time.current,
+      reviewed_by_id: reviewer.id,
+      rejection_reason: reason
+    )
+    true
+  end
+
+  def pause!
+    return false unless published?
+
+    update!(status: :paused)
+    true
+  end
+
+  def resume!
+    return false unless paused?
+
+    update!(status: :published, published_at: published_at || Time.current)
+    true
+  end
+
+  def mark_sold!
+    return false unless published? || paused?
+
+    update!(status: :sold)
+    true
+  end
+
+  def featured?
+    featured_until.present? && featured_until > Time.current
+  end
+
+  def visible?
+    published? && quantity.to_i.positive? && user&.active_account? &&
+      Country.enabled.exists?(code: country_code)
+  end
+
+  def price
+    price_cents.to_i / 100.0
+  end
+
+  private
+
+  def slug_candidates
+    [ title, "#{title}-#{SecureRandom.hex(3)}" ]
+  end
+
+  def original_price_must_exceed_price
+    return if original_price_cents.blank? || price_cents.blank?
+
+    return if original_price_cents > price_cents
+
+    errors.add(:original_price_cents, :greater_than_price)
+  end
+
+  def country_must_be_enabled
+    return if country_code.blank?
+    return if Country.enabled.exists?(code: country_code)
+
+    errors.add(:country_code, :not_enabled)
+  end
+
+  def category_must_be_leaf
+    return if category.blank?
+    return unless category.children.exists?
+
+    errors.add(:category, :not_a_leaf)
+  end
+
+  def images_within_limits
+    return unless images.attached?
+
+    images.each do |image|
+      errors.add(:images, :invalid_format) unless IMAGE_CONTENT_TYPES.include?(image.content_type)
+      errors.add(:images, :too_large) if image.byte_size.to_i > MAX_IMAGE_BYTES
+    end
+
+    max_images = Setting.get("max_images_per_listing", 12).to_i
+    errors.add(:images, :too_many, count: max_images) if images.size > max_images
+  end
+end

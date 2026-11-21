@@ -1,29 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="<%= I18n.locale %>">
   <head>
-    <title><%= content_for(:title) || "App Test Four" %></title>
+    <title><%= content_for(:title) || t("home.title") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="App Test Four">
+    <meta name="application-name" content="<%= t("common.site_name") %>">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="<%= t("home.subtitle") %>">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-slate-50 text-slate-900 antialiased">
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+        <%= link_to root_path, class: "text-lg font-semibold tracking-tight" do %>
+          <%= t("common.site_name") %>
+        <% end %>
+        <nav aria-label="<%= t("common.language_switcher") %>" class="flex gap-2 text-sm">
+          <% I18n.available_locales.each do |locale| %>
+            <%= link_to locale.to_s.upcase, root_path(locale: locale),
+                        class: "rounded px-2 py-1 #{'bg-slate-900 text-white' if locale == I18n.locale}",
+                        lang: locale, hreflang: locale %>
+          <% end %>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-4 py-12">
+      <% if notice.present? %>
+        <p class="mb-6 rounded border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800"><%= notice %></p>
+      <% end %>
+      <% if alert.present? %>
+        <p class="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-800"><%= alert %></p>
+      <% end %>
+
+      <%= yield %>
+    </main>
   </body>
 </html>

@@ -1,0 +1,23 @@
+spain:
+  code: ES
+  name_key: countries.ES
+  enabled: true
+  currency: EUR
+  vat_rate: 21.0
+  default_locale: es
+
+france:
+  code: FR
+  name_key: countries.FR
+  enabled: false
+  currency: EUR
+  vat_rate: 20.0
+  default_locale: fr
+
+germany:
+  code: DE
+  name_key: countries.DE
+  enabled: false
+  currency: EUR
+  vat_rate: 19.0
+  default_locale: de

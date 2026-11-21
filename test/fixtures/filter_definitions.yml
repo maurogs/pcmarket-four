@@ -1,0 +1,39 @@
+cpu_brand:
+  key: cpu_brand
+  names:
+    es: Marca del procesador
+    en: Processor brand
+    fr: Marque du processeur
+    de: Prozessorhersteller
+    it: Marca del processore
+    pt: Marca do processador
+  input_type: select
+  position: 1
+  active: true
+
+vram:
+  key: vram
+  names:
+    es: Memoria gráfica
+    en: Video memory
+    fr: Mémoire vidéo
+    de: Videospeicher
+    it: Memoria video
+    pt: Memória gráfica
+  input_type: range
+  unit: GB
+  position: 2
+  active: true
+
+legacy_filter:
+  key: legacy_filter
+  names:
+    es: Filtro antiguo
+    en: Legacy filter
+    fr: Ancien filtre
+    de: Alter Filter
+    it: Filtro obsoleto
+    pt: Filtro antigo
+  input_type: checkbox
+  position: 3
+  active: false

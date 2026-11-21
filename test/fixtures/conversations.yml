@@ -1,0 +1,7 @@
+buyer_seller_gpu:
+  listing: published_gpu
+  buyer: buyer
+  seller: seller
+  last_message_at: <%= 1.hour.ago %>
+  buyer_unread_count: 0
+  seller_unread_count: 1

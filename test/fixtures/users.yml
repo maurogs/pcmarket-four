@@ -1,0 +1,79 @@
+admin:
+  email: admin@example.com
+  encrypted_password: <%= BCrypt::Password.create("Password123!") %>
+  username: Admin-User#0001
+  first_name: Ada
+  last_name: Admin
+  role: admin
+  status: active
+  country_code: ES
+  region: madrid
+  city: Madrid
+  locale: es
+  confirmed_at: <%= Time.current %>
+  terms_accepted_at: <%= Time.current %>
+  accepts_marketing: false
+
+moderator:
+  email: moderator@example.com
+  encrypted_password: <%= BCrypt::Password.create("Password123!") %>
+  username: Calm-Owl#0002
+  first_name: Mo
+  last_name: Moderator
+  role: moderator
+  status: active
+  country_code: ES
+  region: madrid
+  city: Madrid
+  locale: es
+  confirmed_at: <%= Time.current %>
+  terms_accepted_at: <%= Time.current %>
+  accepts_marketing: false
+
+seller:
+  email: seller@example.com
+  encrypted_password: <%= BCrypt::Password.create("Password123!") %>
+  username: Swift-Falcon#1234
+  first_name: Sara
+  last_name: Seller
+  role: user
+  status: active
+  country_code: ES
+  region: madrid
+  city: Madrid
+  locale: es
+  confirmed_at: <%= Time.current %>
+  terms_accepted_at: <%= Time.current %>
+  accepts_marketing: true
+
+buyer:
+  email: buyer@example.com
+  encrypted_password: <%= BCrypt::Password.create("Password123!") %>
+  username: Brave-Otter#5678
+  first_name: Bruno
+  last_name: Buyer
+  role: user
+  status: active
+  country_code: ES
+  region: catalonia
+  city: Barcelona
+  locale: es
+  confirmed_at: <%= Time.current %>
+  terms_accepted_at: <%= Time.current %>
+  accepts_marketing: false
+
+suspended:
+  email: suspended@example.com
+  encrypted_password: <%= BCrypt::Password.create("Password123!") %>
+  username: Silent-Cobra#9012
+  first_name: Sam
+  last_name: Suspended
+  role: user
+  status: suspended
+  country_code: ES
+  region: madrid
+  city: Madrid
+  locale: es
+  confirmed_at: <%= Time.current %>
+  terms_accepted_at: <%= Time.current %>
+  accepts_marketing: false

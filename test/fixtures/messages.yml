@@ -1,0 +1,5 @@
+first_message:
+  conversation: buyer_seller_gpu
+  sender: buyer
+  body: Hola, ¿la tarjeta sigue disponible?
+  kind: text

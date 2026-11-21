@@ -1,0 +1,23 @@
+intel:
+  filter_definition: cpu_brand
+  value: intel
+  labels:
+    es: Intel
+    en: Intel
+    fr: Intel
+    de: Intel
+    it: Intel
+    pt: Intel
+  position: 1
+
+amd:
+  filter_definition: cpu_brand
+  value: amd
+  labels:
+    es: AMD
+    en: AMD
+    fr: AMD
+    de: AMD
+    it: AMD
+    pt: AMD
+  position: 2

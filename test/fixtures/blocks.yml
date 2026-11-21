@@ -1,0 +1,3 @@
+buyer_blocks_suspended:
+  blocker: buyer
+  blocked: suspended

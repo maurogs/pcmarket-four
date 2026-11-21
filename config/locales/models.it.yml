@@ -1,0 +1,440 @@
+---
+it:
+  activerecord:
+    models:
+      country: Paese
+      region: Regione
+      setting: Impostazione
+      user: Utente
+      store: Negozio
+      category: Categoria
+      filter_definition: Filtro
+      filter_option: Opzione filtro
+      category_filter: Filtro di categoria
+      listing: Annuncio
+      favorite: Preferito
+      follow: Seguito
+      saved_search: Ricerca salvata
+      conversation: Conversazione
+      message: Messaggio
+      block: Blocco
+      cart_item: Articolo del carrello
+      address: Indirizzo
+      order: Ordine
+      order_item: Riga ordine
+      review: Recensione
+      notification: Notifica
+      report: Segnalazione
+      legal_page: Pagina legale
+      admin_audit_log: Registro di controllo
+      api_token: Token API
+      sell_offer: Offerta di vendita
+      newsletter_subscriber: Iscritto
+      game: Gioco
+    attributes:
+      country:
+        code: Codice
+        name_key: Chiave del nome
+        enabled: Attivo
+        currency: Valuta
+        vat_rate: Aliquota IVA
+        default_locale: Lingua predefinita
+      region:
+        country_code: Paese
+        name: Nome
+        code: Codice
+      setting:
+        key: Chiave
+        value: Valore
+        value_type: Tipo di valore
+        group: Gruppo
+        description_key: Chiave di descrizione
+      user:
+        email: Indirizzo e-mail
+        password: Password
+        password_confirmation: Conferma password
+        current_password: Password attuale
+        remember_me: Ricordami
+        first_name: Nome
+        last_name: Cognome
+        username: Nome utente
+        phone: Telefono
+        role: Ruolo
+        status: Stato
+        country_code: Paese
+        region: Regione
+        region_id: Regione
+        city: Città
+        locale: Lingua
+        provider: Fornitore
+        uid: ID esterno
+        accepts_marketing: Accetta comunicazioni commerciali
+        terms_accepted_at: Condizioni accettate il
+        deleted_at: Eliminato il
+        last_seen_at: Ultimo accesso
+        avatar: Avatar
+      store:
+        user: Proprietario
+        user_id: Proprietario
+        name: Nome
+        slug: Slug URL
+        description: Descrizione
+        logo: Logo
+        banner: Banner
+        store_type: Tipo di negozio
+        verified: Verificato
+        tax_id: Partita IVA
+        company_name: Ragione sociale
+        vacation_mode: Modalità vacanza
+        vacation_message: Messaggio di vacanza
+        allow_offers_default: Consenti offerte per impostazione predefinita
+        rating_avg: Valutazione media
+        reviews_count: Numero di recensioni
+        followers_count: Seguaci
+        sales_count: Vendite
+        listings_count: Annunci
+        return_policy: Politica di reso
+        shipping_policy: Politica di spedizione
+        country_code: Paese
+        region: Regione
+        city: Città
+      category:
+        names: Nomi
+        slug: Slug URL
+        ancestry: Gerarchia
+        position: Posizione
+        icon: Icona
+        active: Attiva
+        show_in_menu: Mostra nel menu
+        menu_group: Gruppo menu
+        seo_descriptions: Descrizioni SEO
+        listings_count: Annunci
+        parent: Categoria superiore
+      filter_definition:
+        key: Chiave
+        names: Nomi
+        input_type: Tipo di campo
+        unit: Unità
+        position: Posizione
+        active: Attivo
+      filter_option:
+        filter_definition: Filtro
+        filter_definition_id: Filtro
+        value: Valore
+        labels: Etichette
+        position: Posizione
+      category_filter:
+        category: Categoria
+        category_id: Categoria
+        filter_definition: Filtro
+        filter_definition_id: Filtro
+        position: Posizione
+      listing:
+        user: Venditore
+        store: Negozio
+        category: Categoria
+        title: Titolo
+        slug: Slug URL
+        description: Descrizione
+        price_cents: Prezzo
+        price: Prezzo
+        original_price_cents: Prezzo originale
+        currency: Valuta
+        condition: Condizioni
+        status: Stato
+        rejection_reason: Motivo del rifiuto
+        published_at: Pubblicato il
+        reviewed_at: Revisionato il
+        reviewed_by: Revisionato da
+        quantity: Quantità
+        specs: Specifiche
+        brand: Marca
+        model_name_text: Modello
+        country_code: Paese
+        region: Regione
+        city: Città
+        postal_code: CAP
+        shipping_available: Spedizione disponibile
+        local_pickup: Ritiro a mano
+        shipping_price_cents: Spese di spedizione
+        free_shipping: Spedizione gratuita
+        ships_within_days: Spedito entro giorni
+        accepts_offers: Accetta offerte
+        featured_until: In evidenza fino al
+        views_count: Visualizzazioni
+        favorites_count: Preferiti
+        labels: Etichette
+        tags: Tag
+        performance_score: Punteggio prestazioni
+        game_fps: FPS nei giochi
+        images: Immagini
+      favorite:
+        user: Utente
+        listing: Annuncio
+      follow:
+        follower: Seguace
+        store: Negozio
+      saved_search:
+        user: Utente
+        name: Nome
+        query: Ricerca
+        category: Categoria
+        filters: Filtri
+        min_price_cents: Prezzo minimo
+        max_price_cents: Prezzo massimo
+        country_code: Paese
+        notify: Avvisi
+        last_notified_at: Ultimo avviso
+      conversation:
+        listing: Annuncio
+        buyer: Acquirente
+        seller: Venditore
+        last_message_at: Ultimo messaggio
+        buyer_unread_count: Messaggi non letti dell'acquirente
+        seller_unread_count: Messaggi non letti del venditore
+      message:
+        conversation: Conversazione
+        sender: Mittente
+        body: Messaggio
+        kind: Tipo
+        offer_amount_cents: Importo dell'offerta
+        offer_status: Stato dell'offerta
+        read_at: Letto il
+      block:
+        blocker: Bloccante
+        blocked: Bloccato
+      cart_item:
+        user: Utente
+        cart_token: Token del carrello
+        listing: Annuncio
+        quantity: Quantità
+      address:
+        user: Utente
+        full_name: Nome completo
+        line1: Indirizzo
+        line2: Indirizzo (riga 2)
+        city: Città
+        postal_code: CAP
+        region: Regione
+        country_code: Paese
+        phone: Telefono
+        default: Indirizzo predefinito
+      order:
+        number: Numero
+        buyer: Acquirente
+        seller: Venditore
+        store: Negozio
+        status: Stato
+        fulfilment: Consegna
+        subtotal_cents: Subtotale
+        shipping_cents: Spedizione
+        commission_cents: Commissione
+        commission_percent: Percentuale di commissione
+        total_cents: Totale
+        currency: Valuta
+        ship_name: Nome di spedizione
+        ship_line1: Indirizzo di spedizione
+        ship_line2: Indirizzo di spedizione (riga 2)
+        ship_city: Città di spedizione
+        ship_postal_code: CAP di spedizione
+        ship_region: Regione di spedizione
+        ship_country_code: Paese di spedizione
+        ship_phone: Telefono di spedizione
+        buyer_email: E-mail dell'acquirente
+        tracking_number: Numero di tracciamento
+        carrier: Corriere
+        paid_at: Pagato il
+        shipped_at: Spedito il
+        delivered_at: Consegnato il
+        completed_at: Completato il
+        cancelled_at: Annullato il
+        cancel_reason: Motivo di annullamento
+        payment_provider: Fornitore di pagamento
+        payment_reference: Riferimento di pagamento
+        notes: Note
+      order_item:
+        order: Ordine
+        listing: Annuncio
+        title_snapshot: Titolo dell'articolo
+        price_cents: Prezzo
+        quantity: Quantità
+      review:
+        order: Ordine
+        reviewer: Autore
+        store: Negozio
+        rating: Valutazione
+        body: Commento
+        seller_reply: Risposta del venditore
+        published: Pubblicata
+      notification:
+        user: Utente
+        kind: Tipo
+        params: Parametri
+        url: Collegamento
+        read_at: Letto il
+      report:
+        reporter: Segnalante
+        reportable: Elemento segnalato
+        reason: Motivo
+        details: Dettagli
+        status: Stato
+        resolved_by: Risolto da
+      legal_page:
+        slug: Slug
+        country_code: Paese
+        locale: Lingua
+        title: Titolo
+        body: Contenuto
+        version: Versione
+        published: Pubblicata
+        updated_by: Aggiornata da
+      admin_audit_log:
+        admin: Amministratore
+        action: Azione
+        auditable: Elemento interessato
+        changeset: Modifiche
+        ip: Indirizzo IP
+      api_token:
+        user: Utente
+        token: Token
+        name: Nome
+        last_used_at: Ultimo utilizzo
+        expires_at: Scade il
+      sell_offer:
+        user: Utente
+        item_kind: Tipo di articolo
+        item_name: Articolo
+        condition: Condizioni
+        offered_price_cents: Prezzo offerto
+        status: Stato
+        notes: Note
+      newsletter_subscriber:
+        email: Indirizzo e-mail
+        locale: Lingua
+        token: Token
+        confirmed_at: Confermato il
+        unsubscribed_at: Disiscritto il
+      game:
+        slug: Slug
+        name: Nome
+        position: Posizione
+        active: Attivo
+    enums:
+      setting:
+        value_type:
+          boolean: Booleano
+          integer: Intero
+          string: Testo
+          decimal: Decimale
+      user:
+        role:
+          user: Utente
+          moderator: Moderatore
+          admin: Amministratore
+        status:
+          active: Attivo
+          suspended: Sospeso
+          banned: Bandito
+      store:
+        store_type:
+          individual: Privato
+          professional: Professionale
+      filter_definition:
+        input_type:
+          checkbox: Casella
+          range: Intervallo
+          select: Menu a tendina
+          boolean: Sì o no
+      listing:
+        condition:
+          new_sealed: Nuovo sigillato
+          new_open_box: Nuovo scatola aperta
+          used_like_new: Usato come nuovo
+          used_good: Usato buono
+          used_fair: Usato accettabile
+          for_parts: Per ricambi
+        status:
+          draft: Bozza
+          pending_review: In attesa di revisione
+          published: Pubblicato
+          rejected: Rifiutato
+          paused: In pausa
+          sold: Venduto
+          archived: Archiviato
+      message:
+        kind:
+          text: Testo
+          offer: Offerta
+          system: Sistema
+        offer_status:
+          pending: In attesa
+          accepted: Accettata
+          declined: Rifiutata
+          expired: Scaduta
+      order:
+        status:
+          pending_payment: In attesa di pagamento
+          paid: Pagato
+          shipped: Spedito
+          delivered: Consegnato
+          completed: Completato
+          cancelled: Annullato
+          refunded: Rimborsato
+          disputed: In contestazione
+        fulfilment:
+          shipping: Spedizione
+          local_pickup: Ritiro a mano
+      report:
+        reason:
+          spam: Spam
+          fraud: Truffa
+          prohibited: Articolo vietato
+          counterfeit: Contraffazione
+          offensive: Contenuto offensivo
+          other: Altro
+        status:
+          open: Aperta
+          resolved: Risolta
+          dismissed: Archiviata
+      sell_offer:
+        item_kind:
+          gpu: Scheda video
+          cpu: Processore
+        status:
+          requested: Richiesta
+          offered: Offerta
+          accepted: Accettata
+          received: Ricevuta
+          paid: Pagata
+          rejected: Rifiutata
+    errors:
+      models:
+        listing:
+          attributes:
+            original_price_cents:
+              greater_than_price: deve essere superiore al prezzo di vendita
+            country_code:
+              not_enabled: non è ancora disponibile
+            category:
+              not_a_leaf: deve essere una categoria finale
+            images:
+              invalid_format: deve essere JPEG, PNG o WebP
+              too_large: non può superare i 10 MB
+              too_many: non può avere più di %{count} immagini
+        saved_search:
+          attributes:
+            max_price_cents:
+              greater_than_or_equal_to_min: deve essere maggiore o uguale al prezzo
+                minimo
+        conversation:
+          attributes:
+            seller_id:
+              must_differ: non può essere lo stesso utente dell'acquirente
+        block:
+          attributes:
+            blocked_id:
+              cannot_block_self: non puoi bloccare te stesso
+        cart_item:
+          attributes:
+            base:
+              single_owner_required: deve appartenere a un utente o a un carrello

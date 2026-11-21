@@ -1,0 +1,51 @@
+delivered_order:
+  number: PCM-2026-000001
+  buyer: buyer
+  seller: seller
+  store: seller_store
+  status: delivered
+  fulfilment: shipping
+  subtotal_cents: 54900
+  shipping_cents: 500
+  commission_cents: 0
+  total_cents: 55400
+  currency: EUR
+  ship_name: Bruno Buyer
+  ship_line1: Carrer de Mallorca 401
+  ship_city: Barcelona
+  ship_postal_code: "08013"
+  ship_country_code: ES
+  buyer_email: buyer@example.com
+  delivered_at: <%= 3.days.ago %>
+  payment_provider: stripe
+  payment_reference: pi_test_123
+
+pending_order:
+  number: PCM-2026-000002
+  buyer: buyer
+  seller: seller
+  store: seller_store
+  status: pending_payment
+  fulfilment: shipping
+  subtotal_cents: 0
+  shipping_cents: 0
+  commission_cents: 0
+  total_cents: 0
+  currency: EUR
+  buyer_email: buyer@example.com
+  payment_provider: stripe
+
+second_review_order:
+  number: PCM-2026-000003
+  buyer: seller
+  seller: seller
+  store: seller_store
+  status: completed
+  fulfilment: local_pickup
+  subtotal_cents: 10000
+  shipping_cents: 0
+  commission_cents: 0
+  total_cents: 10000
+  currency: EUR
+  buyer_email: seller@example.com
+  completed_at: <%= 1.day.ago %>

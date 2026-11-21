@@ -1,0 +1,7 @@
+---
+en:
+  errors:
+    not_authorized: You are not authorised to perform this action.
+    omniauth_failure: Could not sign in with Google. Please try again.
+    rate_limited: Too many requests. Please try again later.
+    generic: Something went wrong. Please try again.

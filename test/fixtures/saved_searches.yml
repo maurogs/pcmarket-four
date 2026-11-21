@@ -1,0 +1,11 @@
+buyer_gpu_search:
+  user: buyer
+  name: Buscador de tarjetas RTX
+  query: RTX
+  category: graphics_cards
+  filters:
+    cpu_brand: intel
+  min_price_cents: 40000
+  max_price_cents: 60000
+  country_code: ES
+  notify: true

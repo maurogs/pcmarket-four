@@ -1,0 +1,8 @@
+terms_spain:
+  slug: terms
+  country_code: ES
+  locale: es
+  title: Términos y condiciones
+  body: "<h1>Términos y condiciones</h1><p>Estos son los términos de uso de PCMarket.</p>"
+  version: 1
+  published: true

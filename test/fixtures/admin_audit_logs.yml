@@ -1,0 +1,10 @@
+listing_approved:
+  admin: admin
+  action: listing.approved
+  auditable_type: Listing
+  auditable_id: <%= ActiveRecord::FixtureSet.identify(:published_gpu) %>
+  changeset:
+    status:
+      - pending_review
+      - published
+  ip: 127.0.0.1

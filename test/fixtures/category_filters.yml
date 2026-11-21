@@ -1,0 +1,14 @@
+components_cpu_brand:
+  category: components
+  filter_definition: cpu_brand
+  position: 1
+
+cpus_vram:
+  category: cpus
+  filter_definition: vram
+  position: 1
+
+graphics_legacy:
+  category: graphics_cards
+  filter_definition: legacy_filter
+  position: 2

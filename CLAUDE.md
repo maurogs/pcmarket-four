@@ -26,7 +26,7 @@
 When you are the Claude Code orchestrator:
 - Your job is to plan, review and approve.
 - For any code implementation task (editing files, running tests), do NOT do it yourself.
-- Use the `opencode_execute` tool with the `build` agent and the model `deepseek/deepseek-v4-1-flash-1017` so that a subagent executes it.
+- Use the `opencode_execute` tool with the `build` agent and the model `deepseek/deepseek-flash` so that a subagent executes it.
 - If corrections are needed, use `opencode_reply` to continue the session.
 - Review the diff returned by the tool before giving your approval.
 

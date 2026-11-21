@@ -1,0 +1,440 @@
+---
+en:
+  activerecord:
+    models:
+      country: Country
+      region: Region
+      setting: Setting
+      user: User
+      store: Store
+      category: Category
+      filter_definition: Filter
+      filter_option: Filter option
+      category_filter: Category filter
+      listing: Listing
+      favorite: Favourite
+      follow: Follow
+      saved_search: Saved search
+      conversation: Conversation
+      message: Message
+      block: Block
+      cart_item: Cart item
+      address: Address
+      order: Order
+      order_item: Order item
+      review: Review
+      notification: Notification
+      report: Report
+      legal_page: Legal page
+      admin_audit_log: Audit log
+      api_token: API token
+      sell_offer: Sell offer
+      newsletter_subscriber: Subscriber
+      game: Game
+    attributes:
+      country:
+        code: Code
+        name_key: Name key
+        enabled: Enabled
+        currency: Currency
+        vat_rate: VAT rate
+        default_locale: Default language
+      region:
+        country_code: Country
+        name: Name
+        code: Code
+      setting:
+        key: Key
+        value: Value
+        value_type: Value type
+        group: Group
+        description_key: Description key
+      user:
+        email: Email address
+        password: Password
+        password_confirmation: Confirm password
+        current_password: Current password
+        remember_me: Remember me
+        first_name: First name
+        last_name: Last name
+        username: Username
+        phone: Phone
+        role: Role
+        status: Status
+        country_code: Country
+        region: Region
+        region_id: Region
+        city: City
+        locale: Language
+        provider: Provider
+        uid: External ID
+        accepts_marketing: Accepts marketing
+        terms_accepted_at: Terms accepted at
+        deleted_at: Deleted at
+        last_seen_at: Last seen
+        avatar: Avatar
+      store:
+        user: Owner
+        user_id: Owner
+        name: Name
+        slug: URL slug
+        description: Description
+        logo: Logo
+        banner: Banner
+        store_type: Store type
+        verified: Verified
+        tax_id: VAT number
+        company_name: Company name
+        vacation_mode: Vacation mode
+        vacation_message: Vacation message
+        allow_offers_default: Allow offers by default
+        rating_avg: Average rating
+        reviews_count: Number of reviews
+        followers_count: Followers
+        sales_count: Sales
+        listings_count: Listings
+        return_policy: Return policy
+        shipping_policy: Shipping policy
+        country_code: Country
+        region: Region
+        city: City
+      category:
+        names: Names
+        slug: URL slug
+        ancestry: Hierarchy
+        position: Position
+        icon: Icon
+        active: Active
+        show_in_menu: Show in menu
+        menu_group: Menu group
+        seo_descriptions: SEO descriptions
+        listings_count: Listings
+        parent: Parent category
+      filter_definition:
+        key: Key
+        names: Names
+        input_type: Input type
+        unit: Unit
+        position: Position
+        active: Active
+      filter_option:
+        filter_definition: Filter
+        filter_definition_id: Filter
+        value: Value
+        labels: Labels
+        position: Position
+      category_filter:
+        category: Category
+        category_id: Category
+        filter_definition: Filter
+        filter_definition_id: Filter
+        position: Position
+      listing:
+        user: Seller
+        store: Store
+        category: Category
+        title: Title
+        slug: URL slug
+        description: Description
+        price_cents: Price
+        price: Price
+        original_price_cents: Original price
+        currency: Currency
+        condition: Condition
+        status: Status
+        rejection_reason: Rejection reason
+        published_at: Published at
+        reviewed_at: Reviewed at
+        reviewed_by: Reviewed by
+        quantity: Quantity
+        specs: Specifications
+        brand: Brand
+        model_name_text: Model
+        country_code: Country
+        region: Region
+        city: City
+        postal_code: Postcode
+        shipping_available: Shipping available
+        local_pickup: Local pickup
+        shipping_price_cents: Shipping cost
+        free_shipping: Free shipping
+        ships_within_days: Ships within days
+        accepts_offers: Accepts offers
+        featured_until: Featured until
+        views_count: Views
+        favorites_count: Favourites
+        labels: Labels
+        tags: Tags
+        performance_score: Performance score
+        game_fps: Game FPS
+        images: Images
+      favorite:
+        user: User
+        listing: Listing
+      follow:
+        follower: Follower
+        store: Store
+      saved_search:
+        user: User
+        name: Name
+        query: Search terms
+        category: Category
+        filters: Filters
+        min_price_cents: Minimum price
+        max_price_cents: Maximum price
+        country_code: Country
+        notify: Alerts
+        last_notified_at: Last notified
+      conversation:
+        listing: Listing
+        buyer: Buyer
+        seller: Seller
+        last_message_at: Last message
+        buyer_unread_count: Unread messages for the buyer
+        seller_unread_count: Unread messages for the seller
+      message:
+        conversation: Conversation
+        sender: Sender
+        body: Message
+        kind: Type
+        offer_amount_cents: Offer amount
+        offer_status: Offer status
+        read_at: Read at
+      block:
+        blocker: Blocker
+        blocked: Blocked
+      cart_item:
+        user: User
+        cart_token: Cart token
+        listing: Listing
+        quantity: Quantity
+      address:
+        user: User
+        full_name: Full name
+        line1: Address line 1
+        line2: Address line 2
+        city: City
+        postal_code: Postcode
+        region: Region
+        country_code: Country
+        phone: Phone
+        default: Default address
+      order:
+        number: Number
+        buyer: Buyer
+        seller: Seller
+        store: Store
+        status: Status
+        fulfilment: Fulfilment
+        subtotal_cents: Subtotal
+        shipping_cents: Shipping
+        commission_cents: Commission
+        commission_percent: Commission percentage
+        total_cents: Total
+        currency: Currency
+        ship_name: Shipping name
+        ship_line1: Shipping address
+        ship_line2: Shipping address line 2
+        ship_city: Shipping city
+        ship_postal_code: Shipping postcode
+        ship_region: Shipping region
+        ship_country_code: Shipping country
+        ship_phone: Shipping phone
+        buyer_email: Buyer email
+        tracking_number: Tracking number
+        carrier: Carrier
+        paid_at: Paid at
+        shipped_at: Shipped at
+        delivered_at: Delivered at
+        completed_at: Completed at
+        cancelled_at: Cancelled at
+        cancel_reason: Cancellation reason
+        payment_provider: Payment provider
+        payment_reference: Payment reference
+        notes: Notes
+      order_item:
+        order: Order
+        listing: Listing
+        title_snapshot: Item title
+        price_cents: Price
+        quantity: Quantity
+      review:
+        order: Order
+        reviewer: Reviewer
+        store: Store
+        rating: Rating
+        body: Comment
+        seller_reply: Seller reply
+        published: Published
+      notification:
+        user: User
+        kind: Type
+        params: Parameters
+        url: Link
+        read_at: Read at
+      report:
+        reporter: Reporter
+        reportable: Reported item
+        reason: Reason
+        details: Details
+        status: Status
+        resolved_by: Resolved by
+      legal_page:
+        slug: Slug
+        country_code: Country
+        locale: Language
+        title: Title
+        body: Content
+        version: Version
+        published: Published
+        updated_by: Updated by
+      admin_audit_log:
+        admin: Admin
+        action: Action
+        auditable: Affected record
+        changeset: Changes
+        ip: IP address
+      api_token:
+        user: User
+        token: Token
+        name: Name
+        last_used_at: Last used
+        expires_at: Expires at
+      sell_offer:
+        user: User
+        item_kind: Item type
+        item_name: Item
+        condition: Condition
+        offered_price_cents: Offered price
+        status: Status
+        notes: Notes
+      newsletter_subscriber:
+        email: Email address
+        locale: Language
+        token: Token
+        confirmed_at: Confirmed at
+        unsubscribed_at: Unsubscribed at
+      game:
+        slug: Slug
+        name: Name
+        position: Position
+        active: Active
+    enums:
+      setting:
+        value_type:
+          boolean: Boolean
+          integer: Integer
+          string: Text
+          decimal: Decimal
+      user:
+        role:
+          user: User
+          moderator: Moderator
+          admin: Admin
+        status:
+          active: Active
+          suspended: Suspended
+          banned: Banned
+      store:
+        store_type:
+          individual: Individual
+          professional: Professional
+      filter_definition:
+        input_type:
+          checkbox: Checkbox
+          range: Range
+          select: Select
+          boolean: Yes or no
+      listing:
+        condition:
+          new_sealed: New sealed
+          new_open_box: New open box
+          used_like_new: Used – like new
+          used_good: Used – good
+          used_fair: Used – fair
+          for_parts: For parts
+        status:
+          draft: Draft
+          pending_review: Pending review
+          published: Published
+          rejected: Rejected
+          paused: Paused
+          sold: Sold
+          archived: Archived
+      message:
+        kind:
+          text: Text
+          offer: Offer
+          system: System
+        offer_status:
+          pending: Pending
+          accepted: Accepted
+          declined: Declined
+          expired: Expired
+      order:
+        status:
+          pending_payment: Pending payment
+          paid: Paid
+          shipped: Shipped
+          delivered: Delivered
+          completed: Completed
+          cancelled: Cancelled
+          refunded: Refunded
+          disputed: Disputed
+        fulfilment:
+          shipping: Shipping
+          local_pickup: Local pickup
+      report:
+        reason:
+          spam: Spam
+          fraud: Fraud
+          prohibited: Prohibited item
+          counterfeit: Counterfeit
+          offensive: Offensive content
+          other: Other
+        status:
+          open: Open
+          resolved: Resolved
+          dismissed: Dismissed
+      sell_offer:
+        item_kind:
+          gpu: Graphics card
+          cpu: Processor
+        status:
+          requested: Requested
+          offered: Offered
+          accepted: Accepted
+          received: Received
+          paid: Paid
+          rejected: Rejected
+    errors:
+      models:
+        listing:
+          attributes:
+            original_price_cents:
+              greater_than_price: must be greater than the selling price
+            country_code:
+              not_enabled: is not available yet
+            category:
+              not_a_leaf: must be a leaf category
+            images:
+              invalid_format: must be JPEG, PNG or WebP
+              too_large: must not exceed 10 MB
+              too_many: must not have more than %{count} images
+        saved_search:
+          attributes:
+            max_price_cents:
+              greater_than_or_equal_to_min: must be greater than or equal to the minimum
+                price
+        conversation:
+          attributes:
+            seller_id:
+              must_differ: cannot be the same user as the buyer
+        block:
+          attributes:
+            blocked_id:
+              cannot_block_self: you cannot block yourself
+        cart_item:
+          attributes:
+            base:
+              single_owner_required: must belong to a user or a cart

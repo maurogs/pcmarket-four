@@ -1,0 +1,7 @@
+---
+fr:
+  errors:
+    not_authorized: Vous n'êtes pas autorisé à effectuer cette action.
+    omniauth_failure: Impossible de se connecter avec Google. Veuillez réessayer.
+    rate_limited: Trop de requêtes. Veuillez réessayer plus tard.
+    generic: Une erreur est survenue. Veuillez réessayer.

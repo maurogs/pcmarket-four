@@ -1,0 +1,7 @@
+buyer_reports_gpu:
+  reporter: buyer
+  reportable_type: Listing
+  reportable_id: <%= ActiveRecord::FixtureSet.identify(:published_gpu) %>
+  reason: spam
+  details: El anuncio parece duplicado.
+  status: open

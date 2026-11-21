@@ -1,0 +1,3 @@
+buyer_follows_seller:
+  follower: buyer
+  store: seller_store

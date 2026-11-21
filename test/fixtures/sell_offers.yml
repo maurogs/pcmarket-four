@@ -1,0 +1,8 @@
+buyer_gpu_offer:
+  user: buyer
+  item_kind: gpu
+  item_name: NVIDIA GeForce RTX 3080
+  condition: used_good
+  offered_price_cents: 25000
+  status: requested
+  notes: Con caja original.

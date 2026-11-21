@@ -1,0 +1,9 @@
+madrid:
+  country_code: ES
+  name: Comunidad de Madrid
+  code: MD
+
+catalonia:
+  country_code: ES
+  name: Cataluña
+  code: CT

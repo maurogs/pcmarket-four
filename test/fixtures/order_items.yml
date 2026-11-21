@@ -1,0 +1,13 @@
+delivered_order_gpu:
+  order: delivered_order
+  listing: published_gpu
+  title_snapshot: NVIDIA GeForce RTX 4070 Super 12 GB
+  price_cents: 54900
+  quantity: 1
+
+second_review_order_item:
+  order: second_review_order
+  listing: sold_listing
+  title_snapshot: Lenovo ThinkPad X1 Carbon Gen 11
+  price_cents: 10000
+  quantity: 1

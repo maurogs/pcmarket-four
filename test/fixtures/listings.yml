@@ -1,0 +1,181 @@
+published_gpu:
+  user: seller
+  store: seller_store
+  category: graphics_cards
+  title: NVIDIA GeForce RTX 4070 Super 12 GB
+  slug: nvidia-geforce-rtx-4070-super-12gb
+  description: Tarjeta gráfica en perfecto estado, con caja original y todos los accesorios incluidos.
+  price_cents: 54900
+  original_price_cents: 69900
+  currency: EUR
+  condition: used_like_new
+  status: published
+  published_at: <%= 2.days.ago %>
+  quantity: 1
+  specs:
+    cpu_brand: intel
+    vram_gb: 12
+  brand: NVIDIA
+  model_name_text: RTX 4070 Super
+  country_code: ES
+  region: madrid
+  city: Madrid
+  postal_code: "28001"
+  shipping_available: true
+  local_pickup: true
+  shipping_price_cents: 500
+  free_shipping: false
+  ships_within_days: 2
+  accepts_offers: true
+  featured_until: <%= 2.days.from_now %>
+  views_count: 120
+  favorites_count: 0
+  labels:
+    - gaming
+    - rtx
+  tags:
+    - gpu
+    - nvidia
+  performance_score: 92
+  game_fps:
+    fortnite:
+      "1080p": 144
+      "1440p": 110
+
+draft_gpu:
+  user: seller
+  store: seller_store
+  category: graphics_cards
+  title: AMD Radeon RX 7800 XT 16 GB
+  slug: amd-radeon-rx-7800-xt-16gb
+  description: Tarjeta gráfica de gama alta con poco uso, ideal para jugar en 1440p.
+  price_cents: 49900
+  condition: used_good
+  status: draft
+  quantity: 1
+  specs:
+    vram_gb: 16
+  brand: AMD
+  country_code: ES
+  region: madrid
+  city: Madrid
+  shipping_available: true
+  favorites_count: 0
+
+draft_listing_approval:
+  user: seller
+  store: seller_store
+  category: cpus
+  title: AMD Ryzen 7 7800X3D Processor
+  slug: amd-ryzen-7-7800x3d-processor
+  description: Procesador de ocho núcleos con excelente rendimiento en juegos y edición.
+  price_cents: 32900
+  condition: used_like_new
+  status: draft
+  quantity: 1
+  specs:
+    cpu_brand: amd
+  brand: AMD
+  country_code: ES
+  region: madrid
+  city: Madrid
+  shipping_available: true
+  favorites_count: 0
+
+draft_listing_auto:
+  user: seller
+  store: seller_store
+  category: cpus
+  title: Intel Core i7-13700K Processor
+  slug: intel-core-i7-13700k-processor
+  description: Procesador Intel de última generación, sin uso y con garantía vigente.
+  price_cents: 34900
+  condition: new_open_box
+  status: draft
+  quantity: 1
+  specs:
+    cpu_brand: intel
+  brand: Intel
+  country_code: ES
+  region: madrid
+  city: Madrid
+  shipping_available: true
+  favorites_count: 0
+
+sold_listing:
+  user: seller
+  store: seller_store
+  category: laptops
+  title: Lenovo ThinkPad X1 Carbon Gen 11
+  slug: lenovo-thinkpad-x1-carbon-gen-11
+  description: Portátil profesional de 14 pulgadas, ligero y en muy buen estado general.
+  price_cents: 85000
+  condition: used_good
+  status: sold
+  published_at: <%= 10.days.ago %>
+  quantity: 1
+  specs:
+    cpu_brand: intel
+  brand: Lenovo
+  country_code: ES
+  region: madrid
+  city: Madrid
+  shipping_available: true
+  favorites_count: 1
+
+suspended_owner_listing:
+  user: suspended
+  category: graphics_cards
+  title: ASUS Dual GeForce RTX 4060 Ti 8 GB
+  slug: asus-dual-geforce-rtx-4060-ti-8gb
+  description: Tarjeta gráfica de doble ventilador en buen estado, con caja y cables.
+  price_cents: 32900
+  condition: used_good
+  status: published
+  published_at: <%= 1.day.ago %>
+  quantity: 1
+  specs:
+    vram_gb: 8
+  brand: ASUS
+  country_code: ES
+  region: madrid
+  city: Madrid
+  shipping_available: true
+  favorites_count: 0
+
+zero_quantity_listing:
+  user: seller
+  category: cpus
+  title: AMD Ryzen 5 7600 Processor
+  slug: amd-ryzen-5-7600-processor
+  description: Procesador de seis núcleos con disipador original y pasta térmica incluida.
+  price_cents: 17900
+  condition: used_like_new
+  status: published
+  published_at: <%= 3.days.ago %>
+  quantity: 0
+  specs:
+    cpu_brand: amd
+  brand: AMD
+  country_code: ES
+  region: catalonia
+  city: Barcelona
+  shipping_available: true
+  favorites_count: 0
+
+disabled_country_listing:
+  user: seller
+  category: laptops
+  title: Dell XPS 13 Plus Laptop
+  slug: dell-xps-13-plus-laptop
+  description: Portátil compacto con pantalla OLED y teclado sin bordes, poco usado.
+  price_cents: 95000
+  condition: used_like_new
+  status: published
+  published_at: <%= 1.day.ago %>
+  quantity: 1
+  brand: Dell
+  country_code: FR
+  city: Paris
+  shipping_available: true
+  favorites_count: 0

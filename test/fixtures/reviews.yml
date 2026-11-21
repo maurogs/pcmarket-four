@@ -1,0 +1,7 @@
+delivered_order_review:
+  order: delivered_order
+  reviewer: buyer
+  store: seller_store
+  rating: 5
+  body: Vendedor muy serio y envío rápido. La tarjeta llegó tal y como se describía.
+  published: true

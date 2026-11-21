@@ -1,0 +1,10 @@
+buyer_address:
+  user: buyer
+  full_name: Bruno Buyer
+  line1: Carrer de Mallorca 401
+  city: Barcelona
+  postal_code: "08013"
+  region: catalonia
+  country_code: ES
+  phone: "+34 600 000 000"
+  default: true

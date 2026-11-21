@@ -1,0 +1,7 @@
+---
+es:
+  errors:
+    not_authorized: No tienes permiso para realizar esta acción.
+    omniauth_failure: No se pudo iniciar sesión con Google. Inténtalo de nuevo.
+    rate_limited: Demasiadas solicitudes. Inténtalo de nuevo más tarde.
+    generic: Algo ha ido mal. Inténtalo de nuevo.

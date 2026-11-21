@@ -1,0 +1,4 @@
+buyer_api_token:
+  user: buyer
+  token: buyer-api-token-123456
+  name: Integration

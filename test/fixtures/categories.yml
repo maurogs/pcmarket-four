@@ -1,0 +1,69 @@
+components:
+  names:
+    es: Componentes
+    en: Components
+    fr: Composants
+    de: Komponenten
+    it: Componenti
+    pt: Componentes
+  slug: components
+  position: 1
+  active: true
+  show_in_menu: true
+  menu_group: hardware
+  seo_descriptions:
+    es: Componentes de PC nuevos y de segunda mano.
+    en: New and second-hand PC components.
+
+graphics_cards:
+  names:
+    es: Tarjetas gráficas
+    en: Graphics cards
+    fr: Cartes graphiques
+    de: Grafikkarten
+    it: Schede video
+    pt: Placas gráficas
+  slug: graphics-cards
+  ancestry: "<%= ActiveRecord::FixtureSet.identify(:components) %>"
+  position: 1
+  active: true
+  show_in_menu: true
+  menu_group: hardware
+  seo_descriptions:
+    es: Tarjetas gráficas para gaming y trabajo.
+    en: Graphics cards for gaming and work.
+
+cpus:
+  names:
+    es: Procesadores
+    en: Processors
+    fr: Processeurs
+    de: Prozessoren
+    it: Processori
+    pt: Processadores
+  slug: processors
+  ancestry: "<%= ActiveRecord::FixtureSet.identify(:components) %>"
+  position: 2
+  active: true
+  show_in_menu: true
+  menu_group: hardware
+  seo_descriptions:
+    es: Procesadores Intel y AMD.
+    en: Intel and AMD processors.
+
+laptops:
+  names:
+    es: Portátiles
+    en: Laptops
+    fr: Ordinateurs portables
+    de: Laptops
+    it: Portatili
+    pt: Portáteis
+  slug: laptops
+  position: 2
+  active: true
+  show_in_menu: true
+  menu_group: computers
+  seo_descriptions:
+    es: Portátiles para estudiar, trabajar y jugar.
+    en: Laptops for study, work and gaming.

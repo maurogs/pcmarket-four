@@ -1,0 +1,16 @@
+seller_store:
+  user: seller
+  name: Falcon Tech
+  slug: falcon-tech
+  description: Tienda especializada en componentes de segunda mano verificados.
+  store_type: professional
+  verified: true
+  country_code: ES
+  region: madrid
+  city: Madrid
+  allow_offers_default: true
+  rating_avg: 5.0
+  reviews_count: 1
+  followers_count: 1
+  sales_count: 1
+  listings_count: 1

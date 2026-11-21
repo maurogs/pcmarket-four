@@ -1,0 +1,5 @@
+confirmed_subscriber:
+  email: subscriber@example.com
+  locale: es
+  token: newsletter-token-123
+  confirmed_at: <%= 5.days.ago %>

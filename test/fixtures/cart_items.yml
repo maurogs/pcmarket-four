@@ -1,0 +1,4 @@
+buyer_cart_gpu:
+  user: buyer
+  listing: published_gpu
+  quantity: 1

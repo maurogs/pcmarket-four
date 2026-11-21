@@ -1,0 +1,34 @@
+site_name:
+  key: site_name
+  value: PCMarket
+  value_type: string
+  group: general
+  description_key: settings.site_name.description
+
+listings_require_approval:
+  key: listings_require_approval
+  value: "true"
+  value_type: boolean
+  group: listings
+  description_key: settings.listings_require_approval.description
+
+commissions_enabled:
+  key: commissions_enabled
+  value: "false"
+  value_type: boolean
+  group: payments
+  description_key: settings.commissions_enabled.description
+
+commission_percent:
+  key: commission_percent
+  value: "5.0"
+  value_type: decimal
+  group: payments
+  description_key: settings.commission_percent.description
+
+max_images_per_listing:
+  key: max_images_per_listing
+  value: "12"
+  value_type: integer
+  group: listings
+  description_key: settings.max_images_per_listing.description

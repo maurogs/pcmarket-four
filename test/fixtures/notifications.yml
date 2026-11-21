@@ -1,0 +1,6 @@
+buyer_listing_published:
+  user: buyer
+  kind: listing_published
+  params:
+    listing_id: <%= ActiveRecord::FixtureSet.identify(:published_gpu) %>
+  url: /es/listings/nvidia-geforce-rtx-4070-super-12gb
