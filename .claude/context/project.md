@@ -2,12 +2,12 @@
 
 ## Status
 
-Phase 4A complete: cart, guest and logged-in checkout, payments and buyer
-orders. Sellers have a dashboard, store profile, policies, vacation mode and
-payouts pages; every user has RESTful account, address, notification,
-data-export and deletion resources. Discovery (Phase 2B) and listing creation
-(Phase 3A) remain intact. Seller order management (phase 4B), messaging, offers,
-review creation and admin moderation screens remain for later phases.
+Phase 4B complete: full order lifecycle (paid, shipped, delivered, completed,
+cancelled, disputed, refunded), seller fulfilment screens, buyer delivery
+confirmation/disputes/reviews, order notifications with email fan-out and
+real-time badge updates. Discovery (Phase 2B), listing creation (Phase 3A) and
+checkout/payments (Phase 4A) remain intact. Admin moderation screens, messaging,
+offers and saved-search alert delivery remain for later phases.
 
 ## Stack
 
@@ -35,7 +35,7 @@ review creation and admin moderation screens remain for later phases.
   not support OmniAuth callbacks under a dynamic segment.
 - Locale files are split by domain (`models`, `home`, `layout`, `listings`,
   `pages`, `newsletter`, `errors`, `common`, `countries`, `cart`, `checkout`,
-  `orders`); every key exists in all six languages.
+  `orders`, `notifications`); every key exists in all six languages.
   `test/i18n/locale_parity_test.rb` enforces parity.
 - English is British English (favourite, colour, authorised).
 - Footer and drawer language switchers preserve the current path and query.
@@ -71,6 +71,23 @@ review creation and admin moderation screens remain for later phases.
   carries `payment_method`, `locale`, `checkout_token` (unique per seller),
   `guest_access_token` (has_secure_token), `terms_accepted_at` and
   `stock_restored_at`.
+- Order lifecycle is a state machine of guarded, transactional methods in
+  `Order`: `mark_paid!`, `ship!`, `mark_ready_for_pickup!`,
+  `confirm_delivery!`, `complete!`, `cancel!`, `open_dispute!`,
+  `resolve_dispute!`, `refund!` and `flag_late_shipment!`. Each transition
+  locks the row, validates the from-state and actor, writes an `OrderEvent`
+  and sends notifications through `OrderNotifier`.
+- `OrderEvent` stores `order_id`, nullable `actor_id`, `kind`, `data` jsonb and
+  `created_at`; the buyer and seller timelines read it chronologically. Orders
+  additionally carry `disputed_at`, `refunded_at`, `refund_required` and
+  `late_shipment_notified_at`.
+- Cancellation restores stock and re-lists sold listings exactly once through
+  `stock_restored_at`. Completion increments `stores.sales_count`. `Order`
+  exposes carrier tracking URLs for ten carriers and inspection-window helpers.
+- `Notifier.call(user, kind, params:, url:)` creates a `Notification` and
+  enqueues the matching order email when `email_order_updates` is enabled.
+  Notifications broadcast badge replacements on
+  `turbo_stream_from user, :notifications`.
 - `orders.number` comes from the `order_number_seq` PostgreSQL sequence as
   `PCM-YYYY-NNNNNN`; the sequence is created by a migration and lazily ensured
   for schema-loaded test databases.
@@ -349,6 +366,45 @@ review creation and admin moderation screens remain for later phases.
 - New settings defaults: `payment_bank_transfer_enabled`, `bank_iban`,
   `bank_beneficiary`, `payment_deadline_days`, `stripe_enabled`.
 
+### Order lifecycle and seller fulfilment (Phase 4B)
+
+- `Order` lifecycle transitions are guarded, transactional model methods. Admin
+  can mark paid/refund/resolve disputes; sellers mark cash-on-pickup paid, ship
+  with a carrier from `Order::CARRIERS` and tracking (optional only for
+  `other`), mark local pickups ready, and cancel paid orders with a refund
+  flag. Buyers confirm receipt and open disputes inside the inspection window.
+- `OrderNotifier` fans out in-app notifications and locale-aware HTML/text
+  emails for paid, shipped, delivered, completed, cancelled, dispute, refund
+  and late-shipment events. Guest buyers receive email without an account.
+  Admin dispute mail goes to `Setting.support_email`.
+- Solid Queue recurring jobs: `AutoDeliverOrdersJob` (shipped older than
+  `auto_delivered_after_shipping_days`), `AutoCompleteOrdersJob` (delivered
+  older than `inspection_window_days`, skips disputes) and
+  `LateShipmentReminderJob` (one reminder after `seller_ship_deadline_days`,
+  auto-cancel with refund after twice that).
+- Buyer order actions are nested singular resources: `delivery_confirmation`,
+  `dispute` (new/create with up to five photos), `review` and `cancellation`.
+- Seller `/seller/orders` has tabs (to ship, awaiting payment, shipped,
+  completed including delivered, cancelled/refunded, disputes), counts, search,
+  desktop table/mobile cards, CSV export, an order page with privacy-gated
+  address (paid only), commission line when non-zero, net payout, tracking,
+  shipment/pickup/cash/cancellation modals, review replies and a print-optimised
+  packing slip at `/seller/orders/:id/packing_slip`.
+- `SellerDashboard` revenue is `sum(total_cents - commission_cents)` for paid,
+  shipped, delivered and completed orders.
+- Reviews require a completed order, buyer ownership, one per order, a 20–1000
+  character body and no words from `Setting blocked_words`. Sellers reply once
+  and may edit that reply. `reviews_enabled` hides buyer forms, store review
+  panels and listing review sections.
+- Notifications live at `/notifications` (unread first, paginated, mark all
+  read, per-item read on click) and in a lazy Turbo Frame header bell showing
+  the latest eight. `Notification#after_create_commit` replaces the badge over
+  `Turbo::StreamsChannel`.
+- New settings defaults: `inspection_window_days` 2,
+  `auto_complete_after_delivery_days` 2,
+  `auto_delivered_after_shipping_days` 14,
+  `seller_ship_deadline_days` 3, `support_email` and `blocked_words`.
+
 ### Performance guardrails
 
 - `ListingSearch::INCLUDES` preloads store, category, region, user and image
@@ -406,7 +462,26 @@ app/controllers/seller/base_controller.rb      auth, seller layout, seller_store
 app/controllers/seller/dashboard_controller.rb KPI dashboard
 app/controllers/seller/{stores,store_policies,vacations,payouts}_controller.rb
                                             singular store settings resources
-app/controllers/seller/orders_controller.rb seller sales placeholder
+app/controllers/seller/orders_controller.rb seller sales tabs/show
+app/controllers/seller/orders/            shipments, pickups, payments,
+                                          cancellations, packing slips
+app/controllers/seller/order_exports_controller.rb CSV sales export
+app/controllers/seller/review_replies_controller.rb review replies
+app/controllers/orders/delivery_confirmations_controller.rb
+app/controllers/orders/disputes_controller.rb
+app/controllers/orders/reviews_controller.rb
+app/controllers/notifications_controller.rb   list, mark one read
+app/controllers/notifications/read_alls_controller.rb
+app/services/notifier.rb                    notification + preference email
+app/services/order_notifier.rb              order event fan-out
+app/services/profanity_filter.rb            blocked words
+app/services/seller_order_export.rb         filtered CSV
+app/jobs/auto_deliver_orders_job.rb
+app/jobs/auto_complete_orders_job.rb
+app/jobs/late_shipment_reminder_job.rb
+app/views/seller/orders/                   index, show, packing slip
+app/views/notifications/                   index, menu, badge
+app/views/layouts/packing_slip.html.erb    printable layout
 app/controllers/cart_controller.rb           grouped cart read model
 app/controllers/cart_items_controller.rb     cart mutations + Turbo Streams
 app/controllers/cart_items/favorites_controller.rb move cart row to favourites
@@ -505,19 +580,17 @@ test/seeds_test.rb
 
 - Admin moderation screens (approve/reject queue) for listings; seller-side
   submission already exists.
-- Review creation flow after a completed order (the `Review` model and store
-  aggregate exist, but no buyer UI).
-- Seller order management (phase 4B): marking orders paid/shipped/delivered and
-  fulfilling bank-transfer orders. `seller/orders` is still a placeholder.
-- Admin tools to mark bank transfers paid and to resolve disputes/refunds.
+- Admin UI to resolve disputes and issue refunds (the model transitions and
+  policies exist, but no admin screens yet).
 - Messaging: conversations render placeholders; `conversations#create` only
-  opens the thread. Offers, unread counters and notifications are pending.
+  opens the thread. Offers, unread counters and message notifications are
+  pending.
 - Saved-search alert delivery (the model stores exact replay params under
   `filters["_search"]`, but no background job sends alerts yet).
 - Seller dashboard performance is cached for five minutes; order-level events
   do not invalidate it immediately.
-- Store dashboard deltas for listing views and average rating are shown without
-  a period comparison because views are stored as a running total.
+- Order lifecycle emails to admins rely on `Setting.support_email`; there is no
+  staff inbox UI yet.
 - Online payouts (Stripe Connect) and seller payout history are pending.
 - Discount codes are visible in the seller navigation as a disabled item.
 - Store tabs currently render the active panel inline for SEO and load other

@@ -1,0 +1,53 @@
+<% content_for :title, t("orders.reviews.title") %>
+
+<div class="page-container max-w-2xl py-8 sm:py-10">
+  <%= link_to t("orders.reviews.back"), order_path(@order),
+              class: "text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+  <h1 class="mt-3 font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("orders.reviews.title") %></h1>
+  <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("orders.reviews.subtitle", store: @order.store&.name || @order.seller.display_name) %></p>
+
+  <%= form_with model: @review, url: order_review_path(@order), method: :post,
+                class: "surface mt-6 space-y-5 p-5" do |f| %>
+    <% if @review.errors.any? %>
+      <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+        <ul class="list-inside list-disc space-y-1">
+          <% @review.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <fieldset>
+      <legend class="text-sm font-semibold text-slate-900 dark:text-zinc-100"><%= t("orders.reviews.rating") %></legend>
+      <div class="mt-2 flex flex-row-reverse justify-end gap-1">
+        <% 5.downto(1) do |value| %>
+          <%= f.radio_button :rating, value, required: true,
+                             id: "review_rating_#{value}",
+                             class: "peer sr-only" %>
+          <label for="review_rating_<%= value %>"
+                 class="cursor-pointer rounded p-0.5 text-3xl leading-none text-slate-300 transition hover:text-accent-400 peer-checked:text-accent-500 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500 dark:text-zinc-600">
+            <span aria-hidden="true">★</span>
+            <span class="sr-only"><%= t("orders.reviews.stars", count: value) %></span>
+          </label>
+        <% end %>
+      </div>
+      <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.reviews.rating_hint") %></p>
+    </fieldset>
+
+    <div>
+      <%= f.label :body, t("orders.reviews.body"), class: "block text-sm font-semibold text-slate-900 dark:text-zinc-100" %>
+      <%= f.text_area :body, rows: 6, required: true,
+                      minlength: Review::BODY_MIN, maxlength: Review::BODY_MAX,
+                      placeholder: t("orders.reviews.body_placeholder"),
+                      class: ui_input_classes("mt-2") %>
+      <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.reviews.body_hint", min: Review::BODY_MIN, max: Review::BODY_MAX) %></p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <%= f.submit t("orders.reviews.submit"), class: ui_button_classes(variant: :primary, size: :md) %>
+      <%= link_to t("orders.reviews.cancel"), order_path(@order),
+                  class: ui_button_classes(variant: :ghost, size: :md) %>
+    </div>
+  <% end %>
+</div>

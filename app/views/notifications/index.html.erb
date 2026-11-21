@@ -1,0 +1,39 @@
+<% content_for :title, t("notifications.title") %>
+
+<div class="page-container py-8 sm:py-10">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("notifications.title") %></h1>
+      <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("notifications.subtitle") %></p>
+    </div>
+    <% if @unread_count.positive? %>
+      <%= button_to t("notifications.read_all.label"), notifications_read_all_path,
+                    method: :post,
+                    class: ui_button_classes(variant: :outline, size: :sm) %>
+    <% end %>
+  </div>
+
+  <% if @notifications.any? %>
+    <ul class="surface mt-6 divide-y divide-slate-100 dark:divide-zinc-800">
+      <% @notifications.each do |notification| %>
+        <li id="<%= dom_id(notification) %>"
+            class="<%= "bg-brand-50/60 dark:bg-brand-500/5" unless notification.read? %>">
+          <%= button_to notification_path(notification), method: :patch,
+                        class: "flex w-full items-start gap-3 px-5 py-4 text-left transition hover:bg-slate-50 dark:hover:bg-zinc-800/60" do %>
+            <span class="mt-1.5 size-2 shrink-0 rounded-full <%= notification.read? ? "bg-slate-300 dark:bg-zinc-600" : "bg-accent-500" %>"></span>
+            <span class="min-w-0 flex-1">
+              <span class="block text-sm leading-6 text-slate-800 dark:text-zinc-200"><%= notification_text(notification) %></span>
+              <span class="mt-1 block text-xs text-slate-400 dark:text-zinc-500"><%= l(notification.created_at, format: :long) %></span>
+            </span>
+            <span class="text-slate-400 dark:text-zinc-500"><%= icon "chevron-right", class: "size-4" %></span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+    <div class="mt-6"><%= render "shared/pagination", pagy: @pagy %></div>
+  <% else %>
+    <div class="mt-6">
+      <%= render "shared/empty_state", title: t("notifications.empty_title"), body: t("notifications.empty_body") %>
+    </div>
+  <% end %>
+</div>

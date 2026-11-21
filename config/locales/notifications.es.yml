@@ -1,0 +1,25 @@
+es:
+  notifications:
+    title: "Notificaciones"
+    subtitle: "Pagos, envíos y novedades de tus pedidos."
+    empty: "No tienes notificaciones."
+    empty_title: "Todavía no hay nada"
+    empty_body: "Las novedades de pedidos y cuenta aparecerán aquí."
+    view_all: "Ver todas las notificaciones"
+    read_all:
+      label: "Marcar todo como leído"
+      done: "Todas las notificaciones se han marcado como leídas."
+    kinds:
+      order_paid: "Pago recibido del pedido %{number}."
+      order_paid_seller: "El pedido %{number} está pagado y listo para enviar."
+      order_shipped: "El pedido %{number} se ha enviado."
+      order_ready_for_pickup: "El pedido %{number} está listo para recoger."
+      order_delivered: "El pedido %{number} se ha entregado. Confirma la recepción."
+      order_completed: "El pedido %{number} está completado. Deja una reseña."
+      order_cancelled: "El pedido %{number} se ha cancelado."
+      order_cancelled_seller: "El pedido %{number} se ha cancelado."
+      order_dispute_opened: "Se ha abierto una disputa en el pedido %{number}."
+      order_dispute_resolved: "La disputa del pedido %{number} se ha resuelto."
+      order_refunded: "El pedido %{number} se ha reembolsado."
+      order_late_shipment: "El pedido %{number} espera envío."
+      default: "Tienes una notificación nueva."

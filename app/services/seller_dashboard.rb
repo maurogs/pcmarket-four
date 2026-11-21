@@ -37,7 +37,7 @@ class SellerDashboard
     active_count, rejected_count, pending_count, total_views = listing_summary
 
     sales_total, revenue_total = seller_orders.pick(
-      Arel.sql("COUNT(*)"), Arel.sql("COALESCE(SUM(total_cents), 0)")
+      Arel.sql("COUNT(*)"), Arel.sql("COALESCE(SUM(total_cents - commission_cents), 0)")
     )
 
     favourites_current = store_favorites.where(created_at: current_window).count
@@ -48,8 +48,8 @@ class SellerDashboard
     pending_previous = store_listings.where(status: :pending_review, created_at: previous_window).count
     sales_current = seller_orders.where(created_at: current_window)
     sales_previous = seller_orders.where(created_at: previous_window)
-    revenue_current = sales_current.sum(:total_cents)
-    revenue_previous = sales_previous.sum(:total_cents)
+    revenue_current = sales_current.sum("total_cents - commission_cents")
+    revenue_previous = sales_previous.sum("total_cents - commission_cents")
     sales_count_current = sales_current.count
     sales_count_previous = sales_previous.count
 

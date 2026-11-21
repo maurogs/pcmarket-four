@@ -381,3 +381,68 @@ against overselling.
 `test/jobs/expire_unpaid_orders_job_test.rb`,
 `test/{integration/checkout_test.rb,integration/orders_test.rb,integration/stripe_webhook_test.rb,mailers/order_mailer_test.rb,system/checkout_flow_test.rb}`,
 `Gemfile`, `.claude/context/project.md`.
+
+## Phase 4B — Order lifecycle, seller fulfilment, reviews and notifications
+
+### What changed
+
+- Added `OrderEvent` (`order_id`, nullable `actor_id`, `kind`, `data` jsonb,
+  `created_at`) and order columns `disputed_at`, `refunded_at`,
+  `refund_required` and `late_shipment_notified_at` through a reversible
+  migration. Every order now records a `placed` event on create.
+- `Order` gained transactional, guarded lifecycle methods: `mark_paid!`,
+  `ship!`, `mark_ready_for_pickup!`, `confirm_delivery!`, `complete!`,
+  `cancel!`, `open_dispute!`, `resolve_dispute!`, `refund!` and
+  `flag_late_shipment!`. Each locks the row, validates the from-state and
+  actor, writes an `OrderEvent`, restores/re-lists stock on cancellation and
+  increments `stores.sales_count` on completion.
+- Added carrier and dispute-reason vocabularies, per-carrier tracking URLs,
+  inspection-window helpers, `buyer_details_visible?`, seller filter scopes and
+  seller order search.
+- Added `Notifier` (in-app notification + preference-aware mail enqueue) and
+  `OrderNotifier` (buyer/seller/admin fan-out for every order event). Order
+  emails are HTML + text through a shared `order_mailer/event` template in the
+  recipient locale.
+- Added `AutoDeliverOrdersJob`, `AutoCompleteOrdersJob` and
+  `LateShipmentReminderJob` plus recurring schedules. Late shipment sends one
+  reminder and auto-cancels at twice the deadline with a refund flag.
+- Buyer orders gained delivery confirmation, dispute (reason, details, up to
+  five photos) and review resources, a real event timeline, tracking links and
+  review display.
+- Replaced the seller orders placeholder with tabbed sales management
+  (counts, search, table/cards), a detailed order page with privacy-gated
+  address, commission/net payout, shipment, pickup, cash payment and
+  cancellation actions, review replies, CSV export and a printable packing
+  slip. Dashboard revenue now uses `total_cents - commission_cents`.
+- Reviews now enforce 20–1000 character bodies, blocked words from
+  `Setting blocked_words`, completed-order rules in policy/controller and
+  respect `reviews_enabled`; seller replies are shown and stored once.
+- Added the notifications page, mark-all-read and per-notification read
+  resources, a lazy Turbo Frame header bell and real-time badge replacement via
+  `Turbo::StreamsChannel`.
+- Added settings defaults `inspection_window_days`,
+  `auto_complete_after_delivery_days`, `auto_delivered_after_shipping_days`,
+  `seller_ship_deadline_days`, `support_email` and `blocked_words`.
+- Added six-language locale domains for order events, sellers orders, reviews
+  and `notifications.*`; parity remains enforced.
+
+### Why
+
+Phase 4B closes the post-purchase loop: sellers can fulfil and communicate,
+buyers can confirm receipt, dispute and review, and both sides get consistent
+in-app and email updates while stock and sales metrics stay correct.
+
+### Files touched
+
+`app/models/{order,order_event,review,notification,setting}.rb`,
+`app/services/{notifier,order_notifier,profanity_filter,seller_order_export}.rb`,
+`app/services/seller_dashboard.rb`, `app/jobs/auto_*`, `app/jobs/late_*`,
+`app/mailers/order_mailer.rb`, `app/views/order_mailer/event.*`,
+`app/controllers/{orders,notifications}_controller.rb`,
+`app/controllers/{orders,notifications,seller/orders,seller}/**`,
+`app/policies/order_policy.rb`, `app/helpers/application_helper.rb`,
+`app/views/{orders,notifications,seller/orders,listings,stores,shared}/**`,
+`app/views/layouts/{application,seller,account,packing_slip}.html.erb`,
+`config/routes.rb`, `config/recurring.yml`,
+`config/locales/{orders,phase2,phase3b,notifications}.*.yml`,
+`db/migrate/*order_events*`, `db/schema.rb`, `test/**`.

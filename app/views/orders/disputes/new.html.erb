@@ -1,0 +1,43 @@
+<% content_for :title, t("orders.dispute.title") %>
+
+<div class="page-container max-w-2xl py-8 sm:py-10">
+  <%= link_to t("orders.dispute.back"), order_path(@order),
+              class: "text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+  <h1 class="mt-3 font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("orders.dispute.title") %></h1>
+  <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("orders.dispute.subtitle", number: @order.number) %></p>
+
+  <%= form_with url: order_dispute_path(@order), method: :post, scope: :dispute,
+                class: "surface mt-6 space-y-5 p-5" do |f| %>
+    <div>
+      <%= f.label :reason, t("orders.dispute.reason_label"), class: "block text-sm font-semibold text-slate-900 dark:text-zinc-100" %>
+      <div class="mt-2 space-y-2">
+        <% Order::DISPUTE_REASONS.each do |reason| %>
+          <label class="flex items-center gap-2 text-sm text-slate-700 dark:text-zinc-300">
+            <%= f.radio_button :reason, reason, required: true, class: "size-4" %>
+            <span><%= t("orders.dispute.reasons.#{reason}") %></span>
+          </label>
+        <% end %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :details, t("orders.dispute.details"), class: "block text-sm font-semibold text-slate-900 dark:text-zinc-100" %>
+      <%= f.text_area :details, rows: 5, maxlength: 2000,
+                      placeholder: t("orders.dispute.details_placeholder"),
+                      class: ui_input_classes("mt-2") %>
+    </div>
+
+    <div>
+      <%= f.label :photos, t("orders.dispute.photos"), class: "block text-sm font-semibold text-slate-900 dark:text-zinc-100" %>
+      <%= f.file_field :photos, multiple: true, accept: "image/jpeg,image/png,image/webp",
+                       class: "mt-2 block w-full text-sm text-slate-600 file:mr-3 file:rounded-full file:border-0 file:bg-brand-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-brand-700 dark:text-zinc-300 dark:file:bg-brand-900/40 dark:file:text-brand-200" %>
+      <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.dispute.photos_hint", count: Order::DISPUTE_PHOTO_LIMIT) %></p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <%= f.submit t("orders.dispute.submit"), class: ui_button_classes(variant: :danger, size: :md) %>
+      <%= link_to t("orders.dispute.cancel"), order_path(@order),
+                  class: ui_button_classes(variant: :ghost, size: :md) %>
+    </div>
+  <% end %>
+</div>

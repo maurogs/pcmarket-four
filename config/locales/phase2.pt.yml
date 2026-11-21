@@ -221,6 +221,8 @@ pt:
       member_since: "Membro desde"
       buyer_protection: "Proteção do comprador"
     reviews:
+      disabled_title: "Avaliações em pausa"
+      disabled_body: "As avaliações dos compradores estão temporariamente ocultas. Volta em breve."
       title: "Avaliações dos compradores"
       based_on:
         one: "Com base em %{formatted} avaliação"

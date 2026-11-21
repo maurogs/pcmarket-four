@@ -10,6 +10,7 @@
     </a>
 
     <%= render "shared/header" %>
+    <%= turbo_stream_from current_user, :notifications if user_signed_in? %>
     <%= render "shared/mobile_drawer" %>
 
     <div id="flash-messages" class="pointer-events-none fixed inset-x-4 top-24 z-[70] mx-auto flex max-w-md flex-col gap-2">

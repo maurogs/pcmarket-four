@@ -221,6 +221,8 @@ fr:
       member_since: "Membre depuis"
       buyer_protection: "Protection de l'acheteur"
     reviews:
+      disabled_title: "Avis suspendus"
+      disabled_body: "Les avis des acheteurs sont temporairement masqués. Revenez bientôt."
       title: "Avis des acheteurs"
       based_on:
         one: "Basé sur %{formatted} avis"

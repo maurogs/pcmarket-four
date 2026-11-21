@@ -221,6 +221,8 @@ en:
       member_since: "Member since"
       buyer_protection: "Buyer protection"
     reviews:
+      disabled_title: "Reviews are paused"
+      disabled_body: "Buyer reviews are temporarily hidden. Please check back soon."
       title: "Buyer reviews"
       based_on:
         one: "Based on %{formatted} review"

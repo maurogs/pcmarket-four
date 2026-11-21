@@ -221,6 +221,8 @@ it:
       member_since: "Membro dal"
       buyer_protection: "Protezione dell'acquirente"
     reviews:
+      disabled_title: "Recensioni sospese"
+      disabled_body: "Le recensioni degli acquirenti sono temporaneamente nascoste. Torna presto."
       title: "Recensioni degli acquirenti"
       based_on:
         one: "Basato su %{formatted} recensione"

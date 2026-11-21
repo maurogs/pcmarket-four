@@ -48,7 +48,12 @@ Rails.application.routes.draw do
     resources :conversations, only: %i[index show create]
     resources :orders, only: %i[index show], param: :number do
       resource :cancellation, only: :create, module: :orders
+      resource :delivery_confirmation, only: :create, module: :orders
+      resource :dispute, only: %i[new create], module: :orders
+      resource :review, only: %i[new create], module: :orders
     end
+    resources :notifications, only: %i[index update]
+    post "notifications/read_all" => "notifications/read_alls#create", as: :notifications_read_all
     resource :account, only: %i[show update], controller: "account" do
       resource :password, only: %i[edit update], module: :account
       resources :addresses, only: %i[index new create edit update destroy], module: :account
@@ -59,7 +64,15 @@ Rails.application.routes.draw do
 
     namespace :seller do
       root "dashboard#show"
-      resources :orders, only: :index
+      resources :orders, only: %i[index show] do
+        resource :shipment, only: :create, module: :orders
+        resource :pickup, only: :create, module: :orders
+        resource :payment, only: :create, module: :orders
+        resource :cancellation, only: :create, module: :orders
+        resource :packing_slip, only: :show, module: :orders
+      end
+      resources :order_exports, only: :create
+      resources :review_replies, only: %i[create update]
       resource :store, only: %i[edit update], controller: "stores"
       resource :store_policy, only: %i[edit update], controller: "store_policies"
       resource :vacation, only: %i[edit update], controller: "vacations"

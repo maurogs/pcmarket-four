@@ -1,12 +1,39 @@
 <% content_for :title, t("seller.orders.title") %>
 
-<div>
-  <h2 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("seller.orders.title") %></h2>
-  <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("seller.orders.subtitle") %></p>
+<div class="flex flex-wrap items-end justify-between gap-3">
+  <div>
+    <h2 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("seller.orders.title") %></h2>
+    <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("seller.orders.subtitle") %></p>
+  </div>
+  <%= form_with url: seller_order_exports_path, method: :post, class: "shrink-0" do %>
+    <%= hidden_field_tag :filter, @filter %>
+    <%= hidden_field_tag :q, @query if @query.present? %>
+    <%= submit_tag t("seller.orders.export_csv"), class: ui_button_classes(variant: :outline, size: :sm) %>
+  <% end %>
 </div>
 
+<div class="mt-5 flex flex-wrap gap-1.5" role="tablist" aria-label="<%= t("seller.orders.tabs_label") %>">
+  <% Order::SELLER_FILTERS.each_key do |key| %>
+    <%= link_to seller_orders_path(filter: key, q: @query.presence),
+                class: ui_chip_classes(active: @filter == key), role: "tab",
+                aria: { selected: @filter == key } do %>
+      <span><%= t("seller.orders.tabs.#{key}") %></span>
+      <span class="rounded-full bg-black/5 px-1.5 text-[11px] font-semibold dark:bg-white/10"><%= @counts[key].to_i %></span>
+    <% end %>
+  <% end %>
+</div>
+
+<%= form_with url: seller_orders_path, method: :get, class: "mt-4 flex flex-wrap gap-2" do %>
+  <%= hidden_field_tag :filter, @filter %>
+  <label for="seller-orders-search" class="sr-only"><%= t("seller.orders.search_label") %></label>
+  <input id="seller-orders-search" type="search" name="q" value="<%= @query %>"
+         placeholder="<%= t("seller.orders.search_placeholder") %>"
+         class="<%= ui_input_classes("max-w-md") %>">
+  <%= submit_tag t("seller.orders.search"), class: ui_button_classes(variant: :outline, size: :md) %>
+<% end %>
+
 <% if @orders.any? %>
-  <div class="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+  <div class="mt-6 hidden overflow-hidden rounded-xl border border-slate-200 bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
     <table class="w-full text-left text-sm">
       <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400">
         <tr>
@@ -15,21 +42,44 @@
           <th scope="col" class="px-4 py-3"><%= t("seller.orders.status") %></th>
           <th scope="col" class="px-4 py-3"><%= t("seller.orders.date") %></th>
           <th scope="col" class="px-4 py-3 text-right"><%= t("seller.orders.total") %></th>
+          <th scope="col" class="px-4 py-3 text-right"><span class="sr-only"><%= t("seller.orders.actions_label") %></span></th>
         </tr>
       </thead>
       <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
         <% @orders.each do |order| %>
-          <tr>
-            <td class="px-4 py-3 font-medium text-slate-900 dark:text-zinc-100"><%= order.number %></td>
-            <td class="px-4 py-3 text-slate-600 dark:text-zinc-400"><%= order.buyer.display_name %></td>
-            <td class="px-4 py-3"><span class="<%= ui_badge_classes(tone: :neutral) %>"><%= t("seller.orders.statuses.#{order.status}") %></span></td>
+          <tr class="transition hover:bg-slate-50/70 dark:hover:bg-zinc-800/40">
+            <td class="px-4 py-3 font-medium text-slate-900 dark:text-zinc-100"><%= link_to order.number, seller_order_path(order), class: "hover:text-brand-700 dark:hover:text-brand-300" %></td>
+            <td class="px-4 py-3 text-slate-600 dark:text-zinc-400"><%= order.buyer&.display_name || order.buyer_email %></td>
+            <td class="px-4 py-3"><span class="<%= ui_badge_classes(tone: order_status_tone(order)) %>"><%= t("orders.statuses.#{order.status}") %></span></td>
             <td class="px-4 py-3 text-slate-600 dark:text-zinc-400"><%= l(order.created_at.to_date, format: :short) %></td>
             <td class="px-4 py-3 text-right font-semibold text-slate-900 dark:text-white"><%= format_price(order.total_cents) %></td>
+            <td class="px-4 py-3 text-right">
+              <%= link_to t("seller.orders.open"), seller_order_path(order),
+                          class: "text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+            </td>
           </tr>
         <% end %>
       </tbody>
     </table>
   </div>
+
+  <div class="mt-6 space-y-3 md:hidden">
+    <% @orders.each do |order| %>
+      <%= link_to seller_order_path(order), class: "surface block p-4 transition hover:border-brand-300 dark:hover:border-brand-700" do %>
+        <div class="flex items-center justify-between gap-2">
+          <p class="font-semibold text-slate-900 dark:text-zinc-100"><%= order.number %></p>
+          <span class="<%= ui_badge_classes(tone: order_status_tone(order)) %>"><%= t("orders.statuses.#{order.status}") %></span>
+        </div>
+        <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= order.buyer&.display_name || order.buyer_email %></p>
+        <div class="mt-2 flex items-center justify-between text-sm">
+          <span class="text-slate-500 dark:text-zinc-400"><%= l(order.created_at.to_date, format: :short) %></span>
+          <span class="font-semibold text-slate-900 dark:text-white"><%= format_price(order.total_cents) %></span>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="mt-6"><%= render "shared/pagination", pagy: @pagy %></div>
 <% else %>
   <div class="mt-6">
     <%= render "shared/empty_state", title: t("seller.orders.empty_title"), body: t("seller.orders.empty_body") %>

@@ -1,0 +1,25 @@
+en:
+  notifications:
+    title: "Notifications"
+    subtitle: "Payments, shipments and updates about your orders."
+    empty: "You have no notifications."
+    empty_title: "Nothing here yet"
+    empty_body: "Order and account updates will appear here."
+    view_all: "View all notifications"
+    read_all:
+      label: "Mark all as read"
+      done: "All notifications marked as read."
+    kinds:
+      order_paid: "Payment received for order %{number}."
+      order_paid_seller: "Order %{number} is paid and ready to ship."
+      order_shipped: "Order %{number} has shipped."
+      order_ready_for_pickup: "Order %{number} is ready for pickup."
+      order_delivered: "Order %{number} was delivered. Please confirm receipt."
+      order_completed: "Order %{number} is complete. Leave a review."
+      order_cancelled: "Order %{number} was cancelled."
+      order_cancelled_seller: "Order %{number} was cancelled."
+      order_dispute_opened: "A dispute was opened on order %{number}."
+      order_dispute_resolved: "The dispute on order %{number} was resolved."
+      order_refunded: "Order %{number} was refunded."
+      order_late_shipment: "Order %{number} is waiting to be shipped."
+      default: "You have a new notification."

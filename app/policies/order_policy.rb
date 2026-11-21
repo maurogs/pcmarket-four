@@ -11,6 +11,19 @@ class OrderPolicy < ApplicationPolicy
     buyer? && record.cancellable?
   end
 
+  def delivery_confirmation?
+    buyer? && record.shipped?
+  end
+
+  def dispute?
+    buyer? && record.inspection_window_open? &&
+      %w[shipped delivered].include?(record.status)
+  end
+
+  def review?
+    buyer? && record.completed? && record.review.blank?
+  end
+
   private
 
   def buyer?

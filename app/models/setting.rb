@@ -22,7 +22,13 @@ class Setting < ApplicationRecord
     "bank_iban" => "ES00 0000 0000 0000 0000 0000",
     "bank_beneficiary" => "PCMarket S.L.",
     "payment_deadline_days" => 3,
-    "stripe_enabled" => false
+    "stripe_enabled" => false,
+    "inspection_window_days" => 2,
+    "auto_complete_after_delivery_days" => 2,
+    "auto_delivered_after_shipping_days" => 14,
+    "seller_ship_deadline_days" => 3,
+    "support_email" => "soporte@pcmarket.test",
+    "blocked_words" => ""
   }.freeze
 
   enum :value_type, { boolean: "boolean", integer: "integer", string: "string", decimal: "decimal" }

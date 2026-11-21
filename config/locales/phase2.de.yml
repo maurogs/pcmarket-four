@@ -221,6 +221,8 @@ de:
       member_since: "Mitglied seit"
       buyer_protection: "Käuferschutz"
     reviews:
+      disabled_title: "Bewertungen pausiert"
+      disabled_body: "Käuferbewertungen sind vorübergehend ausgeblendet. Schau bald wieder vorbei."
       title: "Käuferbewertungen"
       based_on:
         one: "Basierend auf %{formatted} Bewertung"

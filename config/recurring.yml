@@ -1,14 +1,33 @@
 # Solid Queue recurring tasks. The unpaid-order sweep runs in every
-# environment; production also clears finished job rows.
+# environment; production also clears finished job rows and runs the order
+# lifecycle sweeps.
 development:
   expire_unpaid_orders:
     class: ExpireUnpaidOrdersJob
     schedule: every hour
+  auto_deliver_orders:
+    class: AutoDeliverOrdersJob
+    schedule: every hour at minute 20
+  auto_complete_orders:
+    class: AutoCompleteOrdersJob
+    schedule: every hour at minute 25
+  late_shipment_reminders:
+    class: LateShipmentReminderJob
+    schedule: every hour at minute 30
 
 test:
   expire_unpaid_orders:
     class: ExpireUnpaidOrdersJob
     schedule: every hour
+  auto_deliver_orders:
+    class: AutoDeliverOrdersJob
+    schedule: every hour at minute 20
+  auto_complete_orders:
+    class: AutoCompleteOrdersJob
+    schedule: every hour at minute 25
+  late_shipment_reminders:
+    class: LateShipmentReminderJob
+    schedule: every hour at minute 30
 
 production:
   clear_solid_queue_finished_jobs:
@@ -17,3 +36,12 @@ production:
   expire_unpaid_orders:
     class: ExpireUnpaidOrdersJob
     schedule: every hour
+  auto_deliver_orders:
+    class: AutoDeliverOrdersJob
+    schedule: every hour at minute 20
+  auto_complete_orders:
+    class: AutoCompleteOrdersJob
+    schedule: every hour at minute 25
+  late_shipment_reminders:
+    class: LateShipmentReminderJob
+    schedule: every hour at minute 30

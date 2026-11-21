@@ -10,7 +10,8 @@ class OrdersController < ApplicationController
   end
 
   def show
-    @order = Order.includes(:store, :seller, order_items: { listing: { images_attachments: :blob } })
+    @order = Order.includes(:store, :seller, :order_events, :review,
+                            order_items: { listing: { images_attachments: :blob } })
                   .find_by!(number: params[:number])
 
     if guest_token_valid?
@@ -19,6 +20,7 @@ class OrdersController < ApplicationController
       authenticate_user!
       authorize @order if user_signed_in?
     end
+    @reviews_enabled = Setting.enabled?("reviews_enabled")
   end
 
   private

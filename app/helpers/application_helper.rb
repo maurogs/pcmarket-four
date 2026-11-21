@@ -210,6 +210,22 @@ module ApplicationHelper
     current_user ? current_user.notifications.unread.count : 0
   end
 
+  def notification_text(notification)
+    t("notifications.kinds.#{notification.kind}",
+      **notification.params.to_h.symbolize_keys,
+      default: t("notifications.kinds.default"))
+  end
+
+  def order_carrier_label(carrier)
+    return nil if carrier.blank?
+
+    t("orders.carriers.#{carrier}", default: carrier.to_s.humanize)
+  end
+
+  def order_event_label(event)
+    t("orders.events.#{event.kind}", default: event.kind.to_s.humanize)
+  end
+
   def consent_given?(category)
     return true if category.to_sym == :necessary
 

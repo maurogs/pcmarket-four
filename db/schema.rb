@@ -369,6 +369,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_100100) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "order_events", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.bigint "actor_id"
+    t.string "kind", null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.index ["actor_id"], name: "index_order_events_on_actor_id"
+    t.index ["order_id", "created_at"], name: "index_order_events_on_order_id_and_created_at"
+    t.index ["order_id"], name: "index_order_events_on_order_id"
+  end
+
   create_table "order_items", force: :cascade do |t|
     t.bigint "order_id", null: false
     t.bigint "listing_id", null: false
@@ -423,9 +434,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_100100) do
     t.string "guest_access_token"
     t.datetime "terms_accepted_at"
     t.datetime "stock_restored_at"
+    t.datetime "disputed_at"
+    t.datetime "refunded_at"
+    t.boolean "refund_required", default: false, null: false
+    t.datetime "late_shipment_notified_at"
     t.index ["buyer_id", "created_at"], name: "index_orders_on_buyer_id_and_created_at"
     t.index ["buyer_id"], name: "index_orders_on_buyer_id"
     t.index ["checkout_token", "seller_id"], name: "index_orders_on_checkout_token_and_seller", unique: true, where: "(checkout_token IS NOT NULL)"
+    t.index ["disputed_at"], name: "index_orders_on_disputed_at"
     t.index ["fulfilment"], name: "index_orders_on_fulfilment"
     t.index ["guest_access_token"], name: "index_orders_on_guest_access_token", unique: true, where: "(guest_access_token IS NOT NULL)"
     t.index ["number"], name: "index_orders_on_number", unique: true
@@ -638,6 +654,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_100100) do
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users", column: "sender_id"
   add_foreign_key "notifications", "users"
+  add_foreign_key "order_events", "orders"
+  add_foreign_key "order_events", "users", column: "actor_id"
   add_foreign_key "order_items", "listings"
   add_foreign_key "order_items", "orders"
   add_foreign_key "orders", "stores"

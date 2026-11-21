@@ -38,17 +38,28 @@
     <div class="space-y-6">
       <section class="surface p-5" aria-labelledby="order-timeline">
         <h2 id="order-timeline" class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("orders.show.timeline_title") %></h2>
-        <ol class="mt-4 flex flex-wrap gap-3">
+        <ol class="mt-4 space-y-2">
           <% @order.timeline.each do |step| %>
-            <li class="flex min-w-32 flex-1 flex-col gap-1 rounded-xl border px-3 py-2.5 <%= step[:done] ? "border-brand-200 bg-brand-50/60 dark:border-brand-900/50 dark:bg-brand-500/5" : "border-slate-200 dark:border-zinc-800" %>">
-              <span class="flex items-center gap-1.5 text-sm font-semibold <%= step[:done] ? "text-brand-900 dark:text-brand-200" : "text-slate-500 dark:text-zinc-400" %>">
-                <span class="flex size-4 items-center justify-center rounded-full <%= step[:done] ? "bg-brand-700 text-white" : "bg-slate-200 dark:bg-zinc-700" %>">
-                  <%= icon "check", class: "size-3" %>
-                </span>
-                <%= t("orders.timeline.#{step[:key]}") %>
+            <% event = step[:event] %>
+            <li class="flex items-start gap-3 rounded-xl border border-slate-200 px-3 py-2.5 dark:border-zinc-800">
+              <span class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-brand-700 text-white">
+                <%= icon "check", class: "size-3" %>
               </span>
-              <span class="text-xs text-slate-500 dark:text-zinc-400">
-                <%= step[:at] ? l(step[:at].to_date, format: :long) : t("orders.timeline.pending") %>
+              <span class="min-w-0 flex-1">
+                <span class="block text-sm font-semibold text-slate-900 dark:text-zinc-100"><%= t("orders.events.#{step[:key]}", default: step[:key].to_s.humanize) %></span>
+                <span class="block text-xs text-slate-500 dark:text-zinc-400">
+                  <%= l(step[:at].to_date, format: :long) %>
+                  <% if event&.actor.present? %>
+                    · <%= t("orders.events.by_actor", name: event.actor.display_name) %>
+                  <% elsif event.present? %>
+                    · <%= t("orders.events.by_system") %>
+                  <% end %>
+                </span>
+                <% if event&.data&.dig("reason").present? %>
+                  <span class="mt-1 block text-xs text-slate-500 dark:text-zinc-400">
+                    <%= t("orders.events.reason_label", reason: t("orders.dispute.reasons.#{event.data['reason']}", default: event.data["reason"])) %>
+                  </span>
+                <% end %>
               </span>
             </li>
           <% end %>
@@ -79,6 +90,96 @@
           <% end %>
         </ul>
       </section>
+
+      <% if @order.tracking_number.present? || @order.carrier.present? %>
+        <section class="surface p-5" aria-labelledby="order-tracking">
+          <h2 id="order-tracking" class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("orders.show.tracking_title") %></h2>
+          <% if @order.carrier.present? %>
+            <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("orders.show.carrier", carrier: order_carrier_label(@order.carrier)) %></p>
+          <% end %>
+          <% if @order.tracking_number.present? %>
+            <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400">
+              <%= t("orders.show.tracking_number") %>
+              <% if @order.tracking_url.present? %>
+                <%= link_to @order.tracking_number, @order.tracking_url, target: "_blank", rel: "noopener",
+                            class: "font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+              <% else %>
+                <span class="font-semibold text-slate-900 dark:text-white"><%= @order.tracking_number %></span>
+              <% end %>
+            </p>
+          <% end %>
+        </section>
+      <% end %>
+
+      <% if @order.disputed? %>
+        <% dispute_event = @order.order_events.where(kind: "dispute_opened").last %>
+        <section class="surface p-5" aria-labelledby="order-dispute">
+          <h2 id="order-dispute" class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("orders.dispute.title") %></h2>
+          <% if dispute_event.present? %>
+            <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400">
+              <%= t("orders.dispute.reason_label") %>:
+              <strong class="text-slate-900 dark:text-white"><%= t("orders.dispute.reasons.#{dispute_event.data['reason']}", default: dispute_event.data["reason"]) %></strong>
+            </p>
+            <% if dispute_event.data["details"].present? %>
+              <p class="mt-2 whitespace-pre-line text-sm text-slate-600 dark:text-zinc-400"><%= dispute_event.data["details"] %></p>
+            <% end %>
+          <% end %>
+          <% if @order.dispute_photos.attached? %>
+            <ul class="mt-3 flex flex-wrap gap-2">
+              <% @order.dispute_photos.each do |photo| %>
+                <li class="size-20 overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800">
+                  <%= image_tag photo.variant(resize_to_limit: [ 160, 160 ], format: :webp), alt: "",
+                                class: "size-full object-cover", loading: "lazy" %>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+        </section>
+      <% end %>
+
+      <% show_actions = !@guest_view && (@order.shipped? ||
+           (@order.inspection_window_open? && %w[shipped delivered].include?(@order.status)) ||
+           (@reviews_enabled && @order.completed? && @order.review.blank?)) %>
+      <% if show_actions %>
+        <section class="surface p-5" aria-labelledby="order-actions">
+          <h2 id="order-actions" class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("orders.actions.title") %></h2>
+          <div class="mt-3 flex flex-wrap items-center gap-2">
+            <% if @order.shipped? %>
+              <%= button_to t("orders.actions.confirm_receipt"), order_delivery_confirmation_path(@order),
+                            method: :post,
+                            class: ui_button_classes(variant: :primary, size: :sm),
+                            form: { data: { turbo_confirm: t("orders.actions.confirm_receipt_confirm") } } %>
+            <% end %>
+            <% if @order.inspection_window_open? && %w[shipped delivered].include?(@order.status) %>
+              <%= link_to t("orders.actions.open_dispute"), new_order_dispute_path(@order),
+                          class: ui_button_classes(variant: :outline, size: :sm) %>
+            <% end %>
+            <% if @reviews_enabled && @order.completed? && @order.review.blank? %>
+              <%= link_to t("orders.actions.leave_review"), new_order_review_path(@order),
+                          class: ui_button_classes(variant: :accent, size: :sm) %>
+            <% end %>
+          </div>
+          <% if @order.inspection_window_open? %>
+            <p class="mt-3 text-xs text-slate-500 dark:text-zinc-400">
+              <%= t("orders.actions.inspection_window", date: l(@order.inspection_window_end_at.to_date, format: :long)) %>
+            </p>
+          <% end %>
+        </section>
+      <% end %>
+
+      <% if @reviews_enabled && @order.review.present? %>
+        <section class="surface p-5" aria-labelledby="order-review">
+          <h2 id="order-review" class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("orders.reviews.your_review") %></h2>
+          <div class="mt-2"><%= render "shared/star_rating", rating: @order.review.rating %></div>
+          <p class="mt-2 whitespace-pre-line text-sm text-slate-600 dark:text-zinc-400"><%= @order.review.body %></p>
+          <% if @order.review.seller_reply.present? %>
+            <div class="mt-3 rounded-lg bg-slate-50 p-3 dark:bg-zinc-800/60">
+              <p class="text-xs font-semibold text-slate-500 dark:text-zinc-400"><%= t("stores.reviews.seller_reply") %></p>
+              <p class="mt-1 text-sm text-slate-600 dark:text-zinc-300"><%= @order.review.seller_reply %></p>
+            </div>
+          <% end %>
+        </section>
+      <% end %>
 
       <% if @order.pending_payment? %>
         <section class="surface p-5" aria-labelledby="order-payment">

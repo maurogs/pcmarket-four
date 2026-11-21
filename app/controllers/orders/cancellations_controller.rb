@@ -6,7 +6,7 @@ module Orders
       @order = current_user.orders_as_buyer.find_by!(number: params[:order_number])
       authorize @order, :cancellation?
 
-      if @order.cancel_unpaid!(reason: "buyer_cancelled")
+      if @order.cancel!(current_user, "buyer_cancelled")
         redirect_to order_path(@order), notice: t("orders.cancelled")
       else
         redirect_to order_path(@order), alert: t("orders.cannot_cancel")

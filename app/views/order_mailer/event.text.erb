@@ -1,0 +1,25 @@
+<%= @heading %>
+
+<%= t("orders.mailer.greeting", name: @recipient_name) %>
+
+<%= @intro %>
+
+<%= t("orders.mailer.order_number") %>: <%= @order.number %>
+<%= t("orders.mailer.store") %>: <%= @order.store&.name || @order.seller.display_name %>
+<% @order.order_items.each do |item| %>
+- <%= item.title_snapshot %> × <%= item.quantity %> — <%= format_price(item.subtotal_cents) %>
+<% end %>
+<%= t("orders.mailer.total") %>: <%= format_price(@order.total_cents) %>
+
+<% if @order.tracking_number.present? %>
+<%= t("orders.mailer.tracking_label") %>: <%= @order.tracking_number %>
+<% if @tracking_url.present? %>
+<%= @tracking_url %>
+<% end %>
+<% end %>
+
+<% if @cta_url.present? && @cta_label.present? %>
+<%= @cta_label %>: <%= @cta_url %>
+<% end %>
+
+<%= t("orders.mailer.signature", site: site_name) %>
