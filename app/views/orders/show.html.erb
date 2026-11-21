@@ -1,3 +1,169 @@
-<%= render "shared/placeholder_page", title: t("pages.orders.show_title", number: @order.number),
-           body: t("pages.orders.show_body"), cta_path: orders_path,
-           cta_label: t("pages.coming_soon.cta") %>
+<% content_for :title, t("orders.show.title", number: @order.number) %>
+
+<div class="page-container py-8 sm:py-10">
+  <div class="flex flex-wrap items-start justify-between gap-3">
+    <div>
+      <div class="flex flex-wrap items-center gap-2">
+        <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= @order.number %></h1>
+        <span class="<%= ui_badge_classes(tone: order_status_tone(@order)) %>"><%= t("orders.statuses.#{@order.status}") %></span>
+      </div>
+      <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400">
+        <%= t("orders.show.placed_on", date: l(@order.created_at.to_date, format: :long)) %>
+      </p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <%= link_to t("orders.show.back"), user_signed_in? ? orders_path : listings_path,
+                  class: ui_button_classes(variant: :outline, size: :sm) %>
+      <% if @order.cancellable? && !@guest_view %>
+        <%= button_to t("orders.cancel"), order_cancellation_path(@order), method: :post,
+                      class: ui_button_classes(variant: :danger, size: :sm),
+                      form: { data: { turbo_confirm: t("orders.cancel_confirm") } } %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @guest_view %>
+    <p class="mt-4 rounded-xl border border-brand-100 bg-brand-50/70 px-4 py-3 text-sm text-brand-900 dark:border-brand-900/50 dark:bg-brand-500/5 dark:text-brand-200">
+      <%= t("orders.show.guest_notice") %>
+    </p>
+  <% end %>
+
+  <% if @order.cancelled? %>
+    <p class="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+      <%= t("orders.show.cancelled_notice", date: @order.cancelled_at ? l(@order.cancelled_at.to_date, format: :long) : "") %>
+    </p>
+  <% end %>
+
+  <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+    <div class="space-y-6">
+      <section class="surface p-5" aria-labelledby="order-timeline">
+        <h2 id="order-timeline" class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("orders.show.timeline_title") %></h2>
+        <ol class="mt-4 flex flex-wrap gap-3">
+          <% @order.timeline.each do |step| %>
+            <li class="flex min-w-32 flex-1 flex-col gap-1 rounded-xl border px-3 py-2.5 <%= step[:done] ? "border-brand-200 bg-brand-50/60 dark:border-brand-900/50 dark:bg-brand-500/5" : "border-slate-200 dark:border-zinc-800" %>">
+              <span class="flex items-center gap-1.5 text-sm font-semibold <%= step[:done] ? "text-brand-900 dark:text-brand-200" : "text-slate-500 dark:text-zinc-400" %>">
+                <span class="flex size-4 items-center justify-center rounded-full <%= step[:done] ? "bg-brand-700 text-white" : "bg-slate-200 dark:bg-zinc-700" %>">
+                  <%= icon "check", class: "size-3" %>
+                </span>
+                <%= t("orders.timeline.#{step[:key]}") %>
+              </span>
+              <span class="text-xs text-slate-500 dark:text-zinc-400">
+                <%= step[:at] ? l(step[:at].to_date, format: :long) : t("orders.timeline.pending") %>
+              </span>
+            </li>
+          <% end %>
+        </ol>
+      </section>
+
+      <section class="surface overflow-hidden" aria-labelledby="order-items">
+        <h2 id="order-items" class="border-b border-slate-200 px-5 py-4 font-heading text-lg font-semibold text-slate-950 dark:border-zinc-800 dark:text-white"><%= t("orders.show.items_title") %></h2>
+        <ul class="divide-y divide-slate-100 dark:divide-zinc-800">
+          <% @order.order_items.each do |item| %>
+            <li class="flex gap-4 px-5 py-4">
+              <div class="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800">
+                <% if item.listing&.images&.attached? %>
+                  <%= image_tag item.listing.ordered_images.first.variant(resize_to_limit: [ 160, 160 ], format: :webp),
+                                alt: t("listings.card.image_alt", title: item.title_snapshot),
+                                width: 160, height: 160, loading: "lazy",
+                                class: "h-full w-full object-cover" %>
+                <% else %>
+                  <%= image_tag "listing-placeholder.svg", alt: "", class: "h-full w-full object-cover" %>
+                <% end %>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-semibold text-slate-950 dark:text-white"><%= item.title_snapshot %></p>
+                <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.show.quantity", count: item.quantity) %></p>
+                <p class="mt-2 text-sm font-semibold text-slate-950 dark:text-white"><%= format_price(item.subtotal_cents) %></p>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+
+      <% if @order.pending_payment? %>
+        <section class="surface p-5" aria-labelledby="order-payment">
+          <h2 id="order-payment" class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("orders.show.payment_title") %></h2>
+          <% if @order.payment_method == "bank_transfer" %>
+            <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.intro") %></p>
+            <dl class="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+              <div>
+                <dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.iban") %></dt>
+                <dd class="font-mono text-sm font-semibold text-slate-950 dark:text-white"><%= Setting.get("bank_iban") %></dd>
+              </div>
+              <div>
+                <dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.beneficiary") %></dt>
+                <dd class="text-sm font-semibold text-slate-950 dark:text-white"><%= Setting.get("bank_beneficiary") %></dd>
+              </div>
+              <div>
+                <dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.reference") %></dt>
+                <dd class="text-sm font-semibold text-slate-950 dark:text-white"><%= @order.number %></dd>
+              </div>
+              <div>
+                <dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.amount") %></dt>
+                <dd class="text-sm font-semibold text-slate-950 dark:text-white"><%= format_price(@order.total_cents) %></dd>
+              </div>
+            </dl>
+            <p class="mt-3 text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.deadline", days: Setting.get("payment_deadline_days", 3).to_i) %></p>
+          <% elsif @order.payment_method == "cash_on_pickup" %>
+            <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("orders.payment.cash_on_pickup.intro") %></p>
+          <% else %>
+            <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("orders.payment.stripe.intro") %></p>
+          <% end %>
+        </section>
+      <% end %>
+    </div>
+
+    <aside class="space-y-6">
+      <section class="surface p-5" aria-labelledby="order-seller">
+        <h2 id="order-seller" class="font-heading text-base font-semibold text-slate-950 dark:text-white"><%= t("orders.show.seller_title") %></h2>
+        <p class="mt-2 font-semibold text-slate-950 dark:text-white"><%= @order.store&.name || @order.seller.display_name %></p>
+        <% if @order.store.present? %>
+          <%= link_to t("orders.show.view_store"), store_path(@order.store),
+                      class: "mt-1 inline-block text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+        <% end %>
+        <%= link_to t("orders.show.message_seller"), conversations_path,
+                    class: "mt-2 block text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+      </section>
+
+      <section class="surface p-5" aria-labelledby="order-delivery">
+        <h2 id="order-delivery" class="font-heading text-base font-semibold text-slate-950 dark:text-white"><%= t("orders.show.delivery_title") %></h2>
+        <p class="mt-2 text-sm text-slate-700 dark:text-zinc-300"><%= t("checkout.delivery.#{@order.fulfilment}") %></p>
+        <% if @order.shipping? && @order.ship_line1.present? %>
+          <address class="mt-2 text-sm not-italic text-slate-600 dark:text-zinc-400">
+            <%= @order.ship_name %><br>
+            <%= @order.ship_line1 %><br>
+            <% if @order.ship_line2.present? %><%= @order.ship_line2 %><br><% end %>
+            <%= [ @order.ship_postal_code, @order.ship_city ].compact_blank.join(" ") %><br>
+            <%= [ @order.ship_region, @order.ship_country_code ].compact_blank.join(", ") %>
+          </address>
+        <% end %>
+      </section>
+
+      <section class="surface p-5" aria-labelledby="order-totals">
+        <h2 id="order-totals" class="font-heading text-base font-semibold text-slate-950 dark:text-white"><%= t("orders.show.totals_title") %></h2>
+        <dl class="mt-3 space-y-2 text-sm">
+          <div class="flex items-center justify-between gap-4">
+            <dt class="text-slate-600 dark:text-zinc-400"><%= t("cart.subtotal") %></dt>
+            <dd class="font-medium text-slate-950 dark:text-white"><%= format_price(@order.subtotal_cents) %></dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt class="text-slate-600 dark:text-zinc-400"><%= t("cart.shipping") %></dt>
+            <dd class="font-medium text-slate-950 dark:text-white"><%= format_price(@order.shipping_cents) %></dd>
+          </div>
+          <div class="flex items-center justify-between gap-4 border-t border-slate-200 pt-2 dark:border-zinc-800">
+            <dt class="font-semibold text-slate-950 dark:text-white"><%= t("cart.estimated_total") %></dt>
+            <dd class="font-heading text-lg font-bold text-slate-950 dark:text-white"><%= format_price(@order.total_cents) %></dd>
+          </div>
+        </dl>
+      </section>
+
+      <div class="rounded-xl border border-brand-100 bg-brand-50/70 p-4 dark:border-brand-900/50 dark:bg-brand-500/5">
+        <p class="flex items-center gap-1.5 text-sm font-semibold text-brand-900 dark:text-brand-200">
+          <%= icon "shield-check", class: "size-4" %>
+          <%= t("cart.buyer_protection.title") %>
+        </p>
+        <p class="mt-1 text-xs text-brand-800/80 dark:text-brand-200/70"><%= t("cart.buyer_protection.body") %></p>
+      </div>
+    </aside>
+  </div>
+</div>

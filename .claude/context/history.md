@@ -308,3 +308,76 @@ before checkout and messaging arrive in later phases.
 `db/seeds/demo.rb`,
 `test/{integration/seller_area_test.rb,integration/account_settings_test.rb,validators/spanish_tax_id_validator_test.rb}`,
 `test/fixtures/stores.yml`, `.claude/context/project.md`.
+
+## Phase 4A — cart, checkout and payments
+
+### What changed
+
+- Replaced the cart placeholder with a seller-grouped cart. `CartSummary`
+  (`app/services/cart_summary.rb`) is the single read model for the cart page,
+  header badge and checkout: it groups rows by seller/store, clamps quantities
+  to stock, flags sold/unavailable/vacation items as warnings, excludes them
+  from totals and computes per-seller shipping (sum of item shipping, free or
+  pickup-only).
+- Cart UI now has store cards, item thumbnails, condition, stepper (only when
+  stock > 1), remove, save-to-favourites, per-seller shipping/subtotal, order
+  summary, buyer-protection box, recommendations from cart categories and the
+  empty state. Remove/quantity/favourite actions stream replacements for
+  `#cart-groups`, `#cart-summary` and `#cart-count`.
+- `resources :cart_items` gained a nested `favorite` resource
+  (`CartItems::FavoritesController`) that moves an item to favourites.
+- Added singular `resource :checkout` with a nested `confirmation` resource and
+  `Orders::CancellationsController`. Stripe webhooks live outside the locale
+  scope at `POST /webhooks/stripe`.
+- Added `Checkout::Form` (server validation for contact, per-seller delivery,
+  address/province/postal code, payment availability and the two legal
+  acknowledgements) and `Checkout::PlaceOrder` (one transaction, `FOR UPDATE`
+  listing locks, one order per seller, price/title snapshots, stock decrement
+  and sold-out status, cart clearing, `checkout_token` idempotency, order
+  numbers from `order_number_seq`).
+- Order numbers now come from a PostgreSQL sequence (`PCM-YYYY-NNNNNN`) instead
+  of a count; `buyer_id` is nullable and guest orders store `buyer_email` plus a
+  `has_secure_token` guest access link (`/orders/:number?token=`).
+- Added `Payments::Provider`, `Payments::BankTransfer`, `Payments::CashOnPickup`,
+  `Payments::Stripe` and `Payments::Availability`. Bank transfer shows the
+  configured IBAN/beneficiary/reference; cash on pickup is offered only when all
+  groups are pickup-only; Stripe Checkout sessions are created per order and
+  webhooks verify `STRIPE_WEBHOOK_SECRET`, mark paid idempotently, and restore
+  stock on expiry/failure.
+- Added `ExpireUnpaidOrdersJob` (hourly recurring in development, test and
+  production) to cancel old unpaid bank-transfer orders and relist stock.
+- Added payment settings defaults: `payment_bank_transfer_enabled`,
+  `bank_iban`, `bank_beneficiary`, `payment_deadline_days`, `stripe_enabled`.
+- Added buyer order history (`OrdersController#index/show`) with filter tabs,
+  number/title search, status timeline, items, seller card, delivery address,
+  payment instructions, totals, guest-token access and unpaid cancellation.
+- Added `OrderMailer#placed_buyer` and `#placed_seller` (HTML + text, buyer
+  locale, seller notification preference) delivered through Solid Queue.
+- Split locale domains into `cart.*`, `checkout.*` and `orders.*` in all six
+  languages and removed the old cart block from `phase2.*`.
+
+### Why
+
+Phase 4A closes the purchase loop: buyers can review grouped carts, check out
+as a guest or account holder, pay by bank transfer, cash on pickup or Stripe,
+and track orders, while sellers receive prepared orders and stock is protected
+against overselling.
+
+### Files touched
+
+`app/controllers/{cart,cart_items,checkouts,orders}_controller.rb`,
+`app/controllers/{cart_items,checkout,orders,payments}/**`,
+`app/services/{cart_summary,checkout/**,payments/**}.rb`,
+`app/models/{order,setting}.rb`, `app/policies/order_policy.rb`,
+`app/mailers/order_mailer.rb`, `app/views/order_mailer/**`,
+`app/jobs/expire_unpaid_orders_job.rb`,
+`app/views/{cart,checkouts,checkout,orders}/**`,
+`app/helpers/application_helper.rb`,
+`app/javascript/controllers/checkout_controller.js`, `config/routes.rb`,
+`config/recurring.yml`, `config/locales/{cart,checkout,orders}.*.yml`,
+`config/locales/phase2.*.yml`, `db/migrate/*checkout*`,
+`db/migrate/*order_number_sequence*`, `db/schema.rb`,
+`test/services/{cart_summary,checkout/**,payments/**}_test.rb`,
+`test/jobs/expire_unpaid_orders_job_test.rb`,
+`test/{integration/checkout_test.rb,integration/orders_test.rb,integration/stripe_webhook_test.rb,mailers/order_mailer_test.rb,system/checkout_flow_test.rb}`,
+`Gemfile`, `.claude/context/project.md`.

@@ -1,0 +1,25 @@
+<%= t("orders.mailer.seller.title") %>
+
+<%= t("orders.mailer.greeting", name: @order.seller.first_name.presence || @order.seller.display_name) %>
+<%= t("orders.mailer.seller.intro", number: @order.number, store: @order.store&.name || @order.seller.display_name) %>
+
+<% @order.order_items.each do |item| %>
+- <%= item.title_snapshot %> × <%= item.quantity %> — <%= format_price(item.subtotal_cents) %>
+<% end %>
+
+<%= t("orders.mailer.seller.buyer", email: @order.buyer_email) %>
+<%= t("orders.mailer.seller.fulfilment.#{@order.fulfilment}") %>
+
+<% if @order.shipping? %>
+<%= @order.ship_name %>
+<%= @order.ship_line1 %>
+<% if @order.ship_line2.present? %><%= @order.ship_line2 %>
+<% end %><%= [ @order.ship_postal_code, @order.ship_city ].compact_blank.join(" ") %>
+<%= [ @order.ship_region, @order.ship_country_code ].compact_blank.join(", ") %>
+<% end %>
+
+<%= t("orders.mailer.seller.payment", method: t("checkout.payment.methods.#{@order.payment_method}")) %>
+<%= t("orders.mailer.seller.total", amount: format_price(@order.total_cents)) %>
+<%= t("orders.mailer.seller.open_sales") %>: <%= @seller_url %>
+
+<%= t("orders.mailer.signature", site: site_name) %>

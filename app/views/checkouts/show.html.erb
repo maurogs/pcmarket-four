@@ -1,0 +1,278 @@
+<% content_for :title, t("checkout.title") %>
+
+<div class="page-container py-8 sm:py-10">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("checkout.title") %></h1>
+      <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("checkout.subtitle") %></p>
+    </div>
+    <%= link_to t("checkout.back_to_cart"), cart_path,
+                class: "text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+  </div>
+
+  <% if @form.errors.any? %>
+    <div class="mt-6 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+      <p class="font-semibold"><%= t("checkout.errors.heading") %></p>
+      <ul class="mt-1 list-disc space-y-1 ps-5">
+        <% @form.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+    <%= form_with model: @form, scope: :checkout, url: checkout_path, method: :post,
+                  data: { controller: "checkout" }, class: "space-y-4" do |form| %>
+      <%= form.hidden_field :checkout_token %>
+
+      <details open data-checkout-target="step" class="surface overflow-hidden">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
+          <span class="flex items-center gap-3">
+            <span class="flex size-8 items-center justify-center rounded-full bg-brand-700 font-heading text-sm font-bold text-white">1</span>
+            <span class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("checkout.steps.contact") %></span>
+          </span>
+          <%= icon "chevron-down", class: "size-4 text-slate-400" %>
+        </summary>
+        <div class="space-y-4 border-t border-slate-200 px-5 py-5 dark:border-zinc-800">
+          <div>
+            <%= form.label :email, t("checkout.contact.email_label"), class: "mb-1.5 block text-sm font-medium text-slate-900 dark:text-zinc-100" %>
+            <%= form.email_field :email, required: true, autocomplete: "email",
+                                 class: ui_input_classes, placeholder: t("checkout.contact.email_placeholder") %>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-zinc-400">
+            <%= @form.guest? ? t("checkout.contact.guest_hint") : t("checkout.contact.account_hint") %>
+          </p>
+          <button type="button" data-action="checkout#next"
+                  class="<%= ui_button_classes(variant: :outline, size: :sm) %>">
+            <%= t("checkout.continue") %>
+          </button>
+        </div>
+      </details>
+
+      <details data-checkout-target="step" class="surface overflow-hidden">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
+          <span class="flex items-center gap-3">
+            <span class="flex size-8 items-center justify-center rounded-full bg-brand-700 font-heading text-sm font-bold text-white">2</span>
+            <span class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("checkout.steps.delivery") %></span>
+          </span>
+          <%= icon "chevron-down", class: "size-4 text-slate-400" %>
+        </summary>
+        <div class="space-y-5 border-t border-slate-200 px-5 py-5 dark:border-zinc-800">
+          <% @form.groups.each do |group| %>
+            <div class="rounded-xl border border-slate-200 p-4 dark:border-zinc-800">
+              <p class="font-semibold text-slate-950 dark:text-white"><%= group.store_name %></p>
+              <p class="mt-0.5 text-xs text-slate-500 dark:text-zinc-400">
+                <%= t("checkout.delivery.group_items", count: group.item_count) %>
+              </p>
+
+              <% if group.pickup_only? %>
+                <%= form.hidden_field :delivery, name: "checkout[delivery][#{group.seller.id}]", value: "local_pickup", id: nil %>
+                <p class="mt-2 text-sm font-medium text-slate-700 dark:text-zinc-300"><%= t("checkout.delivery.pickup_only") %></p>
+              <% else %>
+                <div class="mt-3 flex flex-wrap gap-3">
+                  <label class="flex flex-1 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm dark:border-zinc-800">
+                    <%= radio_button_tag "checkout[delivery][#{group.seller.id}]", "shipping",
+                                         @form.delivery_for(group) == "shipping", id: "delivery-shipping-#{group.seller.id}" %>
+                    <span><%= t("checkout.delivery.shipping") %></span>
+                  </label>
+                  <% if group.available_items.all? { |item| item.listing.local_pickup? } %>
+                    <label class="flex flex-1 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm dark:border-zinc-800">
+                      <%= radio_button_tag "checkout[delivery][#{group.seller.id}]", "local_pickup",
+                                           @form.delivery_for(group) == "local_pickup", id: "delivery-pickup-#{group.seller.id}" %>
+                      <span><%= t("checkout.delivery.local_pickup") %></span>
+                    </label>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+
+          <div class="space-y-4">
+            <h3 class="font-heading text-base font-semibold text-slate-950 dark:text-white"><%= t("checkout.delivery.address_title") %></h3>
+
+            <% if @addresses.any? %>
+              <div>
+                <%= form.label :address_id, t("checkout.delivery.saved_address"), class: "mb-1.5 block text-sm font-medium text-slate-900 dark:text-zinc-100" %>
+                <%= form.select :address_id, options_from_collection_for_select(@addresses, :id, :full_address, @form.address_id),
+                                { include_blank: t("checkout.delivery.new_address") }, class: ui_input_classes %>
+              </div>
+            <% end %>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div class="sm:col-span-2">
+                <%= form.label :full_name, t("checkout.delivery.full_name"), class: "mb-1.5 block text-sm font-medium text-slate-900 dark:text-zinc-100" %>
+                <%= form.text_field :full_name, autocomplete: "name", class: ui_input_classes %>
+              </div>
+              <div class="sm:col-span-2">
+                <%= form.label :line1, t("checkout.delivery.line1"), class: "mb-1.5 block text-sm font-medium text-slate-900 dark:text-zinc-100" %>
+                <%= form.text_field :line1, autocomplete: "address-line1", class: ui_input_classes %>
+              </div>
+              <div class="sm:col-span-2">
+                <%= form.label :line2, t("checkout.delivery.line2"), class: "mb-1.5 block text-sm font-medium text-slate-900 dark:text-zinc-100" %>
+                <%= form.text_field :line2, autocomplete: "address-line2", class: ui_input_classes %>
+              </div>
+              <div>
+                <%= form.label :country_code, t("checkout.delivery.country"), class: "mb-1.5 block text-sm font-medium text-slate-900 dark:text-zinc-100" %>
+                <%= form.select :country_code, options_from_collection_for_select(@countries, :code, :name, @form.country_code),
+                                {}, class: ui_input_classes %>
+              </div>
+              <div>
+                <%= form.label :region_id, t("checkout.delivery.province"), class: "mb-1.5 block text-sm font-medium text-slate-900 dark:text-zinc-100" %>
+                <%= form.select :region_id, options_from_collection_for_select(@regions, :id, :name, @form.region_id),
+                                { include_blank: t("checkout.delivery.select_province") }, class: ui_input_classes %>
+              </div>
+              <div>
+                <%= form.label :city, t("checkout.delivery.city"), class: "mb-1.5 block text-sm font-medium text-slate-900 dark:text-zinc-100" %>
+                <%= form.text_field :city, autocomplete: "address-level2", class: ui_input_classes %>
+              </div>
+              <div>
+                <%= form.label :postal_code, t("checkout.delivery.postal_code"), class: "mb-1.5 block text-sm font-medium text-slate-900 dark:text-zinc-100" %>
+                <%= form.text_field :postal_code, autocomplete: "postal-code", class: ui_input_classes %>
+                <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("checkout.delivery.postal_code_hint") %></p>
+              </div>
+              <div class="sm:col-span-2">
+                <%= form.label :phone, t("checkout.delivery.phone"), class: "mb-1.5 block text-sm font-medium text-slate-900 dark:text-zinc-100" %>
+                <%= form.telephone_field :phone, autocomplete: "tel", class: ui_input_classes %>
+              </div>
+            </div>
+
+            <% if user_signed_in? && @form.saved_address.blank? %>
+              <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-zinc-300">
+                <%= form.check_box :save_address, class: "mt-0.5 rounded border-slate-300 text-brand-700 focus:ring-brand-500" %>
+                <span><%= t("checkout.delivery.save_address") %></span>
+              </label>
+            <% end %>
+          </div>
+
+          <button type="button" data-action="checkout#next"
+                  class="<%= ui_button_classes(variant: :outline, size: :sm) %>">
+            <%= t("checkout.continue") %>
+          </button>
+        </div>
+      </details>
+
+      <details data-checkout-target="step" class="surface overflow-hidden">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
+          <span class="flex items-center gap-3">
+            <span class="flex size-8 items-center justify-center rounded-full bg-brand-700 font-heading text-sm font-bold text-white">3</span>
+            <span class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("checkout.steps.payment") %></span>
+          </span>
+          <%= icon "chevron-down", class: "size-4 text-slate-400" %>
+        </summary>
+        <div class="space-y-3 border-t border-slate-200 px-5 py-5 dark:border-zinc-800">
+          <% if @availability.options.any? %>
+            <% @availability.options.each do |method| %>
+              <label class="flex items-start gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm dark:border-zinc-800">
+                <%= form.radio_button :payment_method, method, checked: @form.payment_method == method %>
+                <span>
+                  <span class="block font-semibold text-slate-950 dark:text-white"><%= t("checkout.payment.methods.#{method}") %></span>
+                  <span class="mt-0.5 block text-xs text-slate-500 dark:text-zinc-400"><%= t("checkout.payment.descriptions.#{method}") %></span>
+                </span>
+              </label>
+            <% end %>
+          <% else %>
+            <p class="rounded-xl bg-amber-50 px-3 py-2.5 text-sm font-medium text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
+              <%= t("checkout.payment.none") %>
+            </p>
+          <% end %>
+          <button type="button" data-action="checkout#next"
+                  class="<%= ui_button_classes(variant: :outline, size: :sm) %>">
+            <%= t("checkout.continue") %>
+          </button>
+        </div>
+      </details>
+
+      <details data-checkout-target="step" class="surface overflow-hidden">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
+          <span class="flex items-center gap-3">
+            <span class="flex size-8 items-center justify-center rounded-full bg-brand-700 font-heading text-sm font-bold text-white">4</span>
+            <span class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("checkout.steps.review") %></span>
+          </span>
+          <%= icon "chevron-down", class: "size-4 text-slate-400" %>
+        </summary>
+        <div class="space-y-5 border-t border-slate-200 px-5 py-5 dark:border-zinc-800">
+          <div class="space-y-3">
+            <% @form.groups.each do |group| %>
+              <div class="rounded-xl border border-slate-200 px-4 py-3 dark:border-zinc-800">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <p class="font-semibold text-slate-950 dark:text-white"><%= group.store_name %></p>
+                  <span class="<%= ui_badge_classes(tone: group.store&.professional? ? :brand : :neutral) %>">
+                    <%= t("checkout.review.seller_types.#{group.store&.professional? ? 'professional' : 'private'}") %>
+                  </span>
+                </div>
+                <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+                  <%= t("checkout.review.delivery_for", method: t("checkout.delivery.#{@form.delivery_for(group)}")) %>
+                </p>
+                <p class="mt-2 text-xs text-slate-600 dark:text-zinc-400">
+                  <%= group.store&.professional? ? t("checkout.review.withdrawal.professional") : t("checkout.review.withdrawal.private") %>
+                </p>
+              </div>
+            <% end %>
+          </div>
+
+          <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-zinc-300">
+            <%= form.check_box :terms_accepted, class: "mt-0.5 rounded border-slate-300 text-brand-700 focus:ring-brand-500" %>
+            <span>
+              <%= t("checkout.review.terms") %>
+              <%= link_to t("checkout.review.terms_link"), legal_page_path("terms"),
+                          target: "_blank", rel: "noopener",
+                          class: "font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+            </span>
+          </label>
+
+          <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-zinc-300">
+            <%= form.check_box :withdrawal_acknowledged, class: "mt-0.5 rounded border-slate-300 text-brand-700 focus:ring-brand-500" %>
+            <span><%= t("checkout.review.withdrawal_ack") %></span>
+          </label>
+
+          <%= form.submit t("checkout.review.submit"),
+                          disabled: @availability.options.empty?,
+                          class: ui_button_classes(variant: :primary, size: :lg, extra: "w-full") %>
+          <p class="text-center text-xs text-slate-500 dark:text-zinc-400"><%= t("checkout.review.submit_hint") %></p>
+        </div>
+      </details>
+    <% end %>
+
+    <aside class="surface h-fit p-5 lg:sticky lg:top-28">
+      <h2 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("checkout.summary.title") %></h2>
+      <dl class="mt-4 space-y-2.5 text-sm">
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-slate-600 dark:text-zinc-400"><%= t("cart.subtotal") %></dt>
+          <dd class="font-semibold text-slate-950 dark:text-white"><%= format_price(@summary.subtotal_cents) %></dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-slate-600 dark:text-zinc-400"><%= t("cart.shipping") %></dt>
+          <dd class="font-medium text-slate-900 dark:text-zinc-100"><%= format_price(@summary.shipping_cents) %></dd>
+        </div>
+        <% if Setting.enabled?("commissions_enabled") %>
+          <div class="flex items-center justify-between gap-4">
+            <dt class="text-slate-600 dark:text-zinc-400"><%= t("cart.platform_fee") %></dt>
+            <dd class="text-xs font-medium text-slate-500 dark:text-zinc-400"><%= t("cart.platform_fee_included") %></dd>
+          </div>
+        <% end %>
+        <div class="flex items-center justify-between gap-4 border-t border-slate-200 pt-3 dark:border-zinc-800">
+          <dt class="font-semibold text-slate-950 dark:text-white"><%= t("cart.estimated_total") %></dt>
+          <dd class="font-heading text-xl font-bold text-slate-950 dark:text-white"><%= format_price(@summary.total_cents) %></dd>
+        </div>
+      </dl>
+
+      <div class="mt-5 space-y-2">
+        <% @summary.groups.each do |group| %>
+          <div class="flex items-center justify-between gap-2 text-xs text-slate-600 dark:text-zinc-400">
+            <span class="truncate"><%= group.store_name %></span>
+            <span class="shrink-0"><%= group.pickup_only? ? t("checkout.delivery.local_pickup") : format_price(group.shipping_cents) %></span>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="mt-5 rounded-xl border border-brand-100 bg-brand-50/70 p-3 dark:border-brand-900/50 dark:bg-brand-500/5">
+        <p class="flex items-center gap-1.5 text-sm font-semibold text-brand-900 dark:text-brand-200">
+          <%= icon "shield-check", class: "size-4" %>
+          <%= t("cart.buyer_protection.title") %>
+        </p>
+        <p class="mt-1 text-xs text-brand-800/80 dark:text-brand-200/70"><%= t("cart.buyer_protection.body") %></p>
+      </div>
+    </aside>
+  </div>
+</div>

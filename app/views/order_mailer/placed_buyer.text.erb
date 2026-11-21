@@ -1,0 +1,33 @@
+<%= t("orders.mailer.buyer.title") %>
+
+<%= t("orders.mailer.greeting", name: @order.buyer&.first_name.presence || @order.buyer_email) %>
+<%= t("orders.mailer.buyer.intro", number: @order.number, store: @order.store&.name || @order.seller.display_name) %>
+
+<% @order.order_items.each do |item| %>
+- <%= item.title_snapshot %> × <%= item.quantity %> — <%= format_price(item.subtotal_cents) %>
+<% end %>
+
+<%= t("orders.mailer.subtotal") %>: <%= format_price(@order.subtotal_cents) %>
+<%= t("orders.mailer.shipping") %>: <%= format_price(@order.shipping_cents) %>
+<%= t("orders.mailer.total") %>: <%= format_price(@order.total_cents) %>
+
+<% if @order.payment_method == "bank_transfer" %>
+<%= t("orders.payment.bank_transfer.title") %>
+<%= t("orders.payment.bank_transfer.intro") %>
+- <%= t("orders.payment.bank_transfer.iban") %>: <%= Setting.get("bank_iban") %>
+- <%= t("orders.payment.bank_transfer.beneficiary") %>: <%= Setting.get("bank_beneficiary") %>
+- <%= t("orders.payment.bank_transfer.reference") %>: <%= @order.number %>
+- <%= t("orders.payment.bank_transfer.amount") %>: <%= format_price(@order.total_cents) %>
+<%= t("orders.payment.bank_transfer.deadline", days: Setting.get("payment_deadline_days", 3).to_i) %>
+<% elsif @order.payment_method == "cash_on_pickup" %>
+<%= t("orders.payment.cash_on_pickup.title") %>
+<%= t("orders.payment.cash_on_pickup.intro") %>
+<% else %>
+<%= t("orders.payment.stripe.title") %>
+<%= t("orders.payment.stripe.intro") %>
+<% end %>
+
+<%= t("orders.mailer.view_order") %>: <%= @guest_url %>
+
+<%= t("orders.mailer.buyer.outro") %>
+<%= t("orders.mailer.signature", site: site_name) %>

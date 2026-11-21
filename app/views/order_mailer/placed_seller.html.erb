@@ -1,0 +1,30 @@
+<h1><%= t("orders.mailer.seller.title") %></h1>
+<p><%= t("orders.mailer.greeting", name: @order.seller.first_name.presence || @order.seller.display_name) %></p>
+<p><%= t("orders.mailer.seller.intro", number: @order.number, store: @order.store&.name || @order.seller.display_name) %></p>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0;">
+  <% @order.order_items.each do |item| %>
+    <tr>
+      <td style="padding:6px 0; border-bottom:1px solid #e2e8f0;"><%= item.title_snapshot %> × <%= item.quantity %></td>
+      <td style="padding:6px 0; border-bottom:1px solid #e2e8f0; text-align:right;"><%= format_price(item.subtotal_cents) %></td>
+    </tr>
+  <% end %>
+</table>
+
+<p><%= t("orders.mailer.seller.buyer", email: @order.buyer_email) %></p>
+<p><%= t("orders.mailer.seller.fulfilment.#{@order.fulfilment}") %></p>
+
+<% if @order.shipping? %>
+  <p>
+    <%= @order.ship_name %><br>
+    <%= @order.ship_line1 %><br>
+    <% if @order.ship_line2.present? %><%= @order.ship_line2 %><br><% end %>
+    <%= [ @order.ship_postal_code, @order.ship_city ].compact_blank.join(" ") %><br>
+    <%= [ @order.ship_region, @order.ship_country_code ].compact_blank.join(", ") %>
+  </p>
+<% end %>
+
+<p><%= t("orders.mailer.seller.payment", method: t("checkout.payment.methods.#{@order.payment_method}")) %></p>
+<p><%= t("orders.mailer.seller.total", amount: format_price(@order.total_cents)) %></p>
+<p><%= link_to t("orders.mailer.seller.open_sales"), @seller_url %></p>
+<p><%= t("orders.mailer.signature", site: site_name) %></p>

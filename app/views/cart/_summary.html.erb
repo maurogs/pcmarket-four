@@ -1,0 +1,64 @@
+<aside id="cart-summary" class="surface h-fit p-5 lg:sticky lg:top-28">
+  <h2 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("cart.summary") %></h2>
+
+  <dl class="mt-4 space-y-2.5 text-sm">
+    <div class="flex items-center justify-between gap-4">
+      <dt class="text-slate-600 dark:text-zinc-400"><%= t("cart.subtotal") %></dt>
+      <dd class="font-semibold text-slate-950 dark:text-white"><%= format_price(summary.subtotal_cents) %></dd>
+    </div>
+    <div class="flex items-center justify-between gap-4">
+      <dt class="text-slate-600 dark:text-zinc-400"><%= t("cart.shipping") %></dt>
+      <dd class="font-medium text-slate-900 dark:text-zinc-100">
+        <% if summary.shipping_cents.zero? %>
+          <%= t("cart.free_shipping") %>
+        <% else %>
+          <%= format_price(summary.shipping_cents) %>
+        <% end %>
+      </dd>
+    </div>
+    <% if Setting.enabled?("commissions_enabled") %>
+      <div class="flex items-center justify-between gap-4">
+        <dt class="text-slate-600 dark:text-zinc-400"><%= t("cart.platform_fee") %></dt>
+        <dd class="text-xs font-medium text-slate-500 dark:text-zinc-400"><%= t("cart.platform_fee_included") %></dd>
+      </div>
+    <% end %>
+    <div class="flex items-center justify-between gap-4 border-t border-slate-200 pt-3 dark:border-zinc-800">
+      <dt class="font-semibold text-slate-950 dark:text-white"><%= t("cart.estimated_total") %></dt>
+      <dd class="font-heading text-xl font-bold text-slate-950 dark:text-white"><%= format_price(summary.total_cents) %></dd>
+    </div>
+  </dl>
+
+  <% if summary.empty? %>
+    <%= link_to t("cart.keep_shopping"), listings_path,
+                class: ui_button_classes(variant: :outline, size: :md, extra: "mt-5 w-full") %>
+  <% elsif Setting.enabled?("checkout_enabled") %>
+    <% if user_signed_in? %>
+      <%= link_to t("cart.checkout"), checkout_path,
+                  class: ui_button_classes(variant: :primary, size: :lg, extra: "mt-5 w-full") %>
+    <% else %>
+      <%= link_to t("cart.checkout_guest"), checkout_path,
+                  class: ui_button_classes(variant: :primary, size: :lg, extra: "mt-5 w-full") %>
+      <p class="mt-2 text-center text-xs text-slate-500 dark:text-zinc-400">
+        <%= t("cart.have_account") %>
+        <%= link_to t("cart.log_in"), new_user_session_path,
+                    class: "font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+      </p>
+    <% end %>
+    <p class="mt-3 text-center text-xs text-slate-500 dark:text-zinc-400"><%= t("cart.checkout_hint") %></p>
+  <% else %>
+    <p class="mt-5 rounded-xl bg-amber-50 px-3 py-2.5 text-sm font-medium text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
+      <%= t("cart.checkout_disabled") %>
+    </p>
+  <% end %>
+
+  <div class="mt-5 rounded-xl border border-brand-100 bg-brand-50/70 p-3 dark:border-brand-900/50 dark:bg-brand-500/5">
+    <p class="flex items-center gap-1.5 text-sm font-semibold text-brand-900 dark:text-brand-200">
+      <%= icon "shield-check", class: "size-4" %>
+      <%= t("cart.buyer_protection.title") %>
+    </p>
+    <p class="mt-1 text-xs text-brand-800/80 dark:text-brand-200/70"><%= t("cart.buyer_protection.body") %></p>
+  </div>
+
+  <%= link_to t("cart.keep_shopping"), listings_path,
+              class: "mt-4 inline-block text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+</aside>

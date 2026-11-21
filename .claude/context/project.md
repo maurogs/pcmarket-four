@@ -2,12 +2,12 @@
 
 ## Status
 
-Phase 3B complete: the seller area, store settings and account settings.
-Sellers have a dashboard, store profile, policies, vacation mode and payouts
-pages; every user has RESTful account, address, notification, data-export and
-deletion resources. Discovery (Phase 2B) and listing creation (Phase 3A) remain
-intact. Checkout, messaging, offers, review creation and admin moderation
-screens remain for later phases.
+Phase 4A complete: cart, guest and logged-in checkout, payments and buyer
+orders. Sellers have a dashboard, store profile, policies, vacation mode and
+payouts pages; every user has RESTful account, address, notification,
+data-export and deletion resources. Discovery (Phase 2B) and listing creation
+(Phase 3A) remain intact. Seller order management (phase 4B), messaging, offers,
+review creation and admin moderation screens remain for later phases.
 
 ## Stack
 
@@ -18,6 +18,7 @@ screens remain for later phases.
 - Pundit (authorisation), Pagy 9 (pagination)
 - pg_search (tsearch + trigram), FriendlyId, Ancestry
 - rack-attack, meta-tags
+- Stripe (Checkout Sessions + signed webhooks); WebMock in tests
 - Minitest with fixtures
 
 ## Architecture decisions
@@ -33,8 +34,9 @@ screens remain for later phases.
 - Devise OmniAuth callbacks live outside the locale scope because Devise does
   not support OmniAuth callbacks under a dynamic segment.
 - Locale files are split by domain (`models`, `home`, `layout`, `listings`,
-  `pages`, `newsletter`, `errors`, `common`, `countries`); every key exists in
-  all six languages. `test/i18n/locale_parity_test.rb` enforces parity.
+  `pages`, `newsletter`, `errors`, `common`, `countries`, `cart`, `checkout`,
+  `orders`); every key exists in all six languages.
+  `test/i18n/locale_parity_test.rb` enforces parity.
 - English is British English (favourite, colour, authorised).
 - Footer and drawer language switchers preserve the current path and query.
 
@@ -64,7 +66,14 @@ screens remain for later phases.
   returns the slug chain.
 - Reviews recalculate `stores.rating_avg`/`reviews_count` in `after_commit`.
 - Orders compute subtotal, commission (only when enabled) and total in
-  `Order#compute_totals!`.
+  `Order#compute_totals!`. Orders are buyer-side purchases: `buyer_id` is
+  nullable for guests, `buyer_email` is required for guests, and every order
+  carries `payment_method`, `locale`, `checkout_token` (unique per seller),
+  `guest_access_token` (has_secure_token), `terms_accepted_at` and
+  `stock_restored_at`.
+- `orders.number` comes from the `order_number_seq` PostgreSQL sequence as
+  `PCM-YYYY-NNNNNN`; the sequence is created by a migration and lazily ensured
+  for schema-loaded test databases.
 - Favourites and follows use counter caches.
 
 ### Seeds
@@ -288,6 +297,58 @@ screens remain for later phases.
   signed-in user's locale, then the best `Accept-Language` match, then Spanish.
   Selecting a locale while signed in persists it to `users.locale`.
 
+### Cart, checkout and payments (Phase 4A)
+
+- `CartSummary` (`app/services/cart_summary.rb`) is the single read model for
+  the cart page, header badge and checkout. It groups cart rows by seller and
+  store, clamps quantities to current stock, flags sold/unavailable/vacation
+  items, excludes unavailable items from totals and returns per-group shipping
+  (sum of item shipping, free, or pickup-only).
+- The cart page renders one card per store with item thumbnails/condition/
+  price, a stepper only when listing stock is above one, remove and
+  save-to-favourites. The sidebar shows subtotal, shipping, an internal
+  platform-fee note when commissions are enabled (the buyer is never charged
+  it), estimated total, buyer-protection box and the checkout/guest-login CTAs.
+  `Setting checkout_enabled` hides the CTAs and shows the translated disabled
+  notice.
+- Cart mutations (quantity, remove, favourite) respond with Turbo Streams that
+  replace `#cart-groups`, `#cart-summary` and `#cart-count`. Saving to
+  favourites is a nested `cart_item_favorite` resource.
+- Checkout is a singular `checkout` resource with a nested `confirmation`.
+  `Checkout::Form` validates contact email, per-seller shipping/local pickup,
+  the shared shipping address (saved address or typed fields), enabled country,
+  Spanish province/postal-code prefix, payment availability and both legal
+  acknowledgements. The page uses four `<details>` steps with a small Stimulus
+  controller that opens the next step.
+- `Checkout::PlaceOrder` runs in one transaction: it re-validates the summary,
+  locks every listing `FOR UPDATE` in id order, re-checks visibility/stock,
+  creates one pending_payment order per seller with title/price snapshots,
+  decrements stock (marking zero-stock listings sold), optionally saves the
+  address and clears purchased cart rows. `checkout_token` (hidden field,
+  unique per seller) makes double submits return the original orders.
+- Payment providers implement `start(orders, return_urls)` and
+  `handle_webhook(request)`: `BankTransfer` (default, IBAN/beneficiary/deadline
+  from settings), `CashOnPickup` (only when every group is pickup-only) and
+  `Stripe` (Checkout Session per order, metadata order ids, signed webhook,
+  idempotent paid marking and stock restoration on expiry). `Payments::
+  Availability` computes the offered methods from settings, the Stripe key and
+  the pickup state.
+- `ExpireUnpaidOrdersJob` runs hourly in every environment and cancels
+  pending_payment bank-transfer orders older than `payment_deadline_days`,
+  restoring stock and relisting sold-out listings.
+- Confirmation shows order numbers per seller, totals, payment instructions,
+  next steps and guest links. `OrderMailer#placed_buyer` and `#placed_seller`
+  send HTML + text in the order locale; the seller mail respects
+  `email_order_updates`.
+- Buyer orders are `/orders` (filter tabs All/To pay/In progress/Completed/
+  Cancelled, number/title search) and `/orders/:number` (status timeline,
+  items, seller card, delivery address, payment instructions, totals).
+  `OrderPolicy` allows buyers only; guests use the `guest_access_token` query
+  parameter. `Orders::CancellationsController` lets a buyer cancel an unpaid
+  order and restores stock.
+- New settings defaults: `payment_bank_transfer_enabled`, `bank_iban`,
+  `bank_beneficiary`, `payment_deadline_days`, `stripe_enabled`.
+
 ### Performance guardrails
 
 - `ListingSearch::INCLUDES` preloads store, category, region, user and image
@@ -346,6 +407,14 @@ app/controllers/seller/dashboard_controller.rb KPI dashboard
 app/controllers/seller/{stores,store_policies,vacations,payouts}_controller.rb
                                             singular store settings resources
 app/controllers/seller/orders_controller.rb seller sales placeholder
+app/controllers/cart_controller.rb           grouped cart read model
+app/controllers/cart_items_controller.rb     cart mutations + Turbo Streams
+app/controllers/cart_items/favorites_controller.rb move cart row to favourites
+app/controllers/checkouts_controller.rb      checkout form, PlaceOrder, provider redirect
+app/controllers/checkout/confirmations_controller.rb  confirmation page
+app/controllers/orders_controller.rb         buyer order history/detail + guest token
+app/controllers/orders/cancellations_controller.rb    cancel unpaid buyer order
+app/controllers/payments/stripe_webhooks_controller.rb signed Stripe webhook
 app/controllers/account_controller.rb        account profile show/update
 app/controllers/account/                     password, addresses, notification
                                             preferences, data export, deletion
@@ -363,6 +432,14 @@ app/controllers/{search_suggestions,seo,newsletter_subscribers}_controller.rb
 app/controllers/admin/dashboard_controller.rb
 app/controllers/seller/dashboard_controller.rb
 app/services/listing_search.rb              search, facets, chips, sorting
+app/services/cart_summary.rb                 cart groups, warnings, stock clamping
+app/services/checkout/form.rb                checkout validation
+app/services/checkout/place_order.rb         transactional multi-seller order creation
+app/services/payments/{provider,bank_transfer,cash_on_pickup,stripe,availability}.rb
+                                             payment providers and offered methods
+app/jobs/expire_unpaid_orders_job.rb         unpaid bank-transfer sweep
+app/mailers/order_mailer.rb                  buyer/seller order emails
+app/policies/order_policy.rb                 buyer order authorisation
 app/services/cart_merger.rb                 guest -> user cart merge
 app/services/menu_builder.rb                cached mega-menu payload
 app/services/home_feed.rb                   home queries
@@ -383,6 +460,9 @@ app/views/seller/listings/index.html.erb    tabs, table/cards, bulk actions
 app/views/seller/dashboard/show.html.erb    KPIs, SVG chart, actions, recent
 app/views/seller/{stores,store_policies,vacations,payouts,orders}/
                                             seller settings screens
+app/views/{cart,checkouts,checkout,orders}/
+                                             cart, checkout, confirmation, buyer orders
+app/views/order_mailer/                      placed_buyer/placed_seller HTML + text
 app/views/account/                          profile, password, addresses,
                                             notifications, privacy/deletion
 app/views/layouts/{seller,account}.html.erb shared area layouts
@@ -403,12 +483,19 @@ config/routes.rb                            locale scope + SEO + phase 2B resour
 config/initializers/warden_hooks.rb         guest cart merge on sign-in
 config/initializers/content_security_policy.rb
 config/initializers/security_headers.rb
-config/locales/                             six-language UI strings (+ phase2.*)
+config/locales/                             six-language UI strings (+ domain files)
 db/seeds.rb                                 loader
 db/seeds/*.rb                               taxonomy and reference data
 script/search_explain.rb                    5k listing EXPLAIN ANALYZE
 test/integration/                           home, SEO, search pages, auth, performance
 test/services/listing_search_test.rb
+test/services/cart_summary_test.rb
+test/services/checkout/place_order_test.rb
+test/services/payments/availability_test.rb
+test/jobs/expire_unpaid_orders_job_test.rb
+test/mailers/order_mailer_test.rb
+test/integration/{checkout,orders,stripe_webhook}_test.rb
+test/system/checkout_flow_test.rb
 test/system/                                responsive + auth modal
 test/i18n/locale_parity_test.rb
 test/seeds_test.rb
@@ -418,7 +505,11 @@ test/seeds_test.rb
 
 - Admin moderation screens (approve/reject queue) for listings; seller-side
   submission already exists.
-- Checkout, payments, orders and review creation flows.
+- Review creation flow after a completed order (the `Review` model and store
+  aggregate exist, but no buyer UI).
+- Seller order management (phase 4B): marking orders paid/shipped/delivered and
+  fulfilling bank-transfer orders. `seller/orders` is still a placeholder.
+- Admin tools to mark bank transfers paid and to resolve disputes/refunds.
 - Messaging: conversations render placeholders; `conversations#create` only
   opens the thread. Offers, unread counters and notifications are pending.
 - Saved-search alert delivery (the model stores exact replay params under
@@ -429,8 +520,6 @@ test/seeds_test.rb
   a period comparison because views are stored as a running total.
 - Online payouts (Stripe Connect) and seller payout history are pending.
 - Discount codes are visible in the seller navigation as a disabled item.
-- Seller sales (`seller/orders`) is an empty-state placeholder until checkout
-  and order management arrive.
 - Store tabs currently render the active panel inline for SEO and load other
   tabs through Turbo Frame navigation; `loading="lazy"` placeholders can be
   added if the panels grow heavier.

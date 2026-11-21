@@ -1,14 +1,20 @@
 class CartController < ApplicationController
   def show
-    scope = if current_user
-      CartItem.where(user_id: current_user.id)
-    else
-      token = cookies.signed[:cart_token]
-      token.present? ? CartItem.where(cart_token: token) : CartItem.none
-    end
+    @summary = cart_summary
+    @recommended = recommended_listings
+    @checkout_enabled = Setting.enabled?("checkout_enabled")
+  end
 
-    @items = scope.includes(listing: [ :store, { images_attachments: :blob } ])
-                 .order(created_at: :desc).to_a
-    @subtotal_cents = @items.sum(&:subtotal_cents)
+  private
+
+  def recommended_listings
+    return Listing.none if @summary.category_ids.empty?
+
+    Listing.visible
+           .where(category_id: @summary.category_ids)
+           .where.not(id: @summary.listing_ids)
+           .includes(:store, :category, :region, :user, images_attachments: :blob)
+           .order(published_at: :desc)
+           .limit(6)
   end
 end

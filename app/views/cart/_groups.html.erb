@@ -1,0 +1,12 @@
+<div id="cart-groups" class="space-y-5">
+  <% if summary.empty? %>
+    <div class="surface">
+      <%= render "shared/empty_state", title: t("cart.empty_title"), body: t("cart.empty_body"),
+                 cta_label: t("cart.empty_cta"), cta_path: listings_path %>
+    </div>
+  <% else %>
+    <% summary.groups.each do |group| %>
+      <%= render "cart/group", group: group %>
+    <% end %>
+  <% end %>
+</div>

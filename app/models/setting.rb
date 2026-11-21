@@ -17,7 +17,12 @@ class Setting < ApplicationRecord
     "max_active_listings_per_user" => 50,
     "saved_search_alerts_enabled" => true,
     "announcement_bar_text" => "",
-    "reviews_enabled" => true
+    "reviews_enabled" => true,
+    "payment_bank_transfer_enabled" => true,
+    "bank_iban" => "ES00 0000 0000 0000 0000 0000",
+    "bank_beneficiary" => "PCMarket S.L.",
+    "payment_deadline_days" => 3,
+    "stripe_enabled" => false
   }.freeze
 
   enum :value_type, { boolean: "boolean", integer: "integer", string: "string", decimal: "decimal" }

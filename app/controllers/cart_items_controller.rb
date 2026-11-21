@@ -33,16 +33,15 @@ class CartItemsController < ApplicationController
       item.update!(quantity: capped_quantity(quantity, item.listing))
     end
 
+    @cart_summary = nil
+
     respond_to do |format|
       format.turbo_stream do
-        streams = [ turbo_stream.replace("cart-count", partial: "shared/cart_badge") ]
-        if quantity.zero?
-          streams << turbo_stream.remove("cart-item-#{item.listing_id}")
-        else
-          streams << turbo_stream.replace("cart-item-#{item.listing_id}",
-                                          partial: "cart/item", locals: { item: item })
-        end
-        render turbo_stream: streams
+        render turbo_stream: [
+          turbo_stream.replace("cart-count", partial: "shared/cart_badge", locals: { count: cart_summary.item_count }),
+          turbo_stream.replace("cart-groups", partial: "cart/groups", locals: { summary: cart_summary }),
+          turbo_stream.replace("cart-summary", partial: "cart/summary", locals: { summary: cart_summary })
+        ]
       end
       format.html { redirect_to cart_path }
     end
@@ -50,21 +49,26 @@ class CartItemsController < ApplicationController
 
   def destroy
     item = cart_scope.find(params[:id])
-    listing = item.listing
     item.destroy!
 
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.replace("cart-count", partial: "shared/cart_badge"),
-          turbo_stream.remove("cart-item-#{listing.id}")
-        ]
-      end
+      format.turbo_stream { render_cart_updates }
       format.html { redirect_to cart_path, notice: t("cart.removed") }
     end
   end
 
   private
+
+  def render_cart_updates
+    @cart_summary = nil
+    summary = cart_summary
+
+    render turbo_stream: [
+      turbo_stream.replace("cart-count", partial: "shared/cart_badge", locals: { count: summary.item_count }),
+      turbo_stream.replace("cart-groups", partial: "cart/groups", locals: { summary: summary }),
+      turbo_stream.replace("cart-summary", partial: "cart/summary", locals: { summary: summary })
+    ]
+  end
 
   def cart_scope
     current_user ? CartItem.where(user_id: current_user.id) : CartItem.where(cart_token: guest_token)

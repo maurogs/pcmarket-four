@@ -1,0 +1,46 @@
+<h1><%= t("orders.mailer.buyer.title") %></h1>
+<p><%= t("orders.mailer.greeting", name: @order.buyer&.first_name.presence || @order.buyer_email) %></p>
+<p><%= t("orders.mailer.buyer.intro", number: @order.number, store: @order.store&.name || @order.seller.display_name) %></p>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0;">
+  <% @order.order_items.each do |item| %>
+    <tr>
+      <td style="padding:6px 0; border-bottom:1px solid #e2e8f0;"><%= item.title_snapshot %> × <%= item.quantity %></td>
+      <td style="padding:6px 0; border-bottom:1px solid #e2e8f0; text-align:right;"><%= format_price(item.subtotal_cents) %></td>
+    </tr>
+  <% end %>
+  <tr>
+    <td style="padding:6px 0;"><%= t("orders.mailer.subtotal") %></td>
+    <td style="padding:6px 0; text-align:right;"><%= format_price(@order.subtotal_cents) %></td>
+  </tr>
+  <tr>
+    <td style="padding:6px 0;"><%= t("orders.mailer.shipping") %></td>
+    <td style="padding:6px 0; text-align:right;"><%= format_price(@order.shipping_cents) %></td>
+  </tr>
+  <tr>
+    <td style="padding:6px 0; font-weight:700;"><%= t("orders.mailer.total") %></td>
+    <td style="padding:6px 0; text-align:right; font-weight:700;"><%= format_price(@order.total_cents) %></td>
+  </tr>
+</table>
+
+<% if @order.payment_method == "bank_transfer" %>
+  <h2><%= t("orders.payment.bank_transfer.title") %></h2>
+  <p><%= t("orders.payment.bank_transfer.intro") %></p>
+  <ul>
+    <li><%= t("orders.payment.bank_transfer.iban") %>: <%= Setting.get("bank_iban") %></li>
+    <li><%= t("orders.payment.bank_transfer.beneficiary") %>: <%= Setting.get("bank_beneficiary") %></li>
+    <li><%= t("orders.payment.bank_transfer.reference") %>: <%= @order.number %></li>
+    <li><%= t("orders.payment.bank_transfer.amount") %>: <%= format_price(@order.total_cents) %></li>
+  </ul>
+  <p><%= t("orders.payment.bank_transfer.deadline", days: Setting.get("payment_deadline_days", 3).to_i) %></p>
+<% elsif @order.payment_method == "cash_on_pickup" %>
+  <h2><%= t("orders.payment.cash_on_pickup.title") %></h2>
+  <p><%= t("orders.payment.cash_on_pickup.intro") %></p>
+<% else %>
+  <h2><%= t("orders.payment.stripe.title") %></h2>
+  <p><%= t("orders.payment.stripe.intro") %></p>
+<% end %>
+
+<p><%= link_to t("orders.mailer.view_order"), @guest_url %></p>
+<p><%= t("orders.mailer.buyer.outro") %></p>
+<p><%= t("orders.mailer.signature", site: site_name) %></p>

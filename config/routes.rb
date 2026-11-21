@@ -15,6 +15,9 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 
+  # Payment webhooks are called by providers, never inside a locale scope.
+  post "webhooks/stripe" => "payments/stripe_webhooks#create", as: :stripe_webhook
+
   scope "(:locale)", locale: /es|en|fr|de|it|pt/ do
     devise_for :users, skip: :omniauth_callbacks,
                        controllers: { registrations: "users/registrations" }
@@ -32,13 +35,20 @@ Rails.application.routes.draw do
 
     resources :stores, only: :show, path: "s"
     resource :cart, only: :show, controller: "cart"
-    resources :cart_items, only: %i[create update destroy]
+    resources :cart_items, only: %i[create update destroy] do
+      resource :favorite, only: :create, module: :cart_items
+    end
+    resource :checkout, only: %i[show create], controller: "checkouts" do
+      resource :confirmation, only: :show, module: :checkout
+    end
     resources :favorites, only: %i[index create destroy]
     resources :follows, only: %i[create destroy]
     resources :reports, only: %i[create]
     resources :saved_searches, only: %i[index create update destroy]
     resources :conversations, only: %i[index show create]
-    resources :orders, only: %i[index show]
+    resources :orders, only: %i[index show], param: :number do
+      resource :cancellation, only: :create, module: :orders
+    end
     resource :account, only: %i[show update], controller: "account" do
       resource :password, only: %i[edit update], module: :account
       resources :addresses, only: %i[index new create edit update destroy], module: :account

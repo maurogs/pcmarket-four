@@ -174,6 +174,16 @@ module ApplicationHelper
     t("listings.statuses.#{status}")
   end
 
+  def order_status_tone(order)
+    case order.status.to_s
+    when "paid", "completed" then :success
+    when "shipped", "delivered" then :brand
+    when "cancelled", "refunded" then :danger
+    when "disputed" then :accent
+    else :neutral
+    end
+  end
+
   def listing_location(listing)
     location = [ listing.city, listing.region&.name ].compact_blank.uniq.join(", ")
     location.presence || t("listings.card.location_unknown")
@@ -193,12 +203,7 @@ module ApplicationHelper
   end
 
   def cart_items_count
-    if current_user
-      CartItem.where(user_id: current_user.id).sum(:quantity)
-    else
-      token = cookies.signed[:cart_token]
-      token.present? ? CartItem.where(cart_token: token).sum(:quantity) : 0
-    end
+    cart_summary.item_count
   end
 
   def unread_notifications_count

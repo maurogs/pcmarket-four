@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   helper_method :menu_categories, :primary_menu_categories, :more_menu_categories,
-                :filters_applied?
+                :filters_applied?, :cart_summary
 
   SEARCH_PARAMS = %i[q min_price max_price free_shipping on_sale deals sort page seller
                      category_id include_sold].freeze
@@ -30,6 +30,13 @@ class ApplicationController < ActionController::Base
 
   def filters_applied?
     search_params.to_h.except("page", "sort").values.any?(&:present?)
+  end
+
+  def cart_summary
+    @cart_summary ||= CartSummary.for(
+      user: current_user,
+      token: current_user ? nil : cookies.signed[:cart_token]
+    )
   end
 
   def default_url_options

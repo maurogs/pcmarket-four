@@ -52,6 +52,9 @@ gem "pg_search"
 gem "ancestry"
 gem "friendly_id"
 
+# Payments
+gem "stripe"
+
 # Presentation and infrastructure
 gem "meta-tags"
 gem "rack-attack"
@@ -91,4 +94,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Stub outbound HTTP in payment tests.
+  gem "webmock"
 end

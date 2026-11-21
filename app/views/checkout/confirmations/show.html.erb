@@ -1,0 +1,96 @@
+<% content_for :title, t("checkout.confirmation.title") %>
+
+<div class="page-container py-10 sm:py-14">
+  <div class="mx-auto max-w-3xl">
+    <div class="surface overflow-hidden">
+      <div class="border-b border-slate-200 bg-gradient-to-br from-brand-50 to-white px-6 py-8 text-center dark:border-zinc-800 dark:from-brand-500/10 dark:to-zinc-900">
+        <span class="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
+          <%= icon "check", class: "size-7" %>
+        </span>
+        <h1 class="mt-4 font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("checkout.confirmation.title") %></h1>
+        <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("checkout.confirmation.subtitle") %></p>
+        <% if @orders.first.guest? %>
+          <p class="mt-2 text-xs text-slate-500 dark:text-zinc-400"><%= t("checkout.confirmation.guest_note", email: @orders.first.buyer_email) %></p>
+        <% end %>
+      </div>
+
+      <div class="space-y-6 px-6 py-6">
+        <section aria-labelledby="confirmation-orders">
+          <h2 id="confirmation-orders" class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("checkout.confirmation.orders_title") %></h2>
+          <ul class="mt-3 divide-y divide-slate-100 dark:divide-zinc-800">
+            <% @orders.each do |order| %>
+              <li class="flex flex-wrap items-center justify-between gap-3 py-3">
+                <div>
+                  <p class="font-heading text-base font-semibold text-slate-950 dark:text-white"><%= order.number %></p>
+                  <p class="text-xs text-slate-500 dark:text-zinc-400"><%= order.store&.name || order.seller.display_name %></p>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-sm font-semibold text-slate-950 dark:text-white"><%= format_price(order.total_cents) %></span>
+                  <%= link_to t("checkout.confirmation.view_order"),
+                              order_path(order, token: (order.guest? ? order.guest_access_token : nil)),
+                              class: "text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+          <div class="mt-3 flex items-center justify-between border-t border-slate-200 pt-3 dark:border-zinc-800">
+            <span class="font-semibold text-slate-950 dark:text-white"><%= t("cart.estimated_total") %></span>
+            <span class="font-heading text-lg font-bold text-slate-950 dark:text-white"><%= format_price(@total_cents) %></span>
+          </div>
+        </section>
+
+        <section aria-labelledby="confirmation-payment" class="rounded-xl border border-slate-200 p-4 dark:border-zinc-800">
+          <h2 id="confirmation-payment" class="font-heading text-base font-semibold text-slate-950 dark:text-white"><%= t("checkout.confirmation.payment_title") %></h2>
+
+          <% if @payment_method == "bank_transfer" %>
+            <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.intro") %></p>
+            <dl class="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+              <div>
+                <dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.iban") %></dt>
+                <dd class="font-mono text-sm font-semibold text-slate-950 dark:text-white"><%= Setting.get("bank_iban") %></dd>
+              </div>
+              <div>
+                <dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.beneficiary") %></dt>
+                <dd class="text-sm font-semibold text-slate-950 dark:text-white"><%= Setting.get("bank_beneficiary") %></dd>
+              </div>
+              <div>
+                <dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.reference") %></dt>
+                <dd class="text-sm font-semibold text-slate-950 dark:text-white"><%= @orders.map(&:number).join(", ") %></dd>
+              </div>
+              <div>
+                <dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.amount") %></dt>
+                <dd class="text-sm font-semibold text-slate-950 dark:text-white"><%= format_price(@total_cents) %></dd>
+              </div>
+            </dl>
+            <p class="mt-3 text-xs text-slate-500 dark:text-zinc-400"><%= t("orders.payment.bank_transfer.deadline", days: Setting.get("payment_deadline_days", 3).to_i) %></p>
+          <% elsif @payment_method == "cash_on_pickup" %>
+            <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("orders.payment.cash_on_pickup.intro") %></p>
+          <% else %>
+            <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("orders.payment.stripe.intro") %></p>
+          <% end %>
+        </section>
+
+        <section aria-labelledby="confirmation-next">
+          <h2 id="confirmation-next" class="font-heading text-base font-semibold text-slate-950 dark:text-white"><%= t("checkout.confirmation.next_steps_title") %></h2>
+          <ol class="mt-3 space-y-3">
+            <% t("checkout.confirmation.next_steps").each_with_index do |step, index| %>
+              <li class="flex items-start gap-3">
+                <span class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-brand-100 font-heading text-xs font-bold text-brand-800 dark:bg-brand-500/15 dark:text-brand-300"><%= index + 1 %></span>
+                <span class="text-sm text-slate-700 dark:text-zinc-300"><%= step %></span>
+              </li>
+            <% end %>
+          </ol>
+        </section>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <% if user_signed_in? %>
+            <%= link_to t("checkout.confirmation.my_orders"), orders_path,
+                        class: ui_button_classes(variant: :primary, size: :md) %>
+          <% end %>
+          <%= link_to t("cart.keep_shopping"), listings_path,
+                      class: ui_button_classes(variant: :outline, size: :md) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_21_230000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_22_100100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -384,7 +384,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_230000) do
 
   create_table "orders", force: :cascade do |t|
     t.string "number", null: false
-    t.bigint "buyer_id", null: false
+    t.bigint "buyer_id"
     t.bigint "seller_id", null: false
     t.bigint "store_id"
     t.integer "status", default: 0, null: false
@@ -417,9 +417,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_230000) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "payment_method"
+    t.string "locale", default: "es", null: false
+    t.string "checkout_token"
+    t.string "guest_access_token"
+    t.datetime "terms_accepted_at"
+    t.datetime "stock_restored_at"
     t.index ["buyer_id", "created_at"], name: "index_orders_on_buyer_id_and_created_at"
     t.index ["buyer_id"], name: "index_orders_on_buyer_id"
+    t.index ["checkout_token", "seller_id"], name: "index_orders_on_checkout_token_and_seller", unique: true, where: "(checkout_token IS NOT NULL)"
     t.index ["fulfilment"], name: "index_orders_on_fulfilment"
+    t.index ["guest_access_token"], name: "index_orders_on_guest_access_token", unique: true, where: "(guest_access_token IS NOT NULL)"
     t.index ["number"], name: "index_orders_on_number", unique: true
     t.index ["paid_at"], name: "index_orders_on_paid_at"
     t.index ["seller_id", "created_at"], name: "index_orders_on_seller_id_and_created_at"
