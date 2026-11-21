@@ -20,6 +20,9 @@ development:
   late_shipment_reminders:
     class: LateShipmentReminderJob
     schedule: every hour at minute 30
+  sell_offer_expiry:
+    class: SellOfferExpiryJob
+    schedule: every day at 04:00
 
 test:
   expire_offers:
@@ -40,6 +43,9 @@ test:
   late_shipment_reminders:
     class: LateShipmentReminderJob
     schedule: every hour at minute 30
+  sell_offer_expiry:
+    class: SellOfferExpiryJob
+    schedule: every day at 04:00
 
 production:
   clear_solid_queue_finished_jobs:
@@ -63,3 +69,6 @@ production:
   late_shipment_reminders:
     class: LateShipmentReminderJob
     schedule: every hour at minute 30
+  sell_offer_expiry:
+    class: SellOfferExpiryJob
+    schedule: every day at 04:00

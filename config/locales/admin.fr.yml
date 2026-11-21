@@ -44,6 +44,8 @@ fr:
       open: Ouvrir la navigation
       payments: Rapprochement des paiements
       help_articles: Articles d’aide
+      sell_offers: Offres de rachat
+      buyback_prices: Prix de rachat
       feature_requests: Demandes de mise en avant
     topbar:
       view_site: Voir le site
@@ -1307,6 +1309,43 @@ fr:
         price: Prix
         status: Statut
         requested: Demandée
+    sell_offers:
+      title: Offres de rachat
+      subtitle: Demandes de reprise, inspection et paiements.
+      all: Toutes
+      update_title: Mettre à jour l’offre
+      notes: Notes internes
+      created: "Demandée le %{date}"
+      updated: Offre mise à jour et vendeur notifié.
+      invalid_status: Choisissez un statut valide.
+      invalid_transition: Ce changement de statut n’est pas autorisé.
+      empty_title: Aucune offre de rachat
+      empty_body: Les demandes de reprise apparaîtront ici.
+      columns:
+        item: Article
+        user: Vendeur
+        status: Statut
+        price: Offre
+        created: Créée
+        kind: Type
+        payout: Coordonnées de paiement
+    buyback_prices:
+      title: Prix de rachat
+      subtitle: Catalogue de reprise pour Vendez-nous votre matériel.
+      new: Nouveau prix
+      edit_subtitle: Modifier le prix de rachat
+      created: Prix de rachat créé.
+      updated: Prix de rachat mis à jour.
+      deleted: Prix de rachat supprimé.
+      multipliers_title: Coefficients d’état
+      empty_title: Aucun prix de rachat
+      empty_body: Ajoutez un premier prix GPU ou CPU pour commencer.
+      columns:
+        kind: Type
+        model: Modèle
+        base_price: Prix de base (centimes)
+        multipliers: Coefficients
+        status: Statut
   devise:
     failure:
       suspended: Votre compte est suspendu. Contactez le support pour plus d’informations.

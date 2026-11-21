@@ -1,0 +1,7 @@
+<%= t("sell_to_us.mailer.#{@event}.title", item: @offer.item_name) %>
+
+<%= t("sell_to_us.mailer.#{@event}.body", item: @offer.item_name, amount: format_price(@offer.offered_price_cents)) %>
+
+<%= t("sell_to_us.mailer.footer") %>
+
+<%= @url %>

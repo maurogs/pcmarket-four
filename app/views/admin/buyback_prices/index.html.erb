@@ -1,0 +1,45 @@
+<div class="mx-auto max-w-6xl">
+  <%= render "admin/shared/page_header", title: t("admin.buyback_prices.title"),
+             subtitle: t("admin.buyback_prices.subtitle"), eyebrow: t("admin.nav.sections.catalogue"),
+             actions: [ { label: t("admin.buyback_prices.new"), path: new_admin_buyback_price_path, icon: "plus", variant: :primary } ] %>
+
+  <div class="mt-5 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-50 text-left text-[11px] uppercase tracking-wide text-slate-500 dark:bg-zinc-800/50 dark:text-zinc-400">
+        <tr>
+          <th class="px-4 py-3 font-semibold"><%= t("admin.buyback_prices.columns.kind") %></th>
+          <th class="px-4 py-3 font-semibold"><%= t("admin.buyback_prices.columns.model") %></th>
+          <th class="px-4 py-3 text-right font-semibold"><%= t("admin.buyback_prices.columns.base_price") %></th>
+          <th class="px-4 py-3 text-right font-semibold"><%= t("admin.buyback_prices.columns.multipliers") %></th>
+          <th class="px-4 py-3 font-semibold"><%= t("admin.buyback_prices.columns.status") %></th>
+          <th class="px-4 py-3"><span class="sr-only"><%= t("admin.actions.manage") %></span></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+        <% @buyback_prices.each do |price| %>
+          <tr>
+            <td class="px-4 py-3 font-medium text-slate-900 dark:text-white"><%= t("sell_to_us.kinds.#{price.item_kind}") %></td>
+            <td class="px-4 py-3 text-slate-700 dark:text-zinc-300"><%= price.item_model %></td>
+            <td class="px-4 py-3 text-right font-medium text-slate-900 dark:text-white"><%= format_price(price.base_price_cents) %></td>
+            <td class="px-4 py-3 text-right text-xs text-slate-500 dark:text-zinc-400">
+              <% price.condition_multipliers.to_h.each do |condition, multiplier| %>
+                <span class="mr-2"><%= t("sell_to_us.conditions.#{condition}") %> ×<%= multiplier %></span>
+              <% end %>
+            </td>
+            <td class="px-4 py-3">
+              <span class="<%= ui_badge_classes(tone: price.active? ? :success : :neutral, extra: '!px-2 !py-0.5') %>">
+                <%= price.active? ? t("admin.categories.active") : t("admin.categories.inactive") %>
+              </span>
+            </td>
+            <td class="px-4 py-3 text-right">
+              <%= link_to t("admin.actions.edit"), edit_admin_buyback_price_path(price), class: ui_button_classes(variant: :ghost, size: :sm) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% if @buyback_prices.empty? %>
+      <%= render "admin/shared/empty_state", title: t("admin.buyback_prices.empty_title"), body: t("admin.buyback_prices.empty_body") %>
+    <% end %>
+  </div>
+</div>

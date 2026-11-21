@@ -87,4 +87,17 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # Active Record encryption keys for sell-offer payout IBANs. Configure them in
+  # credentials under active_record_encryption (bin/rails db:encryption:init) or
+  # through the matching environment variables.
+  if (encryption = Rails.application.credentials.active_record_encryption)
+    config.active_record.encryption.primary_key = encryption.primary_key
+    config.active_record.encryption.deterministic_key = encryption.deterministic_key
+    config.active_record.encryption.key_derivation_salt = encryption.key_derivation_salt
+  elsif ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"].present?
+    config.active_record.encryption.primary_key = ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"]
+    config.active_record.encryption.deterministic_key = ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"]
+    config.active_record.encryption.key_derivation_salt = ENV["ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT"]
+  end
 end

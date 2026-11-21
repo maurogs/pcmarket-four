@@ -1,0 +1,49 @@
+<%= turbo_frame_tag "buyback_estimate" do %>
+  <% if quote.present? && buyback_price.present? %>
+    <div class="rounded-xl border border-brand-200 bg-brand-50/60 p-5 dark:border-brand-800 dark:bg-brand-950/30">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300"><%= t("sell_to_us.estimate.label") %></p>
+          <p class="mt-1 font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= format_price(quote.total_cents) %></p>
+          <p class="mt-1 text-xs text-slate-600 dark:text-zinc-400"><%= t("sell_to_us.estimate.validity", days: 7) %></p>
+        </div>
+        <span class="<%= ui_badge_classes(tone: :brand) %>"><%= buyback_price.item_model %></span>
+      </div>
+
+      <dl class="mt-4 space-y-1.5 border-t border-brand-200 pt-3 text-sm dark:border-brand-800">
+        <div class="flex items-center justify-between gap-3">
+          <dt class="text-slate-600 dark:text-zinc-400"><%= t("sell_to_us.estimate.base") %></dt>
+          <dd class="font-medium text-slate-900 dark:text-white"><%= format_price(quote.base_cents) %></dd>
+        </div>
+        <div class="flex items-center justify-between gap-3">
+          <dt class="text-slate-600 dark:text-zinc-400"><%= t("sell_to_us.estimate.condition", condition: t("sell_to_us.conditions.#{quote.condition}")) %></dt>
+          <dd class="font-medium text-slate-900 dark:text-white">×<%= number_with_precision(quote.condition_multiplier, precision: 2) %></dd>
+        </div>
+        <% if quote.original_box? %>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-slate-600 dark:text-zinc-400"><%= t("sell_to_us.estimate.box_bonus") %></dt>
+            <dd class="font-medium text-brand-700 dark:text-brand-300">+<%= format_price(quote.box_bonus_cents) %></dd>
+          </div>
+        <% end %>
+      </dl>
+
+      <% if user_signed_in? %>
+        <%= form_with url: sell_offers_path, method: :post, class: "mt-4" do %>
+          <%= hidden_field_tag :buyback_price_id, buyback_price.id %>
+          <%= hidden_field_tag :condition, quote.condition %>
+          <%= hidden_field_tag :original_box, quote.original_box ? "1" : "0" %>
+          <%= hidden_field_tag :accessories, quote.accessories %>
+          <%= submit_tag t("sell_to_us.estimate.request"), class: ui_button_classes(variant: :primary, size: :md, extra: "w-full") %>
+        <% end %>
+      <% else %>
+        <%= link_to t("sell_to_us.estimate.login"), new_user_session_path,
+                    class: ui_button_classes(variant: :primary, size: :md, extra: "mt-4 w-full") %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="rounded-xl border border-dashed border-slate-300 p-6 text-center dark:border-zinc-700">
+      <p class="text-sm font-medium text-slate-700 dark:text-zinc-200"><%= t("sell_to_us.estimate.hint_title") %></p>
+      <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("sell_to_us.estimate.hint_body") %></p>
+    </div>
+  <% end %>
+<% end %>

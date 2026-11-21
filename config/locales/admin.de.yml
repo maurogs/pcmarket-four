@@ -44,6 +44,8 @@ de:
       open: Navigation öffnen
       payments: Zahlungsabgleich
       help_articles: Hilfeartikel
+      sell_offers: Ankaufsangebote
+      buyback_prices: Ankaufspreise
       feature_requests: Hervorhebungsanfragen
     topbar:
       view_site: Website ansehen
@@ -1305,6 +1307,43 @@ de:
         price: Preis
         status: Status
         requested: Angefragt
+    sell_offers:
+      title: Ankaufsangebote
+      subtitle: Ankaufsanfragen, Prüfung und Auszahlungen.
+      all: Alle
+      update_title: Angebot aktualisieren
+      notes: Interne Notizen
+      created: "Angefragt am %{date}"
+      updated: Angebot aktualisiert und Verkäufer benachrichtigt.
+      invalid_status: Wähle einen gültigen Status.
+      invalid_transition: Dieser Statuswechsel ist nicht erlaubt.
+      empty_title: Noch keine Ankaufsangebote
+      empty_body: Ankaufsanfragen erscheinen hier.
+      columns:
+        item: Artikel
+        user: Verkäufer
+        status: Status
+        price: Angebot
+        created: Erstellt
+        kind: Typ
+        payout: Auszahlungsdaten
+    buyback_prices:
+      title: Ankaufspreise
+      subtitle: Ankaufskatalog für „An PCMarket verkaufen“.
+      new: Neuer Preis
+      edit_subtitle: Ankaufspreis bearbeiten
+      created: Ankaufspreis erstellt.
+      updated: Ankaufspreis aktualisiert.
+      deleted: Ankaufspreis gelöscht.
+      multipliers_title: Zustandsfaktoren
+      empty_title: Keine Ankaufspreise
+      empty_body: Füge den ersten GPU- oder CPU-Preis hinzu.
+      columns:
+        kind: Typ
+        model: Modell
+        base_price: Grundpreis (Cent)
+        multipliers: Faktoren
+        status: Status
   devise:
     failure:
       suspended: Ihr Konto ist gesperrt. Kontaktieren Sie den Support.

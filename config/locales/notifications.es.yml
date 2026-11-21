@@ -11,6 +11,13 @@ es:
       label: Marcar todo como leído
       done: Todas las notificaciones se han marcado como leídas.
     kinds:
+      sell_offer_offered: Hemos valorado tu %{item} en %{amount}.
+      sell_offer_accepted: Has aceptado la oferta de %{amount} por tu %{item}.
+      sell_offer_declined: Has rechazado la oferta por tu %{item}.
+      sell_offer_received: Hemos recibido tu %{item} y lo estamos inspeccionando.
+      sell_offer_paid: Hemos enviado %{amount} por tu %{item}.
+      sell_offer_rejected: La oferta por tu %{item} se rechazó tras la inspección.
+      sell_offer_expired: La oferta por tu %{item} ha caducado.
       order_paid: Pago recibido del pedido %{number}.
       order_paid_seller: El pedido %{number} está pagado y listo para enviar.
       order_shipped: El pedido %{number} se ha enviado.

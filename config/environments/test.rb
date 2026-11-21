@@ -50,4 +50,10 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Deterministic keys so encrypted sell-offer payouts survive across runs
+  # without depending on credentials in CI.
+  config.active_record.encryption.primary_key = "pcmarket-test-primary-key-00001"
+  config.active_record.encryption.deterministic_key = "pcmarket-test-deterministic-0001"
+  config.active_record.encryption.key_derivation_salt = "pcmarket-test-salt-000000000001"
 end

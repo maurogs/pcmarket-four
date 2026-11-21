@@ -2,6 +2,10 @@
 
 ## Status
 
+Phase 7B complete: the PC Finder quiz and recommendation results, the public
+"How selling works" page and the feature-flagged Sell to PCMarket trade-in
+flow with buyback prices, IBAN-encrypted payouts and admin operations.
+
 Phase 7A complete: per-country legal texts (ES, FR, GB, DE, IT, PT), a public
 trust and safety page, an about page and a searchable help centre with article
 feedback. Company identity settings feed legal placeholders. Phase 6C admin
@@ -37,6 +41,7 @@ read access.
 | 6B | Admin orders, payments, disputes, reports and reviews | Complete |
 | 6C | Admin catalogue, settings, countries, content, marketing and audit | Complete |
 | 7A | Legal texts, trust, about and help centre | Complete |
+| 7B | PC Finder, selling page and Sell to PCMarket | Complete |
 
 ## Stack
 
@@ -699,6 +704,58 @@ read access.
 - Sitemap entries include help articles and legal pages; help URLs are added to
   the cache key. Footer seller-academy and help links point to real articles.
 
+### PC Finder, selling page and Sell to PCMarket (Phase 7B)
+
+- `resource :pc_finder` serves `GET /:locale/pc-finder`; the nested
+  `resource :results` maps the answer query string to
+  `PcFinder::ResultsController#index`, so both screens stay RESTful.
+- `PcFinder::Recommender` accepts `games[]`, `resolution`, `fps`, `budget`,
+  `case`, `cooling`, `vibe[]` and `sort`. SQL preselects at most 500 visible
+  gaming PCs and workstations within the budget ordered by
+  `performance_score DESC NULLS LAST`; colour, cooling, tag and game scoring
+  run in memory.
+- Scoring uses explicit `listings.game_fps[game][resolution]` data when present
+  and otherwise a GPU tier table (`RTX 5090` 100 down to `RX 6600` 35) with
+  per-resolution multipliers (1080p 1.0, 1440p 0.75, 4K 0.5) and per-game
+  weights (esports 1.6, AAA 0.8). Performance is the average FPS target fit;
+  value normalises performance per euro; final score is 70% performance and
+  30% value. Fit badges are great (≥90), good (≥70) and stretch.
+- Results are paginated at 12, cached for ten minutes per answer digest plus
+  `Listing.maximum(:updated_at)`, support best-match and price sorting, show an
+  estimated-FPS bar per selected game, and are `noindex,follow`.
+- The quiz is a plain multi-step GET form and stays usable without JavaScript.
+  Stimulus `pc_finder_controller` reveals one step at a time, drives the
+  progress bar, caps game choices at three and remembers answers in
+  sessionStorage. The quiz page is indexable and includes vibe tiles, PCs under
+  €1,000 and best-PC tiles for the first three active games.
+- `PagesController#sell` loads verified stores with sales, recently sold
+  listings and selling help articles. The page has a hero CTA, three steps,
+  commission-aware seller perks (reads `commissions_enabled` and
+  `commission_percent`), store strip, academy links, six-question accordion with
+  `FAQPage` JSON-LD, recently sold row and final CTA band.
+- Sell to PCMarket is gated by `Setting sell_to_us_enabled`. Non-staff get 404
+  while it is off; staff see a preview banner. Routes are
+  `resources :sell_offers` under `/sell-to-us`, nested `acceptance` and
+  `decline` resources, and a singular quote resource served by
+  `SellOffers::QuotesController` through a Turbo Frame.
+- `BuybackPrice` stores `item_kind` (gpu/cpu), `item_model`, base price in
+  cents, per-condition multipliers, active flag and position. `Buyback::Quote`
+  applies the multiplier and a 5% original-box bonus. Seeds provide 15 GPUs and
+  10 CPUs with plausible EUR prices.
+- Creating a quote produces a `SellOffer` in `offered` status with a seven-day
+  `offer_expires_at`. Users accept with an IBAN (mod-97 checksum through
+  `IbanValidator`) and account holder, or decline. `payout_iban` uses Active
+  Record encryption; `SellOfferNotifier` writes a notification and enqueues a
+  locale-aware `SellOfferMailer` email for offered, accepted, declined,
+  received, paid, rejected and expired events.
+- `SellOfferExpiryJob` runs daily in every environment and expires unanswered
+  offers. Admin `SellOffersController` lists and shows offers and moves them to
+  received, paid or rejected with notes, all audited. Admin
+  `BuybackPricesController` provides CRUD for the trade-in catalogue.
+- New schema: `buyback_prices`, and `sell_offers` gains `buyback_price_id`,
+  offer/acceptance/receipt/payment timestamps, `original_box`, `accessories`,
+  encrypted `payout_iban`, `payout_account_name` and `admin_notes`.
+
 ### Performance guardrails
 
 - `ListingSearch::INCLUDES` preloads store, category, region, user and image
@@ -859,6 +916,28 @@ app/models/{feature_request,help_article}.rb
 app/models/help_article_feedback.rb                article helpfulness votes
 app/services/trust_stats.rb                        cached trust page aggregates
 app/views/pages/{trust,about}.html.erb             public trust and about pages
+app/controllers/pc_finder_controller.rb             PC Finder quiz and landing
+app/controllers/pc_finder/results_controller.rb     scored, paginated results
+app/services/pc_finder/{recommender,landing}.rb     scoring engine and landing data
+app/views/pc_finder/                                quiz, results, vibe and game tiles
+app/javascript/controllers/pc_finder_controller.js  steps, progress, sessionStorage
+app/controllers/sell_offers_controller.rb           Sell to PCMarket landing/quote/show
+app/controllers/sell_offers/                        quote, acceptance and decline
+app/services/buyback/quote.rb                       condition and box pricing
+app/services/sell_offer_notifier.rb                 offer notifications + email
+app/models/buyback_price.rb                         GPU/CPU trade-in catalogue
+app/models/sell_offer.rb                            offer lifecycle and encrypted IBAN
+app/validators/iban_validator.rb                    mod-97 IBAN checksum
+app/mailers/sell_offer_mailer.rb                    locale-aware status emails
+app/jobs/sell_offer_expiry_job.rb                   daily offer expiry
+app/controllers/admin/{sell_offers,buyback_prices}_controller.rb
+app/views/admin/{sell_offers,buyback_prices}/
+app/views/pages/sell.html.erb                       how selling works + FAQ JSON-LD
+app/views/sell_offers/                              landing, quote form and offer detail
+db/seeds/buyback_prices.rb                          15 GPUs and 10 CPUs
+test/services/pc_finder/recommender_test.rb
+test/services/buyback/quote_test.rb
+test/integration/{pc_finder,sell_page,sell_to_us}_test.rb
 app/views/help_articles/                           help index, article and feedback
 db/seeds/legal/*.rb                                country legal copy
 db/seeds/help_articles.rb                          18 help articles
@@ -1012,3 +1091,7 @@ test/seeds_test.rb
 - API endpoints (ListingSearch is already API-ready).
 - No typing indicator in conversations (explicitly out of scope).
 - Message safety detection is heuristic; moderation review is still manual.
+- Sell to PCMarket labels are informational: no carrier API issues prepaid
+  labels yet, and payouts are recorded manually by administrators.
+- PC Finder estimated FPS is a tier fallback when a listing has no `game_fps`
+  data; the table needs periodic updates as new GPUs launch.

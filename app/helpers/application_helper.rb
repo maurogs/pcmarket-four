@@ -605,6 +605,28 @@ module ApplicationHelper
     }.to_json.html_safe
   end
 
+  def commission_percent_display
+    value = Setting.get("commission_percent", 5).to_d
+    number_with_precision(value, precision: value.frac.zero? ? 0 : 1, strip_insignificant_zeros: true)
+  end
+
+  def sell_faq_json_ld
+    {
+      "@context" => "https://schema.org",
+      "@type" => "FAQPage",
+      "mainEntity" => t("sell_page.faq.items").map do |item|
+        {
+          "@type" => "Question",
+          "name" => item[:q] || item["q"],
+          "acceptedAnswer" => {
+            "@type" => "Answer",
+            "text" => item[:a] || item["a"]
+          }
+        }
+      end
+    }.to_json.html_safe
+  end
+
   def legal_country_param
     requested = params[:country].to_s.strip.upcase
     return nil if requested.blank? || requested == "ES"

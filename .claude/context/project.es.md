@@ -2,6 +2,11 @@
 
 ## Estado
 
+Fase 7B completada: cuestionario del buscador de PC con resultados
+recomendados, página pública «Cómo vender» y flujo de Véndenos tu equipo
+protegido por un flag, con precios de compra, pagos con IBAN cifrado y
+operaciones de administración.
+
 Fase 7A completada: textos legales por país (ES, FR, GB, DE, IT, PT), página
 pública de confianza y seguridad, página sobre nosotros y centro de ayuda con
 buscador y valoración de artículos. Los ajustes de identidad de la empresa
@@ -23,6 +28,7 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
 | 6B | Pedidos, pagos, disputas, denuncias y reseñas de administración | Completada |
 | 6C | Catálogo, ajustes, países, contenido, marketing y auditoría | Completada |
 | 7A | Textos legales, confianza, sobre nosotros y centro de ayuda | Completada |
+| 7B | Buscador de PC, página de venta y Véndenos tu equipo | Completada |
 
 ## Stack
 
@@ -644,6 +650,61 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
   añaden a la clave de caché. Los enlaces de academia del pie apuntan a
   artículos reales.
 
+### Buscador de PC, página de venta y Véndenos tu equipo (fase 7B)
+
+- `resource :pc_finder` sirve `GET /:locale/pc-finder`; el recurso anidado
+  `results` mapea la consulta de respuestas a
+  `PcFinder::ResultsController#index`, manteniendo ambas pantallas RESTful.
+- `PcFinder::Recommender` acepta `games[]`, `resolution`, `fps`, `budget`,
+  `case`, `cooling`, `vibe[]` y `sort`. SQL preselecciona como máximo 500 PCs
+  gaming y estaciones de trabajo visibles dentro del presupuesto, ordenados por
+  `performance_score DESC NULLS LAST`; el color, el refrigeración, las
+  etiquetas y la puntuación por juego se calculan en memoria.
+- La puntuación usa `listings.game_fps[juego][resolución]` cuando existe y, si
+  no, una tabla de gamas de GPU (de `RTX 5090` 100 a `RX 6600` 35) con
+  multiplicadores por resolución (1080p 1,0, 1440p 0,75, 4K 0,5) y pesos por
+  juego (esports 1,6, AAA 0,8). El rendimiento es el encaje medio con los FPS
+  objetivo; el valor normaliza rendimiento por euro; la nota final es 70 %
+  rendimiento y 30 % valor. Las insignias son gran encaje (≥90), buen encaje
+  (≥70) y ajustado.
+- Los resultados se pagan de 12 en 12, se cachean diez minutos por digest de
+  respuestas más `Listing.maximum(:updated_at)`, permiten ordenar por mejor
+  encaje y precio, muestran una barra de FPS estimados por juego y llevan
+  `noindex,follow`.
+- El cuestionario es un formulario GET de varios pasos y funciona sin
+  JavaScript. El controlador Stimulus `pc_finder_controller` muestra un paso a
+  la vez, actualiza la barra de progreso, limita los juegos a tres y recuerda
+  las respuestas en sessionStorage. La página es indexable e incluye mosaicos
+  por estilo, PCs por menos de 1.000 € y mejores PCs para los tres primeros
+  juegos activos.
+- `PagesController#sell` carga tiendas verificadas con ventas, anuncios vendidos
+  recientemente y artículos de ayuda sobre venta. La página incluye CTA
+  principal, tres pasos, ventajas según `commissions_enabled` y
+  `commission_percent`, franja de tiendas, enlaces a la academia, acordeón de
+  seis preguntas con JSON-LD `FAQPage`, fila de vendidos y CTA final.
+- Véndenos tu equipo depende de `Setting sell_to_us_enabled`. Sin el flag, el
+  público recibe 404 y el personal ve un aviso de vista previa. Las rutas son
+  `resources :sell_offers` bajo `/sell-to-us`, recursos anidados `acceptance` y
+  `decline`, y un recurso singular de presupuesto servido por
+  `SellOffers::QuotesController` mediante Turbo Frame.
+- `BuybackPrice` guarda `item_kind` (gpu/cpu), `item_model`, precio base en
+  céntimos, multiplicadores por estado, activo y posición. `Buyback::Quote`
+  aplica el multiplicador y un 5 % por caja original. Las semillas incluyen 15
+  GPUs y 10 CPUs con precios plausibles en EUR.
+- Al pedir presupuesto se crea un `SellOffer` en estado `offered` con
+  `offer_expires_at` a siete días. El usuario acepta con IBAN (checksum módulo
+  97 mediante `IbanValidator`) y titular, o rechaza. `payout_iban` usa cifrado
+  de Active Record; `SellOfferNotifier` crea una notificación y encola un email
+  de `SellOfferMailer` en el idioma del usuario para offered, accepted,
+  declined, received, paid, rejected y expired.
+- `SellOfferExpiryJob` se ejecuta a diario en todos los entornos y caduca las
+  ofertas sin respuesta. El `SellOffersController` de administración lista y
+  muestra ofertas y las pasa a received, paid o rejected con notas, todo
+  auditado. `BuybackPricesController` ofrece CRUD del catálogo de compra.
+- Nuevo esquema: `buyback_prices`, y `sell_offers` gana `buyback_price_id`,
+  marcas de oferta/aceptación/recepción/pago, `original_box`, `accessories`,
+  `payout_iban` cifrado, `payout_account_name` y `admin_notes`.
+
 ### Límites de rendimiento
 
 - `ListingSearch::INCLUDES` precarga tienda, categoría, región, usuario y
@@ -1001,6 +1062,28 @@ db/seeds/legal/*.rb                         textos legales por país
 db/seeds/help_articles.rb                   18 artículos de ayuda
 app/services/trust_stats.rb                 agregados cacheados de confianza
 app/views/pages/{trust,about}.html.erb      confianza y sobre nosotros
+app/controllers/pc_finder_controller.rb      cuestionario y portada del buscador
+app/controllers/pc_finder/results_controller.rb  resultados puntuados y paginados
+app/services/pc_finder/{recommender,landing}.rb  motor de puntuación y datos de portada
+app/views/pc_finder/                         cuestionario, resultados y mosaicos
+app/javascript/controllers/pc_finder_controller.js  pasos, progreso y sessionStorage
+app/controllers/sell_offers_controller.rb    portada, presupuesto y detalle de oferta
+app/controllers/sell_offers/                 presupuesto, aceptación y rechazo
+app/services/buyback/quote.rb                precio por estado y caja
+app/services/sell_offer_notifier.rb          notificaciones y email de ofertas
+app/models/buyback_price.rb                  catálogo de compra GPU/CPU
+app/models/sell_offer.rb                     ciclo de oferta e IBAN cifrado
+app/validators/iban_validator.rb             checksum IBAN módulo 97
+app/mailers/sell_offer_mailer.rb             emails de estado por idioma
+app/jobs/sell_offer_expiry_job.rb            caducidad diaria de ofertas
+app/controllers/admin/{sell_offers,buyback_prices}_controller.rb
+app/views/admin/{sell_offers,buyback_prices}/
+app/views/pages/sell.html.erb                cómo vender + JSON-LD de FAQ
+app/views/sell_offers/                       portada, formulario y detalle
+db/seeds/buyback_prices.rb                   15 GPUs y 10 CPUs
+test/services/pc_finder/recommender_test.rb
+test/services/buyback/quote_test.rb
+test/integration/{pc_finder,sell_page,sell_to_us}_test.rb
 app/views/help_articles/                    índice, ficha y valoración
 app/models/help_article_feedback.rb         votos de utilidad por sesión
 script/search_explain.rb                    EXPLAIN ANALYZE con 5k anuncios
@@ -1059,3 +1142,9 @@ test/integration/{legal_pages,trust_and_about,help_centre}_test.rb
   explícita).
 - La detección de seguridad de mensajes es heurística; la revisión de moderación
   sigue siendo manual.
+- Las etiquetas de Véndenos tu equipo son informativas: todavía no hay API de
+  transportista que emita etiquetas prepagadas y los pagos se registran a mano
+  desde administración.
+- Los FPS estimados del buscador de PC usan la tabla de gamas cuando el anuncio
+  no tiene `game_fps`; la tabla necesita actualizaciones periódicas con cada
+  nueva GPU.

@@ -1,3 +1,120 @@
-<%= render "shared/placeholder_page", title: t("pages.sell_to_us.title"),
-           body: t("pages.sell_to_us.body"), cta_path: sell_path,
-           cta_label: t("layout.footer.sell_to_us") %>
+<% content_for :title, t("sell_to_us.quote.title") %>
+
+<%= render "sell_offers/preview_banner" if @preview_mode %>
+
+<section class="border-b border-slate-200 bg-gradient-to-b from-brand-50 via-white to-white dark:border-zinc-800 dark:from-brand-950/40 dark:via-zinc-950 dark:to-zinc-950">
+  <div class="page-container py-10 sm:py-14">
+    <nav class="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-400">
+      <%= link_to t("sell_to_us.quote.breadcrumb"), sell_to_us_path, class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+      <span aria-hidden="true">/</span>
+      <span class="text-slate-700 dark:text-zinc-200"><%= t("sell_to_us.quote.title") %></span>
+    </nav>
+    <div class="mx-auto max-w-3xl text-center">
+      <span class="<%= ui_badge_classes(tone: :brand) %>"><%= icon "credit-card", class: "size-3.5" %><%= t("sell_to_us.quote.eyebrow") %></span>
+      <h1 class="section-heading mt-4"><%= t("sell_to_us.quote.title") %></h1>
+      <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 dark:text-zinc-400"><%= t("sell_to_us.quote.body") %></p>
+    </div>
+  </div>
+</section>
+
+<section class="page-container -mt-4 sm:-mt-6">
+  <div class="mx-auto max-w-3xl">
+    <div class="surface p-5 sm:p-7">
+      <%= form_with url: sell_offer_quote_path, method: :get,
+                    data: { turbo_frame: "buyback_estimate", controller: "buyback-quote" },
+                    class: "space-y-4", html: { id: "buyback-quote-form" } do %>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="buyback_item_kind" class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-200">
+              <%= t("sell_to_us.form.item_kind") %>
+            </label>
+            <select id="buyback_item_kind" name="item_kind"
+                    data-buyback-quote-target="kind" data-action="change->buyback-quote#filterModels"
+                    class="<%= ui_input_classes %>">
+              <option value="gpu" <%= "selected" if params[:item_kind] != "cpu" %>><%= t("sell_to_us.kinds.gpu") %></option>
+              <option value="cpu" <%= "selected" if params[:item_kind] == "cpu" %>><%= t("sell_to_us.kinds.cpu") %></option>
+            </select>
+          </div>
+          <div>
+            <label for="buyback_price_id" class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-200">
+              <%= t("sell_to_us.form.model") %>
+            </label>
+            <select id="buyback_price_id" name="buyback_price_id" required
+                    data-buyback-quote-target="model" data-action="change->buyback-quote#submit"
+                    class="<%= ui_input_classes %>">
+              <% @buyback_prices.each do |price| %>
+                <option value="<%= price.id %>" data-kind="<%= price.item_kind %>"
+                        <%= "selected" if @selected_price&.id == price.id %>>
+                  <%= price.item_model %> — <%= t("sell_to_us.landing.up_to") %> <%= format_price(price.base_price_cents) %>
+                </option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="buyback_condition" class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-200">
+            <%= t("sell_to_us.form.condition") %>
+          </label>
+          <select id="buyback_condition" name="condition" required
+                  data-action="change->buyback-quote#submit"
+                  class="<%= ui_input_classes %>">
+            <% Buyback::Quote::CONDITION_MULTIPLIERS.each_key do |condition| %>
+              <option value="<%= condition %>" <%= "selected" if params[:condition] == condition %>>
+                <%= t("sell_to_us.conditions.#{condition}") %>
+              </option>
+            <% end %>
+          </select>
+          <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("sell_to_us.form.condition_hint") %></p>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="flex items-start gap-3 rounded-xl border border-slate-200 p-3 dark:border-zinc-700">
+            <input type="checkbox" name="original_box" value="1" <%= "checked" if params[:original_box].present? %>
+                   data-action="change->buyback-quote#submit"
+                   class="mt-0.5 size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500">
+            <span>
+              <span class="block text-sm font-medium text-slate-800 dark:text-zinc-100"><%= t("sell_to_us.form.original_box") %></span>
+              <span class="mt-0.5 block text-xs text-slate-500 dark:text-zinc-400"><%= t("sell_to_us.form.original_box_hint") %></span>
+            </span>
+          </label>
+
+          <div>
+            <label for="buyback_accessories" class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-zinc-200">
+              <%= t("sell_to_us.form.accessories") %>
+            </label>
+            <input type="text" id="buyback_accessories" name="accessories" value="<%= params[:accessories] %>"
+                   placeholder="<%= t("sell_to_us.form.accessories_placeholder") %>"
+                   data-action="change->buyback-quote#submit"
+                   class="<%= ui_input_classes %>">
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <button type="submit" class="<%= ui_button_classes(variant: :outline, size: :md) %>">
+            <%= icon "rotate-ccw", class: "size-4" %>
+            <span><%= t("sell_to_us.form.update_estimate") %></span>
+          </button>
+        </div>
+      <% end %>
+
+      <div class="mt-5">
+        <%= turbo_frame_tag "buyback_estimate" do %>
+          <%= render "sell_offers/estimate", quote: @quote, buyback_price: @selected_price %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mt-6 rounded-xl border border-slate-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+      <h2 class="font-heading text-base font-semibold text-slate-950 dark:text-white"><%= t("sell_to_us.quote.notes_title") %></h2>
+      <ul class="mt-3 space-y-2">
+        <% t("sell_to_us.quote.notes").each do |note| %>
+          <li class="flex gap-2 text-sm text-slate-600 dark:text-zinc-400">
+            <span class="mt-0.5 text-brand-600 dark:text-brand-400"><%= icon "check", class: "size-4" %></span>
+            <span><%= note %></span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</section>

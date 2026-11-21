@@ -44,6 +44,8 @@ pt:
       open: Abrir navegação
       payments: Reconciliação de pagamentos
       help_articles: Artigos de ajuda
+      sell_offers: Ofertas de compra
+      buyback_prices: Preços de compra
       feature_requests: Pedidos de destaque
     topbar:
       view_site: Ver o site
@@ -1306,6 +1308,43 @@ pt:
         price: Preço
         status: Estado
         requested: Pedido
+    sell_offers:
+      title: Ofertas de compra
+      subtitle: Pedidos de retoma, inspeção e pagamentos.
+      all: Todas
+      update_title: Atualizar oferta
+      notes: Notas internas
+      created: "Solicitada a %{date}"
+      updated: Oferta atualizada e vendedor notificado.
+      invalid_status: Escolha um estado válido.
+      invalid_transition: Essa mudança de estado não é permitida.
+      empty_title: Ainda não há ofertas de compra
+      empty_body: Os pedidos de retoma aparecerão aqui.
+      columns:
+        item: Artigo
+        user: Vendedor
+        status: Estado
+        price: Oferta
+        created: Criada
+        kind: Tipo
+        payout: Dados de pagamento
+    buyback_prices:
+      title: Preços de compra
+      subtitle: Catálogo de retoma para Venda-nos o seu equipamento.
+      new: Novo preço
+      edit_subtitle: Editar preço de compra
+      created: Preço de compra criado.
+      updated: Preço de compra atualizado.
+      deleted: Preço de compra eliminado.
+      multipliers_title: Multiplicadores de estado
+      empty_title: Sem preços de compra
+      empty_body: Adicione o primeiro preço GPU ou CPU para começar.
+      columns:
+        kind: Tipo
+        model: Modelo
+        base_price: Preço base (cêntimos)
+        multipliers: Multiplicadores
+        status: Estado
   devise:
     failure:
       suspended: A sua conta está suspensa. Contacte o suporte.

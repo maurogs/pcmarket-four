@@ -11,6 +11,13 @@ fr:
       label: Tout marquer comme lu
       done: Toutes les notifications ont été marquées comme lues.
     kinds:
+      sell_offer_offered: Nous avons estimé votre %{item} à %{amount}.
+      sell_offer_accepted: Vous avez accepté l’offre de %{amount} pour votre %{item}.
+      sell_offer_declined: Vous avez refusé l’offre pour votre %{item}.
+      sell_offer_received: Nous avons reçu votre %{item} et l’inspectons.
+      sell_offer_paid: Nous avons envoyé %{amount} pour votre %{item}.
+      sell_offer_rejected: L’offre pour votre %{item} a été refusée après inspection.
+      sell_offer_expired: L’offre pour votre %{item} a expiré.
       order_paid: Paiement reçu pour la commande %{number}.
       order_paid_seller: La commande %{number} est payée et prête à expédier.
       order_shipped: La commande %{number} a été expédiée.

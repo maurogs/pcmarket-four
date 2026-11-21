@@ -1,0 +1,177 @@
+<% content_for :title, t("pc_finder.results.meta_title", games: @games.values.map(&:name).join(", ").presence || t("pc_finder.results.all_games")) %>
+
+<% query_without_page = request.query_parameters.except("page", "sort") %>
+<% edit_path = pc_finder_path(query_without_page.merge(anchor: "pc-finder-quiz-title")) %>
+<% resolution_label = t("pc_finder.quiz.resolution.#{@recommender.resolution}") %>
+<% budget_label = @recommender.budget.present? ? t("pc_finder.quiz.budget.#{@recommender.budget}") : t("pc_finder.results.any_budget") %>
+
+<div class="page-container py-8 sm:py-10">
+  <nav class="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-400" aria-label="<%= t("pc_finder.results.breadcrumb") %>">
+    <%= link_to t("layout.tab_bar.home"), root_path, class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+    <span aria-hidden="true">/</span>
+    <%= link_to t("layout.nav.pc_finder"), pc_finder_path, class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+    <span aria-hidden="true">/</span>
+    <span class="text-slate-700 dark:text-zinc-200"><%= t("pc_finder.results.title") %></span>
+  </nav>
+
+  <header class="surface relative overflow-hidden p-5 sm:p-7">
+    <div class="pointer-events-none absolute -right-16 -top-20 size-64 rounded-full bg-brand-100/70 blur-3xl dark:bg-brand-900/30"></div>
+    <div class="relative">
+      <span class="<%= ui_badge_classes(tone: :brand) %>">
+        <%= icon "sparkles", class: "size-3.5" %>
+        <%= t("pc_finder.results.eyebrow") %>
+      </span>
+      <h1 class="mt-3 font-heading text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl dark:text-white">
+        <%= t("pc_finder.results.title") %>
+      </h1>
+      <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-zinc-400">
+        <%= t("pc_finder.results.subtitle", count: @pagy.count) %>
+      </p>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <% if @recommender.games.any? %>
+          <%= link_to edit_path, class: ui_chip_classes(active: true) do %>
+            <%= icon "gamepad-2", class: "size-3.5" %>
+            <%= @recommender.games.map { |slug| @games[slug]&.name || slug }.join(", ") %>
+          <% end %>
+        <% end %>
+        <%= link_to edit_path, class: ui_chip_classes do %>
+          <%= icon "laptop", class: "size-3.5" %>
+          <%= resolution_label %>
+        <% end %>
+        <%= link_to edit_path, class: ui_chip_classes do %>
+          <%= icon "zap", class: "size-3.5" %>
+          <%= t("pc_finder.quiz.fps.target", fps: @recommender.target_label) %>
+        <% end %>
+        <%= link_to edit_path, class: ui_chip_classes do %>
+          <%= icon "wallet", class: "size-3.5" %>
+          <%= budget_label %>
+        <% end %>
+        <% if @recommender.case_colour != "any" %>
+          <%= link_to edit_path, class: ui_chip_classes do %>
+            <%= t("pc_finder.quiz.preferences.colours.#{@recommender.case_colour}") %>
+          <% end %>
+        <% end %>
+        <% if @recommender.cooling != "any" %>
+          <%= link_to edit_path, class: ui_chip_classes do %>
+            <%= t("pc_finder.quiz.preferences.cooling_options.#{@recommender.cooling}") %>
+          <% end %>
+        <% end %>
+        <% @recommender.vibes.each do |vibe| %>
+          <%= link_to edit_path, class: ui_chip_classes do %>
+            #<%= t("listings.tags.#{vibe}") %>
+          <% end %>
+        <% end %>
+        <%= link_to t("pc_finder.results.edit"), edit_path,
+                    class: "inline-flex text-xs font-semibold text-brand-700 underline decoration-brand-300 underline-offset-4 dark:text-brand-300" %>
+      </div>
+    </div>
+  </header>
+
+  <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
+    <p class="text-xs text-slate-500 dark:text-zinc-400">
+      <%= t("pc_finder.results.showing", from: @pagy.offset + 1, to: @pagy.offset + @page_results.size, count: @pagy.count) %>
+    </p>
+    <div class="flex flex-wrap items-center gap-1.5" aria-label="<%= t("pc_finder.results.sort.label") %>">
+      <% { "best" => "pc_finder.results.sort.best", "price_asc" => "pc_finder.results.sort.price_asc",
+           "price_desc" => "pc_finder.results.sort.price_desc" }.each do |key, label| %>
+        <%= link_to t(label), url_for(query_without_page.merge(sort: key)),
+                    class: ui_chip_classes(active: @recommender.sort == key),
+                    aria: { current: @recommender.sort == key ? "true" : nil } %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @page_results.any? %>
+    <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <% @page_results.each do |result| %>
+        <% listing = @listings[result.listing_id] %>
+        <% next unless listing %>
+        <article class="surface card-lift flex h-full flex-col overflow-hidden">
+          <div class="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-zinc-800">
+            <%= link_to listing_path(listing), tabindex: -1, aria: { label: t("listings.card.image_alt", title: listing.title) } do %>
+              <% if listing.images.attached? %>
+                <%= image_tag listing.ordered_images.first.variant(resize_to_limit: [ 720, 450 ], format: :webp),
+                              alt: t("listings.card.image_alt", title: listing.title),
+                              width: 720, height: 450, loading: "lazy", decoding: "async",
+                              class: "h-full w-full object-cover" %>
+              <% else %>
+                <%= image_tag "listing-placeholder.svg", alt: "", loading: "lazy", class: "h-full w-full object-cover" %>
+              <% end %>
+            <% end %>
+            <span class="absolute left-3 top-3 <%= ui_badge_classes(tone: fit_tone(result.fit), extra: 'shadow-sm') %>">
+              <%= t("pc_finder.results.fit.#{result.fit}") %>
+            </span>
+          </div>
+
+          <div class="flex flex-1 flex-col gap-3 p-4">
+            <div>
+              <h2 class="line-clamp-2 text-sm font-semibold leading-5 text-slate-950 dark:text-white">
+                <%= link_to listing.title, listing_path(listing), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+              </h2>
+              <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+                <%= listing_seller_name(listing) %> · <%= listing_location(listing) %>
+              </p>
+            </div>
+
+            <ul class="flex flex-wrap gap-1.5">
+              <% spec_chips(listing).each do |_key, value| %>
+                <li class="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-zinc-800 dark:text-zinc-300"><%= value %></li>
+              <% end %>
+            </ul>
+
+            <div class="rounded-lg border border-slate-100 bg-slate-50/70 p-3 dark:border-zinc-800 dark:bg-zinc-800/40">
+              <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400"><%= t("pc_finder.results.performance") %></p>
+              <ul class="mt-2 space-y-2">
+                <% result.estimated_fps.each do |slug, fps| %>
+                  <% label = slug == "overall" ? t("pc_finder.results.overall") : (@games[slug]&.name || slug) %>
+                  <% target = @recommender.fps_target %>
+                  <% width = [ (fps.to_f / target * 100), 100 ].min.round %>
+                  <li>
+                    <div class="flex items-center justify-between gap-2 text-xs">
+                      <span class="truncate text-slate-600 dark:text-zinc-300"><%= label %></span>
+                      <span class="shrink-0 font-semibold text-slate-900 dark:text-white"><%= t("pc_finder.results.fps_value", fps: fps) %></span>
+                    </div>
+                    <div class="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-zinc-700">
+                      <div class="h-full rounded-full <%= fps.to_f >= target ? 'bg-brand-600' : 'bg-accent-500' %>" style="width: <%= width %>%"></div>
+                    </div>
+                  </li>
+                <% end %>
+              </ul>
+              <p class="mt-2 text-[10px] leading-4 text-slate-400 dark:text-zinc-500"><%= t("pc_finder.results.estimate_note") %></p>
+            </div>
+
+            <div class="mt-auto flex items-end justify-between gap-3 border-t border-slate-100 pt-3 dark:border-zinc-800">
+              <div>
+                <%= render "shared/price_tag", listing: listing %>
+                <p class="mt-1 text-[11px] text-slate-500 dark:text-zinc-400"><%= t("pc_finder.results.match_score", score: result.score.round) %></p>
+              </div>
+              <%= button_to cart_items_path, params: { listing_id: listing.id },
+                            class: ui_button_classes(variant: :primary, size: :sm),
+                            form: { class: "shrink-0" } do %>
+                <%= icon "shopping-cart", class: "size-4" %>
+                <span><%= t("pc_finder.results.add_to_cart") %></span>
+              <% end %>
+            </div>
+          </div>
+        </article>
+      <% end %>
+    </div>
+
+    <% if @pagy.next %>
+      <div class="mt-8 text-center">
+        <%= link_to t("pc_finder.results.load_more"),
+                    url_for(query_without_page.merge(page: @pagy.next, sort: @recommender.sort)),
+                    class: ui_button_classes(variant: :outline, size: :md) %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="mt-6">
+      <%= render "shared/empty_state",
+                 title: t("pc_finder.results.empty_title"),
+                 body: t("pc_finder.results.empty_body"),
+                 cta_label: t("pc_finder.results.widen_budget"),
+                 cta_path: pc_finder_path(query_without_page.except("budget").merge(anchor: "pc-finder-quiz-title")) %>
+    </div>
+  <% end %>
+</div>

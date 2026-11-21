@@ -11,3 +11,5 @@ it:
       it: Italiano
       pt: Português
     pagination: Paginazione
+    yes: "Sì"
+    no: "No"

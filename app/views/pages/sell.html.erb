@@ -1,0 +1,190 @@
+<% content_for :title, t("sell_page.meta.title") %>
+
+<script type="application/ld+json" nonce="<%= content_security_policy_nonce %>"><%= sell_faq_json_ld %></script>
+
+<section class="border-b border-slate-200 bg-gradient-to-b from-brand-50 via-white to-white dark:border-zinc-800 dark:from-brand-950/40 dark:via-zinc-950 dark:to-zinc-950">
+  <div class="page-container py-14 sm:py-20">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
+      <div>
+        <span class="<%= ui_badge_classes(tone: :brand) %>">
+          <%= icon "wallet", class: "size-3.5" %>
+          <%= t("sell_page.hero.eyebrow") %>
+        </span>
+        <h1 class="section-heading mt-4"><%= t("sell_page.hero.title") %></h1>
+        <p class="mt-4 max-w-xl text-base leading-8 text-slate-600 dark:text-zinc-400"><%= t("sell_page.hero.body") %></p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <%= link_to t("sell_page.hero.cta"),
+                      user_signed_in? ? new_listing_path : new_user_session_path,
+                      class: ui_button_classes(variant: :primary, size: :lg) %>
+          <%= link_to t("sell_page.hero.secondary_cta"),
+                      user_signed_in? ? seller_root_path : help_article_path("how-to-list-an-item"),
+                      class: ui_button_classes(variant: :outline, size: :lg) %>
+        </div>
+        <p class="mt-4 text-xs text-slate-500 dark:text-zinc-400"><%= t("sell_page.hero.note") %></p>
+      </div>
+
+      <div class="surface p-5 sm:p-6">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400"><%= t("sell_page.hero.preview_title") %></p>
+        <div class="mt-4 space-y-3">
+          <% %i[photos price chat].each_with_index do |key, index| %>
+            <div class="flex items-start gap-3 rounded-xl border border-slate-100 p-3 dark:border-zinc-800">
+              <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-50 font-heading text-xs font-bold text-brand-700 dark:bg-brand-900/40 dark:text-brand-300"><%= index + 1 %></span>
+              <div>
+                <p class="text-sm font-semibold text-slate-900 dark:text-white"><%= t("sell_page.hero.preview.#{key}_title") %></p>
+                <p class="mt-0.5 text-xs leading-5 text-slate-500 dark:text-zinc-400"><%= t("sell_page.hero.preview.#{key}_body") %></p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page-container py-14 sm:py-16" aria-labelledby="sell-steps-title">
+  <div class="mx-auto max-w-2xl text-center">
+    <h2 id="sell-steps-title" class="section-heading"><%= t("sell_page.steps.title") %></h2>
+    <p class="mt-3 text-sm leading-7 text-slate-600 dark:text-zinc-400"><%= t("sell_page.steps.body") %></p>
+  </div>
+  <ol class="mt-8 grid gap-4 md:grid-cols-3">
+    <% %i[list sell paid].each_with_index do |key, index| %>
+      <li class="surface p-6">
+        <span class="inline-flex size-10 items-center justify-center rounded-full bg-brand-700 font-heading text-sm font-bold text-white"><%= index + 1 %></span>
+        <h3 class="mt-4 font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("sell_page.steps.#{key}_title") %></h3>
+        <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-zinc-400"><%= t("sell_page.steps.#{key}_body") %></p>
+      </li>
+    <% end %>
+  </ol>
+</section>
+
+<section class="border-y border-slate-200 bg-white py-14 dark:border-zinc-800 dark:bg-zinc-900/30" aria-labelledby="sell-perks-title">
+  <div class="page-container">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 id="sell-perks-title" class="section-heading"><%= t("sell_page.perks.title") %></h2>
+      <p class="mt-3 text-sm leading-7 text-slate-600 dark:text-zinc-400">
+        <% if Setting.enabled?("commissions_enabled") %>
+          <%= t("sell_page.perks.commission_on", percent: commission_percent_display) %>
+        <% else %>
+          <%= t("sell_page.perks.commission_off") %>
+        <% end %>
+      </p>
+    </div>
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <% %i[fees review payments community].each do |key| %>
+        <div class="surface p-5">
+          <span class="inline-flex size-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
+            <%= icon({ fees: "tag", review: "shield-check", payments: "credit-card", community: "message-circle" }[key], class: "size-5") %>
+          </span>
+          <h3 class="mt-3 text-sm font-semibold text-slate-900 dark:text-white"><%= t("sell_page.perks.#{key}_title") %></h3>
+          <p class="mt-1.5 text-xs leading-5 text-slate-600 dark:text-zinc-400">
+            <% if key == :fees && Setting.enabled?("commissions_enabled") %>
+              <%= t("sell_page.perks.fees_body_on", percent: commission_percent_display) %>
+            <% else %>
+              <%= t("sell_page.perks.#{key}_body") %>
+            <% end %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<% if @featured_stores.any? %>
+  <section class="page-container py-14" aria-labelledby="sell-stores-title">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h2 id="sell-stores-title" class="section-heading"><%= t("sell_page.stores.title") %></h2>
+        <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("sell_page.stores.body") %></p>
+      </div>
+      <%= link_to t("sell_page.stores.view_all"), listings_path, class: ui_button_classes(variant: :outline, size: :sm) %>
+    </div>
+    <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <% @featured_stores.each do |store| %>
+        <%= link_to store_path(store), class: "surface flex items-center gap-3 p-4 transition hover:border-brand-300 dark:hover:border-brand-700" do %>
+          <% if store.logo.attached? %>
+            <%= image_tag store.logo.variant(resize_to_limit: [ 96, 96 ], format: :webp), alt: "", loading: "lazy",
+                          class: "size-12 rounded-xl object-cover" %>
+          <% else %>
+            <span class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 font-heading text-lg font-bold text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
+              <%= store.name.to_s.first.upcase %>
+            </span>
+          <% end %>
+          <span class="min-w-0">
+            <span class="flex items-center gap-1.5 text-sm font-semibold text-slate-900 dark:text-white">
+              <span class="truncate"><%= store.name %></span>
+              <% if store.verified? %><span class="text-brand-600 dark:text-brand-400"><%= icon "badge-check", class: "size-4" %></span><% end %>
+            </span>
+            <span class="mt-0.5 block text-xs text-slate-500 dark:text-zinc-400"><%= t("sell_page.stores.sales", count: store.sales_count) %></span>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<section class="border-y border-slate-200 bg-white py-14 dark:border-zinc-800 dark:bg-zinc-900/30" aria-labelledby="sell-academy-title">
+  <div class="page-container">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h2 id="sell-academy-title" class="section-heading"><%= t("sell_page.academy.title") %></h2>
+        <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("sell_page.academy.body") %></p>
+      </div>
+      <%= link_to t("sell_page.academy.view_all"), help_articles_path(category: "selling"),
+                  class: ui_button_classes(variant: :outline, size: :sm) %>
+    </div>
+    <div class="mt-6 grid gap-3 sm:grid-cols-3">
+      <% @academy_articles.each do |article| %>
+        <%= link_to help_article_path(article.slug), class: "surface group p-5 transition hover:border-brand-300 dark:hover:border-brand-700" do %>
+          <span class="<%= ui_badge_classes(tone: :neutral, extra: "!px-2 !py-0.5") %>"><%= t("content.help.categories.#{article.category}") %></span>
+          <h3 class="mt-3 text-sm font-semibold text-slate-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-300"><%= article.title %></h3>
+          <p class="mt-1.5 line-clamp-2 text-xs leading-5 text-slate-500 dark:text-zinc-400"><%= strip_tags(article.body_html).squish.truncate(120) %></p>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<% if @recently_sold.any? %>
+  <section class="page-container py-14" aria-labelledby="sell-sold-title">
+    <div>
+      <h2 id="sell-sold-title" class="section-heading"><%= t("sell_page.sold.title") %></h2>
+      <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("sell_page.sold.body") %></p>
+    </div>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <% @recently_sold.each do |listing| %>
+        <%= render "listings/card", listing: listing %>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<section class="page-container py-14" aria-labelledby="sell-faq-title">
+  <div class="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-start">
+    <div>
+      <h2 id="sell-faq-title" class="section-heading"><%= t("sell_page.faq.title") %></h2>
+      <p class="mt-3 text-sm leading-7 text-slate-600 dark:text-zinc-400"><%= t("sell_page.faq.body") %></p>
+      <%= link_to t("sell_page.faq.contact"), help_articles_path, class: "mt-4 inline-flex text-sm font-semibold text-brand-700 underline decoration-brand-300 underline-offset-4 dark:text-brand-300" %>
+    </div>
+    <%= render "shared/accordion", items: t("sell_page.faq.items").map { |item| { title: item[:q] || item["q"], content: item[:a] || item["a"] } } %>
+  </div>
+</section>
+
+<section class="page-container pb-16">
+  <div class="relative overflow-hidden rounded-2xl bg-brand-900 px-6 py-10 text-brand-50 sm:px-10 dark:bg-brand-950">
+    <div class="pointer-events-none absolute -right-20 -top-24 size-72 rounded-full bg-brand-700/60 blur-3xl"></div>
+    <div class="relative flex flex-wrap items-center justify-between gap-6">
+      <div class="max-w-xl">
+        <h2 class="font-heading text-2xl font-bold tracking-tight sm:text-3xl"><%= t("sell_page.final.title") %></h2>
+        <p class="mt-2 text-sm leading-6 text-brand-200"><%= t("sell_page.final.body") %></p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <%= link_to t("sell_page.final.cta"), user_signed_in? ? new_listing_path : new_user_session_path,
+                    class: ui_button_classes(variant: :accent, size: :lg) %>
+        <% if Setting.enabled?("sell_to_us_enabled") %>
+          <%= link_to t("sell_page.final.sell_to_us"), sell_to_us_path,
+                      class: ui_button_classes(variant: :outline, size: :lg, extra: "!border-brand-500 !bg-brand-900 !text-brand-50 hover:!bg-brand-800") %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

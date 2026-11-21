@@ -168,10 +168,11 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Contexto del proyecto</h1>
     <p class="lede">Arquitectura, decisiones y mapa de código</p>
-    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-22 00:22</p>
+    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-22 00:37</p>
   </header>
   <main><section class="card status">
 <h2><span>Estado</span><span class="badge badge-success">Complete</span></h2>
+<p>Fase 7B completada: cuestionario del buscador de PC con resultados recomendados, página pública «Cómo vender» y flujo de Véndenos tu equipo protegido por un flag, con precios de compra, pagos con IBAN cifrado y operaciones de administración.</p>
 <p>Fase 7A completada: textos legales por país (ES, FR, GB, DE, IT, PT), página pública de confianza y seguridad, página sobre nosotros y centro de ayuda con buscador y valoración de artículos. Los ajustes de identidad de la empresa alimentan los marcadores de las páginas legales. El catálogo, los ajustes, los países, el contenido, el marketing y la auditoría de la fase 6C siguen intactos.</p>
 </section>
 <section class="card status">
@@ -190,6 +191,7 @@ footer {
 <tr><td>6B</td><td>Pedidos, pagos, disputas, denuncias y reseñas de administración</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>6C</td><td>Catálogo, ajustes, países, contenido, marketing y auditoría</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>7A</td><td>Textos legales, confianza, sobre nosotros y centro de ayuda</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>7B</td><td>Buscador de PC, página de venta y Véndenos tu equipo</td><td><span class="badge badge-success">Completada</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -391,6 +393,20 @@ footer {
 <li><code>HelpArticle</code> guarda títulos y cuerpos en jsonb para seis idiomas. <code>HelpArticlesController</code> ofrece la rejilla de categorías, los artículos populares, búsqueda sin acentos mediante <code>unaccent(titles -&gt;&gt; locale)</code>/<code>unaccent(bodies -&gt;&gt; locale)</code> y fichas con JSON-LD Article y BreadcrumbList. Las semillas crean 18 artículos (3 por categoría) con contenido completo ES/EN y versiones cortas FR/DE/IT/PT.</li>
 <li><code>HelpArticleFeedback</code> (artículo, útil, sesión) tiene un índice único por artículo y sesión. <code>HelpArticleFeedbacksController</code> registra o actualiza un voto por sesión de navegador; el listado de administración muestra los recuentos sí/no.</li>
 <li>El sitemap incluye artículos de ayuda y páginas legales; las URLs de ayuda se añaden a la clave de caché. Los enlaces de academia del pie apuntan a artículos reales.</li>
+</ul>
+<h3>Buscador de PC, página de venta y Véndenos tu equipo (fase 7B)</h3>
+<ul>
+<li><code>resource :pc_finder</code> sirve <code>GET /:locale/pc-finder</code>; el recurso anidado <code>results</code> mapea la consulta de respuestas a <code>PcFinder::ResultsController#index</code>, manteniendo ambas pantallas RESTful.</li>
+<li><code>PcFinder::Recommender</code> acepta <code>games[]</code>, <code>resolution</code>, <code>fps</code>, <code>budget</code>, <code>case</code>, <code>cooling</code>, <code>vibe[]</code> y <code>sort</code>. SQL preselecciona como máximo 500 PCs gaming y estaciones de trabajo visibles dentro del presupuesto, ordenados por <code>performance_score DESC NULLS LAST</code>; el color, el refrigeración, las etiquetas y la puntuación por juego se calculan en memoria.</li>
+<li>La puntuación usa <code>listings.game_fps[juego][resolución]</code> cuando existe y, si no, una tabla de gamas de GPU (de <code>RTX 5090</code> 100 a <code>RX 6600</code> 35) con multiplicadores por resolución (1080p 1,0, 1440p 0,75, 4K 0,5) y pesos por juego (esports 1,6, AAA 0,8). El rendimiento es el encaje medio con los FPS objetivo; el valor normaliza rendimiento por euro; la nota final es 70 % rendimiento y 30 % valor. Las insignias son gran encaje (≥90), buen encaje (≥70) y ajustado.</li>
+<li>Los resultados se pagan de 12 en 12, se cachean diez minutos por digest de respuestas más <code>Listing.maximum(:updated_at)</code>, permiten ordenar por mejor encaje y precio, muestran una barra de FPS estimados por juego y llevan <code>noindex,follow</code>.</li>
+<li>El cuestionario es un formulario GET de varios pasos y funciona sin JavaScript. El controlador Stimulus <code>pc_finder_controller</code> muestra un paso a la vez, actualiza la barra de progreso, limita los juegos a tres y recuerda las respuestas en sessionStorage. La página es indexable e incluye mosaicos por estilo, PCs por menos de 1.000 € y mejores PCs para los tres primeros juegos activos.</li>
+<li><code>PagesController#sell</code> carga tiendas verificadas con ventas, anuncios vendidos recientemente y artículos de ayuda sobre venta. La página incluye CTA principal, tres pasos, ventajas según <code>commissions_enabled</code> y <code>commission_percent</code>, franja de tiendas, enlaces a la academia, acordeón de seis preguntas con JSON-LD <code>FAQPage</code>, fila de vendidos y CTA final.</li>
+<li>Véndenos tu equipo depende de <code>Setting sell_to_us_enabled</code>. Sin el flag, el público recibe 404 y el personal ve un aviso de vista previa. Las rutas son <code>resources :sell_offers</code> bajo <code>/sell-to-us</code>, recursos anidados <code>acceptance</code> y <code>decline</code>, y un recurso singular de presupuesto servido por <code>SellOffers::QuotesController</code> mediante Turbo Frame.</li>
+<li><code>BuybackPrice</code> guarda <code>item_kind</code> (gpu/cpu), <code>item_model</code>, precio base en céntimos, multiplicadores por estado, activo y posición. <code>Buyback::Quote</code> aplica el multiplicador y un 5 % por caja original. Las semillas incluyen 15 GPUs y 10 CPUs con precios plausibles en EUR.</li>
+<li>Al pedir presupuesto se crea un <code>SellOffer</code> en estado <code>offered</code> con <code>offer_expires_at</code> a siete días. El usuario acepta con IBAN (checksum módulo 97 mediante <code>IbanValidator</code>) y titular, o rechaza. <code>payout_iban</code> usa cifrado de Active Record; <code>SellOfferNotifier</code> crea una notificación y encola un email de <code>SellOfferMailer</code> en el idioma del usuario para offered, accepted, declined, received, paid, rejected y expired.</li>
+<li><code>SellOfferExpiryJob</code> se ejecuta a diario en todos los entornos y caduca las ofertas sin respuesta. El <code>SellOffersController</code> de administración lista y muestra ofertas y las pasa a received, paid o rejected con notas, todo auditado. <code>BuybackPricesController</code> ofrece CRUD del catálogo de compra.</li>
+<li>Nuevo esquema: <code>buyback_prices</code>, y <code>sell_offers</code> gana <code>buyback_price_id</code>, marcas de oferta/aceptación/recepción/pago, <code>original_box</code>, <code>accessories</code>, <code>payout_iban</code> cifrado, <code>payout_account_name</code> y <code>admin_notes</code>.</li>
 </ul>
 <h3>Límites de rendimiento</h3>
 <ul>
@@ -634,6 +650,28 @@ db/seeds/legal/*.rb                         textos legales por país
 db/seeds/help_articles.rb                   18 artículos de ayuda
 app/services/trust_stats.rb                 agregados cacheados de confianza
 app/views/pages/{trust,about}.html.erb      confianza y sobre nosotros
+app/controllers/pc_finder_controller.rb      cuestionario y portada del buscador
+app/controllers/pc_finder/results_controller.rb  resultados puntuados y paginados
+app/services/pc_finder/{recommender,landing}.rb  motor de puntuación y datos de portada
+app/views/pc_finder/                         cuestionario, resultados y mosaicos
+app/javascript/controllers/pc_finder_controller.js  pasos, progreso y sessionStorage
+app/controllers/sell_offers_controller.rb    portada, presupuesto y detalle de oferta
+app/controllers/sell_offers/                 presupuesto, aceptación y rechazo
+app/services/buyback/quote.rb                precio por estado y caja
+app/services/sell_offer_notifier.rb          notificaciones y email de ofertas
+app/models/buyback_price.rb                  catálogo de compra GPU/CPU
+app/models/sell_offer.rb                     ciclo de oferta e IBAN cifrado
+app/validators/iban_validator.rb             checksum IBAN módulo 97
+app/mailers/sell_offer_mailer.rb             emails de estado por idioma
+app/jobs/sell_offer_expiry_job.rb            caducidad diaria de ofertas
+app/controllers/admin/{sell_offers,buyback_prices}_controller.rb
+app/views/admin/{sell_offers,buyback_prices}/
+app/views/pages/sell.html.erb                cómo vender + JSON-LD de FAQ
+app/views/sell_offers/                       portada, formulario y detalle
+db/seeds/buyback_prices.rb                   15 GPUs y 10 CPUs
+test/services/pc_finder/recommender_test.rb
+test/services/buyback/quote_test.rb
+test/integration/{pc_finder,sell_page,sell_to_us}_test.rb
 app/views/help_articles/                    índice, ficha y valoración
 app/models/help_article_feedback.rb         votos de utilidad por sesión
 script/search_explain.rb                    EXPLAIN ANALYZE con 5k anuncios
@@ -676,6 +714,8 @@ test/integration/{legal_pages,trust_and_about,help_centre}_test.rb
 <li>Endpoints de API (ListingSearch ya está preparado para API).</li>
 <li>Sin indicador de escritura en las conversaciones (fuera de alcance de forma explícita).</li>
 <li>La detección de seguridad de mensajes es heurística; la revisión de moderación sigue siendo manual.</li>
+<li>Las etiquetas de Véndenos tu equipo son informativas: todavía no hay API de transportista que emita etiquetas prepagadas y los pagos se registran a mano desde administración.</li>
+<li>Los FPS estimados del buscador de PC usan la tabla de gamas cuando el anuncio no tiene <code>game_fps</code>; la tabla necesita actualizaciones periódicas con cada nueva GPU.</li>
 </ul>
 </section>
 </main>

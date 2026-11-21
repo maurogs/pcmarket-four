@@ -44,6 +44,8 @@ en:
       open: Open navigation
       payments: Payment reconciliation
       help_articles: Help articles
+      sell_offers: Sell offers
+      buyback_prices: Buyback prices
       feature_requests: Feature requests
     topbar:
       view_site: View site
@@ -1306,6 +1308,43 @@ en:
         price: Price
         status: Status
         requested: Requested
+    sell_offers:
+      title: Sell offers
+      subtitle: Trade-in requests, inspection and payouts.
+      all: All
+      update_title: Update offer
+      notes: Internal notes
+      created: "Requested %{date}"
+      updated: Offer updated and the seller notified.
+      invalid_status: Choose a valid status.
+      invalid_transition: That status change is not allowed from the current one.
+      empty_title: No sell offers yet
+      empty_body: Trade-in requests will appear here.
+      columns:
+        item: Item
+        user: Seller
+        status: Status
+        price: Offer
+        created: Created
+        kind: Kind
+        payout: Payout details
+    buyback_prices:
+      title: Buyback prices
+      subtitle: Trade-in catalogue for Sell to PCMarket.
+      new: New price
+      edit_subtitle: Edit trade-in price
+      created: Buyback price created.
+      updated: Buyback price updated.
+      deleted: Buyback price deleted.
+      multipliers_title: Condition multipliers
+      empty_title: No buyback prices
+      empty_body: Add the first GPU or CPU price to start quoting.
+      columns:
+        kind: Kind
+        model: Model
+        base_price: Base price (cents)
+        multipliers: Multipliers
+        status: Status
   devise:
     failure:
       suspended: Your account is suspended. Contact support for more information.

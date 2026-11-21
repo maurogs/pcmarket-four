@@ -674,3 +674,59 @@ administrator edits.
 `config/locales/content.*.yml`, `config/locales/admin.*.yml`,
 `test/models/legal_page_test.rb`, `test/integration/{legal_pages,trust_and_about,help_centre,seo}_test.rb`,
 `test/seeds_test.rb`, `.claude/context/{project,project.es}.md`.
+
+## Phase 7B — PC Finder, selling page and Sell to PCMarket
+
+### What changed
+
+- Added the progressive-enhancement PC Finder quiz at `/pc-finder` with five
+  steps, sessionStorage memory, game limit, progress bar and indexable landing
+  sections (vibes, under €1,000 and best PCs per game).
+- Added `PcFinder::Recommender`: SQL preselects up to 500 visible gaming PCs and
+  workstations, then Ruby scores explicit `game_fps` data or GPU-tier
+  estimates, normalises value per euro and returns fit badges. Results are
+  cached ten minutes, paginated at 12, sortable and noindex.
+- Replaced the selling placeholder with a full sales page: hero, three steps,
+  commission-aware perks, verified store strip, seller academy, six-question
+  FAQ with `FAQPage` JSON-LD, recently sold and final CTA.
+- Implemented the feature-flagged Sell to PCMarket flow: buyback price
+  catalogue, instant Turbo Frame quote through `Buyback::Quote`, offer
+  creation with seven-day validity, acceptance with checksum-validated IBAN and
+  Active Record encryption, decline, admin receipt/payment/rejection with
+  audits, notifications/emails and the daily `SellOfferExpiryJob`.
+- Added buyback price and sell offer admin screens, seeded 15 GPUs and 10 CPUs,
+  and wired the new recurring job into all environments.
+- Added recommender, quote, quiz, results, selling page, feature-flag, offer
+  lifecycle, IBAN encryption, expiry and admin CRUD tests.
+
+### Why
+
+Phase 7B closes the discovery and selling loop: buyers get a guided PC
+recommendation, private sellers get a complete selling guide, and PCMarket can
+buy back parts through a controlled, auditable and feature-flagged channel.
+
+### Files touched
+
+`config/routes.rb`, `config/recurring.yml`,
+`db/migrate/20261122231000_create_buyback_prices.rb`,
+`db/migrate/20261122231100_add_buyback_fields_to_sell_offers.rb`,
+`db/migrate/20261122231200_rename_model_name_on_buyback_prices.rb`,
+`db/schema.rb`, `db/seeds.rb`, `db/seeds/buyback_prices.rb`,
+`app/models/{buyback_price,sell_offer}.rb`, `app/validators/iban_validator.rb`,
+`app/services/pc_finder/{recommender,landing}.rb`,
+`app/services/buyback/quote.rb`, `app/services/sell_offer_notifier.rb`,
+`app/controllers/pc_finder_controller.rb`,
+`app/controllers/pc_finder/results_controller.rb`,
+`app/controllers/sell_offers_controller.rb`,
+`app/controllers/sell_offers/{quotes,acceptances,declines}_controller.rb`,
+`app/controllers/admin/{buyback_prices,sell_offers}_controller.rb`,
+`app/policies/admin/{buyback_price,sell_offer}_policy.rb`,
+`app/jobs/sell_offer_expiry_job.rb`, `app/mailers/sell_offer_mailer.rb`,
+`app/views/{pc_finder,pages,sell_offers,admin/buyback_prices,admin/sell_offers}/**`,
+`app/javascript/controllers/{pc_finder,buyback_quote}_controller.js`,
+`app/helpers/{application,pc_finder,admin}_helper.rb`,
+`config/environments/{development,test}.rb`, `config/locales/*`,
+`test/test_helper.rb`, `test/services/pc_finder/recommender_test.rb`,
+`test/services/buyback/quote_test.rb`,
+`test/integration/{pc_finder,sell_page,sell_to_us}_test.rb`,
+`.claude/context/{project,project.es}.md`.

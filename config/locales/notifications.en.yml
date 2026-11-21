@@ -11,6 +11,13 @@ en:
       label: Mark all as read
       done: All notifications marked as read.
     kinds:
+      sell_offer_offered: We valued your %{item} at %{amount}.
+      sell_offer_accepted: You accepted the offer of %{amount} for your %{item}.
+      sell_offer_declined: You declined the offer for your %{item}.
+      sell_offer_received: We received your %{item} and are inspecting it.
+      sell_offer_paid: We sent %{amount} for your %{item}.
+      sell_offer_rejected: The offer for your %{item} was rejected after inspection.
+      sell_offer_expired: The offer for your %{item} expired.
       order_paid: Payment received for order %{number}.
       order_paid_seller: Order %{number} is paid and ready to ship.
       order_shipped: Order %{number} has shipped.

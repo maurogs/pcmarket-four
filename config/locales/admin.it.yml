@@ -44,6 +44,8 @@ it:
       open: Apri navigazione
       payments: Riconciliazione pagamenti
       help_articles: Articoli di aiuto
+      sell_offers: Offerte di riacquisto
+      buyback_prices: Prezzi di riacquisto
       feature_requests: Richieste in evidenza
     topbar:
       view_site: Vedi il sito
@@ -1305,6 +1307,43 @@ it:
         price: Prezzo
         status: Stato
         requested: Richiesta
+    sell_offers:
+      title: Offerte di riacquisto
+      subtitle: Richieste di permuta, ispezione e pagamenti.
+      all: Tutte
+      update_title: Aggiorna offerta
+      notes: Note interne
+      created: "Richiesta il %{date}"
+      updated: Offerta aggiornata e venditore avvisato.
+      invalid_status: Scegli uno stato valido.
+      invalid_transition: Questo cambio di stato non è consentito.
+      empty_title: Nessuna offerta di riacquisto
+      empty_body: Le richieste di permuta appariranno qui.
+      columns:
+        item: Articolo
+        user: Venditore
+        status: Stato
+        price: Offerta
+        created: Creata
+        kind: Tipo
+        payout: Dati di pagamento
+    buyback_prices:
+      title: Prezzi di riacquisto
+      subtitle: Catalogo di permuta per Vendici il tuo hardware.
+      new: Nuovo prezzo
+      edit_subtitle: Modifica prezzo di riacquisto
+      created: Prezzo di riacquisto creato.
+      updated: Prezzo di riacquisto aggiornato.
+      deleted: Prezzo di riacquisto eliminato.
+      multipliers_title: Moltiplicatori di condizione
+      empty_title: Nessun prezzo di riacquisto
+      empty_body: Aggiungi il primo prezzo GPU o CPU per iniziare.
+      columns:
+        kind: Tipo
+        model: Modello
+        base_price: Prezzo base (centesimi)
+        multipliers: Moltiplicatori
+        status: Stato
   devise:
     failure:
       suspended: Il tuo account è sospeso. Contatta l’assistenza.

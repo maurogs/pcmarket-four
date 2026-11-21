@@ -1,0 +1,119 @@
+<% content_for :title, t("sell_to_us.meta.title") %>
+
+<%= render "sell_offers/preview_banner" if @preview_mode %>
+
+<section class="border-b border-slate-200 bg-gradient-to-b from-brand-50 via-white to-white dark:border-zinc-800 dark:from-brand-950/40 dark:via-zinc-950 dark:to-zinc-950">
+  <div class="page-container py-14 sm:py-20">
+    <div class="mx-auto max-w-3xl text-center">
+      <span class="<%= ui_badge_classes(tone: :brand) %>">
+        <%= icon "wallet", class: "size-3.5" %>
+        <%= t("sell_to_us.landing.eyebrow") %>
+      </span>
+      <h1 class="section-heading mt-4"><%= t("sell_to_us.landing.title") %></h1>
+      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 dark:text-zinc-400"><%= t("sell_to_us.landing.body") %></p>
+      <div class="mt-7 flex flex-wrap justify-center gap-3">
+        <%= link_to t("sell_to_us.landing.cta"), new_sell_offer_path,
+                    class: ui_button_classes(variant: :primary, size: :lg) %>
+        <%= link_to t("sell_to_us.landing.secondary_cta"), help_articles_path(category: "selling"),
+                    class: ui_button_classes(variant: :outline, size: :lg) %>
+      </div>
+      <p class="mt-4 text-xs text-slate-500 dark:text-zinc-400"><%= t("sell_to_us.landing.note") %></p>
+    </div>
+  </div>
+</section>
+
+<% if @offers.any? %>
+  <section class="page-container pt-10" aria-labelledby="sell-to-us-offers-title">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h2 id="sell-to-us-offers-title" class="section-heading"><%= t("sell_to_us.landing.your_offers") %></h2>
+        <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("sell_to_us.landing.your_offers_body") %></p>
+      </div>
+    </div>
+    <ul class="mt-5 divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
+      <% @offers.each do |offer| %>
+        <li>
+          <%= link_to sell_offer_path(offer), class: "flex flex-wrap items-center justify-between gap-3 p-4 transition hover:bg-slate-50 dark:hover:bg-zinc-800/50" do %>
+            <span class="min-w-0">
+              <span class="block text-sm font-semibold text-slate-900 dark:text-white"><%= offer.item_name %></span>
+              <span class="mt-0.5 block text-xs text-slate-500 dark:text-zinc-400"><%= t("sell_to_us.statuses.#{offer.status}") %> · <%= l(offer.created_at, format: :short) %></span>
+            </span>
+            <span class="flex items-center gap-3">
+              <span class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= format_price(offer.offered_price_cents) %></span>
+              <%= icon "chevron-right", class: "size-4 text-slate-400" %>
+            </span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>
+
+<section class="page-container py-14" aria-labelledby="buyback-table-title">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h2 id="buyback-table-title" class="section-heading"><%= t("sell_to_us.landing.prices_title") %></h2>
+      <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("sell_to_us.landing.prices_body") %></p>
+    </div>
+    <%= link_to t("sell_to_us.landing.prices_cta"), new_sell_offer_path, class: ui_button_classes(variant: :outline, size: :sm) %>
+  </div>
+
+  <div class="mt-6 grid gap-5 lg:grid-cols-2">
+    <% [ [ "gpu", @gpu_prices ], [ "cpu", @cpu_prices ] ].each do |kind, prices| %>
+      <% next if prices.empty? %>
+      <div class="surface overflow-hidden">
+        <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-zinc-800">
+          <span class="text-brand-700 dark:text-brand-300"><%= icon(kind == "gpu" ? "gamepad-2" : "cpu", class: "size-4") %></span>
+          <h3 class="text-sm font-semibold text-slate-900 dark:text-white"><%= t("sell_to_us.kinds.#{kind}") %></h3>
+        </div>
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50 text-left text-[11px] uppercase tracking-wide text-slate-500 dark:bg-zinc-800/50 dark:text-zinc-400">
+            <tr>
+              <th class="px-4 py-2 font-semibold"><%= t("sell_to_us.landing.model") %></th>
+              <th class="px-4 py-2 text-right font-semibold"><%= t("sell_to_us.landing.up_to") %></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+            <% prices.each do |price| %>
+              <tr>
+                <td class="px-4 py-2.5 text-slate-700 dark:text-zinc-300"><%= price.item_model %></td>
+                <td class="px-4 py-2.5 text-right font-medium text-slate-900 dark:text-white"><%= format_price(price.base_price_cents) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </div>
+  <% if @buyback_prices.empty? %>
+    <div class="mt-6"><%= render "shared/empty_state", title: t("sell_to_us.landing.no_prices_title"), body: t("sell_to_us.landing.no_prices_body") %></div>
+  <% end %>
+</section>
+
+<section class="border-y border-slate-200 bg-white py-14 dark:border-zinc-800 dark:bg-zinc-900/30" aria-labelledby="sell-to-us-how-title">
+  <div class="page-container">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 id="sell-to-us-how-title" class="section-heading"><%= t("sell_to_us.how.title") %></h2>
+      <p class="mt-3 text-sm leading-7 text-slate-600 dark:text-zinc-400"><%= t("sell_to_us.how.body") %></p>
+    </div>
+    <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <% %i[offer ship inspect paid].each_with_index do |key, index| %>
+        <li class="surface p-5">
+          <span class="inline-flex size-9 items-center justify-center rounded-full bg-brand-700 font-heading text-sm font-bold text-white"><%= index + 1 %></span>
+          <h3 class="mt-3 text-sm font-semibold text-slate-900 dark:text-white"><%= t("sell_to_us.how.#{key}_title") %></h3>
+          <p class="mt-1.5 text-xs leading-5 text-slate-600 dark:text-zinc-400"><%= t("sell_to_us.how.#{key}_body") %></p>
+        </li>
+      <% end %>
+    </ol>
+  </div>
+</section>
+
+<section class="page-container py-14" aria-labelledby="sell-to-us-faq-title">
+  <div class="mx-auto max-w-3xl">
+    <h2 id="sell-to-us-faq-title" class="section-heading"><%= t("sell_to_us.faq.title") %></h2>
+    <p class="mt-3 text-sm leading-7 text-slate-600 dark:text-zinc-400"><%= t("sell_to_us.faq.body") %></p>
+    <div class="mt-6">
+      <%= render "shared/accordion", items: t("sell_to_us.faq.items").map { |item| { title: item[:q] || item["q"], content: item[:a] || item["a"] } } %>
+    </div>
+  </div>
+</section>

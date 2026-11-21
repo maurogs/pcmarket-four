@@ -31,11 +31,13 @@ module AdminHelper
         badge: :open_disputes },
       { key: "reports", label: "admin.nav.reports", icon: "message-circle", path: :admin_reports_path,
         badge: :open_reports },
-      { key: "reviews", label: "admin.nav.reviews", icon: "star", path: :admin_reviews_path }
+      { key: "reviews", label: "admin.nav.reviews", icon: "star", path: :admin_reviews_path },
+      { key: "sell_offers", label: "admin.nav.sell_offers", icon: "wallet", path: :admin_sell_offers_path }
     ] },
     { title: "admin.nav.sections.catalogue", items: [
       { key: "categories", label: "admin.nav.categories", icon: "sliders-horizontal", path: :admin_categories_path },
-      { key: "filters", label: "admin.nav.filters", icon: "filter", path: :admin_filter_definitions_path }
+      { key: "filters", label: "admin.nav.filters", icon: "filter", path: :admin_filter_definitions_path },
+      { key: "buyback_prices", label: "admin.nav.buyback_prices", icon: "credit-card", path: :admin_buyback_prices_path }
     ] },
     { title: "admin.nav.sections.content", items: [
       { key: "legal_pages", label: "admin.nav.legal_pages", icon: "bookmark", path: :admin_legal_pages_path },
@@ -90,8 +92,10 @@ module AdminHelper
     when "disputes" then %w[disputes dispute_resolutions].include?(controller_name)
     when "reports" then %w[reports bulk_report_actions].include?(controller_name)
     when "reviews" then controller_name == "reviews"
+    when "sell_offers" then controller_name == "sell_offers"
     when "audit_log" then controller_name == "audit_logs"
     when "categories" then %w[categories category_positions].include?(controller_name)
+    when "buyback_prices" then controller_name == "buyback_prices"
     when "filters" then %w[filter_definitions filter_options filter_option_bulks filter_option_merges filter_option_positions].include?(controller_name)
     when "legal_pages" then controller_name == "legal_pages"
     when "games" then %w[games game_positions].include?(controller_name)

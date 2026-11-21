@@ -1,0 +1,14 @@
+<h1 style="font-family:'Space Grotesk',Arial,sans-serif;font-size:20px;margin:0 0 12px;">
+  <%= t("sell_to_us.mailer.#{@event}.title", item: @offer.item_name) %>
+</h1>
+<p style="margin:0 0 12px;line-height:1.6;">
+  <%= t("sell_to_us.mailer.#{@event}.body", item: @offer.item_name, amount: format_price(@offer.offered_price_cents)) %>
+</p>
+<p style="margin:0 0 20px;line-height:1.6;">
+  <%= t("sell_to_us.mailer.footer") %>
+</p>
+<p style="margin:0;">
+  <a href="<%= @url %>" style="display:inline-block;background:#0f766e;color:#fff;padding:10px 18px;border-radius:999px;text-decoration:none;font-weight:600;">
+    <%= t("sell_to_us.mailer.cta") %>
+  </a>
+</p>

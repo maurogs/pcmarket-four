@@ -1,3 +1,271 @@
-<%= render "shared/placeholder_page", title: t("pages.pc_finder.title"),
-           body: t("pages.pc_finder.body"), cta_path: listings_path,
-           cta_label: t("pages.coming_soon.listings_cta") %>
+<% content_for :title, t("pc_finder.meta.title") %>
+
+<section class="border-b border-slate-200 bg-gradient-to-b from-brand-50 via-white to-white dark:border-zinc-800 dark:from-brand-950/40 dark:via-zinc-950 dark:to-zinc-950">
+  <div class="page-container py-12 sm:py-16">
+    <div class="mx-auto max-w-3xl text-center">
+      <span class="<%= ui_badge_classes(tone: :brand) %>">
+        <%= icon "sparkles", class: "size-3.5" %>
+        <%= t("pc_finder.quiz.eyebrow") %>
+      </span>
+      <h1 class="section-heading mt-4"><%= t("pc_finder.quiz.title") %></h1>
+      <p class="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base dark:text-zinc-400">
+        <%= t("pc_finder.quiz.body") %>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="page-container -mt-6 sm:-mt-9" aria-labelledby="pc-finder-quiz-title">
+  <div class="mx-auto max-w-3xl">
+    <h2 id="pc-finder-quiz-title" class="sr-only"><%= t("pc_finder.quiz.title") %></h2>
+
+    <%= form_with url: pc_finder_results_path, method: :get, class: "surface p-5 sm:p-8",
+                  data: { controller: "pc-finder",
+                          pc_finder_storage_key_value: "pcmarket-pc-finder" },
+                  html: { novalidate: true } do %>
+      <div class="mb-6">
+        <div class="flex items-center justify-between gap-4 text-xs font-medium text-slate-500 dark:text-zinc-400">
+          <span data-pc-finder-target="counter"
+                data-template="<%= t("pc_finder.quiz.step_counter", current: "%{current}", total: "%{total}") %>">
+            <%= t("pc_finder.quiz.step_counter", current: 1, total: 5) %>
+          </span>
+          <span data-pc-finder-target="progressLabel">20%</span>
+        </div>
+        <div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-zinc-800">
+          <div class="h-full rounded-full bg-brand-600 transition-all duration-300 dark:bg-brand-500"
+               style="width: 20%" data-pc-finder-target="progressBar"></div>
+        </div>
+      </div>
+
+      <fieldset data-pc-finder-target="step" data-step="1" class="space-y-4">
+        <legend class="font-heading text-lg font-semibold text-slate-950 dark:text-white">
+          <%= t("pc_finder.quiz.games.title") %>
+        </legend>
+        <p class="text-sm text-slate-600 dark:text-zinc-400"><%= t("pc_finder.quiz.games.hint") %></p>
+        <p class="hidden text-xs font-medium text-rose-600 dark:text-rose-400" data-pc-finder-limit>
+          <%= t("pc_finder.quiz.games.limit") %>
+        </p>
+        <div class="grid gap-2 sm:grid-cols-2">
+          <% @games.each do |game| %>
+            <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-3 text-sm transition has-checked:border-brand-500 has-checked:bg-brand-50 hover:border-brand-300 dark:border-zinc-700 dark:has-checked:border-brand-500 dark:has-checked:bg-brand-950/40 dark:hover:border-brand-600">
+              <%= check_box_tag "games[]", game.slug, Array(params[:games]).include?(game.slug),
+                                id: "game_#{game.slug}",
+                                class: "size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500",
+                                data: { action: "change->pc-finder#limitGames", "pc-finder-game": "true" } %>
+              <span class="font-medium text-slate-800 dark:text-zinc-100"><%= game.name %></span>
+            </label>
+          <% end %>
+        </div>
+      </fieldset>
+
+      <fieldset data-pc-finder-target="step" data-step="2" class="space-y-4">
+        <legend class="font-heading text-lg font-semibold text-slate-950 dark:text-white">
+          <%= t("pc_finder.quiz.resolution.title") %>
+        </legend>
+        <p class="text-sm text-slate-600 dark:text-zinc-400"><%= t("pc_finder.quiz.resolution.hint") %></p>
+        <div class="grid gap-2 sm:grid-cols-3">
+          <% @resolutions.each do |key, data| %>
+            <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-3 text-sm transition has-checked:border-brand-500 has-checked:bg-brand-50 hover:border-brand-300 dark:border-zinc-700 dark:has-checked:border-brand-500 dark:has-checked:bg-brand-950/40 dark:hover:border-brand-600">
+              <%= radio_button_tag "resolution", key, params[:resolution].blank? ? key == "1440p" : params[:resolution] == key,
+                                   id: "resolution_#{key}",
+                                   class: "size-4 border-slate-300 text-brand-700 focus:ring-brand-500" %>
+              <span class="font-medium text-slate-800 dark:text-zinc-100"><%= t("pc_finder.quiz.resolution.#{key}") %></span>
+            </label>
+          <% end %>
+        </div>
+      </fieldset>
+
+      <fieldset data-pc-finder-target="step" data-step="3" class="space-y-4">
+        <legend class="font-heading text-lg font-semibold text-slate-950 dark:text-white">
+          <%= t("pc_finder.quiz.fps.title") %>
+        </legend>
+        <p class="text-sm text-slate-600 dark:text-zinc-400"><%= t("pc_finder.quiz.fps.hint") %></p>
+        <div class="grid gap-2 sm:grid-cols-3">
+          <% @fps_targets.each do |target| %>
+            <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-3 text-sm transition has-checked:border-brand-500 has-checked:bg-brand-50 hover:border-brand-300 dark:border-zinc-700 dark:has-checked:border-brand-500 dark:has-checked:bg-brand-950/40 dark:hover:border-brand-600">
+              <%= radio_button_tag "fps", target, params[:fps].blank? ? target == 144 : params[:fps].to_i == target,
+                                   id: "fps_#{target}",
+                                   class: "size-4 border-slate-300 text-brand-700 focus:ring-brand-500" %>
+              <span class="font-medium text-slate-800 dark:text-zinc-100"><%= t("pc_finder.quiz.fps.target", fps: target) %></span>
+            </label>
+          <% end %>
+        </div>
+      </fieldset>
+
+      <fieldset data-pc-finder-target="step" data-step="4" class="space-y-4">
+        <legend class="font-heading text-lg font-semibold text-slate-950 dark:text-white">
+          <%= t("pc_finder.quiz.budget.title") %>
+        </legend>
+        <p class="text-sm text-slate-600 dark:text-zinc-400"><%= t("pc_finder.quiz.budget.hint") %></p>
+        <div class="grid gap-2 sm:grid-cols-2">
+          <% @budgets.each_key do |key| %>
+            <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-3 text-sm transition has-checked:border-brand-500 has-checked:bg-brand-50 hover:border-brand-300 dark:border-zinc-700 dark:has-checked:border-brand-500 dark:has-checked:bg-brand-950/40 dark:hover:border-brand-600">
+              <%= radio_button_tag "budget", key, params[:budget] == key, id: "budget_#{key}",
+                                   class: "size-4 border-slate-300 text-brand-700 focus:ring-brand-500" %>
+              <span class="font-medium text-slate-800 dark:text-zinc-100"><%= t("pc_finder.quiz.budget.#{key}") %></span>
+            </label>
+          <% end %>
+        </div>
+      </fieldset>
+
+      <fieldset data-pc-finder-target="step" data-step="5" class="space-y-5">
+        <legend class="font-heading text-lg font-semibold text-slate-950 dark:text-white">
+          <%= t("pc_finder.quiz.preferences.title") %>
+        </legend>
+        <p class="text-sm text-slate-600 dark:text-zinc-400"><%= t("pc_finder.quiz.preferences.hint") %></p>
+
+        <div>
+          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400"><%= t("pc_finder.quiz.preferences.case_colour") %></p>
+          <div class="flex flex-wrap gap-2">
+            <% %w[any black white].each do |value| %>
+              <%= label_tag "case_#{value}", class: "cursor-pointer" do %>
+                <%= radio_button_tag "case", value, params[:case].blank? ? value == "any" : params[:case] == value,
+                                     id: "case_#{value}", class: "peer sr-only" %>
+                <span class="<%= ui_chip_classes %> peer-checked:border-brand-600 peer-checked:bg-brand-700 peer-checked:text-white">
+                  <%= t("pc_finder.quiz.preferences.colours.#{value}") %>
+                </span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+
+        <div>
+          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400"><%= t("pc_finder.quiz.preferences.cooling") %></p>
+          <div class="flex flex-wrap gap-2">
+            <% %w[any air aio].each do |value| %>
+              <%= label_tag "cooling_#{value}", class: "cursor-pointer" do %>
+                <%= radio_button_tag "cooling", value, params[:cooling].blank? ? value == "any" : params[:cooling] == value,
+                                     id: "cooling_#{value}", class: "peer sr-only" %>
+                <span class="<%= ui_chip_classes %> peer-checked:border-brand-600 peer-checked:bg-brand-700 peer-checked:text-white">
+                  <%= t("pc_finder.quiz.preferences.cooling_options.#{value}") %>
+                </span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+
+        <div>
+          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400"><%= t("pc_finder.quiz.preferences.vibe") %></p>
+          <div class="flex flex-wrap gap-2">
+            <% PcFinder::Landing::VIBES.each do |tag| %>
+              <%= label_tag "vibe_#{tag}", class: "cursor-pointer" do %>
+                <%= check_box_tag "vibe[]", tag, Array(params[:vibe]).include?(tag), id: "vibe_#{tag}",
+                                  class: "peer sr-only" %>
+                <span class="<%= ui_chip_classes %> peer-checked:border-brand-600 peer-checked:bg-brand-700 peer-checked:text-white">
+                  <%= t("listings.tags.#{tag}") %>
+                </span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-5 dark:border-zinc-800">
+        <button type="button" data-action="pc-finder#back" data-pc-finder-target="back"
+                class="<%= ui_button_classes(variant: :ghost, size: :md) %>">
+          <%= icon "chevron-left", class: "size-4" %>
+          <span><%= t("pc_finder.quiz.back") %></span>
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" data-action="pc-finder#next" data-pc-finder-target="next"
+                  class="<%= ui_button_classes(variant: :primary, size: :md) %>">
+            <span><%= t("pc_finder.quiz.next") %></span>
+            <%= icon "chevron-right", class: "size-4" %>
+          </button>
+          <%= submit_tag t("pc_finder.quiz.see_results"),
+                         data: { pc_finder_target: "submit" },
+                         class: ui_button_classes(variant: :primary, size: :lg) %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<% if @landing[:vibes].any? %>
+  <section class="page-container py-14" aria-labelledby="pc-finder-vibes-title">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h2 id="pc-finder-vibes-title" class="section-heading"><%= t("pc_finder.landing.vibes_title") %></h2>
+        <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("pc_finder.landing.vibes_body") %></p>
+      </div>
+      <%= link_to t("pc_finder.landing.view_all"), listings_path, class: ui_button_classes(variant: :outline, size: :sm) %>
+    </div>
+    <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <% @landing[:vibes].each do |tile| %>
+        <%= link_to listings_path(tags: [ tile[:tag] ]), class: "group relative overflow-hidden rounded-xl border border-slate-200 dark:border-zinc-800" do %>
+          <div class="aspect-[5/3] overflow-hidden bg-slate-100 dark:bg-zinc-800">
+            <% if tile[:listing].images.attached? %>
+              <%= image_tag tile[:listing].ordered_images.first.variant(resize_to_limit: [ 520, 320 ], format: :webp),
+                            alt: "", loading: "lazy", class: "h-full w-full object-cover transition duration-300 group-hover:scale-105" %>
+            <% else %>
+              <%= image_tag "listing-placeholder.svg", alt: "", loading: "lazy", class: "h-full w-full object-cover" %>
+            <% end %>
+          </div>
+          <div class="absolute inset-0 flex items-end bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-transparent p-4">
+            <span class="font-heading text-base font-semibold text-white">#<%= t("listings.tags.#{tile[:tag]}") %></span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<% if @landing[:under_1000].any? %>
+  <section class="border-y border-slate-200 bg-white py-14 dark:border-zinc-800 dark:bg-zinc-900/30" aria-labelledby="pc-finder-under-title">
+    <div class="page-container">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 id="pc-finder-under-title" class="section-heading"><%= t("pc_finder.landing.under_1000_title") %></h2>
+          <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("pc_finder.landing.under_1000_body") %></p>
+        </div>
+        <%= link_to t("pc_finder.landing.browse_under", price: format_price(100_000)),
+                    listings_path(max_price: 1000), class: ui_button_classes(variant: :outline, size: :sm) %>
+      </div>
+      <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <% @landing[:under_1000].each_with_index do |listing, index| %>
+          <%= link_to listing_path(listing),
+                      class: "group relative overflow-hidden rounded-xl border border-slate-200 dark:border-zinc-800 #{index.even? ? 'sm:row-span-2' : ''}" do %>
+            <div class="<%= index.even? ? 'aspect-[3/4]' : 'aspect-[4/3]' %> overflow-hidden bg-slate-100 dark:bg-zinc-800">
+              <% if listing.images.attached? %>
+                <%= image_tag listing.ordered_images.first.variant(resize_to_limit: [ 520, 680 ], format: :webp),
+                              alt: t("listings.card.image_alt", title: listing.title), loading: "lazy",
+                              class: "h-full w-full object-cover transition duration-300 group-hover:scale-105" %>
+              <% else %>
+                <%= image_tag "listing-placeholder.svg", alt: "", loading: "lazy", class: "h-full w-full object-cover" %>
+              <% end %>
+            </div>
+            <div class="absolute inset-x-2 bottom-2 flex items-center justify-between gap-2 rounded-lg bg-white/95 px-3 py-2 shadow-sm backdrop-blur dark:bg-zinc-900/95">
+              <span class="truncate text-xs font-medium text-slate-800 dark:text-zinc-100"><%= listing.title %></span>
+              <span class="<%= ui_badge_classes(tone: :brand, extra: "shrink-0 !px-2 !py-0.5") %>"><%= format_price(listing.price_cents) %></span>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </section>
+<% end %>
+
+<% if @landing[:games].any? %>
+  <section class="page-container py-14" aria-labelledby="pc-finder-games-title">
+    <div>
+      <h2 id="pc-finder-games-title" class="section-heading"><%= t("pc_finder.landing.games_title") %></h2>
+      <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("pc_finder.landing.games_body") %></p>
+    </div>
+    <div class="mt-6 grid gap-3 sm:grid-cols-3">
+      <% @landing[:games].each do |tile| %>
+        <%= link_to pc_finder_results_path(games: [ tile[:game].slug ]),
+                    class: "surface group flex items-center gap-4 p-4 transition hover:border-brand-300 dark:hover:border-brand-700" do %>
+          <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
+            <%= icon "gamepad-2", class: "size-6" %>
+          </span>
+          <span class="min-w-0">
+            <span class="block text-sm font-semibold text-slate-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-300">
+              <%= t("pc_finder.landing.best_for", game: tile[:game].name) %>
+            </span>
+            <span class="mt-0.5 block text-xs text-slate-500 dark:text-zinc-400"><%= t("pc_finder.landing.best_for_hint") %></span>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+<% end %>

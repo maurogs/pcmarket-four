@@ -168,10 +168,11 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Project Context</h1>
     <p class="lede">Architecture, decisions and code map</p>
-    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-22 00:22</p>
+    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-22 00:37</p>
   </header>
   <main><section class="card status">
 <h2><span>Status</span><span class="badge badge-success">Complete</span></h2>
+<p>Phase 7B complete: the PC Finder quiz and recommendation results, the public &quot;How selling works&quot; page and the feature-flagged Sell to PCMarket trade-in flow with buyback prices, IBAN-encrypted payouts and admin operations.</p>
 <p>Phase 7A complete: per-country legal texts (ES, FR, GB, DE, IT, PT), a public trust and safety page, an about page and a searchable help centre with article feedback. Company identity settings feed legal placeholders. Phase 6C admin catalogue, settings, countries, content, marketing and audit screens replace all remaining admin placeholders and remain intact. Phase 6B admin operations for orders, payments, disputes, reports and review moderation remain intact. Phase 6A admin foundation (dashboard, listing moderation, users, stores, audit log and impersonation) is unchanged. Phase 5 internal chat with conversations, unread counters and real-time messages, offers with accepted-offer cart pricing, blocks and message safety warnings; follower notifications, instant and daily saved-search alerts and favourite price-drop alerts are intact. Phase 4B order lifecycle (paid, shipped, delivered, completed, cancelled, disputed, refunded), seller fulfilment screens, buyer delivery confirmation/disputes/reviews, order notifications with email fan-out and real-time badge updates remain intact. Discovery (Phase 2B), listing creation (Phase 3A) and checkout/payments (Phase 4A) are unchanged.</p>
 <p>Admin catalogue and content mutations are administrator-only; moderators keep read access.</p>
 </section>
@@ -191,6 +192,7 @@ footer {
 <tr><td>6B</td><td>Admin orders, payments, disputes, reports and reviews</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>6C</td><td>Admin catalogue, settings, countries, content, marketing and audit</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>7A</td><td>Legal texts, trust, about and help centre</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>7B</td><td>PC Finder, selling page and Sell to PCMarket</td><td><span class="badge badge-success">Complete</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -422,6 +424,20 @@ footer {
 <li><code>HelpArticleFeedback</code> (article, helpful, session id) has a unique article/session index. <code>HelpArticleFeedbacksController</code> records or updates one vote per browser session; the admin article list shows yes/no counts.</li>
 <li>Sitemap entries include help articles and legal pages; help URLs are added to the cache key. Footer seller-academy and help links point to real articles.</li>
 </ul>
+<h3>PC Finder, selling page and Sell to PCMarket (Phase 7B)</h3>
+<ul>
+<li><code>resource :pc_finder</code> serves <code>GET /:locale/pc-finder</code>; the nested <code>resource :results</code> maps the answer query string to <code>PcFinder::ResultsController#index</code>, so both screens stay RESTful.</li>
+<li><code>PcFinder::Recommender</code> accepts <code>games[]</code>, <code>resolution</code>, <code>fps</code>, <code>budget</code>, <code>case</code>, <code>cooling</code>, <code>vibe[]</code> and <code>sort</code>. SQL preselects at most 500 visible gaming PCs and workstations within the budget ordered by <code>performance_score DESC NULLS LAST</code>; colour, cooling, tag and game scoring run in memory.</li>
+<li>Scoring uses explicit <code>listings.game_fps[game][resolution]</code> data when present and otherwise a GPU tier table (<code>RTX 5090</code> 100 down to <code>RX 6600</code> 35) with per-resolution multipliers (1080p 1.0, 1440p 0.75, 4K 0.5) and per-game weights (esports 1.6, AAA 0.8). Performance is the average FPS target fit; value normalises performance per euro; final score is 70% performance and 30% value. Fit badges are great (≥90), good (≥70) and stretch.</li>
+<li>Results are paginated at 12, cached for ten minutes per answer digest plus <code>Listing.maximum(:updated_at)</code>, support best-match and price sorting, show an estimated-FPS bar per selected game, and are <code>noindex,follow</code>.</li>
+<li>The quiz is a plain multi-step GET form and stays usable without JavaScript. Stimulus <code>pc_finder_controller</code> reveals one step at a time, drives the progress bar, caps game choices at three and remembers answers in sessionStorage. The quiz page is indexable and includes vibe tiles, PCs under €1,000 and best-PC tiles for the first three active games.</li>
+<li><code>PagesController#sell</code> loads verified stores with sales, recently sold listings and selling help articles. The page has a hero CTA, three steps, commission-aware seller perks (reads <code>commissions_enabled</code> and <code>commission_percent</code>), store strip, academy links, six-question accordion with <code>FAQPage</code> JSON-LD, recently sold row and final CTA band.</li>
+<li>Sell to PCMarket is gated by <code>Setting sell_to_us_enabled</code>. Non-staff get 404 while it is off; staff see a preview banner. Routes are <code>resources :sell_offers</code> under <code>/sell-to-us</code>, nested <code>acceptance</code> and <code>decline</code> resources, and a singular quote resource served by <code>SellOffers::QuotesController</code> through a Turbo Frame.</li>
+<li><code>BuybackPrice</code> stores <code>item_kind</code> (gpu/cpu), <code>item_model</code>, base price in cents, per-condition multipliers, active flag and position. <code>Buyback::Quote</code> applies the multiplier and a 5% original-box bonus. Seeds provide 15 GPUs and 10 CPUs with plausible EUR prices.</li>
+<li>Creating a quote produces a <code>SellOffer</code> in <code>offered</code> status with a seven-day <code>offer_expires_at</code>. Users accept with an IBAN (mod-97 checksum through <code>IbanValidator</code>) and account holder, or decline. <code>payout_iban</code> uses Active Record encryption; <code>SellOfferNotifier</code> writes a notification and enqueues a locale-aware <code>SellOfferMailer</code> email for offered, accepted, declined, received, paid, rejected and expired events.</li>
+<li><code>SellOfferExpiryJob</code> runs daily in every environment and expires unanswered offers. Admin <code>SellOffersController</code> lists and shows offers and moves them to received, paid or rejected with notes, all audited. Admin <code>BuybackPricesController</code> provides CRUD for the trade-in catalogue.</li>
+<li>New schema: <code>buyback_prices</code>, and <code>sell_offers</code> gains <code>buyback_price_id</code>, offer/acceptance/receipt/payment timestamps, <code>original_box</code>, <code>accessories</code>, encrypted <code>payout_iban</code>, <code>payout_account_name</code> and <code>admin_notes</code>.</li>
+</ul>
 <h3>Performance guardrails</h3>
 <ul>
 <li><code>ListingSearch::INCLUDES</code> preloads store, category, region, user and image attachments/blobs. Cards never call <code>category.root</code> or <code>user.store</code>; root slugs come from a cached <code>Category.root_slug_map</code> and seller names prefer the preloaded store.</li>
@@ -563,6 +579,28 @@ app/models/{feature_request,help_article}.rb
 app/models/help_article_feedback.rb                article helpfulness votes
 app/services/trust_stats.rb                        cached trust page aggregates
 app/views/pages/{trust,about}.html.erb             public trust and about pages
+app/controllers/pc_finder_controller.rb             PC Finder quiz and landing
+app/controllers/pc_finder/results_controller.rb     scored, paginated results
+app/services/pc_finder/{recommender,landing}.rb     scoring engine and landing data
+app/views/pc_finder/                                quiz, results, vibe and game tiles
+app/javascript/controllers/pc_finder_controller.js  steps, progress, sessionStorage
+app/controllers/sell_offers_controller.rb           Sell to PCMarket landing/quote/show
+app/controllers/sell_offers/                        quote, acceptance and decline
+app/services/buyback/quote.rb                       condition and box pricing
+app/services/sell_offer_notifier.rb                 offer notifications + email
+app/models/buyback_price.rb                         GPU/CPU trade-in catalogue
+app/models/sell_offer.rb                            offer lifecycle and encrypted IBAN
+app/validators/iban_validator.rb                    mod-97 IBAN checksum
+app/mailers/sell_offer_mailer.rb                    locale-aware status emails
+app/jobs/sell_offer_expiry_job.rb                   daily offer expiry
+app/controllers/admin/{sell_offers,buyback_prices}_controller.rb
+app/views/admin/{sell_offers,buyback_prices}/
+app/views/pages/sell.html.erb                       how selling works + FAQ JSON-LD
+app/views/sell_offers/                              landing, quote form and offer detail
+db/seeds/buyback_prices.rb                          15 GPUs and 10 CPUs
+test/services/pc_finder/recommender_test.rb
+test/services/buyback/quote_test.rb
+test/integration/{pc_finder,sell_page,sell_to_us}_test.rb
 app/views/help_articles/                           help index, article and feedback
 db/seeds/legal/*.rb                                country legal copy
 db/seeds/help_articles.rb                          18 help articles
@@ -704,6 +742,8 @@ test/seeds_test.rb
 <li>API endpoints (ListingSearch is already API-ready).</li>
 <li>No typing indicator in conversations (explicitly out of scope).</li>
 <li>Message safety detection is heuristic; moderation review is still manual.</li>
+<li>Sell to PCMarket labels are informational: no carrier API issues prepaid labels yet, and payouts are recorded manually by administrators.</li>
+<li>PC Finder estimated FPS is a tier fallback when a listing has no <code>game_fps</code> data; the table needs periodic updates as new GPUs launch.</li>
 </ul>
 </section>
 </main>

@@ -72,3 +72,34 @@ class ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
   include ActionMailer::TestHelper
 end
+
+module PcFinderTestHelper
+  def create_gaming_pc(gpu:, price_cents:, game_fps: {}, tags: [], specs: {}, title: nil, status: :published)
+    category = Category.find_or_create_by!(slug: "gaming-pcs") do |record|
+      record.names = { "es" => "PC gaming", "en" => "Gaming PCs" }
+      record.position = 99
+      record.active = true
+    end
+
+    Listing.create!(
+      user: users(:seller),
+      store: users(:seller).store,
+      category: category,
+      title: title || "Gaming PC with #{gpu} ready for testing",
+      description: "A complete gaming desktop in good condition with a #{gpu} graphics card.",
+      price_cents: price_cents,
+      condition: :used_good,
+      status: status,
+      published_at: Time.current,
+      quantity: 1,
+      country_code: "ES",
+      specs: specs.merge("gpu_model" => gpu),
+      game_fps: game_fps,
+      tags: tags
+    )
+  end
+end
+
+class ActiveSupport::TestCase
+  include PcFinderTestHelper
+end

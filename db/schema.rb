@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_22_230000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_22_231200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -98,6 +98,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_230000) do
     t.index ["blocked_id"], name: "index_blocks_on_blocked_id"
     t.index ["blocker_id", "blocked_id"], name: "index_blocks_on_blocker_id_and_blocked_id", unique: true
     t.index ["blocker_id"], name: "index_blocks_on_blocker_id"
+  end
+
+  create_table "buyback_prices", force: :cascade do |t|
+    t.integer "item_kind", default: 0, null: false
+    t.string "item_model", null: false
+    t.integer "base_price_cents", default: 0, null: false
+    t.jsonb "condition_multipliers", default: {}, null: false
+    t.boolean "active", default: true, null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active", "item_kind", "position"], name: "index_buyback_prices_on_active_and_item_kind_and_position"
+    t.index ["item_kind", "item_model"], name: "index_buyback_prices_on_item_kind_and_item_model", unique: true
   end
 
   create_table "cart_items", force: :cascade do |t|
@@ -585,7 +598,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_230000) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "buyback_price_id"
+    t.datetime "offer_expires_at"
+    t.datetime "accepted_at"
+    t.datetime "declined_at"
+    t.datetime "received_at"
+    t.datetime "paid_at"
+    t.datetime "rejected_at"
+    t.boolean "original_box", default: false, null: false
+    t.string "accessories"
+    t.text "payout_iban"
+    t.string "payout_account_name"
+    t.text "admin_notes"
+    t.index ["buyback_price_id"], name: "index_sell_offers_on_buyback_price_id"
     t.index ["item_kind"], name: "index_sell_offers_on_item_kind"
+    t.index ["offer_expires_at"], name: "index_sell_offers_on_offer_expires_at"
     t.index ["status"], name: "index_sell_offers_on_status"
     t.index ["user_id"], name: "index_sell_offers_on_user_id"
   end
@@ -738,6 +765,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_230000) do
   add_foreign_key "reviews", "users", column: "reviewer_id"
   add_foreign_key "saved_searches", "categories"
   add_foreign_key "saved_searches", "users"
+  add_foreign_key "sell_offers", "buyback_prices"
   add_foreign_key "sell_offers", "users"
   add_foreign_key "stores", "regions"
   add_foreign_key "stores", "users"

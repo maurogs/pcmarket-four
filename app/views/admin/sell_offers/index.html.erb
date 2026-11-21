@@ -1,0 +1,55 @@
+<div class="mx-auto max-w-6xl">
+  <%= render "admin/shared/page_header", title: t("admin.sell_offers.title"),
+             subtitle: t("admin.sell_offers.subtitle"), eyebrow: t("admin.nav.sections.marketplace") %>
+
+  <div class="mt-5 flex flex-wrap gap-1.5">
+    <%= link_to t("admin.sell_offers.all"), admin_sell_offers_path, class: ui_chip_classes(active: params[:status].blank?) %>
+    <% SellOffer.statuses.each_key do |status| %>
+      <%= link_to t("sell_to_us.statuses.#{status}"), admin_sell_offers_path(status: status),
+                  class: ui_chip_classes(active: params[:status] == status) %>
+    <% end %>
+  </div>
+
+  <div class="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-50 text-left text-[11px] uppercase tracking-wide text-slate-500 dark:bg-zinc-800/50 dark:text-zinc-400">
+        <tr>
+          <th class="px-4 py-3 font-semibold"><%= t("admin.sell_offers.columns.item") %></th>
+          <th class="px-4 py-3 font-semibold"><%= t("admin.sell_offers.columns.user") %></th>
+          <th class="px-4 py-3 font-semibold"><%= t("admin.sell_offers.columns.status") %></th>
+          <th class="px-4 py-3 text-right font-semibold"><%= t("admin.sell_offers.columns.price") %></th>
+          <th class="px-4 py-3 font-semibold"><%= t("admin.sell_offers.columns.created") %></th>
+          <th class="px-4 py-3"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+        <% @offers.each do |offer| %>
+          <tr>
+            <td class="px-4 py-3">
+              <p class="font-medium text-slate-900 dark:text-white"><%= offer.item_name %></p>
+              <p class="text-xs text-slate-500 dark:text-zinc-400"><%= t("sell_to_us.kinds.#{offer.item_kind}") %></p>
+            </td>
+            <td class="px-4 py-3 text-slate-700 dark:text-zinc-300">
+              <p><%= offer.user.username %></p>
+              <p class="text-xs text-slate-500 dark:text-zinc-400"><%= offer.user.email %></p>
+            </td>
+            <td class="px-4 py-3">
+              <span class="<%= ui_badge_classes(tone: offer.status.in?(%w[paid received accepted]) ? :success : (offer.status.in?(%w[rejected declined expired]) ? :danger : :brand), extra: '!px-2 !py-0.5') %>">
+                <%= t("sell_to_us.statuses.#{offer.status}") %>
+              </span>
+            </td>
+            <td class="px-4 py-3 text-right font-medium text-slate-900 dark:text-white"><%= format_price(offer.offered_price_cents) %></td>
+            <td class="px-4 py-3 text-xs text-slate-500 dark:text-zinc-400"><%= l(offer.created_at, format: :short) %></td>
+            <td class="px-4 py-3 text-right">
+              <%= link_to t("admin.actions.view"), admin_sell_offer_path(offer), class: ui_button_classes(variant: :ghost, size: :sm) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% if @offers.empty? %>
+      <%= render "admin/shared/empty_state", title: t("admin.sell_offers.empty_title"), body: t("admin.sell_offers.empty_body") %>
+    <% end %>
+  </div>
+  <div class="mt-6"><%= render "admin/shared/pagination", pagy: @pagy %></div>
+</div>

@@ -95,9 +95,16 @@ Rails.application.routes.draw do
       resources :feature_requests, only: %i[new create]
     end
 
-    get "pc-finder" => "pc_finder#show", as: :pc_finder
+    resource :pc_finder, only: :show, controller: "pc_finder", path: "pc-finder" do
+      resources :results, only: :index, module: :pc_finder
+    end
     get "sell" => "pages#sell", as: :sell
-    get "sell-to-us" => "sell_offers#new", as: :sell_to_us
+    resource :sell_offer_quote, only: :show, controller: "sell_offers/quotes", path: "sell-to-us/quote"
+    resources :sell_offers, path: "sell-to-us", only: %i[index new create show] do
+      resource :acceptance, only: :create, module: :sell_offers
+      resource :decline, only: :create, module: :sell_offers
+    end
+    get "sell-to-us" => "sell_offers#index", as: :sell_to_us
 
     resources :newsletter_subscribers, only: :create
     get "newsletter/confirm/:token" => "newsletter_subscribers#confirm",
@@ -187,6 +194,9 @@ Rails.application.routes.draw do
       resources :feature_requests, only: %i[index show] do
         resource :approval, only: :create, controller: "feature_request_approvals"
       end
+
+      resources :sell_offers, only: %i[index show update]
+      resources :buyback_prices, except: :show
 
       resources :audit_logs, only: %i[index show]
       resources :placeholders, only: :show, param: :section
