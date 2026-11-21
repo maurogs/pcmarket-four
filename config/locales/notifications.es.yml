@@ -22,4 +22,6 @@ es:
       order_dispute_resolved: "La disputa del pedido %{number} se ha resuelto."
       order_refunded: "El pedido %{number} se ha reembolsado."
       order_late_shipment: "El pedido %{number} espera envío."
+      listing_approved: "Tu anuncio «%{title}» ha sido aprobado y publicado."
+      listing_rejected: "Tu anuncio «%{title}» ha sido rechazado: %{reason}"
       default: "Tienes una notificación nueva."

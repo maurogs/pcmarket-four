@@ -1,0 +1,54 @@
+<% filter_fields = [
+  { name: "q", type: :search, value: params[:q], placeholder: t("admin.users.filters.search_placeholder"), width: "min-w-56 flex-[2]" },
+  { name: "role", type: :select, value: params[:role],
+    options: User.roles.keys.map { |role| [ t("admin.roles.#{role}"), role ] },
+    include_blank: t("admin.users.filters.any_role"), label: t("admin.users.filters.role"), width: "min-w-36" },
+  { name: "status", type: :select, value: params[:status],
+    options: User.statuses.keys.map { |status| [ t("admin.user_statuses.#{status}"), status ] },
+    include_blank: t("admin.users.filters.any_status"), label: t("admin.users.filters.status"), width: "min-w-36" },
+  { name: "confirmed", type: :select, value: params[:confirmed],
+    options: [[ t("admin.common.yes"), "yes" ], [ t("admin.common.no"), "no" ]],
+    include_blank: t("admin.users.filters.any_confirmation"), label: t("admin.users.filters.confirmed"), width: "min-w-32" },
+  { name: "has_store", type: :select, value: params[:has_store],
+    options: [[ t("admin.common.yes"), "yes" ], [ t("admin.common.no"), "no" ]],
+    include_blank: t("admin.users.filters.any_store"), label: t("admin.users.filters.store"), width: "min-w-32" },
+  { name: "country", type: :select, value: params[:country],
+    options: Country.enabled.order(:code).map { |country| [ country.name, country.code ] },
+    include_blank: t("admin.users.filters.any_country"), label: t("admin.users.filters.country"), width: "min-w-32" },
+  { name: "signed_up_from", type: :date, value: params[:signed_up_from], label: t("admin.users.filters.signed_up_from"), width: "w-40" },
+  { name: "signed_up_to", type: :date, value: params[:signed_up_to], label: t("admin.users.filters.signed_up_to"), width: "w-40" }
+] %>
+
+<div class="mx-auto max-w-[90rem]">
+  <%= render "admin/shared/page_header", title: t("admin.users.title"),
+             subtitle: t("admin.users.subtitle"), eyebrow: t("admin.nav.sections.marketplace") %>
+
+  <div class="mt-5">
+    <%= render "admin/shared/filter_bar", url: admin_users_path, fields: filter_fields %>
+  </div>
+
+  <%= form_with url: admin_user_exports_path, method: :post, class: "mb-3 flex justify-end" do %>
+    <% %w[q role status confirmed has_store country signed_up_from signed_up_to].each do |key| %>
+      <%= hidden_field_tag key, params[key], id: nil if params[key].present? %>
+    <% end %>
+    <%= button_tag type: "submit", class: ui_button_classes(variant: :outline, size: :sm) do %>
+      <%= icon "arrow-up-right", class: "size-3.5" %><%= t("admin.users.export") %>
+    <% end %>
+  <% end %>
+
+  <%= render "admin/shared/data_table", records: @users, columns: [
+               { label: t("admin.users.columns.user"), sort_key: "username" },
+               { label: t("admin.users.columns.role"), sort_key: "role" },
+               { label: t("admin.users.columns.status"), sort_key: "status" },
+               { label: t("admin.users.columns.store") },
+               { label: t("admin.users.columns.sign_ins"), sort_key: "sign_in_count", align: :right },
+               { label: t("admin.users.columns.last_sign_in"), sort_key: "last_sign_in_at" },
+               { label: t("admin.users.columns.created"), sort_key: "created_at" },
+               { label: "", class: "w-10" }
+             ],
+             row_partial: "admin/users/row",
+             sort: @query.sort, direction: @query.direction,
+             empty_title: t("admin.users.empty_title"), empty_body: t("admin.users.empty_body") %>
+
+  <%= render "admin/shared/pagination", pagy: @pagy %>
+</div>

@@ -22,4 +22,6 @@ it:
       order_dispute_resolved: "La contestazione dell'ordine %{number} è stata risolta."
       order_refunded: "L'ordine %{number} è stato rimborsato."
       order_late_shipment: "L'ordine %{number} attende la spedizione."
+      listing_approved: "Il tuo annuncio «%{title}» è stato approvato e pubblicato."
+      listing_rejected: "Il tuo annuncio «%{title}» è stato rifiutato: %{reason}"
       default: "Hai una nuova notifica."

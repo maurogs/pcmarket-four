@@ -1,0 +1,35 @@
+<nav class="flex-1 space-y-5 overflow-y-auto px-2 pb-6" aria-label="<%= t("admin.nav.label") %>">
+  <% admin_nav_sections(pending_moderation_count).each_with_index do |section, index| %>
+    <div>
+      <% if section[:title].present? %>
+        <p class="px-2.5 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-zinc-500"
+           data-admin-sidebar-target="title">
+          <%= t(section[:title]) %>
+        </p>
+      <% elsif index.positive? %>
+        <hr class="mx-2.5 mb-2 border-slate-200 dark:border-zinc-800">
+      <% end %>
+
+      <ul class="space-y-0.5">
+        <% section[:items].each do |item| %>
+          <% active = admin_nav_active?(item[:key]) %>
+          <li>
+            <%= link_to item[:path],
+                        title: t(item[:label]),
+                        aria: { current: active ? "page" : nil },
+                        class: "group flex min-h-9 items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium transition #{active ? 'bg-brand-700 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white'}" do %>
+              <%= icon item[:icon], class: "size-4 shrink-0" %>
+              <span class="truncate" data-admin-sidebar-target="label"><%= t(item[:label]) %></span>
+              <% if item[:badge_count].to_i.positive? %>
+                <span class="ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-semibold <%= active ? 'bg-white/20 text-white' : 'bg-accent-100 text-accent-700 dark:bg-accent-500/20 dark:text-accent-300' %>"
+                      data-admin-sidebar-target="label">
+                  <%= item[:badge_count] %>
+                </span>
+              <% end %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</nav>

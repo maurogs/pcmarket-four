@@ -1,0 +1,64 @@
+<div class="mx-auto max-w-3xl space-y-5">
+  <%= render "admin/shared/page_header", title: t("admin.users.edit.title"),
+             subtitle: t("admin.users.edit.subtitle", name: @user.display_name),
+             back_path: admin_user_path(@user), back_label: t("admin.actions.back_to_user") %>
+
+  <% if @user.errors.any? %>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
+      <ul class="list-inside list-disc"><% @user.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "space-y-4" do |form| %>
+    <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.users.form.account") %></h2>
+      <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div>
+          <%= form.label :username, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.text_field :username, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :email, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.email_field :email, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :first_name, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.text_field :first_name, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :last_name, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.text_field :last_name, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :phone, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.telephone_field :phone, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :locale, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.select :locale, I18n.available_locales.map { |locale| [ locale.to_s.upcase, locale ] },
+                          {}, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :country_code, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.select :country_code, Country.enabled.order(:code).map { |country| [ country.name, country.code ] },
+                          {}, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :region_id, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.collection_select :region_id, Region.order(:name), :id, :name, { include_blank: true },
+                                     class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div class="sm:col-span-2">
+          <%= form.label :city, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.text_field :city, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+      </div>
+      <p class="mt-3 text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.users.edit.role_hint") %></p>
+    </section>
+
+    <div class="flex items-center justify-end gap-2">
+      <%= link_to t("admin.actions.cancel"), admin_user_path(@user), class: ui_button_classes(variant: :ghost, size: :md) %>
+      <%= form.submit t("admin.actions.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+    </div>
+  <% end %>
+</div>

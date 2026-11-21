@@ -1,0 +1,18 @@
+<div class="mx-auto max-w-3xl">
+  <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-800 dark:bg-brand-900/40 dark:text-brand-200">
+      <%= icon "sparkles", class: "size-3.5" %><%= t("admin.placeholder.label") %>
+    </span>
+    <h1 class="mt-4 font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
+      <%= t("admin.placeholder.titles.#{@section.gsub('-', '_')}") %>
+    </h1>
+    <p class="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-600 dark:text-zinc-400">
+      <%= t("admin.placeholder.body") %>
+    </p>
+    <p class="mt-1 text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300">
+      <%= t("admin.placeholder.coming") %>
+    </p>
+    <%= link_to t("admin.actions.back_to_dashboard"), admin_root_path,
+                class: ui_button_classes(variant: :primary, size: :md, extra: "mt-6") %>
+  </div>
+</div>

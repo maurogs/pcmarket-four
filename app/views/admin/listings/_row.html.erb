@@ -1,0 +1,45 @@
+<tr class="align-middle hover:bg-slate-50/70 dark:hover:bg-zinc-800/40">
+  <td class="px-3 py-2.5">
+    <input type="checkbox" name="listing_ids[]" value="<%= record.id %>" form="<%= bulk_form_id %>"
+           class="size-4 rounded text-brand-700 focus:ring-brand-500"
+           data-bulk-select-target="checkbox" data-action="bulk-select#changed"
+           aria-label="<%= t("admin.listings.select_listing", title: record.title) %>">
+  </td>
+  <td class="px-3 py-2.5">
+    <div class="flex items-center gap-2.5">
+      <span class="size-9 shrink-0 overflow-hidden rounded-md bg-slate-100 dark:bg-zinc-800">
+        <% thumb = record.ordered_images.first %>
+        <% if thumb %>
+          <%= image_tag thumb.variant(resize_to_limit: [ 72, 72 ], format: :webp), alt: "", loading: "lazy",
+                        class: "size-9 object-cover" %>
+        <% else %>
+          <%= image_tag "listing-placeholder.svg", alt: "", loading: "lazy", class: "size-9 object-cover" %>
+        <% end %>
+      </span>
+      <div class="min-w-0">
+        <%= link_to record.title, admin_listing_path(record),
+                    class: "line-clamp-1 font-medium text-slate-900 hover:text-brand-700 dark:text-zinc-100 dark:hover:text-brand-300" %>
+        <p class="text-[11px] text-slate-500 dark:text-zinc-400">#<%= record.id %> · <%= record.category.name %></p>
+      </div>
+    </div>
+  </td>
+  <td class="whitespace-nowrap px-3 py-2.5">
+    <%= render "admin/shared/status_badge", text: t("listings.statuses.#{record.status}"),
+               tone: admin_listing_status_tone(record.status) %>
+    <% if record.featured? %>
+      <span class="ml-1 text-accent-600 dark:text-accent-400" title="<%= t("listings.labels.featured") %>"><%= icon "sparkles", class: "inline size-3.5" %></span>
+    <% end %>
+  </td>
+  <td class="whitespace-nowrap px-3 py-2.5 text-right font-medium tabular-nums"><%= format_price(record.price_cents) %></td>
+  <td class="px-3 py-2.5">
+    <%= link_to record.user.display_name, admin_user_path(record.user),
+                class: "text-sm text-slate-700 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %>
+  </td>
+  <td class="px-3 py-2.5 text-right tabular-nums text-slate-600 dark:text-zinc-400"><%= admin_number(record.views_count) %></td>
+  <td class="whitespace-nowrap px-3 py-2.5 text-xs text-slate-500 dark:text-zinc-400"><%= admin_date(record.created_at) %></td>
+  <td class="px-3 py-2.5 text-right">
+    <%= link_to icon("eye", class: "size-4"), admin_listing_path(record),
+                class: "inline-flex rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200",
+                aria: { label: t("admin.actions.view") } %>
+  </td>
+</tr>

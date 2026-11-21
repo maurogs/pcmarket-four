@@ -1,0 +1,84 @@
+<div class="mx-auto max-w-6xl space-y-5">
+  <%= render "admin/shared/page_header", title: t("admin.search.title"),
+             subtitle: @query.present? ? t("admin.search.results_for", query: @query) : t("admin.search.subtitle") %>
+
+  <% if @query.blank? %>
+    <%= render "admin/shared/empty_state", title: t("admin.search.empty_title"), body: t("admin.search.empty_body") %>
+  <% elsif @results.values.all?(&:empty?) %>
+    <%= render "admin/shared/empty_state", title: t("admin.search.no_results_title"),
+               body: t("admin.search.no_results_body", query: @query) %>
+  <% else %>
+    <div class="space-y-4">
+      <% if @results[:users].any? %>
+        <section class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <h2 class="border-b border-slate-100 px-4 py-3 font-heading text-sm font-semibold text-slate-900 dark:border-zinc-800 dark:text-white"><%= t("admin.search.groups.users") %></h2>
+          <ul class="divide-y divide-slate-100 text-sm dark:divide-zinc-800">
+            <% @results[:users].each do |user| %>
+              <li class="flex items-center justify-between gap-3 px-4 py-2.5">
+                <div class="min-w-0">
+                  <%= link_to user.display_name, admin_user_path(user), class: "font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+                  <p class="truncate text-[11px] text-slate-500 dark:text-zinc-400"><%= user.email %> · <%= user.username %></p>
+                </div>
+                <%= render "admin/shared/status_badge", text: t("admin.user_statuses.#{user.status}"), tone: admin_user_status_tone(user.status) %>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      <% end %>
+
+      <% if @results[:listings].any? %>
+        <section class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <h2 class="border-b border-slate-100 px-4 py-3 font-heading text-sm font-semibold text-slate-900 dark:border-zinc-800 dark:text-white"><%= t("admin.search.groups.listings") %></h2>
+          <ul class="divide-y divide-slate-100 text-sm dark:divide-zinc-800">
+            <% @results[:listings].each do |listing| %>
+              <li class="flex items-center justify-between gap-3 px-4 py-2.5">
+                <div class="min-w-0">
+                  <%= link_to listing.title, admin_listing_path(listing), class: "font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+                  <p class="truncate text-[11px] text-slate-500 dark:text-zinc-400">#<%= listing.id %> · <%= listing.user.display_name %> · <%= format_price(listing.price_cents) %></p>
+                </div>
+                <%= render "admin/shared/status_badge", text: t("listings.statuses.#{listing.status}"), tone: admin_listing_status_tone(listing.status) %>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      <% end %>
+
+      <% if @results[:orders].any? %>
+        <section class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <h2 class="border-b border-slate-100 px-4 py-3 font-heading text-sm font-semibold text-slate-900 dark:border-zinc-800 dark:text-white"><%= t("admin.search.groups.orders") %></h2>
+          <ul class="divide-y divide-slate-100 text-sm dark:divide-zinc-800">
+            <% @results[:orders].each do |order| %>
+              <li class="flex items-center justify-between gap-3 px-4 py-2.5">
+                <div>
+                  <p class="font-mono text-xs font-medium"><%= order.number %></p>
+                  <p class="text-[11px] text-slate-500 dark:text-zinc-400"><%= order.buyer&.display_name || order.buyer_email %> · <%= admin_datetime(order.created_at) %></p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs tabular-nums"><%= admin_money(order.total_cents) %></span>
+                  <%= render "admin/shared/status_badge", text: t("orders.statuses.#{order.status}"), tone: admin_order_status_tone(order.status) %>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      <% end %>
+
+      <% if @results[:stores].any? %>
+        <section class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <h2 class="border-b border-slate-100 px-4 py-3 font-heading text-sm font-semibold text-slate-900 dark:border-zinc-800 dark:text-white"><%= t("admin.search.groups.stores") %></h2>
+          <ul class="divide-y divide-slate-100 text-sm dark:divide-zinc-800">
+            <% @results[:stores].each do |store| %>
+              <li class="flex items-center justify-between gap-3 px-4 py-2.5">
+                <div class="min-w-0">
+                  <%= link_to store.name, admin_store_path(store), class: "font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+                  <p class="truncate text-[11px] text-slate-500 dark:text-zinc-400"><%= store.user.display_name %> · <%= store.slug %></p>
+                </div>
+                <%= render "admin/shared/status_badge", text: t("admin.store_types.#{store.store_type}"), tone: :neutral %>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      <% end %>
+    </div>
+  <% end %>
+</div>

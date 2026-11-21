@@ -1,0 +1,42 @@
+<tr class="align-middle hover:bg-slate-50/70 dark:hover:bg-zinc-800/40">
+  <td class="px-3 py-2.5">
+    <div class="flex items-center gap-2.5">
+      <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-slate-200 text-[11px] font-semibold text-slate-700 dark:bg-zinc-800 dark:text-zinc-200">
+        <%= record.initials %>
+      </span>
+      <div class="min-w-0">
+        <%= link_to record.display_name, admin_user_path(record),
+                    class: "block truncate font-medium text-slate-900 hover:text-brand-700 dark:text-zinc-100 dark:hover:text-brand-300" %>
+        <p class="truncate text-[11px] text-slate-500 dark:text-zinc-400"><%= record.email %></p>
+        <% if record.deleted? %>
+          <p class="text-[11px] font-medium text-rose-600 dark:text-rose-400"><%= t("admin.users.deleted_badge") %></p>
+        <% end %>
+      </div>
+    </div>
+  </td>
+  <td class="px-3 py-2.5">
+    <%= render "admin/shared/status_badge", text: t("admin.roles.#{record.role}"), tone: admin_role_tone(record.role) %>
+  </td>
+  <td class="px-3 py-2.5">
+    <%= render "admin/shared/status_badge", text: t("admin.user_statuses.#{record.status}"), tone: admin_user_status_tone(record.status) %>
+    <% unless record.confirmed? %>
+      <span class="ml-1 <%= ui_badge_classes(tone: :neutral, extra: "!px-1.5 !py-0 !text-[9px]") %>"><%= t("admin.users.unconfirmed") %></span>
+    <% end %>
+  </td>
+  <td class="px-3 py-2.5">
+    <% if record.store %>
+      <%= link_to record.store.name, admin_store_path(record.store),
+                  class: "text-sm text-brand-700 hover:underline dark:text-brand-300" %>
+    <% else %>
+      <span class="text-xs text-slate-400 dark:text-zinc-500">—</span>
+    <% end %>
+  </td>
+  <td class="px-3 py-2.5 text-right tabular-nums text-slate-600 dark:text-zinc-400"><%= record.sign_in_count %></td>
+  <td class="whitespace-nowrap px-3 py-2.5 text-xs text-slate-500 dark:text-zinc-400"><%= admin_datetime(record.last_sign_in_at) %></td>
+  <td class="whitespace-nowrap px-3 py-2.5 text-xs text-slate-500 dark:text-zinc-400"><%= admin_date(record.created_at) %></td>
+  <td class="px-3 py-2.5 text-right">
+    <%= link_to icon("eye", class: "size-4"), admin_user_path(record),
+                class: "inline-flex rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200",
+                aria: { label: t("admin.actions.view") } %>
+  </td>
+</tr>

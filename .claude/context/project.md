@@ -2,16 +2,19 @@
 
 ## Status
 
-Phase 5 complete: internal chat with conversations, unread counters and
-real-time messages, offers with accepted-offer cart pricing, blocks and
-message safety warnings; follower notifications, instant and daily saved-search
-alerts and favourite price-drop alerts. Phase 4B order lifecycle (paid,
-shipped, delivered, completed, cancelled, disputed, refunded), seller
-fulfilment screens, buyer delivery confirmation/disputes/reviews, order
-notifications with email fan-out and real-time badge updates remain intact.
-Discovery (Phase 2B), listing creation (Phase 3A) and checkout/payments
-(Phase 4A) are unchanged. Admin moderation screens and online payouts remain
-for later phases.
+Phase 6A complete: admin panel foundation with a dedicated layout, dashboard,
+listing moderation queue, listing administration, user and store management,
+audit log and staff impersonation. Phase 5 internal chat with conversations,
+unread counters and real-time messages, offers with accepted-offer cart
+pricing, blocks and message safety warnings; follower notifications, instant
+and daily saved-search alerts and favourite price-drop alerts are intact.
+Phase 4B order lifecycle (paid, shipped, delivered, completed, cancelled,
+disputed, refunded), seller fulfilment screens, buyer delivery
+confirmation/disputes/reviews, order notifications with email fan-out and
+real-time badge updates remain intact. Discovery (Phase 2B), listing creation
+(Phase 3A) and checkout/payments (Phase 4A) are unchanged. Orders, disputes,
+reports, reviews, catalogue, content, marketing and settings admin screens
+remain for phases 6B/6C and link to translated placeholder pages.
 
 ## Phase status
 
@@ -24,6 +27,7 @@ for later phases.
 | 4A | Cart, checkout and payments | Complete |
 | 4B | Order lifecycle and seller fulfilment | Complete |
 | 5 | Messaging, offers, follows and saved-search alerts | Complete |
+| 6A | Admin foundation, dashboard, moderation, users and stores | Complete |
 
 ## Stack
 
@@ -51,7 +55,7 @@ for later phases.
   not support OmniAuth callbacks under a dynamic segment.
 - Locale files are split by domain (`models`, `home`, `layout`, `listings`,
   `pages`, `newsletter`, `errors`, `common`, `countries`, `cart`, `checkout`,
-  `orders`, `notifications`); every key exists in all six languages.
+  `orders`, `notifications`, `messaging`, `admin`); every key exists in all six languages.
   `test/i18n/locale_parity_test.rb` enforces parity.
 - English is British English (favourite, colour, authorised).
 - Footer and drawer language switchers preserve the current path and query.
@@ -472,6 +476,69 @@ for later phases.
   `offer_countered`, `followed_store_listing`, `saved_search_match` and
   `price_drop_favourite`.
 
+### Admin panel (Phase 6A)
+
+- All admin routes live under the locale scope at `/:locale/admin`.
+  `Admin::BaseController` authenticates, guards `current_user.staff?`, uses the
+  dense `admin` layout and exposes the pending moderation badge.
+- Admin authorisation uses Pundit policies in `app/policies/admin/`
+  (`Admin::ListingPolicy`, `Admin::UserPolicy`, `Admin::StorePolicy` and small
+  single-purpose policies). Moderators can moderate listings, users and stores;
+  destructive actions (delete listing, ban, role changes, impersonation,
+  GDPR soft delete) require an administrator. Unauthorised requests redirect
+  back with `errors.not_authorized`.
+- `Admin::Auditable` records every admin mutation in `admin_audit_logs` with
+  admin, action, polymorphic auditable, a sanitised `saved_changes`/explicit
+  changeset (passwords and tokens removed) and the request IP. Listing, user
+  and store detail pages show the history; `/admin/audit_logs` filters by
+  action, admin and resource.
+- The `admin` layout uses a desktop-first sidebar that collapses to icons
+  (`admin_sidebar_controller`, persisted in localStorage), slides off-canvas on
+  mobile, and a top bar with global search, "View site", theme toggle and the
+  signed-in admin.
+- Global search (`Admin::GlobalSearch`) queries users (email/username/name),
+  listings (title/id), orders (number/id) and stores (name), and renders a
+  grouped results page.
+- Admin UI kit partials live in `app/views/admin/shared/`: data table with
+  whitelisted sortable headers, per-page selector (25/50/100), pagination,
+  filter bar, bulk-action bar, status badges, stat cards, empty states, detail
+  header with actions dropdown and side meta panel.
+- `Admin::Dashboard` caches one payload for two minutes: seven-day KPI trends
+  with commission only when positive, 30-day server-rendered inline SVG
+  charts (sign-ups line, orders bars, top-10 category bars), latest pending
+  listings/orders/users and a health panel (Solid Queue failed and pending
+  jobs when the queue tables exist, Active Storage bytes, `pg_database_size`).
+  The action plus chrome stays under 40 SQL queries.
+- The moderation queue lists `pending_review` listings oldest first with all
+  images, a price-versus-category-median warning below 40% (possible scam),
+  a `MessageSafetyScanner` description scan, duplicate-image checks by
+  Active Storage checksum across different sellers, and seller age/listings/
+  sales/rating/rejection/verified context. Actions are approve, approve &
+  feature (seven days plus the `featured` label), reject with translated
+  preset or free-text reason, bulk approve, and j/k/a/r keyboard shortcuts.
+- Approval/rejection goes through `Admin::ListingModeration`, creates a
+  notification and enqueues `ListingMailer#approved/#rejected` in the seller
+  locale. `Notifier` dispatches listing emails alongside order emails.
+- `Admin::ListingQuery` whitelists sort keys and filters by status, category
+  subtree, seller, country, price, labels, featured, pending flag and created
+  range. `Admin::BulkListingAction` whitelists approve, reject, pause, archive,
+  delete, add/remove label, feature and unfeature. `Admin::ListingUpdate`
+  validates the game-FPS JSON and keeps only effective spec filter keys.
+- User management filters by role, status, confirmation, store, sign-up range
+  and country; CSV export (`Admin::UserExport`) reuses the same filters without
+  the removed Ruby `csv` default gem. Suspension clears sign-in through
+  `User#active_for_authentication?`/`inactive_message` and hides listings via
+  the active-owner visibility scope. Bans also archive listings. Role changes
+  refuse self-changes and demoting the last administrator. Email confirmation,
+  password-reset instructions and GDPR soft delete are audited.
+- Impersonation stores the admin id in `session[:impersonator_id]`, signs in as
+  the target and shows a public banner with a stop action. Only administrators
+  can impersonate and never another administrator; start and stop are audited.
+- Store management verifies/unverifies, toggles vacation mode and edits store
+  type, company/tax data, policies and counters, linking back to the owner.
+- Admin strings live in `admin.<locale>.yml` across all six locales; Devise
+  inactive messages are added there (`devise.failure.suspended/banned/deleted`).
+
 ### Performance guardrails
 
 - `ListingSearch::INCLUDES` preloads store, category, region, user and image
@@ -592,8 +659,39 @@ app/controllers/{cart,cart_items,favorites,follows,reports,saved_searches}_contr
 app/controllers/users/registrations_controller.rb
 app/controllers/{conversations,orders,account,pc_finder,pages,legal_pages,sell_offers}_controller.rb
 app/controllers/{search_suggestions,seo,newsletter_subscribers}_controller.rb
-app/controllers/admin/dashboard_controller.rb
-app/controllers/seller/dashboard_controller.rb
+app/controllers/admin/base_controller.rb        auth, staff guard, admin layout,
+                                                Pundit + audit helpers
+app/controllers/admin/dashboard_controller.rb   cached KPIs, charts, health
+app/controllers/admin/moderation_queue_controller.rb
+app/controllers/admin/listings_controller.rb    listing table, detail, edit, delete
+app/controllers/admin/listing_approvals_controller.rb
+app/controllers/admin/listing_rejections_controller.rb
+app/controllers/admin/bulk_listing_actions_controller.rb
+app/controllers/admin/users_controller.rb       user directory, detail, edit
+app/controllers/admin/{user_suspensions,user_bans,user_roles}_controller.rb
+app/controllers/admin/{user_confirmations,user_password_resets,user_deletions}_controller.rb
+app/controllers/admin/{impersonations,user_exports}_controller.rb
+app/controllers/admin/stores_controller.rb      store table, detail, edit
+app/controllers/admin/{store_verifications,store_vacations}_controller.rb
+app/controllers/admin/{audit_logs,search,placeholders}_controller.rb
+app/controllers/concerns/admin/auditable.rb     admin mutation audit writer
+app/policies/admin/                             staff and admin-only policies
+app/services/admin/dashboard.rb                 cached dashboard aggregates
+app/services/admin/listing_query.rb             whitelisted filters/sorting
+app/services/admin/listing_moderation.rb        approve, reject, feature + email
+app/services/admin/listing_flags.rb             median, safety scan, duplicates
+app/services/admin/listing_update.rb            admin listing form writer
+app/services/admin/bulk_listing_action.rb       whitelisted bulk mutations
+app/services/admin/{user_query,user_export,user_moderation}.rb
+app/services/admin/{store_query,global_search}.rb
+app/mailers/listing_mailer.rb                   approved/rejected seller emails
+app/helpers/admin_helper.rb                     nav, badges, charts, audit labels
+app/views/layouts/admin.html.erb                sidebar + top bar shell
+app/views/admin/shared/                         table, filter, bulk, stats, meta kit
+app/views/admin/{dashboard,moderation_queue,listings,users,stores}/**
+app/views/admin/{audit_logs,search,placeholders}/
+app/javascript/controllers/admin_sidebar_controller.js
+app/javascript/controllers/admin_queue_controller.js
 app/services/listing_search.rb              search, facets, chips, sorting
 app/services/cart_summary.rb                 cart groups, warnings, stock clamping
 app/services/checkout/form.rb                checkout validation
@@ -661,16 +759,22 @@ test/integration/{checkout,orders,stripe_webhook}_test.rb
 test/system/checkout_flow_test.rb
 test/system/                                responsive + auth modal
 test/i18n/locale_parity_test.rb
+test/integration/admin_{access,panel,moderation,users}_test.rb
+test/system/admin_moderation_flow_test.rb
 test/seeds_test.rb
 ```
 
 ## Open items for later phases
 
-- Admin moderation screens (approve/reject queue) for listings; seller-side
-  submission already exists.
-- Admin UI to resolve disputes and issue refunds (the model transitions and
-  policies exist, but no admin screens yet).
-- Admin UI to review flagged messages and reports.
+- Admin screens for orders, disputes, refunds, reports, reviews, categories,
+  filters, legal pages, games, newsletter and settings are placeholders until
+  phases 6B/6C.
+- Admin two-factor authentication is not implemented; Devise lockable already
+  throttles failed sign-ins. Decide whether staff 2FA is required before
+  phase 6C.
+- Impersonation is session-based and audited; there is no automatic timeout.
+- Admin dashboards and moderation flags are heuristic (price median and image
+  checksum reuse), not fraud detection.
 - Seller dashboard performance is cached for five minutes; order-level events
   do not invalidate it immediately.
 - Order lifecycle emails to admins rely on `Setting.support_email`; there is no

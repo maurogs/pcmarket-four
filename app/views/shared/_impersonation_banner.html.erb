@@ -1,0 +1,17 @@
+<% if impersonating? %>
+  <div class="border-b border-amber-300 bg-amber-100 px-4 py-2 text-sm text-amber-950 dark:border-amber-500/40 dark:bg-amber-500/15 dark:text-amber-100">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2">
+      <p class="flex items-center gap-2 font-medium">
+        <%= icon "eye", class: "size-4" %>
+        <%= t("admin.impersonation.banner", name: current_user.display_name) %>
+        <span class="hidden text-amber-800 sm:inline dark:text-amber-200/80">
+          &middot; <%= current_impersonator.display_name %>
+        </span>
+      </p>
+      <%= button_to t("admin.impersonation.stop"), admin_impersonation_path,
+                    method: :delete,
+                    class: ui_button_classes(variant: :outline, size: :sm,
+                                             extra: "!min-h-7 !border-amber-400 !bg-white/70 !px-2.5 !text-xs !text-amber-950 hover:!border-amber-500 dark:!border-amber-500/50 dark:!bg-amber-900/30 dark:!text-amber-50") %>
+    </div>
+  </div>
+<% end %>

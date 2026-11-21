@@ -1,0 +1,41 @@
+<tr class="align-middle hover:bg-slate-50/70 dark:hover:bg-zinc-800/40">
+  <td class="px-3 py-2.5">
+    <div class="flex items-center gap-2.5">
+      <span class="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800">
+        <% if record.logo.attached? %>
+          <%= image_tag record.logo.variant(resize_to_limit: [ 64, 64 ], format: :webp), alt: "", loading: "lazy", class: "size-8 object-cover" %>
+        <% else %>
+          <%= icon "store", class: "size-4 text-slate-400" %>
+        <% end %>
+      </span>
+      <div class="min-w-0">
+        <%= link_to record.name, admin_store_path(record),
+                    class: "block truncate font-medium text-slate-900 hover:text-brand-700 dark:text-zinc-100 dark:hover:text-brand-300" %>
+        <p class="text-[11px] text-slate-500 dark:text-zinc-400"><%= record.slug %></p>
+      </div>
+    </div>
+  </td>
+  <td class="px-3 py-2.5">
+    <%= link_to record.user.display_name, admin_user_path(record.user),
+                class: "text-sm text-slate-700 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %>
+  </td>
+  <td class="px-3 py-2.5 text-xs"><%= t("admin.store_types.#{record.store_type}") %></td>
+  <td class="px-3 py-2.5">
+    <% if record.verified? %>
+      <span class="<%= ui_badge_classes(tone: :success) %>"><%= icon "badge-check", class: "size-3" %><%= t("admin.stores.verified_badge") %></span>
+    <% else %>
+      <span class="<%= ui_badge_classes(tone: :neutral) %>"><%= t("admin.stores.unverified") %></span>
+    <% end %>
+    <% if record.vacation_mode? %>
+      <span class="<%= ui_badge_classes(tone: :accent, extra: "ml-1") %>"><%= t("admin.stores.on_vacation") %></span>
+    <% end %>
+  </td>
+  <td class="px-3 py-2.5 text-right tabular-nums"><%= record.listings_count %></td>
+  <td class="px-3 py-2.5 text-right tabular-nums"><%= record.sales_count %></td>
+  <td class="px-3 py-2.5 text-right tabular-nums"><%= number_with_precision(record.rating_avg, precision: 1) %></td>
+  <td class="px-3 py-2.5 text-right">
+    <%= link_to icon("eye", class: "size-4"), admin_store_path(record),
+                class: "inline-flex rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200",
+                aria: { label: t("admin.actions.view") } %>
+  </td>
+</tr>

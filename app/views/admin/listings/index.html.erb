@@ -1,0 +1,75 @@
+<% filter_fields = [
+  { name: "q", type: :search, value: params[:q], placeholder: t("admin.listings.filters.search_placeholder"), width: "min-w-56 flex-[2]" },
+  { name: "status", type: :select, value: params[:status],
+    options: Listing.statuses.keys.map { |status| [ t("listings.statuses.#{status}"), status ] },
+    include_blank: t("admin.listings.filters.any_status"), label: t("admin.listings.filters.status"), width: "min-w-36" },
+  { name: "category_id", type: :select, value: params[:category_id],
+    options: @categories.map { |category| [ category.name, category.id ] },
+    include_blank: t("admin.listings.filters.any_category"), label: t("admin.listings.filters.category"), width: "min-w-44" },
+  { name: "seller", type: :search, value: params[:seller], placeholder: t("admin.listings.filters.seller_placeholder"),
+    label: t("admin.listings.filters.seller"), width: "min-w-40" },
+  { name: "min_price", type: :number, value: params[:min_price], placeholder: t("admin.listings.filters.min_price"),
+    label: t("admin.listings.filters.min_price"), width: "w-24" },
+  { name: "max_price", type: :number, value: params[:max_price], placeholder: t("admin.listings.filters.max_price"),
+    label: t("admin.listings.filters.max_price"), width: "w-24" },
+  { name: "country", type: :select, value: params[:country],
+    options: Country.enabled.order(:code).map { |country| [ country.name, country.code ] },
+    include_blank: t("admin.listings.filters.any_country"), label: t("admin.listings.filters.country"), width: "min-w-32" },
+  { name: "labels", type: :select, value: params[:labels],
+    options: Listing::LABELS.map { |label| [ t("listings.labels.#{label}"), label ] },
+    include_blank: t("admin.listings.filters.any_label"), label: t("admin.listings.filters.labels"),
+    multiple: true, width: "min-w-40" },
+  { name: "flagged", type: :select, value: params[:flagged],
+    options: [[ t("admin.common.yes"), "true" ]],
+    include_blank: t("admin.listings.filters.any_flag"), label: t("admin.listings.filters.flagged"), width: "min-w-32" },
+  { name: "featured", type: :select, value: params[:featured],
+    options: [[ t("admin.common.yes"), "yes" ], [ t("admin.common.no"), "no" ]],
+    include_blank: t("admin.listings.filters.any_featured"), label: t("admin.listings.filters.featured"), width: "min-w-32" },
+  { name: "created_from", type: :date, value: params[:created_from], label: t("admin.listings.filters.created_from"), width: "w-40" },
+  { name: "created_to", type: :date, value: params[:created_to], label: t("admin.listings.filters.created_to"), width: "w-40" }
+] %>
+
+<div class="mx-auto max-w-[90rem]" data-controller="bulk-select">
+  <%= render "admin/shared/page_header", title: t("admin.listings.title"),
+             subtitle: t("admin.listings.subtitle"),
+             eyebrow: t("admin.nav.sections.marketplace"),
+             actions: [
+               { label: t("admin.listings.open_queue"), path: admin_moderation_queue_path, variant: :primary, icon: "shield-check" }
+             ] %>
+
+  <div class="mt-5">
+    <%= render "admin/shared/filter_bar", url: admin_listings_path, fields: filter_fields %>
+  </div>
+
+  <%= form_with url: admin_bulk_listing_actions_path, method: :post, id: "bulk-listings-form",
+                class: "mb-3" do %>
+    <%= render "admin/shared/bulk_bar", form_id: "bulk-listings-form",
+               actions: [
+                 { value: "approve", label: t("admin.actions.approve"), variant: :primary },
+                 { value: "reject", label: t("admin.actions.reject"), confirm: t("admin.listings.confirm.reject") },
+                 { value: "pause", label: t("admin.listings.bulk_pause") },
+                 { value: "archive", label: t("admin.listings.bulk_archive") },
+                 { value: "add_label", label: t("admin.listings.bulk_add_label") },
+                 { value: "remove_label", label: t("admin.listings.bulk_remove_label") },
+                 { value: "feature", label: t("admin.listings.bulk_feature") },
+                 { value: "unfeature", label: t("admin.listings.bulk_unfeature") },
+                 { value: "delete", label: t("admin.listings.bulk_delete"), variant: :danger, confirm: t("admin.listings.confirm.delete") }
+               ] %>
+  <% end %>
+
+  <%= render "admin/shared/data_table", records: @listings, columns: [
+               { label: t("admin.listings.columns.listing"), sort_key: "title" },
+               { label: t("admin.listings.columns.status"), sort_key: "status" },
+               { label: t("admin.listings.columns.price"), sort_key: "price_cents", align: :right },
+               { label: t("admin.listings.columns.seller") },
+               { label: t("admin.listings.columns.views"), sort_key: "views_count", align: :right },
+               { label: t("admin.listings.columns.created"), sort_key: "created_at" },
+               { label: "", class: "w-10" }
+             ],
+             row_partial: "admin/listings/row",
+             sort: @query.sort, direction: @query.direction,
+             selectable: true, bulk_form_id: "bulk-listings-form",
+             empty_title: t("admin.listings.empty_title"), empty_body: t("admin.listings.empty_body") %>
+
+  <%= render "admin/shared/pagination", pagy: @pagy %>
+</div>

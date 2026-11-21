@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   helper_method :menu_categories, :primary_menu_categories, :more_menu_categories,
-                :filters_applied?, :cart_summary
+                :filters_applied?, :cart_summary, :current_impersonator, :impersonating?
 
   SEARCH_PARAMS = %i[q min_price max_price free_shipping on_sale deals sort page seller
                      category_id include_sold].freeze
@@ -41,6 +41,20 @@ class ApplicationController < ActionController::Base
 
   def default_url_options
     { locale: I18n.locale }
+  end
+
+  # Set by Admin::ImpersonationsController. While present the signed-in user is
+  # the impersonated account, not the admin.
+  def current_impersonator
+    return @current_impersonator if defined?(@current_impersonator)
+
+    @current_impersonator = if session[:impersonator_id].present?
+      User.find_by(id: session[:impersonator_id])
+    end
+  end
+
+  def impersonating?
+    user_signed_in? && current_impersonator.present?
   end
 
   def menu_categories

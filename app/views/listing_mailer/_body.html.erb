@@ -1,0 +1,11 @@
+<h1><%= t("admin.mailer.listing.#{@kind}.title") %></h1>
+<p><%= t("admin.mailer.listing.greeting", name: @listing.user.first_name.presence || @listing.user.username) %></p>
+<p><%= t("admin.mailer.listing.#{@kind}.intro", title: @listing.title) %></p>
+
+<% if @kind == :rejected && @reason.present? %>
+  <p><strong><%= t("admin.mailer.listing.rejected.reason_label") %>:</strong> <%= @reason %></p>
+<% end %>
+
+<p><%= link_to t("admin.mailer.listing.view_listing"), @url %></p>
+<p><%= t("admin.mailer.listing.#{@kind}.outro") %></p>
+<p><%= t("admin.mailer.listing.signature", site: site_name) %></p>

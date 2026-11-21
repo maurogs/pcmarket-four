@@ -22,4 +22,6 @@ de:
       order_dispute_resolved: "Der Streitfall zu Bestellung %{number} wurde gelöst."
       order_refunded: "Bestellung %{number} wurde erstattet."
       order_late_shipment: "Bestellung %{number} wartet auf Versand."
+      listing_approved: "Ihre Anzeige „%{title}“ wurde freigegeben und veröffentlicht."
+      listing_rejected: "Ihre Anzeige „%{title}“ wurde abgelehnt: %{reason}"
       default: "Du hast eine neue Benachrichtigung."

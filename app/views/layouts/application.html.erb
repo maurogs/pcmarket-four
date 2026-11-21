@@ -11,6 +11,7 @@
 
     <%= render "shared/announcement_bar" %>
     <%= render "shared/header" %>
+    <%= render "shared/impersonation_banner" %>
     <%= turbo_stream_from current_user, :notifications if user_signed_in? %>
     <%= turbo_stream_from current_user, :inbox if user_signed_in? %>
     <%= render "shared/mobile_drawer" %>

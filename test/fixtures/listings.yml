@@ -143,6 +143,26 @@ suspended_owner_listing:
   shipping_available: true
   favorites_count: 0
 
+pending_review_gpu:
+  user: seller
+  store: seller_store
+  category: graphics_cards
+  title: Gigabyte GeForce RTX 4080 Super 16 GB
+  slug: gigabyte-geforce-rtx-4080-super-16gb
+  description: Tarjeta gráfica de gama alta con caja original, poco uso y garantía del fabricante.
+  price_cents: 90000
+  condition: used_like_new
+  status: pending_review
+  quantity: 1
+  specs:
+    vram_gb: 16
+  brand: Gigabyte
+  country_code: ES
+  region: madrid
+  city: Madrid
+  shipping_available: true
+  favorites_count: 0
+
 zero_quantity_listing:
   user: seller
   category: cpus

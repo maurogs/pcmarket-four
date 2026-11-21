@@ -1,0 +1,78 @@
+<% filter_fields = [
+  { name: "action_filter", type: :select, value: params[:action_filter],
+    options: @actions.map { |action| [ admin_audit_action_label(action), action ] },
+    include_blank: t("admin.audit.any_action"), label: t("admin.audit.action"), width: "min-w-52" },
+  { name: "admin_id", type: :select, value: params[:admin_id],
+    options: @admins.map { |admin| [ admin.display_name, admin.id ] },
+    include_blank: t("admin.audit.any_admin"), label: t("admin.audit.admin"), width: "min-w-44" },
+  { name: "auditable_type", type: :select, value: params[:auditable_type],
+    options: %w[Listing User Store Order].map { |type| [ type, type ] },
+    include_blank: t("admin.audit.any_resource"), label: t("admin.audit.resource"), width: "min-w-36" }
+] %>
+
+<div class="mx-auto max-w-[90rem]">
+  <%= render "admin/shared/page_header", title: t("admin.audit.title"),
+             subtitle: t("admin.audit.subtitle") %>
+
+  <div class="mt-5">
+    <%= render "admin/shared/filter_bar", url: admin_audit_logs_path, fields: filter_fields %>
+  </div>
+
+  <% if @audit_logs.empty? %>
+    <%= render "admin/shared/empty_state", title: t("admin.audit.empty_title"), body: t("admin.audit.empty_body") %>
+  <% else %>
+    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <table class="w-full min-w-[54rem] text-left text-sm">
+        <thead class="border-b border-slate-200 bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400">
+          <tr>
+            <th class="px-3 py-2.5"><%= t("admin.audit.columns.time") %></th>
+            <th class="px-3 py-2.5"><%= t("admin.audit.columns.admin") %></th>
+            <th class="px-3 py-2.5"><%= t("admin.audit.columns.action") %></th>
+            <th class="px-3 py-2.5"><%= t("admin.audit.columns.resource") %></th>
+            <th class="px-3 py-2.5"><%= t("admin.audit.columns.ip") %></th>
+            <th class="px-3 py-2.5"><%= t("admin.audit.columns.changeset") %></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+          <% @audit_logs.each do |log| %>
+            <tr class="hover:bg-slate-50/70 dark:hover:bg-zinc-800/40">
+              <td class="whitespace-nowrap px-3 py-2.5 text-xs text-slate-500 dark:text-zinc-400"><%= admin_datetime(log.created_at) %></td>
+              <td class="px-3 py-2.5">
+                <%= link_to log.admin.display_name, admin_user_path(log.admin),
+                            class: "font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+              </td>
+              <td class="px-3 py-2.5"><%= admin_audit_action_label(log.action) %></td>
+              <td class="px-3 py-2.5 text-xs">
+                <% if log.auditable %>
+                  <% target = case log.auditable_type
+                     when "Listing" then admin_listing_path(log.auditable)
+                     when "User" then admin_user_path(log.auditable)
+                     when "Store" then admin_store_path(log.auditable)
+                     end %>
+                  <% if target %>
+                    <%= link_to "#{log.auditable_type} ##{log.auditable_id}", target, class: "text-brand-700 hover:underline dark:text-brand-300" %>
+                  <% else %>
+                    <%= log.auditable_type %> #<%= log.auditable_id %>
+                  <% end %>
+                <% elsif log.auditable_type %>
+                  <%= log.auditable_type %> #<%= log.auditable_id %>
+                <% else %>
+                  —
+                <% end %>
+              </td>
+              <td class="px-3 py-2.5 font-mono text-xs text-slate-500 dark:text-zinc-400"><%= log.ip.presence || "—" %></td>
+              <td class="px-3 py-2.5">
+                <details>
+                  <summary class="cursor-pointer text-xs text-slate-500 hover:text-slate-800 dark:text-zinc-400 dark:hover:text-zinc-200"><%= t("admin.audit.view_changes") %></summary>
+                  <pre class="mt-1 max-w-md overflow-x-auto rounded bg-slate-50 p-2 text-[10px] dark:bg-zinc-800"><%= JSON.pretty_generate(log.changeset) %></pre>
+                </details>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= render "admin/shared/pagination", pagy: @pagy %>
+  <% end %>
+</div>

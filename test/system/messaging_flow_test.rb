@@ -11,10 +11,16 @@ class MessagingFlowTest < ApplicationSystemTestCase
 
       assert_current_path(%r{/es/conversations/\d+})
       form = find("form[action*='/messages']")
-      form.find("textarea[name='message[body]']").set("Hola, ¿sigue disponible la tarjeta?")
+      textarea = form.find("textarea[name='message[body]']")
+      body = "Hola, ¿sigue disponible la tarjeta?"
+      page.execute_script(
+        "arguments[0].value = arguments[1]; " \
+        "arguments[0].dispatchEvent(new Event('input', { bubbles: true }))",
+        textarea, body
+      )
       form.native.submit
-      assert_text "Hola, ¿sigue disponible la tarjeta?"
-      assert_text "Hola, ¿sigue disponible la tarjeta?"
+      assert_text body
+      assert_text body
     end
 
     using_session(:seller) do

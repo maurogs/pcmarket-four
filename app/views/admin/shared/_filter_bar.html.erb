@@ -1,0 +1,50 @@
+<% fields = local_assigns.fetch(:fields, []) %>
+<%= form_with url: local_assigns.fetch(:url), method: :get, class: "mb-4" do %>
+  <div class="flex flex-wrap items-end gap-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <% fields.each do |field| %>
+      <% name = field[:name] %>
+      <% value = field[:value] %>
+      <% wrapper_class = field[:width] || "min-w-40 flex-1" %>
+      <div class="<%= wrapper_class %>">
+        <% if field[:label].present? %>
+          <%= label_tag "admin-filter-#{name.to_s.parameterize}", field[:label],
+                        class: "mb-1 block text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400" %>
+        <% end %>
+
+        <% case field[:type] %>
+        <% when :select %>
+          <%= select_tag field[:multiple] ? "#{name}[]" : name,
+                         options_for_select(field[:options], value),
+                         id: "admin-filter-#{name.to_s.parameterize}",
+                         include_blank: field[:include_blank],
+                         multiple: field[:multiple],
+                         class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        <% when :date %>
+          <%= date_field_tag name, value, id: "admin-filter-#{name.to_s.parameterize}",
+                             class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        <% when :number %>
+          <%= number_field_tag name, value, id: "admin-filter-#{name.to_s.parameterize}",
+                               placeholder: field[:placeholder],
+                               class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        <% else %>
+          <%= search_field_tag name, value, id: "admin-filter-#{name.to_s.parameterize}",
+                               placeholder: field[:placeholder],
+                               class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% request.query_parameters.slice("sort", "direction").each do |key, value| %>
+      <%= hidden_field_tag key, value, id: nil %>
+    <% end %>
+
+    <div class="flex items-center gap-2">
+      <%= button_tag type: "submit", class: ui_button_classes(variant: :primary, size: :sm) do %>
+        <%= icon "filter", class: "size-3.5" %><%= t("admin.common.filter") %>
+      <% end %>
+      <%= link_to local_assigns.fetch(:url), class: ui_button_classes(variant: :ghost, size: :sm) do %>
+        <%= t("admin.common.clear") %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

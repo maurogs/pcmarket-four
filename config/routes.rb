@@ -109,6 +109,34 @@ Rails.application.routes.draw do
 
     namespace :admin do
       root "dashboard#show"
+      get "moderation" => "moderation_queue#index", as: :moderation_queue
+      get "search" => "search#index", as: :search
+
+      resources :listings, only: %i[index show edit update destroy] do
+        resource :approval, only: :create, controller: "listing_approvals"
+        resource :rejection, only: :create, controller: "listing_rejections"
+      end
+      resources :bulk_listing_actions, only: :create
+
+      resources :users, only: %i[index show edit update] do
+        resource :suspension, only: %i[create destroy], controller: "user_suspensions"
+        resource :ban, only: %i[create destroy], controller: "user_bans"
+        resource :role, only: :update, controller: "user_roles"
+        resource :confirmation, only: :create, controller: "user_confirmations"
+        resource :password_reset, only: :create, controller: "user_password_resets"
+        resource :impersonation, only: :create, controller: "impersonations"
+        resource :deletion, only: :create, controller: "user_deletions"
+      end
+      resource :impersonation, only: :destroy, controller: "impersonations"
+      resources :user_exports, only: :create
+
+      resources :stores, only: %i[index show edit update] do
+        resource :verification, only: %i[create destroy], controller: "store_verifications"
+        resource :vacation, only: %i[create destroy], controller: "store_vacations"
+      end
+
+      resources :audit_logs, only: :index
+      resources :placeholders, only: :show, param: :section
     end
   end
 end

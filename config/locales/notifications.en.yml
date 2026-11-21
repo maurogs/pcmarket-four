@@ -22,4 +22,6 @@ en:
       order_dispute_resolved: "The dispute on order %{number} was resolved."
       order_refunded: "Order %{number} was refunded."
       order_late_shipment: "Order %{number} is waiting to be shipped."
+      listing_approved: "Your listing “%{title}” was approved and published."
+      listing_rejected: "Your listing “%{title}” was rejected: %{reason}"
       default: "You have a new notification."

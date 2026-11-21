@@ -1,0 +1,38 @@
+<% filter_fields = [
+  { name: "q", type: :search, value: params[:q], placeholder: t("admin.stores.filters.search_placeholder"), width: "min-w-56 flex-[2]" },
+  { name: "verified", type: :select, value: params[:verified],
+    options: [[ t("admin.common.yes"), "yes" ], [ t("admin.common.no"), "no" ]],
+    include_blank: t("admin.stores.filters.any_verification"), label: t("admin.stores.filters.verified"), width: "min-w-36" },
+  { name: "store_type", type: :select, value: params[:store_type],
+    options: Store.store_types.keys.map { |type| [ t("admin.store_types.#{type}"), type ] },
+    include_blank: t("admin.stores.filters.any_type"), label: t("admin.stores.filters.type"), width: "min-w-36" },
+  { name: "vacation", type: :select, value: params[:vacation],
+    options: [[ t("admin.common.yes"), "yes" ]],
+    include_blank: t("admin.stores.filters.any_vacation"), label: t("admin.stores.filters.vacation"), width: "min-w-36" }
+] %>
+
+<div class="mx-auto max-w-[90rem]">
+  <%= render "admin/shared/page_header", title: t("admin.stores.title"),
+             subtitle: t("admin.stores.subtitle"), eyebrow: t("admin.nav.sections.marketplace") %>
+
+  <div class="mt-5">
+    <%= render "admin/shared/filter_bar", url: admin_stores_path, fields: filter_fields %>
+  </div>
+
+  <%= render "admin/shared/data_table", records: @stores, columns: [
+               { label: t("admin.stores.columns.store"), sort_key: "name" },
+               { label: t("admin.stores.columns.owner") },
+               { label: t("admin.stores.columns.type") },
+               { label: t("admin.stores.columns.verified") },
+               { label: t("admin.stores.columns.listings"), sort_key: "listings_count", align: :right },
+               { label: t("admin.stores.columns.sales"), sort_key: "sales_count", align: :right },
+               { label: t("admin.stores.columns.rating"), sort_key: "rating_avg", align: :right },
+               { label: "", class: "w-10" }
+             ],
+             row_partial: "admin/stores/row",
+             sort: params[:sort].presence || "created_at",
+             direction: params[:direction].presence || "desc",
+             empty_title: t("admin.stores.empty_title"), empty_body: t("admin.stores.empty_body") %>
+
+  <%= render "admin/shared/pagination", pagy: @pagy %>
+</div>

@@ -44,6 +44,7 @@ class User < ApplicationRecord
   has_many :sell_offers, dependent: :destroy, inverse_of: :user
   has_many :reviews, foreign_key: :reviewer_id, dependent: :destroy, inverse_of: :reviewer
   has_many :reports, foreign_key: :reporter_id, dependent: :destroy, inverse_of: :reporter
+  has_many :admin_audit_logs, foreign_key: :admin_id, dependent: :destroy, inverse_of: :admin
 
   has_many :conversations_as_buyer, class_name: "Conversation", foreign_key: :buyer_id,
                                     dependent: :destroy, inverse_of: :buyer
@@ -143,6 +144,24 @@ class User < ApplicationRecord
 
   def deleted?
     deleted_at.present?
+  end
+
+  # Suspended, banned and soft-deleted accounts cannot sign in. The message is
+  # translated through devise.failure.* in the admin locale files.
+  def active_for_authentication?
+    super && active_account?
+  end
+
+  def inactive_message
+    return :suspended if suspended?
+    return :banned if banned?
+    return :deleted if deleted?
+
+    super
+  end
+
+  def moderation_restricted?
+    suspended? || banned? || deleted?
   end
 
   # GDPR erasure: keeps the row (orders are legally retained) but removes

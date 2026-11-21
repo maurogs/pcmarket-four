@@ -504,3 +504,54 @@ exposing contact details or moving payments off-platform.
 `config/{routes,application,recurring}.yml`, `config/locales/messaging.*.yml`,
 `lib/tasks/context.rake`, `.claude/context/{project,project.es,project.html,project.es.html}`,
 `test/**`.
+
+## Phase 6A — Admin foundation, dashboard, moderation and users
+
+### What changed
+
+- Added the `/:locale/admin` namespace with `Admin::BaseController` (staff
+  guard, `admin` layout, Pundit admin policies, `Admin::Auditable`) and the
+  admin sidebar/topbar Stimulus controllers.
+- Built the cached admin dashboard (`Admin::Dashboard`), including 7-day KPI
+  trends, 30-day inline SVG charts, latest pending listings/orders/users and a
+  Solid Queue/Active Storage/database health panel under the 40-query budget.
+- Built the moderation queue with image review, category-median scam warning,
+  message-safety scan, duplicate-image checksum detection, seller context,
+  approve/reject/feature actions, bulk approve and keyboard shortcuts.
+- Added listing administration (filters, sorting, bulk whitelist, full edit form
+  with labels/status/featured/performance/game-FPS JSON/specs, detail history).
+- Added user administration (filters, CSV export, suspension, ban, roles,
+  confirmation, password reset, GDPR soft delete, impersonation) and store
+  administration (verification, vacation mode, edits).
+- Added `ListingMailer#approved/#rejected` and listing notifications through
+  `Notifier`; every admin mutation is written to `admin_audit_logs`.
+- Added six-locale `admin.<locale>.yml` files and Devise inactive messages.
+- Added an audit log index, global admin search and translated coming-soon
+  placeholders for phase 6B/6C sections.
+- Added integration/system tests for access control, moderation emails,
+  suspicious price/duplicate image warnings, bulk actions, suspension, role
+  guards, impersonation, CSV export, dashboard query budget and the moderator
+  approval system flow. Stabilised system-test viewport/cookie isolation and the
+  pre-existing flaky composer typing.
+
+### Why
+
+Phase 6A gives staff a single operational surface for the marketplace: the
+dashboard exposes marketplace health and revenue, the moderation queue protects
+buyers from scams and duplicates, and user/store tools enforce policy with a
+complete audit trail. Remaining admin areas can now be added incrementally in
+6B/6C using the shared UI kit.
+
+### Files touched
+
+`db/migrate/20261122120000_add_moderation_fields_to_users.rb`,
+`app/controllers/admin/**`, `app/controllers/concerns/admin/auditable.rb`,
+`app/policies/admin/**`, `app/services/admin/**`, `app/mailers/listing_mailer.rb`,
+`app/views/listing_mailer/**`, `app/views/layouts/admin.html.erb`,
+`app/views/admin/**`, `app/views/shared/_impersonation_banner.html.erb`,
+`app/helpers/admin_helper.rb`,
+`app/javascript/controllers/{admin_sidebar,admin_queue}_controller.js`,
+`app/models/user.rb`, `app/services/notifier.rb`,
+`app/controllers/application_controller.rb`, `app/views/layouts/{application,seller}.html.erb`,
+`config/routes.rb`, `config/locales/admin.*.yml`, `config/locales/notifications.*.yml`,
+`test/**`, `.claude/context/{project,project.es}.md`.

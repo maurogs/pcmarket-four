@@ -1,0 +1,26 @@
+<div class="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+  <span class="mr-1 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400">
+    <%= t("admin.common.bulk_actions") %>
+  </span>
+
+  <% actions.each do |action| %>
+    <%= button_tag name: "bulk_action", value: action[:value],
+                   form: local_assigns[:form_id],
+                   data: (action[:confirm] ? { turbo_confirm: action[:confirm] } : {}),
+                   class: ui_button_classes(variant: action[:variant] || :ghost, size: :sm,
+                                            extra: "!min-h-8 !px-2.5 !text-xs") do %>
+      <%= action[:label] %>
+    <% end %>
+  <% end %>
+
+  <div class="ml-auto flex flex-wrap items-center gap-2">
+    <%= select_tag :label,
+                   options_for_select(Listing::LABELS.map { |label| [ t("listings.labels.#{label}"), label ] }),
+                   include_blank: t("admin.common.label"),
+                   form: local_assigns[:form_id],
+                   class: ui_input_classes("!min-h-8 !w-auto !py-1 !text-xs") %>
+    <%= number_field_tag :days, 7, min: 1, max: 90, form: local_assigns[:form_id],
+                         class: ui_input_classes("!min-h-8 !w-20 !py-1 !text-xs"),
+                         aria: { label: t("admin.common.feature_days") } %>
+  </div>
+</div>

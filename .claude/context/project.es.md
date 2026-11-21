@@ -2,18 +2,22 @@
 
 ## Estado
 
-Fase 5 completada: chat interno con conversaciones, contadores de no leídos y
+Fase 6A completada: base del panel de administración con un layout propio,
+panel de control, cola de moderación de anuncios, administración de anuncios,
+gestión de usuarios y tiendas, registro de auditoría y suplantación de personal.
+El chat interno de la fase 5 con conversaciones, contadores de no leídos y
 mensajes en tiempo real, ofertas con precio reservado en la cesta, bloqueos y
 avisos de seguridad en los mensajes; notificaciones a seguidores, alertas
 instantáneas y resumen diario de búsquedas guardadas y alertas de bajada de
-precio en favoritos. El ciclo de vida de pedidos de la fase 4B (pagado,
-enviado, entregado, completado, cancelado, en disputa y reembolsado), las
-pantallas de gestión del vendedor, la confirmación de entrega, las disputas y
-las reseñas del comprador, las notificaciones de pedido con envío de correos y
-la actualización del contador en tiempo real siguen intactos. El
-descubrimiento (fase 2B), la creación de anuncios (fase 3A) y el pago
-(fase 4A) no han cambiado. Las pantallas de moderación de administración y los
-pagos en línea quedan para fases posteriores.
+precio en favoritos siguen intactos. El ciclo de vida de pedidos de la fase 4B
+(pagado, enviado, entregado, completado, cancelado, en disputa y reembolsado),
+las pantallas de gestión del vendedor, la confirmación de entrega, las disputas
+y las reseñas del comprador, las notificaciones de pedido con envío de correos y
+la actualización del contador en tiempo real siguen intactos. El descubrimiento
+(fase 2B), la creación de anuncios (fase 3A) y el pago (fase 4A) no han
+cambiado. Las pantallas de pedidos, disputas, denuncias, reseñas, catálogo,
+contenido, marketing y ajustes quedan para las fases 6B/6C y enlazan a páginas
+traducidas de «próximamente».
 
 ## Estado de las fases
 
@@ -26,6 +30,7 @@ pagos en línea quedan para fases posteriores.
 | 4A | Cesta, pago y cobros | Completada |
 | 4B | Ciclo de pedidos y gestión del vendedor | Completada |
 | 5 | Mensajería, ofertas, seguidores y alertas de búsquedas | Completada |
+| 6A | Base de administración, panel, moderación, usuarios y tiendas | Completada |
 
 ## Stack
 
@@ -53,7 +58,7 @@ pagos en línea quedan para fases posteriores.
   Devise no admite callbacks OmniAuth bajo un segmento dinámico.
 - Los archivos de idioma se dividen por dominio (`models`, `home`, `layout`,
   `listings`, `pages`, `newsletter`, `errors`, `common`, `countries`, `cart`,
-  `checkout`, `orders`, `notifications`, `messaging`); cada clave existe en los
+  `checkout`, `orders`, `notifications`, `messaging`, `admin`); cada clave existe en los
   seis idiomas. `test/i18n/locale_parity_test.rb` exige paridad.
 - El inglés es inglés británico (favourite, colour, authorised).
 - Los selectores de idioma del pie y del cajón conservan la ruta y la consulta
@@ -574,6 +579,78 @@ pagos en línea quedan para fases posteriores.
 - Las rutas de administración exigen `current_user.staff?`; los visitantes que no
   son personal se redirigen a la portada con un aviso traducido.
 
+### Panel de administración (fase 6A)
+
+- Todas las rutas de administración viven en el ámbito de idioma en
+  `/:locale/admin`. `Admin::BaseController` autentica, exige
+  `current_user.staff?`, usa el layout denso `admin` y expone el contador de
+  moderación pendiente.
+- La autorización usa políticas Pundit en `app/policies/admin/`
+  (`Admin::ListingPolicy`, `Admin::UserPolicy`, `Admin::StorePolicy` y políticas
+  pequeñas específicas). Los moderadores pueden moderar anuncios, usuarios y
+  tiendas; las acciones destructivas (eliminar anuncios, expulsar, cambiar
+  roles, suplantar y borrado RGPD) requieren administrador. Las peticiones no
+  autorizadas redirigen atrás con `errors.not_authorized`.
+- `Admin::Auditable` registra cada mutación en `admin_audit_logs` con
+  administrador, acción, auditable polimórfico, un conjunto de cambios saneado
+  (sin contraseñas ni tokens) y la IP. Los detalles de anuncio, usuario y tienda
+  muestran el historial; `/admin/audit_logs` filtra por acción, administrador y
+  recurso.
+- El layout `admin` usa una barra lateral de escritorio que se contrae a iconos
+  (`admin_sidebar_controller`, persistido en localStorage), se desliza fuera de
+  pantalla en móvil, y una barra superior con búsqueda global, «Ver el sitio»,
+  cambio de tema y el administrador actual.
+- La búsqueda global (`Admin::GlobalSearch`) consulta usuarios (correo/usuario/
+  nombre), anuncios (título/id), pedidos (número/id) y tiendas (nombre), y
+  muestra una página de resultados agrupada.
+- Los parciales del kit de administración viven en `app/views/admin/shared/`:
+  tabla de datos con cabeceras ordenables permitidas, selector de 25/50/100 por
+  página, paginación, barra de filtros, barra de acciones masivas, insignias de
+  estado, tarjetas de métricas, estados vacíos, cabecera de detalle con menú de
+  acciones y panel lateral de metadatos.
+- `Admin::Dashboard` cachea una carga durante dos minutos: tendencias de KPI a
+  siete días con comisión solo si es positiva, gráficos SVG en línea a 30 días
+  (línea de registros, barras de pedidos, barras de las 10 categorías
+  principales), últimos anuncios pendientes/pedidos/usuarios y un panel de salud
+  (tareas fallidas y pendientes de Solid Queue si existen las tablas, bytes de
+  Active Storage, `pg_database_size`). La acción y el marco quedan por debajo de
+  40 consultas SQL.
+- La cola de moderación lista anuncios `pending_review` de más antiguo a más
+  nuevo con todas las imágenes, aviso de precio frente a la mediana de la
+  categoría por debajo del 40 % (posible estafa), análisis de la descripción con
+  `MessageSafetyScanner`, detección de imágenes duplicadas por checksum de
+  Active Storage entre vendedores distintos y contexto del vendedor (antigüedad,
+  anuncios, ventas, valoración, rechazos y verificación). Acciones: aprobar,
+  aprobar y destacar (siete días más la etiqueta `featured`), rechazar con motivo
+  predefinido traducido o texto libre, aprobación masiva y atajos j/k/a/r.
+- La aprobación/rechazo pasa por `Admin::ListingModeration`, crea una
+  notificación y encola `ListingMailer#approved/#rejected` en el idioma del
+  vendedor. `Notifier` despacha los correos de anuncios junto a los de pedidos.
+- `Admin::ListingQuery` permite ordenar por claves concretas y filtra por estado,
+  subárbol de categoría, vendedor, país, precio, etiquetas, destacado, pendiente
+  y rango de creación. `Admin::BulkListingAction` permite aprobar, rechazar,
+  pausar, archivar, eliminar, añadir/quitar etiqueta, destacar y quitar
+  destacado. `Admin::ListingUpdate` valida el JSON de FPS y conserva solo las
+  claves de filtros efectivas.
+- La gestión de usuarios filtra por rol, estado, confirmación, tienda, rango de
+  registro y país; la exportación CSV (`Admin::UserExport`) reutiliza los mismos
+  filtros sin la gema `csv` eliminada de Ruby. La suspensión bloquea el acceso
+  mediante `User#active_for_authentication?`/`inactive_message` y oculta los
+  anuncios con el ámbito de propietario activo. La expulsión también archiva los
+  anuncios. Los cambios de rol rechazan el cambio propio y degradar al último
+  administrador. La confirmación de correo, el envío de restablecimiento y el
+  borrado RGPD quedan auditados.
+- La suplantación guarda el id del administrador en
+  `session[:impersonator_id]`, inicia sesión como el objetivo y muestra un aviso
+  público con acción de parada. Solo los administradores pueden suplantar y
+  nunca a otro administrador; inicio y fin quedan auditados.
+- La gestión de tiendas verifica/desverifica, alterna el modo vacaciones y edita
+  tipo de tienda, datos fiscales/de empresa, políticas y contadores, con enlace
+  al propietario.
+- Los textos de administración viven en `admin.<locale>.yml` en los seis idiomas;
+  los mensajes de cuenta inactiva de Devise se añaden allí
+  (`devise.failure.suspended/banned/deleted`).
+
 ## Mapa de código
 
 ```
@@ -653,8 +730,39 @@ app/controllers/{cart,cart_items,favorites,follows,reports,saved_searches}_contr
 app/controllers/users/registrations_controller.rb
 app/controllers/{conversations,orders,account,pc_finder,pages,legal_pages,sell_offers}_controller.rb
 app/controllers/{search_suggestions,seo,newsletter_subscribers}_controller.rb
-app/controllers/admin/dashboard_controller.rb
-app/controllers/seller/dashboard_controller.rb
+app/controllers/admin/base_controller.rb        acceso, guardia de personal, layout admin,
+                                                ayudantes Pundit y auditoría
+app/controllers/admin/dashboard_controller.rb   KPI, gráficos y salud cacheados
+app/controllers/admin/moderation_queue_controller.rb
+app/controllers/admin/listings_controller.rb    tabla, detalle, edición y borrado
+app/controllers/admin/listing_approvals_controller.rb
+app/controllers/admin/listing_rejections_controller.rb
+app/controllers/admin/bulk_listing_actions_controller.rb
+app/controllers/admin/users_controller.rb       directorio, detalle y edición de usuarios
+app/controllers/admin/{user_suspensions,user_bans,user_roles}_controller.rb
+app/controllers/admin/{user_confirmations,user_password_resets,user_deletions}_controller.rb
+app/controllers/admin/{impersonations,user_exports}_controller.rb
+app/controllers/admin/stores_controller.rb      tabla, detalle y edición de tiendas
+app/controllers/admin/{store_verifications,store_vacations}_controller.rb
+app/controllers/admin/{audit_logs,search,placeholders}_controller.rb
+app/controllers/concerns/admin/auditable.rb     escritor de auditoría de mutaciones
+app/policies/admin/                             políticas de personal y administrador
+app/services/admin/dashboard.rb                 agregados cacheados del panel
+app/services/admin/listing_query.rb             filtros y ordenación permitidos
+app/services/admin/listing_moderation.rb        aprobar, rechazar, destacar + correo
+app/services/admin/listing_flags.rb             mediana, seguridad y duplicados
+app/services/admin/listing_update.rb            escritor del formulario de anuncio
+app/services/admin/bulk_listing_action.rb       mutaciones masivas permitidas
+app/services/admin/{user_query,user_export,user_moderation}.rb
+app/services/admin/{store_query,global_search}.rb
+app/mailers/listing_mailer.rb                   correos de aprobación/rechazo
+app/helpers/admin_helper.rb                     navegación, insignias, gráficos
+app/views/layouts/admin.html.erb                barra lateral + barra superior
+app/views/admin/shared/                         kit de tabla, filtros, métricas y meta
+app/views/admin/{dashboard,moderation_queue,listings,users,stores}/**
+app/views/admin/{audit_logs,search,placeholders}/
+app/javascript/controllers/admin_sidebar_controller.js
+app/javascript/controllers/admin_queue_controller.js
 app/services/listing_search.rb              búsqueda, facetas, chips, ordenación
 app/services/cart_summary.rb                 grupos de cesta, avisos, límite de stock
 app/services/checkout/form.rb                validación del pago
@@ -723,16 +831,23 @@ test/integration/{checkout,orders,stripe_webhook}_test.rb
 test/system/checkout_flow_test.rb
 test/system/                                adaptable + modal de acceso
 test/i18n/locale_parity_test.rb
+test/integration/admin_{access,panel,moderation,users}_test.rb
+test/system/admin_moderation_flow_test.rb
 test/seeds_test.rb
 ```
 
 ## Pendientes para fases posteriores
 
-- Pantallas de moderación de administración (cola de aprobación/rechazo) de
-  anuncios; el envío del vendedor ya existe.
-- Interfaz de administración para resolver disputas y emitir reembolsos (las
-  transiciones y políticas existen, pero aún no hay pantallas).
-- Interfaz de administración para revisar mensajes marcados y denuncias.
+- Las pantallas de administración de pedidos, disputas, reembolsos, denuncias,
+  reseñas, categorías, filtros, páginas legales, juegos, boletín y ajustes son
+  marcadores hasta las fases 6B/6C.
+- No hay autenticación en dos pasos para administración; Devise lockable ya
+  limita los inicios de sesión fallidos. Decidir si el 2FA de personal es
+  obligatorio antes de la fase 6C.
+- La suplantación se basa en sesión y queda auditada; no tiene caducidad
+  automática.
+- El panel y las señales de moderación son heurísticos (mediana de precio y
+  reutilización de checksum de imagen), no detección de fraude.
 - El rendimiento del panel del vendedor se cachea cinco minutos; los eventos de
   pedido no lo invalidan de inmediato.
 - Los correos de ciclo de vida a administración dependen de

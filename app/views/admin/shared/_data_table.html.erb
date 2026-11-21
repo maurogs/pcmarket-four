@@ -1,0 +1,36 @@
+<% selectable = local_assigns.fetch(:selectable, false) %>
+<% if records.blank? %>
+  <%= render "admin/shared/empty_state", title: local_assigns[:empty_title] || t("admin.common.empty_title"),
+             body: local_assigns[:empty_body] %>
+<% else %>
+  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <table class="w-full min-w-[52rem] table-auto text-left text-sm">
+      <thead class="border-b border-slate-200 bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400">
+        <tr>
+          <% if selectable %>
+            <th scope="col" class="w-10 px-3 py-2.5">
+              <input type="checkbox" class="size-4 rounded text-brand-700 focus:ring-brand-500"
+                     data-bulk-select-target="toggle" data-action="bulk-select#toggleAll"
+                     form="<%= bulk_form_id %>"
+                     aria-label="<%= t("admin.common.select_all") %>">
+            </th>
+          <% end %>
+          <% columns.each do |column| %>
+            <th scope="col" class="whitespace-nowrap px-3 py-2.5 <%= column[:align] == :right ? 'text-right' : '' %> <%= column[:class] %>">
+              <% if column[:sort_key].present? %>
+                <%= admin_sort_link column[:label], column[:sort_key], sort: sort, direction: direction %>
+              <% else %>
+                <%= column[:label] %>
+              <% end %>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+        <%= render partial: row_partial, collection: records,
+                   as: :record,
+                   locals: { bulk_form_id: local_assigns[:bulk_form_id], selectable: selectable } %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

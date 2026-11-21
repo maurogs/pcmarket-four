@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_22_110000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_22_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -618,6 +618,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_110000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "notification_preferences", default: {}, null: false
+    t.text "suspension_reason"
+    t.datetime "suspended_at"
     t.index "lower((username)::text)", name: "index_users_on_lower_username", unique: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["country_code"], name: "index_users_on_country_code"
@@ -628,6 +630,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_110000) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["role"], name: "index_users_on_role"
     t.index ["status"], name: "index_users_on_status"
+    t.index ["suspended_at"], name: "index_users_on_suspended_at"
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 

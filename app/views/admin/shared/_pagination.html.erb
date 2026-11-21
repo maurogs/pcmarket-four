@@ -1,0 +1,29 @@
+<% if pagy.present? %>
+  <div class="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-zinc-400">
+    <p>
+      <%= t("admin.common.showing", from: pagy.from.to_i, to: pagy.to.to_i, count: pagy.count.to_i) %>
+    </p>
+
+    <div class="flex items-center gap-3">
+      <%= form_with url: request.path, method: :get, class: "flex items-center gap-1.5" do %>
+        <% request.query_parameters.except("page", "per_page").each do |key, value| %>
+          <% if value.is_a?(Array) %>
+            <% value.each { |entry| hidden_field_tag "#{key}[]", entry, id: nil } %>
+          <% else %>
+            <%= hidden_field_tag key, value, id: nil %>
+          <% end %>
+        <% end %>
+        <label for="admin-per-page" class="whitespace-nowrap"><%= t("admin.common.per_page") %></label>
+        <select id="admin-per-page" name="per_page" onchange="this.form.requestSubmit()"
+                class="min-h-8 rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-900">
+          <% AdminHelper::PAGINATION_LIMITS.each do |limit| %>
+            <option value="<%= limit %>" <%= "selected" if pagy.limit.to_i == limit %>><%= limit %></option>
+          <% end %>
+        </select>
+        <noscript><button type="submit" class="underline"><%= t("admin.common.apply") %></button></noscript>
+      <% end %>
+    </div>
+  </div>
+
+  <%= render "shared/pagination", pagy: pagy %>
+<% end %>

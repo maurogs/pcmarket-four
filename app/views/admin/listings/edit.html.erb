@@ -1,0 +1,204 @@
+<div class="mx-auto max-w-5xl space-y-5">
+  <%= render "admin/shared/page_header", title: t("admin.listings.edit.title"),
+             subtitle: t("admin.listings.edit.subtitle", id: @listing.id),
+             back_path: admin_listing_path(@listing),
+             back_label: t("admin.actions.back_to_listing") %>
+
+  <% if @listing.errors.any? %>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
+      <p class="font-semibold"><%= t("admin.common.errors", count: @listing.errors.count) %></p>
+      <ul class="mt-1 list-inside list-disc"><% @listing.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @listing, url: admin_listing_path(@listing), method: :patch, class: "space-y-4" do |form| %>
+    <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.listings.form.details") %></h2>
+      <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <%= form.label :title, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.text_field :title, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :category_id, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.collection_select :category_id, Category.order(:position).select(&:leaf?), :id, :name,
+                                     {}, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :condition, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.select :condition, Listing.conditions.keys.map { |key| [ t("listings.conditions.#{key}"), key ] },
+                          {}, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :brand, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.text_field :brand, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :model_name_text, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.text_field :model_name_text, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :quantity, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.number_field :quantity, min: 1, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div class="sm:col-span-2">
+          <%= form.label :description, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.text_area :description, rows: 6, class: ui_input_classes("!text-sm") %>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.listings.form.pricing") %></h2>
+      <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div>
+          <%= form.label :price, t("admin.listings.form.price_eur"), class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= text_field_tag "listing[price]", format("%.2f", @listing.price), id: "listing_price",
+                             class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :original_price, t("admin.listings.form.original_price_eur"), class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= text_field_tag "listing[original_price]",
+                             @listing.original_price_cents.present? ? format("%.2f", @listing.original_price_cents / 100.0) : "",
+                             id: "listing_original_price", class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :shipping_price, t("admin.listings.form.shipping_price_eur"), class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= text_field_tag "listing[shipping_price]", format("%.2f", @listing.shipping_price_cents / 100.0),
+                             id: "listing_shipping_price", class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div class="flex items-center gap-2">
+          <%= form.check_box :free_shipping, class: "size-4 rounded text-brand-700" %>
+          <%= form.label :free_shipping, class: "text-sm" %>
+        </div>
+        <div class="flex items-center gap-2">
+          <%= form.check_box :shipping_available, class: "size-4 rounded text-brand-700" %>
+          <%= form.label :shipping_available, class: "text-sm" %>
+        </div>
+        <div class="flex items-center gap-2">
+          <%= form.check_box :local_pickup, class: "size-4 rounded text-brand-700" %>
+          <%= form.label :local_pickup, class: "text-sm" %>
+        </div>
+        <div class="flex items-center gap-2">
+          <%= form.check_box :accepts_offers, class: "size-4 rounded text-brand-700" %>
+          <%= form.label :accepts_offers, class: "text-sm" %>
+        </div>
+        <div>
+          <%= form.label :ships_within_days, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.number_field :ships_within_days, min: 0, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.listings.form.location") %></h2>
+      <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div>
+          <%= form.label :country_code, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.select :country_code, Country.enabled.order(:code).map { |country| [ country.name, country.code ] },
+                          {}, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :region_id, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.collection_select :region_id, Region.order(:name), :id, :name,
+                                     { include_blank: true }, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :city, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.text_field :city, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :postal_code, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.text_field :postal_code, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.listings.form.visibility") %></h2>
+      <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div>
+          <%= form.label :status, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.select :status, Listing.statuses.keys.map { |status| [ t("listings.statuses.#{status}"), status ] },
+                          {}, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :featured_until, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.datetime_local_field :featured_until, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+        <div>
+          <%= form.label :performance_score, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= form.number_field :performance_score, min: 0, max: 100, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+      </div>
+
+      <fieldset class="mt-3">
+        <legend class="mb-1.5 text-xs font-medium text-slate-600 dark:text-zinc-300"><%= t("admin.listings.form.labels") %></legend>
+        <div class="flex flex-wrap gap-x-4 gap-y-2">
+          <% Listing::LABELS.each do |label| %>
+            <label class="flex items-center gap-1.5 text-sm">
+              <%= check_box_tag "listing[labels][]", label, @listing.labels.include?(label),
+                                id: "listing_label_#{label}", class: "size-4 rounded text-brand-700" %>
+              <%= t("listings.labels.#{label}") %>
+            </label>
+          <% end %>
+        </div>
+      </fieldset>
+
+      <fieldset class="mt-3">
+        <legend class="mb-1.5 text-xs font-medium text-slate-600 dark:text-zinc-300"><%= t("admin.listings.form.tags") %></legend>
+        <div class="flex flex-wrap gap-x-4 gap-y-2">
+          <% Listing::TAGS.each do |tag| %>
+            <label class="flex items-center gap-1.5 text-sm">
+              <%= check_box_tag "listing[tags][]", tag, @listing.tags.include?(tag),
+                                id: "listing_tag_#{tag}", class: "size-4 rounded text-brand-700" %>
+              <%= t("listings.tags.#{tag}") %>
+            </label>
+          <% end %>
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.listings.form.specs") %></h2>
+      <p class="mt-0.5 text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.listings.form.specs_hint", category: @listing.category.name) %></p>
+      <% if @filters.empty? %>
+        <p class="mt-2 text-sm text-slate-500 dark:text-zinc-400"><%= t("admin.listings.form.no_specs") %></p>
+      <% else %>
+        <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <% @filters.each do |filter| %>
+            <div>
+              <label for="listing_spec_<%= filter.key %>" class="mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300"><%= filter.name %></label>
+              <% if filter.input_checkbox? || filter.input_select? %>
+                <%= select_tag "listing[specs][#{filter.key}]",
+                               options_for_select(filter.filter_options.map { |option| [ option.label, option.value ] },
+                                                  Array(@listing.specs[filter.key])),
+                               id: "listing_spec_#{filter.key}", multiple: true,
+                               class: ui_input_classes("!min-h-24 !py-1.5 !text-sm") %>
+              <% else %>
+                <%= text_field_tag "listing[specs][#{filter.key}]", Array(@listing.specs[filter.key]).join(", "),
+                                   id: "listing_spec_#{filter.key}", class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.listings.form.game_fps") %></h2>
+      <p class="mt-0.5 text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.listings.form.game_fps_hint") %></p>
+      <%= text_area_tag "listing[game_fps_json]", JSON.pretty_generate(@listing.game_fps.presence || {}),
+                        id: "listing_game_fps_json", rows: 8, spellcheck: false,
+                        class: ui_input_classes("!font-mono !text-xs") %>
+      <% if @listing.errors[:game_fps].any? %>
+        <p class="mt-1 text-xs font-medium text-rose-600"><%= @listing.errors.full_messages_for(:game_fps).join(", ") %></p>
+      <% end %>
+    </section>
+
+    <div class="flex flex-wrap items-center justify-end gap-2">
+      <%= link_to t("admin.actions.cancel"), admin_listing_path(@listing), class: ui_button_classes(variant: :ghost, size: :md) %>
+      <%= form.submit t("admin.actions.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+    </div>
+  <% end %>
+</div>

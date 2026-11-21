@@ -1,0 +1,221 @@
+<div class="mx-auto max-w-[80rem]" data-controller="admin-queue bulk-select">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-brand-700 dark:text-brand-300"><%= t("admin.moderation.eyebrow") %></p>
+      <h1 class="mt-0.5 font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("admin.moderation.title") %></h1>
+      <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400">
+        <%= t("admin.moderation.subtitle", count: @pagy.count) %>
+      </p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="hidden items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] text-slate-500 sm:flex dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400">
+        <kbd class="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[10px] dark:bg-zinc-800">j</kbd>/<kbd class="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[10px] dark:bg-zinc-800">k</kbd>
+        <%= t("admin.moderation.shortcuts.navigate") %>
+        <kbd class="ml-1 rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[10px] dark:bg-zinc-800">a</kbd>
+        <%= t("admin.moderation.shortcuts.approve") %>
+        <kbd class="ml-1 rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[10px] dark:bg-zinc-800">r</kbd>
+        <%= t("admin.moderation.shortcuts.reject") %>
+      </span>
+      <%= link_to admin_listings_path, class: ui_button_classes(variant: :outline, size: :sm) do %>
+        <%= t("admin.moderation.all_listings") %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @listings.empty? %>
+    <div class="mt-8">
+      <%= render "admin/shared/empty_state", title: t("admin.moderation.empty_title"),
+                 body: t("admin.moderation.empty_body") %>
+    </div>
+  <% else %>
+    <%= form_with url: admin_bulk_listing_actions_path, method: :post, id: "queue-bulk-form",
+                  class: "mt-5" do %>
+      <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <label class="flex cursor-pointer items-center gap-2 font-medium text-slate-700 dark:text-zinc-300">
+          <input type="checkbox" class="size-4 rounded text-brand-700 focus:ring-brand-500"
+                 data-bulk-select-target="toggle" data-action="bulk-select#toggleAll">
+          <%= t("admin.moderation.select_all") %>
+        </label>
+        <button type="submit" name="bulk_action" value="approve"
+                class="<%= ui_button_classes(variant: :primary, size: :sm) %>">
+          <%= t("admin.moderation.bulk_approve") %>
+        </button>
+      </div>
+    <% end %>
+
+    <div class="mt-4 space-y-4">
+        <% @listings.each_with_index do |listing, index| %>
+          <% flags = @flags.fetch(listing) %>
+          <article data-admin-queue-target="card"
+                   class="rounded-xl border border-slate-200 bg-white shadow-sm transition dark:border-zinc-800 dark:bg-zinc-900"
+                   aria-label="<%= t("admin.moderation.card_label", title: listing.title) %>">
+            <div class="flex flex-col gap-4 p-4 lg:flex-row">
+              <div class="lg:w-64 lg:shrink-0">
+                <% images = listing.ordered_images %>
+                <% if images.any? %>
+                  <%= link_to url_for(images.first), target: "_blank", rel: "noopener",
+                              class: "block overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800" do %>
+                    <%= image_tag images.first.variant(resize_to_limit: [ 640, 480 ], format: :webp),
+                                  alt: listing.title, class: "h-40 w-full object-cover" %>
+                  <% end %>
+                  <% if images.size > 1 %>
+                    <div class="mt-2 flex gap-1.5 overflow-x-auto pb-1">
+                      <% images.drop(1).each do |image| %>
+                        <%= link_to url_for(image), target: "_blank", rel: "noopener",
+                                    class: "size-12 shrink-0 overflow-hidden rounded-md border border-slate-200 dark:border-zinc-700" do %>
+                          <%= image_tag image.variant(resize_to_limit: [ 96, 96 ], format: :webp),
+                                        alt: "", loading: "lazy", class: "size-12 object-cover" %>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <div class="flex h-40 items-center justify-center rounded-lg bg-slate-100 text-xs text-slate-400 dark:bg-zinc-800">
+                    <%= t("admin.moderation.no_images") %>
+                  </div>
+                <% end %>
+
+                <div class="mt-2 flex items-center gap-2">
+                  <input type="checkbox" name="listing_ids[]" value="<%= listing.id %>"
+                         form="queue-bulk-form"
+                         class="size-4 rounded text-brand-700 focus:ring-brand-500"
+                         data-bulk-select-target="checkbox" data-action="bulk-select#changed"
+                         aria-label="<%= t("admin.moderation.select_listing", title: listing.title) %>">
+                  <span class="text-[11px] text-slate-500 dark:text-zinc-400"><%= t("admin.moderation.card_index", index: @pagy.from.to_i + index) %></span>
+                </div>
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0">
+                    <%= link_to listing.title, admin_listing_path(listing),
+                                class: "font-heading text-base font-semibold text-slate-950 hover:text-brand-700 dark:text-white dark:hover:text-brand-300" %>
+                    <p class="mt-0.5 text-xs text-slate-500 dark:text-zinc-400">
+                      <%= listing.category.name %> · <%= listing_condition_label(listing) %> · <%= t("admin.moderation.submitted", time: relative_time(listing.created_at)) %>
+                    </p>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-heading text-lg font-bold text-slate-950 dark:text-white"><%= format_price(listing.price_cents) %></p>
+                    <% if flags.price_median_cents.to_i.positive? %>
+                      <p class="text-[11px] text-slate-500 dark:text-zinc-400">
+                        <%= t("admin.moderation.median", price: format_price(flags.price_median_cents)) %>
+                      </p>
+                    <% end %>
+                  </div>
+                </div>
+
+                <p class="mt-2 line-clamp-4 whitespace-pre-line text-sm text-slate-600 dark:text-zinc-300"><%= listing.description %></p>
+
+                <div class="mt-3 flex flex-wrap gap-1.5">
+                  <% if flags.suspicious_price? %>
+                    <span class="<%= ui_badge_classes(tone: :danger) %>">
+                      <%= icon "flame", class: "size-3" %><%= t("admin.moderation.flags.suspicious_price") %>
+                    </span>
+                  <% end %>
+                  <% if flags.safety[:flagged] %>
+                    <span class="<%= ui_badge_classes(tone: :accent) %>">
+                      <%= icon "shield-check", class: "size-3" %>
+                      <%= t("admin.moderation.flags.safety", reasons: flags.safety_reasons.map { |reason| t("admin.moderation.safety.#{reason}") }.join(", ")) %>
+                    </span>
+                  <% end %>
+                  <% if flags.duplicate? %>
+                    <span class="<%= ui_badge_classes(tone: :danger) %>">
+                      <%= icon "rotate-ccw", class: "size-3" %>
+                      <%= t("admin.moderation.flags.duplicate", count: flags.duplicate_listings.size) %>
+                    </span>
+                  <% end %>
+                  <% if flags.seller.previous_rejections.positive? %>
+                    <span class="<%= ui_badge_classes(tone: :neutral) %>">
+                      <%= t("admin.moderation.flags.previous_rejections", count: flags.seller.previous_rejections) %>
+                    </span>
+                  <% end %>
+                  <% if listing.featured? %>
+                    <span class="<%= ui_badge_classes(tone: :brand) %>"><%= t("listings.labels.featured") %></span>
+                  <% end %>
+                </div>
+
+                <% if flags.duplicate? %>
+                  <p class="mt-2 text-xs text-rose-700 dark:text-rose-400">
+                    <%= t("admin.moderation.duplicate_hint") %>
+                    <% flags.duplicate_listings.first(3).each do |other| %>
+                      <%= link_to other.title, admin_listing_path(other),
+                                  class: "font-medium underline decoration-dotted hover:no-underline" %>
+                    <% end %>
+                  </p>
+                <% end %>
+
+                <dl class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 rounded-lg bg-slate-50 px-3 py-2 text-[11px] sm:grid-cols-4 dark:bg-zinc-800/60">
+                  <div>
+                    <dt class="text-slate-500 dark:text-zinc-400"><%= t("admin.moderation.seller.account_age") %></dt>
+                    <dd class="font-semibold text-slate-800 dark:text-zinc-200"><%= t("admin.moderation.days", count: flags.seller.account_age_days) %></dd>
+                  </div>
+                  <div>
+                    <dt class="text-slate-500 dark:text-zinc-400"><%= t("admin.moderation.seller.listings") %></dt>
+                    <dd class="font-semibold text-slate-800 dark:text-zinc-200"><%= flags.seller.listings_count %></dd>
+                  </div>
+                  <div>
+                    <dt class="text-slate-500 dark:text-zinc-400"><%= t("admin.moderation.seller.sales") %></dt>
+                    <dd class="font-semibold text-slate-800 dark:text-zinc-200"><%= flags.seller.completed_sales %></dd>
+                  </div>
+                  <div>
+                    <dt class="text-slate-500 dark:text-zinc-400"><%= t("admin.moderation.seller.rating") %></dt>
+                    <dd class="font-semibold text-slate-800 dark:text-zinc-200">
+                      <% if flags.seller.rating.positive? %>
+                        <span class="inline-flex items-center gap-0.5"><%= icon "star", class: "size-3 text-accent-500" %><%= number_with_precision(flags.seller.rating, precision: 1) %></span>
+                      <% else %>
+                        —
+                      <% end %>
+                    </dd>
+                  </div>
+                  <div class="col-span-2 sm:col-span-4">
+                    <dt class="text-slate-500 dark:text-zinc-400"><%= t("admin.moderation.seller.name") %></dt>
+                    <dd class="font-semibold text-slate-800 dark:text-zinc-200">
+                      <%= link_to listing.user.display_name, admin_user_path(listing.user),
+                                  class: "text-brand-700 hover:underline dark:text-brand-300" %>
+                      <% if flags.seller.verified %>
+                        <span class="ml-1 <%= ui_badge_classes(tone: :success, extra: "!px-1.5 !py-0 !text-[9px]") %>"><%= t("admin.stores.verified_badge") %></span>
+                      <% end %>
+                    </dd>
+                  </div>
+                </dl>
+
+                <div class="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-3 sm:flex-row sm:flex-wrap sm:items-start dark:border-zinc-800">
+                  <%= button_to admin_listing_approval_path(listing), method: :post,
+                                form: { data: { admin_queue_target: "approveForm" } },
+                                class: ui_button_classes(variant: :primary, size: :sm,
+                                                         extra: "!min-h-8 !px-3 !text-xs") do %>
+                    <%= icon "check", class: "size-3.5" %><%= t("admin.actions.approve") %>
+                  <% end %>
+
+                  <%= button_to admin_listing_approval_path(listing, feature_days: 7),
+                                method: :post,
+                                class: ui_button_classes(variant: :accent, size: :sm,
+                                                         extra: "!min-h-8 !px-3 !text-xs") do %>
+                    <%= icon "sparkles", class: "size-3.5" %><%= t("admin.moderation.approve_feature") %>
+                  <% end %>
+
+                  <%= form_with url: admin_listing_rejection_path(listing), method: :post,
+                                class: "flex flex-1 flex-wrap items-start gap-1.5" do |form| %>
+                    <%= select_tag :reason,
+                                   options_for_select(Admin::ListingRejectionsController::PRESET_REASONS.map { |reason| [ t("admin.moderation.reasons.#{reason}"), reason ] }),
+                                   include_blank: t("admin.moderation.reason_placeholder"),
+                                   data: { admin_queue_target: "rejectReason" },
+                                   class: ui_input_classes("!min-h-8 !w-auto !py-1 !text-xs") %>
+                    <%= text_field_tag :other_reason, nil, placeholder: t("admin.moderation.other_reason"),
+                                       class: ui_input_classes("!min-h-8 !w-40 !py-1 !text-xs") %>
+                    <%= button_tag type: "submit",
+                                   class: ui_button_classes(variant: :danger, size: :sm,
+                                                            extra: "!min-h-8 !px-3 !text-xs") do %>
+                      <%= icon "x", class: "size-3.5" %><%= t("admin.actions.reject") %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </article>
+        <% end %>
+      </div>
+
+    <%= render "admin/shared/pagination", pagy: @pagy %>
+  <% end %>
+</div>

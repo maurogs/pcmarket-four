@@ -1,0 +1,38 @@
+<div class="flex flex-wrap items-start justify-between gap-4">
+  <div class="min-w-0">
+    <%= link_to back_path, class: "mb-1 inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-brand-700 dark:text-zinc-400 dark:hover:text-brand-300" do %>
+      <%= icon "chevron-left", class: "size-3.5" %><%= local_assigns[:back_label] || t("admin.actions.back") %>
+    <% end %>
+    <div class="flex flex-wrap items-center gap-2">
+      <h1 class="font-heading text-xl font-bold tracking-tight text-slate-950 sm:text-2xl dark:text-white"><%= title %></h1>
+    </div>
+    <% if local_assigns[:subtitle].present? %>
+      <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= subtitle %></p>
+    <% end %>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <% Array(secondary_actions).each do |action| %>
+      <%= link_to action[:label], action[:path],
+                  class: ui_button_classes(variant: action[:variant] || :outline, size: :sm),
+                  data: (action[:confirm] ? { turbo_confirm: action[:confirm] } : {}) %>
+    <% end %>
+
+    <% if actions.present? %>
+      <%= render layout: "shared/dropdown",
+                 locals: { trigger: t("admin.actions.manage"), id: "admin-detail-actions" } do %>
+        <% actions.each do |action| %>
+          <% if action[:method] && action[:method].to_s != "get" %>
+            <%= button_to action[:label], action[:path], method: action[:method],
+                          form: { class: "block w-full", data: { turbo_confirm: action[:confirm] } },
+                          class: "block w-full rounded-lg px-3 py-2 text-left text-sm #{action[:danger] ? 'text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10' : 'text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800'}" %>
+          <% else %>
+            <%= link_to action[:label], action[:path],
+                        class: "block rounded-lg px-3 py-2 text-sm #{action[:danger] ? 'text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10' : 'text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800'}",
+                        data: (action[:confirm] ? { turbo_confirm: action[:confirm] } : {}) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
