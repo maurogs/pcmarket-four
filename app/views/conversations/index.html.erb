@@ -1,3 +1,49 @@
-<%= render "shared/placeholder_page", title: t("pages.conversations.index_title"),
-           body: t("pages.conversations.index_body"), cta_path: listings_path,
-           cta_label: t("pages.coming_soon.listings_cta") %>
+<% content_for :title, t("messaging.inbox.title") %>
+
+<div class="page-container py-8 sm:py-10">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white">
+        <%= t("messaging.inbox.title") %>
+      </h1>
+      <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("messaging.inbox.subtitle") %></p>
+    </div>
+    <% if unread_inbox_count.positive? %>
+      <%= button_to t("messaging.inbox.mark_all_read"), inbox_read_all_path,
+                    method: :post, class: ui_button_classes(variant: :outline, size: :sm) %>
+    <% end %>
+  </div>
+
+  <% unless chat_enabled? %>
+    <div class="mt-5 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+      <%= icon "message-circle", class: "mt-0.5 size-4 shrink-0" %>
+      <span><%= t("messaging.inbox.chat_disabled") %></span>
+    </div>
+  <% end %>
+
+  <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
+    <div class="min-w-0">
+      <%= render "conversations/list", conversations: @conversations, tab: @tab,
+                 blocked_users: @blocked_users, active: @active_conversation %>
+    </div>
+
+    <div class="hidden min-w-0 lg:block">
+      <% if @active_conversation %>
+        <%= turbo_frame_tag "conversation-thread",
+                            src: conversation_path(@active_conversation),
+                            loading: :lazy do %>
+          <div class="surface space-y-3 p-5" aria-busy="true">
+            <div class="h-5 w-1/3 animate-pulse rounded bg-slate-100 dark:bg-zinc-800"></div>
+            <div class="h-24 animate-pulse rounded-xl bg-slate-100 dark:bg-zinc-800"></div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="surface h-full">
+          <%= render "shared/empty_state",
+                     title: t("messaging.inbox.empty_title"),
+                     body: t("messaging.inbox.empty_body") %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

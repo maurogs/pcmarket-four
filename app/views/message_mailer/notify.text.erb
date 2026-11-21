@@ -1,0 +1,15 @@
+<%= t("messaging.mailer.#{@kind}.title") %>
+
+<%= t("messaging.mailer.greeting", name: @recipient.full_name) %>
+
+<% if @listing %>
+<%= @listing.title %>
+<% end %>
+
+<% if @message.offer? && @message.offer_amount_cents.present? %>
+<%= t("messaging.mailer.offer_amount", amount: format_price(@message.offer_amount_cents)) %>
+<% end %>
+
+<%= @message.body %>
+
+<%= t("messaging.mailer.cta") %>: <%= @url %>

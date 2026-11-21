@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PCMarket — Project Context</title>
+  <style>:root {
+  color-scheme: light dark;
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: #e2e8f0;
+  --brand: #0f766e;
+  --brand-soft: #ccfbf1;
+  --accent: #d97706;
+  --code-bg: #f1f5f9;
+  --shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 8px 24px rgba(15, 23, 42, .05);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #09090b;
+    --card: #18181b;
+    --text: #f4f4f5;
+    --muted: #a1a1aa;
+    --border: #27272a;
+    --brand: #2dd4bf;
+    --brand-soft: rgba(20, 184, 166, .12);
+    --accent: #fbbf24;
+    --code-bg: #111113;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 12px 32px rgba(0, 0, 0, .25);
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.hero {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 56px 24px 24px;
+}
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.hero h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 46px);
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+.lede { margin: 12px 0 0; color: var(--muted); font-size: 18px; }
+.meta { margin: 16px 0 0; color: var(--muted); font-size: 13px; }
+main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 8px 24px 64px;
+  display: grid;
+  gap: 20px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card.status {
+  border-left: 4px solid var(--brand);
+  background: linear-gradient(90deg, var(--brand-soft), transparent 45%), var(--card);
+}
+.card.open-items { border-left: 4px solid var(--accent); }
+.card.code-map { border-left: 4px solid var(--muted); }
+h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+}
+h3 { margin: 24px 0 8px; font-size: 16px; color: var(--brand); }
+p { margin: 0 0 12px; }
+.card p:last-child { margin-bottom: 0; }
+ul { margin: 0 0 12px; padding-left: 22px; }
+li { margin: 0 0 6px; }
+li::marker { color: var(--brand); }
+code {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1px 5px;
+  font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+pre {
+  margin: 12px 0 0;
+  padding: 18px;
+  overflow: auto;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+pre code { background: none; border: 0; padding: 0; white-space: pre; }
+.table-wrap { overflow-x: auto; margin: 8px 0 4px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th {
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--code-bg);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.badge-success { background: rgba(16, 185, 129, .16); color: #047857; }
+.badge-warn { background: rgba(245, 158, 11, .18); color: #b45309; }
+@media (prefers-color-scheme: dark) {
+  .badge-success { color: #6ee7b7; }
+  .badge-warn { color: #fcd34d; }
+}
+a { color: var(--brand); }
+footer {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+  color: var(--muted);
+  font-size: 13px;
+}
+@media (max-width: 640px) {
+  .hero { padding-top: 36px; }
+  .card { padding: 20px; border-radius: 14px; }
+}
+@media print {
+  body { background: #fff; color: #000; }
+  .card { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+  <header class="hero">
+    <p class="eyebrow">PCMarket</p>
+    <h1>PCMarket — Project Context</h1>
+    <p class="lede">Architecture, decisions and code map</p>
+    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-21 23:08</p>
+  </header>
+  <main><section class="card status">
+<h2><span>Status</span><span class="badge badge-success">Complete</span></h2>
+<p>Phase 5 complete: internal chat with conversations, unread counters and real-time messages, offers with accepted-offer cart pricing, blocks and message safety warnings; follower notifications, instant and daily saved-search alerts and favourite price-drop alerts. Phase 4B order lifecycle (paid, shipped, delivered, completed, cancelled, disputed, refunded), seller fulfilment screens, buyer delivery confirmation/disputes/reviews, order notifications with email fan-out and real-time badge updates remain intact. Discovery (Phase 2B), listing creation (Phase 3A) and checkout/payments (Phase 4A) are unchanged. Admin moderation screens and online payouts remain for later phases.</p>
+</section>
+<section class="card status">
+<h2><span>Phase status</span></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Phase</th><th>Scope</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Foundation, localisation, design system</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>2B</td><td>Discovery, search, listings, stores, favourites, auth</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>3A</td><td>Listing creation and seller board</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>3B</td><td>Seller area and account settings</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>4A</td><td>Cart, checkout and payments</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>4B</td><td>Order lifecycle and seller fulfilment</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>5</td><td>Messaging, offers, follows and saved-search alerts</td><td><span class="badge badge-success">Complete</span></td></tr>
+</tbody></table></div>
+</section>
+<section class="card ">
+<h2><span>Stack</span></h2>
+<ul>
+<li>Ruby 4.0.9, Rails 8.1.4, PostgreSQL 16</li>
+<li>Hotwire (Turbo, Stimulus), import maps, Propshaft, Tailwind CSS 4</li>
+<li>Devise 5 (database authenticatable, registerable, recoverable, rememberable, validatable, confirmable, trackable, lockable, omniauthable)</li>
+<li>Pundit (authorisation), Pagy 9 (pagination)</li>
+<li>pg_search (tsearch + trigram), FriendlyId, Ancestry</li>
+<li>rack-attack, meta-tags</li>
+<li>Stripe (Checkout Sessions + signed webhooks); WebMock in tests</li>
+<li>Minitest with fixtures</li>
+</ul>
+</section>
+<section class="card ">
+<h2><span>Architecture decisions</span></h2>
+<h3>Localisation</h3>
+<ul>
+<li><code>available_locales</code>: <code>es</code>, <code>en</code>, <code>fr</code>, <code>de</code>, <code>it</code>, <code>pt</code>; default <code>es</code>; fallbacks <code>es</code>, <code>en</code>.</li>
+<li>All routes except <code>/up</code>, <code>/robots.txt</code> and <code>/sitemap.xml</code> are wrapped in <code>scope &quot;(:locale)&quot;, locale: /es|en|fr|de|it|pt/</code>.</li>
+<li><code>ApplicationController#switch_locale</code> validates <code>params[:locale]</code> and wraps each request in <code>I18n.with_locale</code>.</li>
+<li>Devise OmniAuth callbacks live outside the locale scope because Devise does not support OmniAuth callbacks under a dynamic segment.</li>
+<li>Locale files are split by domain (<code>models</code>, <code>home</code>, <code>layout</code>, <code>listings</code>, <code>pages</code>, <code>newsletter</code>, <code>errors</code>, <code>common</code>, <code>countries</code>, <code>cart</code>, <code>checkout</code>, <code>orders</code>, <code>notifications</code>); every key exists in all six languages. <code>test/i18n/locale_parity_test.rb</code> enforces parity.</li>
+<li>English is British English (favourite, colour, authorised).</li>
+<li>Footer and drawer language switchers preserve the current path and query.</li>
+</ul>
+<h3>Data model</h3>
+<ul>
+<li>Bigint primary keys, real foreign keys, <code>null: false</code> wherever the domain requires a value, indexes on every FK and on filtering/sorting columns.</li>
+<li>Money is stored as integer cents in EUR; country codes are ISO alpha-2 strings (<code>ES</code>, <code>FR</code>, <code>GB</code>, <code>DE</code>, <code>IT</code>, <code>PT</code>).</li>
+<li><code>pg_trgm</code> and <code>unaccent</code> are enabled for search.</li>
+<li><code>Setting</code> stores typed key/value rows, caches under <code>settings/v1/&lt;key&gt;</code> and falls back to <code>Setting::DEFAULTS</code>. The cache is invalidated on save/destroy.</li>
+<li>Soft deletes use <code>users.deleted_at</code>; <code>User.visible</code> scopes active, undeleted accounts.</li>
+<li>Usernames are generated as <code>Adjective-Animal#1234</code> from built-in word lists.</li>
+<li><code>Listing</code> workflow is state-machine-style methods (<code>submit_for_review!</code>, <code>approve!</code>, <code>reject!</code>, <code>pause!</code>, <code>resume!</code>, <code>mark_sold!</code>), no AASM.</li>
+<li><code>Listing.visible</code> requires published status, stock, an active owner and an enabled country. <code>Listing.on_sale</code> and <code>Listing.recently_sold</code> support home sections.</li>
+<li><code>Listing::LABELS</code> and <code>Listing::TAGS</code> hold the marketplace label and seller tag vocabularies; both are translated under <code>listings.labels.*</code> and <code>listings.tags.*</code>.</li>
+<li>Slugs: FriendlyId on <code>Store</code> (name), <code>Category</code> (English name) and <code>Listing</code> (title, with history through <code>friendly_id_slugs</code>).</li>
+<li><code>Category.find_by_path_slugs</code> resolves <code>/c/components/gpus</code>; <code>#path_slugs</code> returns the slug chain.</li>
+<li>Reviews recalculate <code>stores.rating_avg</code>/<code>reviews_count</code> in <code>after_commit</code>.</li>
+<li>Orders compute subtotal, commission (only when enabled) and total in <code>Order#compute_totals!</code>. Orders are buyer-side purchases: <code>buyer_id</code> is nullable for guests, <code>buyer_email</code> is required for guests, and every order carries <code>payment_method</code>, <code>locale</code>, <code>checkout_token</code> (unique per seller), <code>guest_access_token</code> (has_secure_token), <code>terms_accepted_at</code> and <code>stock_restored_at</code>.</li>
+<li>Order lifecycle is a state machine of guarded, transactional methods in <code>Order</code>: <code>mark_paid!</code>, <code>ship!</code>, <code>mark_ready_for_pickup!</code>, <code>confirm_delivery!</code>, <code>complete!</code>, <code>cancel!</code>, <code>open_dispute!</code>, <code>resolve_dispute!</code>, <code>refund!</code> and <code>flag_late_shipment!</code>. Each transition locks the row, validates the from-state and actor, writes an <code>OrderEvent</code> and sends notifications through <code>OrderNotifier</code>.</li>
+<li><code>OrderEvent</code> stores <code>order_id</code>, nullable <code>actor_id</code>, <code>kind</code>, <code>data</code> jsonb and <code>created_at</code>; the buyer and seller timelines read it chronologically. Orders additionally carry <code>disputed_at</code>, <code>refunded_at</code>, <code>refund_required</code> and <code>late_shipment_notified_at</code>.</li>
+<li>Cancellation restores stock and re-lists sold listings exactly once through <code>stock_restored_at</code>. Completion increments <code>stores.sales_count</code>. <code>Order</code> exposes carrier tracking URLs for ten carriers and inspection-window helpers.</li>
+<li><code>Notifier.call(user, kind, params:, url:)</code> creates a <code>Notification</code> and enqueues the matching order email when <code>email_order_updates</code> is enabled. Notifications broadcast badge replacements on <code>turbo_stream_from user, :notifications</code>.</li>
+<li><code>orders.number</code> comes from the <code>order_number_seq</code> PostgreSQL sequence as <code>PCM-YYYY-NNNNNN</code>; the sequence is created by a migration and lazily ensured for schema-loaded test databases.</li>
+<li>Favourites and follows use counter caches.</li>
+</ul>
+<h3>Seeds</h3>
+<ul>
+<li><code>db/seeds.rb</code> loads <code>db/seeds/*.rb</code> in dependency order: settings, countries, regions, categories, filters, games, legal pages, demo data.</li>
+<li>Every seed file is idempotent. Reference data uses <code>find_or_initialize_by</code> plus <code>save!</code>; running the seeds twice produces no duplicates.</li>
+<li>The category taxonomy is two levels. Leaf categories own listings; filter assignments on a parent are inherited through <code>Category#effective_filters</code>.</li>
+<li>Phase 1 seed categories that are no longer part of the taxonomy are removed only when they own no listings, so user data is never destroyed.</li>
+<li>Demo data is created only in development; the administrator is created in every non-production environment.</li>
+</ul>
+<h3>Design system</h3>
+<ul>
+<li>Tailwind v4 <code>@theme</code> tokens in <code>app/assets/tailwind/application.css</code>: brand teal <code>--color-brand-50..950</code>, amber <code>--color-accent-*</code>, Space Grotesk headings, Inter body, 12 px card radius and shared shadow tokens.</li>
+<li>Class-based dark mode via <code>@custom-variant dark</code>; an inline head script applies the stored/preferred theme before paint.</li>
+<li>UI primitives live in <code>app/views/shared/</code> and helper class methods (<code>ui_button_classes</code>, <code>ui_badge_classes</code>, <code>ui_chip_classes</code>, <code>ui_input_classes</code>, <code>ui_card_classes</code>).</li>
+<li>Icons are vendored Lucide SVGs read by <code>ApplicationHelper#icon</code>.</li>
+</ul>
+<h3>Navigation and layout</h3>
+<ul>
+<li><code>MenuBuilder</code> caches the mega-menu payload under a key containing the locale and <code>Category.maximum(:updated_at)</code>.</li>
+<li>Header: sticky, blurred on scroll, autocomplete search, feature-flagged &quot;Sell to PCMarket&quot; button, favourites/notifications/cart badges, account dropdown, theme toggle and mega menu.</li>
+<li>Mega menu opens on 150 ms hover intent or click, closes on outside click and Escape, and shows child categories, label/price quick links and promo cards.</li>
+<li>Mobile uses a left slide-over drawer (focus trap, scroll lock, Escape) and a bottom tab bar below 768 px.</li>
+<li>Cookie consent is a Stimulus controller on <code>&lt;body&gt;</code>; choices are stored in <code>cookie_consent</code> for six months. <code>consent_given?(:analytics)</code> is available to gate future third-party scripts.</li>
+</ul>
+<h3>Home page</h3>
+<ul>
+<li><code>HomeFeed</code> owns all home queries and uses <code>Listing.visible.includes(:store, :category, images_attachments: :blob)</code>.</li>
+<li>Sections are cached per locale for five minutes; listing cards are fragment cached on <code>[listing, I18n.locale]</code> while the viewer-dependent favourite button stays outside the cache.</li>
+<li>Sections: hero carousel, promo tiles, PC Finder CTA, shop-by-vibe, scroll rows, trust strip, reviews carousel with translated fallback testimonials, sell CTA and SEO copy.</li>
+<li><code>listings/_card.html.erb</code> is the shared card used by home, search and favourites.</li>
+</ul>
+<h3>Search and filtering (Phase 2B)</h3>
+<ul>
+<li><code>ListingSearch</code> (<code>app/services/listing_search.rb</code>) is the single entry point for web, API and saved-search alerts. It normalises params, clamps the query to 100 chars and the page to 100, and converts euro inputs to cents. It accepts <code>q</code>, <code>category</code>, <code>min_price</code>, <code>max_price</code>, <code>condition[]</code>, <code>labels[]</code>, <code>tags[]</code>, <code>f[key][]</code>, <code>region_id[]</code>, <code>shipping[]</code>, <code>free_shipping</code>, <code>on_sale</code>, <code>seller</code>, <code>sort</code> and <code>page</code>.</li>
+<li>Spec filters use JSONB containment (<code>listings.specs @&gt; &#39;{&quot;key&quot;:&quot;value&quot;}&#39;</code>), OR-ed inside a key and AND-ed across keys. Only <code>FilterDefinition</code> keys that are effective for the current category are accepted, which also neutralises injection attempts in filter keys.</li>
+<li><code>Result</code> exposes paginated records (Pagy, 24/page), total count (cached 60s), active filter chips with removable params, facet counts for effective checkbox filters and condition counts.</li>
+<li>Facets are computed with ONE grouped query over <code>jsonb_each_text(listings.specs)</code> against the relation filtered by category, query, price and condition (everything except spec filters), cached 5 minutes per (category, q, price, condition, filter keys) digest. Options with zero count are hidden unless selected.</li>
+<li>Search UI runs inside a single <code>turbo-frame#listing_results</code>; the sidebar, toolbar, grid and pagination all live inside it, so filtering only replaces the frame. Forms use <code>data-turbo-action=&quot;advance&quot;</code> for shareable URLs and back-button support. Stimulus <code>filters_controller</code> submits checkboxes/selects immediately and debounces text/price inputs by 400ms, showing skeleton cards while loading. The mobile filter sheet contains the same form partial.</li>
+<li>Category pages, <code>/search</code> and store listings all reuse the same results partial. Store pages pass a store-scoped base relation and an <code>include_sold</code> toggle, and hide the spec/label/region sections (<code>compact</code> mode).</li>
+<li>Indexes added for search: <code>(status, category_id, published_at DESC)</code>, <code>(status, price_cents)</code>, <code>(status, favorites_count DESC)</code>, <code>(status, store_id, published_at DESC)</code>, <code>(status, region_id, published_at DESC)</code> and a partial <code>(status, published_at DESC)</code> for published in-stock rows. The existing GIN indexes cover <code>specs</code>, <code>labels</code>, <code>tags</code> and trigram title/description.</li>
+<li>Query plan with 5,000 generated listings (rolled back): <code>RAILS_ENV=test bin/rails db:test:prepare</code> then <code>RAILS_ENV=test bin/rails runner script/search_explain.rb</code>. The combined category + condition + price + shipping + spec query (1,917 matches) uses <code>Index Scan using index_listings_search_category</code> with the remaining predicates as filters; planning 1.7ms, execution 13.5ms, 238 shared buffers for the listings scan. The GIN <code>index_listings_on_specs</code> remains available when the planner prefers containment over the composite index.</li>
+</ul>
+<h3>Listing detail, stores and favourites (Phase 2B)</h3>
+<ul>
+<li>Detail pages use a 7/5 desktop grid with a sticky buy box, a Stimulus gallery (pointer swipe, arrow keys, thumbnails, <code>&lt;dialog&gt;</code> lightbox) and a mobile sticky price/CTA bar. Images use <code>resize_to_limit</code> WebP variants; the first is eager + <code>fetchpriority=high</code>, the rest lazy.</li>
+<li>View counters use a single <code>UPDATE</code> via <code>Listing.register_view!</code>, skip bots and owners, and remember the last 50 listing ids in the session (also used for &quot;recently viewed&quot; on home and detail pages).</li>
+<li>Old slugs resolve through <code>friendly_id_slugs</code> and 301 to the current URL. Non-visible listings are 404 for strangers but viewable by owners/staff with a status banner; sold listings remain public and render SoldOut offers.</li>
+<li>Structured data: Product + Offer (price, currency, availability, item condition), BreadcrumbList, and aggregateRating from the store. Search pages emit BreadcrumbList + ItemList.</li>
+<li>Store pages have a banner/logo header, professional vs private badge, company/tax details, vacation banner, tabs (listings/about/reviews) loaded through <code>turbo-frame#store-panel</code>, an <code>include_sold</code> toggle, review distribution bars, sorting and paginated reviews with seller replies.</li>
+<li>Favourites toggle through Turbo Streams: <code>replace_all</code> updates every heart instance for a listing, the count is replaced separately and cards are removed from the favourites grid. A Stimulus controller toggles the heart optimistically and restores it if the request fails. Guest intents are stored in the session, completed after sign-in and then return to the listing.</li>
+<li>Store follows use a counter cache and Turbo Stream replacement of the button and follower count.</li>
+</ul>
+<h3>Cart and authentication (Phase 2B)</h3>
+<ul>
+<li>Guest carts use a signed permanent <code>cart_token</code>; user carts use <code>user_id</code>. A Warden <code>after_authentication</code> hook merges guest items into the user cart, capping quantities by stock and deleting the guest rows.</li>
+<li>Cart item creation rejects own and non-visible listings, caps quantity by stock and responds with Turbo Streams that update the header badge and append a toast. &quot;Buy now&quot; adds the item, then redirects to the cart.</li>
+<li>Devise views use a two-column shell with rotating testimonials. Sign-up requires the terms checkbox (<code>users.terms_accepted_at</code>), records marketing opt-in and respects <code>Setting registrations_enabled</code>. The header login link opens the same form inside a Turbo Frame <code>&lt;dialog&gt;</code> with a full-page fallback. Development mail uses <code>letter_opener</code> mounted at <code>/letter_opener</code>.</li>
+<li>Saved searches are created from the current query string, listed under <code>/saved_searches</code> and in the account page, and can toggle notifications with Turbo Streams. Reports are one-open-per-user-and-listing.</li>
+</ul>
+<h3>Listing creation and seller board (Phase 3A)</h3>
+<ul>
+<li>The seller form is a single page with five sections (category, photos, details, price, delivery). <code>listing_form_controller</code> adds counters, progress, drag ordering, file previews and client-side type/size validation; the form remains usable without JavaScript.</li>
+<li>The category picker uses root <code>&lt;details&gt;</code> cards and leaf links. A leaf link navigates only <code>turbo-frame#listing_specs</code> to <code>new_listing_path(category_id:)</code> / <code>edit_listing_path(category_id:)</code>, so already typed fields are untouched. The frame carries the hidden <code>listing[category_id]</code>.</li>
+<li><code>ListingForm</code> is the single writer for the seller form: it assigns scalars, keeps specs only for the category&#39;s effective filter keys (stored as strings), attaches/removes/reorders images, forces quantity 1 for private sellers, enforces the image requirement on submit and applies the draft → pending_review/published transition.</li>
+<li>Images are uploaded through Active Storage direct uploads (<code>@rails/activestorage</code> pinned in the import map). Display order is stored in blob <code>metadata[&quot;position&quot;]</code> and every image render uses <code>Listing#ordered_images</code>.</li>
+<li>Money inputs use virtual attributes (<code>price=</code>, <code>original_price=</code>, <code>shipping_price=</code>) that accept <code>1.299,50</code>, <code>1299.50</code> and <code>1299</code>.</li>
+<li>A listing created without a store calls <code>User#ensure_store!</code>, which creates an individual store named after the username.</li>
+<li>Published listings stay live after price, quantity, shipping or description edits. Title, category or image changes set <code>Listing#requires_re_review?</code> from <code>saved_changes</code> plus media changes and return the listing to <code>pending_review</code> when approval is enabled.</li>
+<li>Destroy archives (<code>status: archived</code>) when order items exist and hard-deletes otherwise. Duplication copies the listing as a draft and reuses image blobs.</li>
+<li>Nested member routes model lifecycle actions: <code>listing_submission</code> (submit), <code>listing_pause</code> (POST pause, DELETE resume) and <code>listing_sale</code> (mark sold). <code>Seller::ListingsController#index</code> filters by status with counts and search; bulk pause/resume/delete go through <code>Seller::BulkListingActionsController</code> and the <code>BulkListingAction</code> service, which whitelists the action.</li>
+<li>Listing detail uses grid placement so the buy box follows the title on mobile and sits beside the gallery on desktop; the stats row wraps by group with <code>whitespace-nowrap</code> items. Zero-cost shipping with shipping enabled renders the translated &quot;Free shipping&quot; label in the buy box, cards and shipping section.</li>
+</ul>
+<h3>Seller area and account settings (Phase 3B)</h3>
+<ul>
+<li><code>Seller::BaseController</code> supplies authentication, the <code>seller</code> layout and <code>seller_store</code> (<code>User#ensure_store!</code>). The layout has a store header card and responsive nav: desktop sidebar, mobile scrolling tabs.</li>
+<li><code>SellerDashboard</code> caches one aggregate payload for 5 minutes per store and emits KPI cards with 30-day deltas, a server-rendered inline SVG orders chart (with an accessible <code>&lt;title&gt;/&lt;desc&gt;</code> and visually hidden table), action links, store completeness and recent listings. Conditional <code>FILTER</code> aggregates keep the dashboard under 30 queries including chrome.</li>
+<li>Seller settings are singular resources: <code>seller/store</code>, <code>seller/store_policy</code>, <code>seller/vacation</code> and <code>seller/payout</code>. Logo (≤5 MB) and banner (≤8 MB) accept JPEG/PNG/WebP; <code>image_preview_controller</code> previews uploads.</li>
+<li><code>Store</code> uses FriendlyId history. Renames archive the previous slug and old store URLs 301 to the current slug. <code>Store#completeness</code> weights logo, description, both policies and location at 25 points each.</li>
+<li>Professional stores require <code>company_name</code> and <code>tax_id</code>; Spanish tax IDs are validated by <code>SpanishTaxIdValidator</code> (NIF/NIE module-23, CIF control digit).</li>
+<li>Vacation mode keeps listings visible but disables purchase in the listing buy box and rejects <code>CartItemsController#create</code> with a translated alert.</li>
+<li>Online payouts are not implemented: <code>seller/payout</code> explains the order-based payment model and shows a disabled Stripe Connect button.</li>
+<li>Account settings are singular resources under <code>account</code>: profile (<code>show/update</code>), password, addresses, notification preferences, data export and deletion. <code>Account::BaseController</code> supplies the <code>account</code> layout.</li>
+<li>Addresses promote the first address to default, clear other defaults inside the save transaction and promote a fallback when the default is deleted.</li>
+<li><code>users.notification_preferences</code> is a jsonb hash (defaults true except the newsletter, which mirrors <code>accepts_marketing</code>). <code>User#notify_by_email?</code> is the read API; <code>User#update_notification_preferences!</code> is the writer.</li>
+<li><code>UserDataExport</code> produces the GDPR articles 15/20 JSON download from the signed-in user only. <code>User#soft_delete!</code> anonymises email/username/names, purges the avatar, archives listings and retains orders.</li>
+<li>Email changes go through Devise reconfirmable (<code>unconfirmed_email</code>); passwords require the current password except for OAuth-only accounts, which can set one.</li>
+<li><code>ApplicationController#switch_locale</code> resolves explicit locale, then the signed-in user&#39;s locale, then the best <code>Accept-Language</code> match, then Spanish. Selecting a locale while signed in persists it to <code>users.locale</code>.</li>
+</ul>
+<h3>Cart, checkout and payments (Phase 4A)</h3>
+<ul>
+<li><code>CartSummary</code> (<code>app/services/cart_summary.rb</code>) is the single read model for the cart page, header badge and checkout. It groups cart rows by seller and store, clamps quantities to current stock, flags sold/unavailable/vacation items, excludes unavailable items from totals and returns per-group shipping (sum of item shipping, free, or pickup-only).</li>
+<li>The cart page renders one card per store with item thumbnails/condition/ price, a stepper only when listing stock is above one, remove and save-to-favourites. The sidebar shows subtotal, shipping, an internal platform-fee note when commissions are enabled (the buyer is never charged it), estimated total, buyer-protection box and the checkout/guest-login CTAs. <code>Setting checkout_enabled</code> hides the CTAs and shows the translated disabled notice.</li>
+<li>Cart mutations (quantity, remove, favourite) respond with Turbo Streams that replace <code>#cart-groups</code>, <code>#cart-summary</code> and <code>#cart-count</code>. Saving to favourites is a nested <code>cart_item_favorite</code> resource.</li>
+<li>Checkout is a singular <code>checkout</code> resource with a nested <code>confirmation</code>. <code>Checkout::Form</code> validates contact email, per-seller shipping/local pickup, the shared shipping address (saved address or typed fields), enabled country, Spanish province/postal-code prefix, payment availability and both legal acknowledgements. The page uses four <code>&lt;details&gt;</code> steps with a small Stimulus controller that opens the next step.</li>
+<li><code>Checkout::PlaceOrder</code> runs in one transaction: it re-validates the summary, locks every listing <code>FOR UPDATE</code> in id order, re-checks visibility/stock, creates one pending_payment order per seller with title/price snapshots, decrements stock (marking zero-stock listings sold), optionally saves the address and clears purchased cart rows. <code>checkout_token</code> (hidden field, unique per seller) makes double submits return the original orders.</li>
+<li>Payment providers implement <code>start(orders, return_urls)</code> and <code>handle_webhook(request)</code>: <code>BankTransfer</code> (default, IBAN/beneficiary/deadline from settings), <code>CashOnPickup</code> (only when every group is pickup-only) and <code>Stripe</code> (Checkout Session per order, metadata order ids, signed webhook, idempotent paid marking and stock restoration on expiry). <code>Payments:: Availability</code> computes the offered methods from settings, the Stripe key and the pickup state.</li>
+<li><code>ExpireUnpaidOrdersJob</code> runs hourly in every environment and cancels pending_payment bank-transfer orders older than <code>payment_deadline_days</code>, restoring stock and relisting sold-out listings.</li>
+<li>Confirmation shows order numbers per seller, totals, payment instructions, next steps and guest links. <code>OrderMailer#placed_buyer</code> and <code>#placed_seller</code> send HTML + text in the order locale; the seller mail respects <code>email_order_updates</code>.</li>
+<li>Buyer orders are <code>/orders</code> (filter tabs All/To pay/In progress/Completed/ Cancelled, number/title search) and <code>/orders/:number</code> (status timeline, items, seller card, delivery address, payment instructions, totals). <code>OrderPolicy</code> allows buyers only; guests use the <code>guest_access_token</code> query parameter. <code>Orders::CancellationsController</code> lets a buyer cancel an unpaid order and restores stock.</li>
+<li>New settings defaults: <code>payment_bank_transfer_enabled</code>, <code>bank_iban</code>, <code>bank_beneficiary</code>, <code>payment_deadline_days</code>, <code>stripe_enabled</code>.</li>
+</ul>
+<h3>Order lifecycle and seller fulfilment (Phase 4B)</h3>
+<ul>
+<li><code>Order</code> lifecycle transitions are guarded, transactional model methods. Admin can mark paid/refund/resolve disputes; sellers mark cash-on-pickup paid, ship with a carrier from <code>Order::CARRIERS</code> and tracking (optional only for <code>other</code>), mark local pickups ready, and cancel paid orders with a refund flag. Buyers confirm receipt and open disputes inside the inspection window.</li>
+<li><code>OrderNotifier</code> fans out in-app notifications and locale-aware HTML/text emails for paid, shipped, delivered, completed, cancelled, dispute, refund and late-shipment events. Guest buyers receive email without an account. Admin dispute mail goes to <code>Setting.support_email</code>.</li>
+<li>Solid Queue recurring jobs: <code>AutoDeliverOrdersJob</code> (shipped older than <code>auto_delivered_after_shipping_days</code>), <code>AutoCompleteOrdersJob</code> (delivered older than <code>inspection_window_days</code>, skips disputes) and <code>LateShipmentReminderJob</code> (one reminder after <code>seller_ship_deadline_days</code>, auto-cancel with refund after twice that).</li>
+<li>Buyer order actions are nested singular resources: <code>delivery_confirmation</code>, <code>dispute</code> (new/create with up to five photos), <code>review</code> and <code>cancellation</code>.</li>
+<li>Seller <code>/seller/orders</code> has tabs (to ship, awaiting payment, shipped, completed including delivered, cancelled/refunded, disputes), counts, search, desktop table/mobile cards, CSV export, an order page with privacy-gated address (paid only), commission line when non-zero, net payout, tracking, shipment/pickup/cash/cancellation modals, review replies and a print-optimised packing slip at <code>/seller/orders/:id/packing_slip</code>.</li>
+<li><code>SellerDashboard</code> revenue is <code>sum(total_cents - commission_cents)</code> for paid, shipped, delivered and completed orders.</li>
+<li>Reviews require a completed order, buyer ownership, one per order, a 20–1000 character body and no words from <code>Setting blocked_words</code>. Sellers reply once and may edit that reply. <code>reviews_enabled</code> hides buyer forms, store review panels and listing review sections.</li>
+<li>Notifications live at <code>/notifications</code> (unread first, paginated, mark all read, per-item read on click) and in a lazy Turbo Frame header bell showing the latest eight. <code>Notification#after_create_commit</code> replaces the badge over <code>Turbo::StreamsChannel</code>.</li>
+<li>New settings defaults: <code>inspection_window_days</code> 2, <code>auto_complete_after_delivery_days</code> 2, <code>auto_delivered_after_shipping_days</code> 14, <code>seller_ship_deadline_days</code> 3, <code>support_email</code> and <code>blocked_words</code>.</li>
+</ul>
+<h3>Messaging, offers and alerts (Phase 5)</h3>
+<ul>
+<li><code>Conversation</code> is one thread per <code>[listing, buyer, seller]</code>; seller-only threads support store and order entry points. <code>ConversationStarter</code> owns the rules: chat enabled, no self-messaging, no block in either direction, listing visibility, first message and optional first offer.</li>
+<li>The inbox lives at <code>/inbox</code> with tabs Chats, Offers, Archived and Blocked users. Desktop shows the list and a lazy <code>turbo-frame#conversation-thread</code>; mobile shows the list and then the thread with a back link. Unread counters are atomically incremented by <code>Message</code> and reset by <code>Conversation# mark_read_for!</code>; <code>Conversation.broadcast_inbox_badge</code> keeps the header badge live over <code>[user, :inbox]</code>.</li>
+<li>Messages broadcast <code>append</code> to <code>[conversation, user]</code> for both participants so own/other alignment stays correct. Composer: autosize textarea, Enter sends, Shift+Enter newline, 2,000-character maximum, disabled for blocks, deleted listings or disabled chat. Day separators use the request locale.</li>
+<li><code>MessageSafetyScanner</code> flags emails, ES/EN phone numbers, IBANs and off-platform payment phrases (Bizum, PayPal Friends, Western Union, transfers outside the marketplace). The flag is stored on <code>messages.flagged</code> and shows a translated warning to the recipient without blocking delivery.</li>
+<li><code>Message</code> rate-limits each sender to 30 messages per 10 minutes.</li>
+<li>Offers are <code>kind: offer</code> messages with bounds (&lt; listing price, ≥ 50%, <code>accepts_offers</code>), a 48-hour TTL and <code>ExpireOffersJob</code> every ten minutes. <code>OfferResponse</code> accepts, declines or counters; countering marks the previous offer declined and creates a new pending offer. Acceptance writes <code>cart_items.offer_price_cents</code>/<code>offer_expires_at</code> (24 hours); <code>CartSummary</code> and <code>Checkout::PlaceOrder</code> snapshot the offer price on <code>OrderItem</code>.</li>
+<li>Blocks are a <code>Block</code> row in either direction; the thread header blocks or unblocks and the inbox lists blocked users. Reports extend the polymorphic <code>Report</code> to conversations.</li>
+<li><code>MessageNotifier</code> creates notifications for new messages/offers and emails through <code>MessageMailer</code> respecting <code>email_messages</code>/<code>email_offers</code>; message emails are throttled to one per conversation and recipient every 15 minutes.</li>
+<li>Publishing a listing enqueues <code>NotifyFollowersJob</code> (notification only) and <code>SavedSearchAlertJob</code> (instant matches, SQL pre-filter by category subtree, price and country, then <code>SavedSearch#matches?</code>; owner excluded). <code>SavedSearchDigestJob</code> runs daily at 08:00 Europe/Madrid for saved searches with <code>frequency: daily</code>, groups up to 20 matches per user and updates <code>last_notified_at</code>. Both respect <code>email_saved_search_alerts</code> and <code>Setting saved_search_alerts_enabled</code>.</li>
+<li><code>PriceDropAlertJob</code> notifies favourite users when a published price falls and emails them when <code>email_price_drops_favourites</code> is enabled.</li>
+<li>Saved-search management supports rename, frequency (instant/daily), notify toggle, replay and delete. <code>/account/following</code> lists followed stores with their latest listings. <code>config.time_zone</code> is Europe/Madrid while timestamps remain stored in UTC.</li>
+<li>New settings default <code>chat_enabled</code> already existed; new notification kinds are <code>message_received</code>, <code>offer_received</code>, <code>offer_accepted</code>, <code>offer_declined</code>, <code>offer_countered</code>, <code>followed_store_listing</code>, <code>saved_search_match</code> and <code>price_drop_favourite</code>.</li>
+</ul>
+<h3>Performance guardrails</h3>
+<ul>
+<li><code>ListingSearch::INCLUDES</code> preloads store, category, region, user and image attachments/blobs. Cards never call <code>category.root</code> or <code>user.store</code>; root slugs come from a cached <code>Category.root_slug_map</code> and seller names prefer the preloaded store.</li>
+<li><code>MenuBuilder</code> fetches roots and direct children in two queries and builds paths from slugs without walking ancestry.</li>
+<li><code>Setting</code> caches the whole small settings table under one key.</li>
+<li>Anonymous search pages send <code>Cache-Control: public, max-age=60</code> and <code>fresh_when</code> on <code>[locale, params digest, Listing.maximum(:updated_at)]</code>; listing pages use <code>fresh_when</code> on <code>[listing, locale, store.updated_at]</code>.</li>
+<li>N+1 guard: <code>test/integration/search_performance_test.rb</code> renders a category page with 24 listings and asserts fewer than 25 SQL queries via <code>ActiveSupport::Notifications</code>.</li>
+</ul>
+<h3>SEO and security</h3>
+<ul>
+<li><code>ApplicationController#set_default_meta_tags</code> sets title, description, canonical, hreflang alternates plus <code>x-default</code>, Open Graph and Twitter tags.</li>
+<li>JSON-LD <code>Organization</code> + <code>WebSite</code> with <code>SearchAction</code> is emitted once in the layout.</li>
+<li><code>/robots.txt</code> and <code>/sitemap.xml</code> are handled by <code>SeoController</code> outside the locale scope. <code>SitemapBuilder</code> caches output for an hour and splits into a sitemap index after 45,000 URLs.</li>
+<li>A strict nonce-based CSP allows self assets, Google Fonts, data/blob images and the import map. <code>Permissions-Policy</code> and <code>Referrer-Policy</code> are set in <code>config/initializers/security_headers.rb</code>.</li>
+<li>Production forces SSL and uses <code>solid_cache</code>; development uses <code>memory_store</code>, toggled with <code>bin/rails dev:cache</code>.</li>
+</ul>
+<h3>Authorisation</h3>
+<ul>
+<li><code>ApplicationController</code> includes <code>Pundit::Authorization</code>; unauthorised requests redirect back with <code>errors.not_authorized</code>.</li>
+<li><code>ListingPolicy</code> lets owners edit/delete their listings and moderators/admins approve or reject. <code>ListingPolicy::Scope</code> hides non-visible listings from the public.</li>
+<li>Admin routes require <code>current_user.staff?</code>; non-staff visitors are redirected to the home page with a translated alert.</li>
+</ul>
+</section>
+<section class="card code-map">
+<h2><span>Code map</span></h2>
+<pre><code>app/controllers/application_controller.rb   locale, meta tags, menu, staff guard,
+                                            search params
+app/controllers/concerns/search_rendering.rb shared search/category/store rendering
+app/controllers/home_controller.rb          home feed + recently viewed
+app/controllers/listings_controller.rb      index/show/new/create/edit/update/destroy,
+                                            specs Turbo Frame, views, SEO, caching
+app/controllers/listings/                   submissions, pauses, sales member resources
+app/controllers/seller/listings_controller.rb  seller board (tabs, counts, search)
+app/controllers/seller/bulk_listing_actions_controller.rb
+app/controllers/seller/base_controller.rb      auth, seller layout, seller_store
+app/controllers/seller/dashboard_controller.rb KPI dashboard
+app/controllers/seller/{stores,store_policies,vacations,payouts}_controller.rb
+                                            singular store settings resources
+app/controllers/seller/orders_controller.rb seller sales tabs/show
+app/controllers/seller/orders/            shipments, pickups, payments,
+                                          cancellations, packing slips
+app/controllers/seller/order_exports_controller.rb CSV sales export
+app/controllers/seller/review_replies_controller.rb review replies
+app/controllers/orders/delivery_confirmations_controller.rb
+app/controllers/orders/disputes_controller.rb
+app/controllers/orders/reviews_controller.rb
+app/controllers/notifications_controller.rb   list, mark one read
+app/controllers/notifications/read_alls_controller.rb
+app/controllers/conversations_controller.rb   inbox tabs, thread, start conversation
+app/controllers/conversations/                messages, offers, reads, archives, read all
+app/controllers/messages/offer_responses_controller.rb
+app/controllers/blocks_controller.rb          block/unblock users
+app/controllers/account/following_controller.rb
+app/services/notifier.rb                    notification + preference email
+app/services/message_notifier.rb            message/offer notifications + throttled email
+app/services/message_safety_scanner.rb      contact and off-platform payment detection
+app/services/conversation_starter.rb        chat creation rules and first message
+app/services/offer_response.rb              accept/decline/counter + reserved cart price
+app/mailers/message_mailer.rb               message and offer emails
+app/mailers/saved_search_mailer.rb          instant match and daily digest emails
+app/mailers/favourite_mailer.rb             favourite price-drop email
+app/jobs/notify_followers_job.rb
+app/jobs/saved_search_alert_job.rb
+app/jobs/saved_search_digest_job.rb
+app/jobs/price_drop_alert_job.rb
+app/jobs/expire_offers_job.rb
+app/views/conversations/                   inbox list, thread, composer, offer form
+app/views/messages/_message.html.erb       bubble, offer card, safety and receipts
+app/views/messaging/_inbox_badge.html.erb  live header unread total
+app/views/account/following/               followed stores + latest listings
+app/services/order_notifier.rb              order event fan-out
+app/services/profanity_filter.rb            blocked words
+app/services/seller_order_export.rb         filtered CSV
+app/jobs/auto_deliver_orders_job.rb
+app/jobs/auto_complete_orders_job.rb
+app/jobs/late_shipment_reminder_job.rb
+app/views/seller/orders/                   index, show, packing slip
+app/views/notifications/                   index, menu, badge
+app/views/layouts/packing_slip.html.erb    printable layout
+app/controllers/cart_controller.rb           grouped cart read model
+app/controllers/cart_items_controller.rb     cart mutations + Turbo Streams
+app/controllers/cart_items/favorites_controller.rb move cart row to favourites
+app/controllers/checkouts_controller.rb      checkout form, PlaceOrder, provider redirect
+app/controllers/checkout/confirmations_controller.rb  confirmation page
+app/controllers/orders_controller.rb         buyer order history/detail + guest token
+app/controllers/orders/cancellations_controller.rb    cancel unpaid buyer order
+app/controllers/payments/stripe_webhooks_controller.rb signed Stripe webhook
+app/controllers/account_controller.rb        account profile show/update
+app/controllers/account/                     password, addresses, notification
+                                            preferences, data export, deletion
+app/services/seller_dashboard.rb             cached dashboard aggregates
+app/services/user_data_export.rb             GDPR JSON export
+app/validators/spanish_tax_id_validator.rb   NIF/NIE/CIF checksum validation
+app/services/listing_form.rb                seller form writer (specs/images/status)
+app/services/bulk_listing_action.rb          whitelisted bulk pause/resume/delete
+app/controllers/categories_controller.rb    category path resolution
+app/controllers/stores_controller.rb        store header, tabs, reviews
+app/controllers/{cart,cart_items,favorites,follows,reports,saved_searches}_controller.rb
+app/controllers/users/registrations_controller.rb
+app/controllers/{conversations,orders,account,pc_finder,pages,legal_pages,sell_offers}_controller.rb
+app/controllers/{search_suggestions,seo,newsletter_subscribers}_controller.rb
+app/controllers/admin/dashboard_controller.rb
+app/controllers/seller/dashboard_controller.rb
+app/services/listing_search.rb              search, facets, chips, sorting
+app/services/cart_summary.rb                 cart groups, warnings, stock clamping
+app/services/checkout/form.rb                checkout validation
+app/services/checkout/place_order.rb         transactional multi-seller order creation
+app/services/payments/{provider,bank_transfer,cash_on_pickup,stripe,availability}.rb
+                                             payment providers and offered methods
+app/jobs/expire_unpaid_orders_job.rb         unpaid bank-transfer sweep
+app/mailers/order_mailer.rb                  buyer/seller order emails
+app/policies/order_policy.rb                 buyer order authorisation
+app/services/cart_merger.rb                 guest -&gt; user cart merge
+app/services/menu_builder.rb                cached mega-menu payload
+app/services/home_feed.rb                   home queries
+app/services/search_suggestions.rb          listing/category/store suggestions
+app/services/newsletter_subscription.rb     idempotent subscription statuses
+app/services/sitemap_builder.rb             XML sitemap + index
+app/helpers/application_helper.rb           icons, UI classes, money, JSON-LD, specs
+app/views/layouts/application.html.erb      global head, header, main, footer, auth dialog
+app/views/shared/                           layout partials, pagination, filters, toasts
+app/views/listings/index.html.erb           search/category page
+app/views/listings/_results.html.erb        Turbo Frame results + sidebar + sheet
+app/views/listings/_filters.html.erb        shared desktop/mobile filter form
+app/views/listings/show.html.erb            detail page, gallery, buy box
+app/views/listings/_form.html.erb           five-section seller form
+app/views/listings/_specs.html.erb          category-driven specs Turbo Frame
+app/views/listings/_actions.html.erb        seller row actions menu
+app/views/seller/listings/index.html.erb    tabs, table/cards, bulk actions
+app/views/seller/dashboard/show.html.erb    KPIs, SVG chart, actions, recent
+app/views/seller/{stores,store_policies,vacations,payouts,orders}/
+                                            seller settings screens
+app/views/{cart,checkouts,checkout,orders}/
+                                             cart, checkout, confirmation, buyer orders
+app/views/order_mailer/                      placed_buyer/placed_seller HTML + text
+app/views/account/                          profile, password, addresses,
+                                            notifications, privacy/deletion
+app/views/layouts/{seller,account}.html.erb shared area layouts
+app/views/stores/show.html.erb              store header, tabs
+app/views/stores/tabs/                      listings/about/reviews panels
+app/views/favorites/                        heart button/count partials
+app/views/devise/                           styled authentication screens
+app/views/listings/_card.html.erb           shared listing card
+app/views/home/index.html.erb               home sections + recently viewed
+app/assets/tailwind/application.css         design tokens and base styles
+app/assets/images/icons/                    vendored Lucide SVGs
+app/javascript/controllers/                 theme, drawer, mega-menu, autocomplete,
+                                            carousel, dropdown, modal, tabs, toasts,
+                                            cookie consent, scroll rows, back-to-top,
+                                            filters, option list, view toggle,
+                                            favourite toggle, gallery, share, auth modal
+config/routes.rb                            locale scope + SEO + phase 2B resources
+config/initializers/warden_hooks.rb         guest cart merge on sign-in
+config/initializers/content_security_policy.rb
+config/initializers/security_headers.rb
+config/locales/                             six-language UI strings (+ domain files)
+db/seeds.rb                                 loader
+db/seeds/*.rb                               taxonomy and reference data
+script/search_explain.rb                    5k listing EXPLAIN ANALYZE
+test/integration/                           home, SEO, search pages, auth, performance
+test/services/listing_search_test.rb
+test/services/cart_summary_test.rb
+test/services/checkout/place_order_test.rb
+test/services/payments/availability_test.rb
+test/jobs/expire_unpaid_orders_job_test.rb
+test/mailers/order_mailer_test.rb
+test/integration/{checkout,orders,stripe_webhook}_test.rb
+test/system/checkout_flow_test.rb
+test/system/                                responsive + auth modal
+test/i18n/locale_parity_test.rb
+test/seeds_test.rb
+</code></pre>
+</section>
+<section class="card open-items">
+<h2><span>Open items for later phases</span></h2>
+<ul>
+<li>Admin moderation screens (approve/reject queue) for listings; seller-side submission already exists.</li>
+<li>Admin UI to resolve disputes and issue refunds (the model transitions and policies exist, but no admin screens yet).</li>
+<li>Admin UI to review flagged messages and reports.</li>
+<li>Seller dashboard performance is cached for five minutes; order-level events do not invalidate it immediately.</li>
+<li>Order lifecycle emails to admins rely on <code>Setting.support_email</code>; there is no staff inbox UI yet.</li>
+<li>Online payouts (Stripe Connect) and seller payout history are pending.</li>
+<li>Discount codes are visible in the seller navigation as a disabled item.</li>
+<li>Store tabs currently render the active panel inline for SEO and load other tabs through Turbo Frame navigation; <code>loading=&quot;lazy&quot;</code> placeholders can be added if the panels grow heavier.</li>
+<li>Mobile &quot;Load more&quot; navigates to the next page inside the results frame instead of appending; true infinite append can be added with a stream endpoint.</li>
+<li>Google sign-in is shown only when <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> are configured.</li>
+<li>Real social profile URLs and legal copy per locale.</li>
+<li>API endpoints (ListingSearch is already API-ready).</li>
+<li>No typing indicator in conversations (explicitly out of scope).</li>
+<li>Message safety detection is heuristic; moderation review is still manual.</li>
+</ul>
+</section>
+</main>
+  <footer>
+    <p>PCMarket — Project Context · <code>bin/rails context:html</code></p>
+  </footer>
+</body>
+</html>

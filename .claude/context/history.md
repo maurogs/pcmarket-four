@@ -446,3 +446,61 @@ in-app and email updates while stock and sales metrics stay correct.
 `config/routes.rb`, `config/recurring.yml`,
 `config/locales/{orders,phase2,phase3b,notifications}.*.yml`,
 `db/migrate/*order_events*`, `db/schema.rb`, `test/**`.
+
+## Phase 5 — Messaging, offers, follows and saved-search alerts
+
+### What changed
+
+- Replaced the conversation placeholders with a full inbox: two-pane desktop
+  list + thread, mobile list/thread navigation, Chats/Offers/Archived/Blocked
+  tabs, mark-all-read, unread counters and a live header badge over
+  `[user, :inbox]`.
+- Added message composer behaviour (autosize, Enter/Shift+Enter, 2,000 chars),
+  day separators, read receipts, system messages and per-participant Turbo
+  Stream appends.
+- Added `MessageSafetyScanner` (email, ES/EN phone, IBAN, Bizum/PayPal
+  Friends/Western Union/off-platform transfer) with `messages.flagged` and a
+  recipient warning banner.
+- Added blocks in either direction, conversation reports through the polymorphic
+  `Report`, and a 30-messages-per-10-minutes sender limit.
+- Added offers with bounds, 48-hour expiry (`ExpireOffersJob`), accept / decline /
+  counter (`OfferResponse`), accepted-offer cart pricing
+  (`cart_items.offer_price_cents`, `offer_expires_at`), cart/checkout price
+  snapshots, notifications and preference-aware emails.
+- Added `NotifyFollowersJob`, `SavedSearchAlertJob`, `SavedSearchDigestJob`
+  (daily 08:00 Europe/Madrid) and `PriceDropAlertJob`; extended saved searches
+  with a frequency enum, rename, notify toggle and replay.
+- Added the `/account/following` page and set `config.time_zone` to
+  `Europe/Madrid` with UTC storage.
+- Added `bin/rails context:html`, a dependency-free Markdown renderer and
+  standalone light/dark HTML context views; refreshed `project.es.md` and the
+  phase status/open items.
+- Added model, service, job, mailer, integration and system tests for the new
+  flows.
+
+### Why
+
+Phase 5 completes buyer–seller communication and keeps discovery alive after
+the order: offers can convert into a reserved cart price, followers and saved
+searches receive targeted alerts, and favourites react to price drops without
+exposing contact details or moving payments off-platform.
+
+### Files touched
+
+`db/migrate/20261122110000_add_phase5_messaging_offers_and_alerts.rb`,
+`app/models/{conversation,message,block,cart_item,listing,saved_search,user}.rb`,
+`app/services/{conversation_starter,message_notifier,message_safety_scanner,offer_response}.rb`,
+`app/services/{cart_summary,checkout/place_order}.rb`,
+`app/jobs/{notify_followers,saved_search_alert,saved_search_digest,price_drop_alert,expire_offers}_job.rb`,
+`app/mailers/{message,saved_search,favourite}_mailer.rb`,
+`app/mailers/order_mailer.rb`, `app/views/{message_mailer,saved_search_mailer,favourite_mailer}/**`,
+`app/controllers/conversations_controller.rb`, `app/controllers/conversations/**`,
+`app/controllers/messages/**`, `app/controllers/{blocks,reports,saved_searches}_controller.rb`,
+`app/controllers/account/following_controller.rb`,
+`app/views/{conversations,messages,messaging,account/following}/**`,
+`app/views/{listings,stores,orders,shared,saved_searches,account}/**`,
+`app/helpers/application_helper.rb`,
+`app/javascript/controllers/composer_controller.js`, `app/views/layouts/*.html.erb`,
+`config/{routes,application,recurring}.yml`, `config/locales/messaging.*.yml`,
+`lib/tasks/context.rake`, `.claude/context/{project,project.es,project.html,project.es.html}`,
+`test/**`.

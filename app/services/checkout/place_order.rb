@@ -105,7 +105,7 @@ module Checkout
           order.order_items.create!(
             listing: listing,
             title_snapshot: listing.title,
-            price_cents: listing.price_cents,
+            price_cents: item.unit_price_cents,
             quantity: item.quantity
           )
         end

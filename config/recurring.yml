@@ -2,6 +2,12 @@
 # environment; production also clears finished job rows and runs the order
 # lifecycle sweeps.
 development:
+  expire_offers:
+    class: ExpireOffersJob
+    schedule: every 10 minutes
+  saved_search_digest:
+    class: SavedSearchDigestJob
+    schedule: every day at 08:00
   expire_unpaid_orders:
     class: ExpireUnpaidOrdersJob
     schedule: every hour
@@ -16,6 +22,12 @@ development:
     schedule: every hour at minute 30
 
 test:
+  expire_offers:
+    class: ExpireOffersJob
+    schedule: every 10 minutes
+  saved_search_digest:
+    class: SavedSearchDigestJob
+    schedule: every day at 08:00
   expire_unpaid_orders:
     class: ExpireUnpaidOrdersJob
     schedule: every hour
@@ -33,6 +45,12 @@ production:
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
+  expire_offers:
+    class: ExpireOffersJob
+    schedule: every 10 minutes
+  saved_search_digest:
+    class: SavedSearchDigestJob
+    schedule: every day at 08:00
   expire_unpaid_orders:
     class: ExpireUnpaidOrdersJob
     schedule: every hour

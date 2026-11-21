@@ -222,8 +222,14 @@
           <%= link_to t("orders.show.view_store"), store_path(@order.store),
                       class: "mt-1 inline-block text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
         <% end %>
-        <%= link_to t("orders.show.message_seller"), conversations_path,
-                    class: "mt-2 block text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+        <% if chat_enabled? %>
+          <%= button_to t("orders.show.message_seller"),
+                        conversations_path(seller_id: @order.seller_id, order_id: @order.id),
+                        method: :post, form: { data: { turbo: false } },
+                        class: "mt-2 block text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+        <% else %>
+          <p class="mt-2 text-sm text-slate-500 dark:text-zinc-400"><%= t("messaging.inbox.chat_disabled") %></p>
+        <% end %>
       </section>
 
       <section class="surface p-5" aria-labelledby="order-delivery">

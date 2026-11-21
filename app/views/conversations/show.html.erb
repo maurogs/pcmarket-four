@@ -1,3 +1,37 @@
-<%= render "shared/placeholder_page", title: t("pages.conversations.show_title"),
-           body: t("pages.conversations.show_body"), cta_path: conversations_path,
-           cta_label: t("pages.coming_soon.cta") %>
+<% content_for :title, t("messaging.inbox.title") %>
+
+<div class="page-container py-6 sm:py-8">
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
+        <%= t("messaging.inbox.title") %>
+      </h1>
+      <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("messaging.inbox.subtitle") %></p>
+    </div>
+    <% if unread_inbox_count.positive? %>
+      <%= button_to t("messaging.inbox.mark_all_read"), inbox_read_all_path,
+                    method: :post, class: ui_button_classes(variant: :outline, size: :sm) %>
+    <% end %>
+  </div>
+
+  <% unless chat_enabled? %>
+    <div class="mb-4 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+      <%= icon "message-circle", class: "mt-0.5 size-4 shrink-0" %>
+      <span><%= t("messaging.inbox.chat_disabled") %></span>
+    </div>
+  <% end %>
+
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
+    <div class="hidden min-w-0 lg:block">
+      <%= render "conversations/list", conversations: @conversations, tab: "chats",
+                 blocked_users: nil, active: @conversation %>
+    </div>
+
+    <div class="min-w-0">
+      <%= turbo_frame_tag "conversation-thread" do %>
+        <%= render "conversations/thread", conversation: @conversation,
+                   messages: @messages, listing: @listing %>
+      <% end %>
+    </div>
+  </div>
+</div>

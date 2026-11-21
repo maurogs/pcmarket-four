@@ -1,0 +1,8 @@
+<%= t("messaging.mailer.price_drop.title") %>
+
+<%= t("messaging.mailer.price_drop.body",
+      listing: @listing.title,
+      old_price: format_price(@previous_price_cents),
+      price: format_price(@listing.price_cents)) %>
+
+<%= @url %>

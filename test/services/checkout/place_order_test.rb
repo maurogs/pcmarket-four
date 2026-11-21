@@ -118,6 +118,20 @@ class CheckoutPlaceOrderTest < ActiveSupport::TestCase
     end
   end
 
+  test "accepted offer price is snapshotted on the order item" do
+    cart_item = CartItem.find_by!(user: @buyer, listing: @listing)
+    cart_item.update!(offer_price_cents: 40_000, offer_expires_at: 1.hour.from_now)
+    summary = CartSummary.for(user: @buyer)
+
+    assert_equal 40_000, summary.available_items.first.unit_price_cents
+
+    orders = Checkout::PlaceOrder.new(form: form_for(summary), summary: summary).call
+    item = orders.first.order_items.find_by!(listing: @listing)
+
+    assert_equal 40_000, item.price_cents
+    assert_equal 40_000, orders.first.subtotal_cents
+  end
+
   private
 
   def form_for(summary, user: @buyer, email: nil, delivery: nil, checkout_token: nil)

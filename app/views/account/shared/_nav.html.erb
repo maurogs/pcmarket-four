@@ -19,6 +19,12 @@
       <% end %>
     </li>
     <li class="shrink-0 lg:w-full">
+      <%= link_to followings_path, aria: { current: controller_name == "following" ? "page" : nil },
+                  class: nav_item_classes(controller_name == "following") do %>
+        <%= icon "store", class: "size-4 shrink-0" %><%= t("account.area.following") %>
+      <% end %>
+    </li>
+    <li class="shrink-0 lg:w-full">
       <%= link_to new_account_deletion_path, aria: { current: %w[deletions data_exports].include?(controller_name) ? "page" : nil },
                   class: nav_item_classes(%w[deletions data_exports].include?(controller_name)) do %>
         <%= icon "lock", class: "size-4 shrink-0" %><%= t("account.area.privacy") %>

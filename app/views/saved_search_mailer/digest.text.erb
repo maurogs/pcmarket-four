@@ -1,0 +1,12 @@
+<%= t("messaging.mailer.saved_search_digest.title") %>
+
+<%= t("messaging.mailer.greeting", name: @user.full_name) %>
+
+<% @entries.each do |entry| %>
+<%= entry[:search].name %>
+<% entry[:listings].each do |listing| %>
+- <%= listing.title %> — <%= format_price(listing.price_cents) %>
+<% end %>
+<% end %>
+
+<%= @url %>

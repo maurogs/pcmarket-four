@@ -1,0 +1,157 @@
+fr:
+  messaging:
+    inbox:
+      title: "Boîte de réception"
+      subtitle: "Vos conversations, offres et utilisateurs bloqués."
+      mark_all_read: "Tout marquer comme lu"
+      marked_all_read: "Toutes les conversations sont marquées comme lues."
+      chat_disabled: "La messagerie est temporairement désactivée."
+      tabs_label: "Sections de la boîte de réception"
+      tabs:
+        chats: "Discussions"
+        offers: "Offres"
+        archived: "Archivées"
+        blocked: "Utilisateurs bloqués"
+      empty_title: "Aucune conversation pour le moment"
+      empty_body: "Contactez un vendeur depuis une annonce pour démarrer une conversation."
+      browse: "Parcourir les annonces"
+      no_messages: "Aucun message pour le moment"
+      unread_count: "%{count} messages non lus"
+    thread:
+      back: "Retour à la boîte de réception"
+      direct: "Conversation directe"
+      mark_read: "Marquer comme lu"
+      marked_read: "Conversation marquée comme lue."
+      archive: "Archiver"
+      unarchive: "Désarchiver"
+      archived: "Conversation archivée."
+      unarchived: "La conversation est revenue dans votre boîte de réception."
+      report: "Signaler"
+      report_details: "Dites-nous ce qui s'est passé."
+      report_submit: "Envoyer le signalement"
+      no_messages: "Dites bonjour et posez vos questions sur l'article."
+      today: "Aujourd'hui"
+      yesterday: "Hier"
+      blocked_notice: "Cet utilisateur vous a bloqué. Vous ne pouvez plus envoyer de messages."
+      you_blocked_notice: "Vous avez bloqué cet utilisateur. Débloquez-le pour continuer."
+      listing_unavailable: "Cette annonce n'est plus disponible pour les messages."
+      sent: "Envoyé"
+      read: "Lu"
+    composer:
+      placeholder: "Écrivez un message…"
+      label: "Message"
+      send: "Envoyer"
+      hint: "Entrée envoie, Maj+Entrée ajoute une ligne. Maximum %{count} caractères."
+    safety:
+      warning: "Ne partagez jamais de numéro de téléphone, d'e-mail ou de coordonnées bancaires et ne payez jamais en dehors de PCMarket. Si quelqu'un vous le demande, signalez la conversation."
+    offers:
+      label: "Offre"
+      preview: "Offre : %{amount}"
+      statuses:
+        pending: "En attente"
+        accepted: "Acceptée"
+        declined: "Refusée"
+        expired: "Expirée"
+      expires_at: "Expire le %{time}"
+      accept: "Accepter"
+      decline: "Refuser"
+      counter: "Contre-offre"
+      counter_placeholder: "Votre prix"
+      counter_amount: "Montant de la contre-offre"
+      make_offer: "Faire une offre (affiché à %{price})"
+      amount: "Votre offre"
+      amount_placeholder: "p. ex. 450"
+      submit: "Envoyer l'offre"
+      rules: "Les offres doivent être inférieures au prix de l'annonce et d'au moins %{min}."
+      sent: "Offre envoyée."
+      invalid: "L'offre n'a pas pu être envoyée."
+      response_sent: "Votre réponse a été envoyée."
+      default_body: "Offre de %{amount}"
+      counter_body: "Contre-offre de %{amount}"
+      errors:
+        invalid_decision: "Décision invalide."
+        not_participant: "Vous ne faites pas partie de cette conversation."
+        own_offer: "Vous ne pouvez pas répondre à votre propre offre."
+        offer_not_pending: "Cette offre n'est plus en attente."
+        offer_expired: "Cette offre a expiré."
+        listing_unavailable: "L'annonce n'est plus disponible."
+        invalid_amount: "Saisissez un montant valide."
+    blocks:
+      block: "Bloquer l'utilisateur"
+      unblock: "Débloquer"
+      blocked: "Vous avez bloqué %{name}."
+      unblocked: "Vous avez débloqué %{name}."
+      cannot_block_self: "Vous ne pouvez pas vous bloquer vous-même."
+      you_blocked: "Vous avez bloqué cet utilisateur"
+      blocked_you: "Cet utilisateur vous a bloqué"
+      empty_title: "Aucun utilisateur bloqué"
+      empty_body: "Les utilisateurs bloqués ne peuvent pas vous envoyer de messages."
+    errors:
+      chat_disabled: "La messagerie est temporairement désactivée."
+      seller_missing: "Le vendeur est introuvable."
+      own_listing: "Vous ne pouvez pas démarrer une conversation sur votre propre annonce."
+      blocked: "Vous ne pouvez pas envoyer de message à cet utilisateur."
+      listing_unavailable: "Cette annonce n'est pas disponible."
+      message_invalid: "Le message n'a pas pu être envoyé."
+    mailer:
+      greeting: "Bonjour %{name},"
+      cta: "Ouvrir la conversation"
+      offer_amount: "Montant de l'offre : %{amount}"
+      message_received:
+        title: "Vous avez un nouveau message"
+        subject: "Nouveau message de %{sender}"
+      offer_received:
+        title: "Vous avez reçu une offre"
+        subject: "Nouvelle offre de %{sender}"
+      offer_accepted:
+        title: "Votre offre a été acceptée"
+        subject: "Votre offre a été acceptée"
+      offer_declined:
+        title: "Votre offre a été refusée"
+        subject: "Votre offre a été refusée"
+      offer_countered:
+        title: "Vous avez reçu une contre-offre"
+        subject: "Contre-offre de %{sender}"
+      saved_search_match:
+        title: "Nouveau résultat pour « %{search} »"
+        subject: "Nouvelles annonces pour « %{search} »"
+      saved_search_digest:
+        title: "Votre résumé quotidien des recherches enregistrées"
+        subject: "Votre résumé quotidien des recherches enregistrées"
+      price_drop:
+        title: "Un favori a baissé de prix"
+        subject: "%{listing} est moins cher"
+        body: "Le prix de %{listing} est passé de %{old_price} à %{price}. Il se peut que cela ne dure pas."
+  conversations:
+    cannot_start: "La conversation n'a pas pu être démarrée."
+  notifications:
+    kinds:
+      message_received: "Nouveau message de %{sender}."
+      offer_received: "Nouvelle offre de %{sender} pour %{listing}."
+      offer_accepted: "Votre offre pour %{listing} a été acceptée."
+      offer_declined: "Votre offre pour %{listing} a été refusée."
+      offer_countered: "%{sender} vous a envoyé une contre-offre pour %{listing}."
+      followed_store_listing: "Nouvelle annonce d'une boutique que vous suivez : %{listing}."
+      saved_search_match: "Nouveau résultat pour « %{search} » : %{listing}."
+      price_drop_favourite: "Une annonce que vous avez enregistrée est moins chère : %{listing}."
+  saved_searches:
+    name: "Nom"
+    frequency_label: "Alertes"
+    save: "Enregistrer"
+    updated: "Recherche enregistrée mise à jour."
+    frequencies:
+      instant: "Alertes immédiates"
+      daily: "Résumé quotidien"
+  account:
+    area:
+      following: "Abonnements"
+    following:
+      title: "Boutiques suivies"
+      subtitle: "Nouvelles annonces de ces boutiques et leurs derniers articles."
+      browse: "Parcourir les annonces"
+      no_listings: "Aucune annonce active pour le moment."
+      empty_title: "Vous ne suivez aucune boutique"
+      empty_body: "Suivez une boutique pour voir ses nouvelles annonces ici."
+      empty_cta: "Découvrir des boutiques"
+  stores:
+    unfollow: "Ne plus suivre"

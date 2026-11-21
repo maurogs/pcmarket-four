@@ -1,0 +1,157 @@
+de:
+  messaging:
+    inbox:
+      title: "Posteingang"
+      subtitle: "Ihre Unterhaltungen, Angebote und blockierten Nutzer."
+      mark_all_read: "Alle als gelesen markieren"
+      marked_all_read: "Alle Unterhaltungen wurden als gelesen markiert."
+      chat_disabled: "Nachrichten sind vorübergehend deaktiviert."
+      tabs_label: "Bereiche des Posteingangs"
+      tabs:
+        chats: "Chats"
+        offers: "Angebote"
+        archived: "Archiviert"
+        blocked: "Blockierte Nutzer"
+      empty_title: "Noch keine Unterhaltungen"
+      empty_body: "Schreiben Sie einem Verkäufer aus einer Anzeige, um eine Unterhaltung zu starten."
+      browse: "Anzeigen durchsuchen"
+      no_messages: "Noch keine Nachrichten"
+      unread_count: "%{count} ungelesene Nachrichten"
+    thread:
+      back: "Zurück zum Posteingang"
+      direct: "Direkte Unterhaltung"
+      mark_read: "Als gelesen markieren"
+      marked_read: "Unterhaltung als gelesen markiert."
+      archive: "Archivieren"
+      unarchive: "Aus dem Archiv holen"
+      archived: "Unterhaltung archiviert."
+      unarchived: "Die Unterhaltung ist wieder in Ihrem Posteingang."
+      report: "Melden"
+      report_details: "Teilen Sie uns mit, was passiert ist."
+      report_submit: "Meldung senden"
+      no_messages: "Sagen Sie Hallo und fragen Sie nach dem Artikel."
+      today: "Heute"
+      yesterday: "Gestern"
+      blocked_notice: "Dieser Nutzer hat Sie blockiert. Sie können keine weiteren Nachrichten senden."
+      you_blocked_notice: "Sie haben diesen Nutzer blockiert. Heben Sie die Blockierung auf, um fortzufahren."
+      listing_unavailable: "Diese Anzeige ist für Nachrichten nicht mehr verfügbar."
+      sent: "Gesendet"
+      read: "Gelesen"
+    composer:
+      placeholder: "Nachricht schreiben…"
+      label: "Nachricht"
+      send: "Senden"
+      hint: "Eingabetaste sendet, Umschalt+Eingabe fügt eine Zeile hinzu. Höchstens %{count} Zeichen."
+    safety:
+      warning: "Teilen Sie niemals Telefonnummern, E-Mail-Adressen oder Bankdaten und zahlen Sie nie außerhalb von PCMarket. Wenn Sie jemand dazu auffordert, melden Sie die Unterhaltung."
+    offers:
+      label: "Angebot"
+      preview: "Angebot: %{amount}"
+      statuses:
+        pending: "Ausstehend"
+        accepted: "Angenommen"
+        declined: "Abgelehnt"
+        expired: "Abgelaufen"
+      expires_at: "Läuft ab am %{time}"
+      accept: "Annehmen"
+      decline: "Ablehnen"
+      counter: "Gegenangebot"
+      counter_placeholder: "Ihr Preis"
+      counter_amount: "Betrag des Gegenangebots"
+      make_offer: "Angebot machen (angeboten für %{price})"
+      amount: "Ihr Angebot"
+      amount_placeholder: "z. B. 450"
+      submit: "Angebot senden"
+      rules: "Angebote müssen unter dem Anzeigenpreis und mindestens %{min} betragen."
+      sent: "Angebot gesendet."
+      invalid: "Das Angebot konnte nicht gesendet werden."
+      response_sent: "Ihre Antwort wurde gesendet."
+      default_body: "Angebot über %{amount}"
+      counter_body: "Gegenangebot über %{amount}"
+      errors:
+        invalid_decision: "Ungültige Entscheidung."
+        not_participant: "Sie sind nicht Teil dieser Unterhaltung."
+        own_offer: "Sie können nicht auf Ihr eigenes Angebot antworten."
+        offer_not_pending: "Dieses Angebot ist nicht mehr ausstehend."
+        offer_expired: "Dieses Angebot ist abgelaufen."
+        listing_unavailable: "Die Anzeige ist nicht mehr verfügbar."
+        invalid_amount: "Geben Sie einen gültigen Betrag ein."
+    blocks:
+      block: "Nutzer blockieren"
+      unblock: "Blockierung aufheben"
+      blocked: "Sie haben %{name} blockiert."
+      unblocked: "Sie haben die Blockierung von %{name} aufgehoben."
+      cannot_block_self: "Sie können sich nicht selbst blockieren."
+      you_blocked: "Sie haben diesen Nutzer blockiert"
+      blocked_you: "Dieser Nutzer hat Sie blockiert"
+      empty_title: "Keine blockierten Nutzer"
+      empty_body: "Blockierte Nutzer können Ihnen keine Nachrichten senden."
+    errors:
+      chat_disabled: "Nachrichten sind vorübergehend deaktiviert."
+      seller_missing: "Der Verkäufer wurde nicht gefunden."
+      own_listing: "Sie können keine Unterhaltung über Ihre eigene Anzeige starten."
+      blocked: "Sie können diesem Nutzer keine Nachricht senden."
+      listing_unavailable: "Diese Anzeige ist nicht verfügbar."
+      message_invalid: "Die Nachricht konnte nicht gesendet werden."
+    mailer:
+      greeting: "Hallo %{name},"
+      cta: "Unterhaltung öffnen"
+      offer_amount: "Angebotsbetrag: %{amount}"
+      message_received:
+        title: "Sie haben eine neue Nachricht"
+        subject: "Neue Nachricht von %{sender}"
+      offer_received:
+        title: "Sie haben ein Angebot erhalten"
+        subject: "Neues Angebot von %{sender}"
+      offer_accepted:
+        title: "Ihr Angebot wurde angenommen"
+        subject: "Ihr Angebot wurde angenommen"
+      offer_declined:
+        title: "Ihr Angebot wurde abgelehnt"
+        subject: "Ihr Angebot wurde abgelehnt"
+      offer_countered:
+        title: "Sie haben ein Gegenangebot erhalten"
+        subject: "Gegenangebot von %{sender}"
+      saved_search_match:
+        title: "Neuer Treffer für „%{search}“"
+        subject: "Neue Anzeigen für „%{search}“"
+      saved_search_digest:
+        title: "Ihre tägliche Zusammenfassung gespeicherter Suchen"
+        subject: "Ihre tägliche Zusammenfassung gespeicherter Suchen"
+      price_drop:
+        title: "Ein Favorit ist günstiger geworden"
+        subject: "%{listing} ist jetzt günstiger"
+        body: "Der Preis von %{listing} ist von %{old_price} auf %{price} gefallen. Das gilt vielleicht nicht lange."
+  conversations:
+    cannot_start: "Die Unterhaltung konnte nicht gestartet werden."
+  notifications:
+    kinds:
+      message_received: "Neue Nachricht von %{sender}."
+      offer_received: "Neues Angebot von %{sender} für %{listing}."
+      offer_accepted: "Ihr Angebot für %{listing} wurde angenommen."
+      offer_declined: "Ihr Angebot für %{listing} wurde abgelehnt."
+      offer_countered: "%{sender} hat Ihnen ein Gegenangebot für %{listing} gesendet."
+      followed_store_listing: "Neue Anzeige eines Shops, dem Sie folgen: %{listing}."
+      saved_search_match: "Neuer Treffer für „%{search}“: %{listing}."
+      price_drop_favourite: "Eine gespeicherte Anzeige ist jetzt günstiger: %{listing}."
+  saved_searches:
+    name: "Name"
+    frequency_label: "Benachrichtigungen"
+    save: "Speichern"
+    updated: "Gespeicherte Suche aktualisiert."
+    frequencies:
+      instant: "Sofortige Benachrichtigungen"
+      daily: "Tägliche Zusammenfassung"
+  account:
+    area:
+      following: "Gefolgt"
+    following:
+      title: "Shops, denen Sie folgen"
+      subtitle: "Neue Anzeigen dieser Shops und ihre neuesten Artikel."
+      browse: "Anzeigen durchsuchen"
+      no_listings: "Derzeit keine aktiven Anzeigen."
+      empty_title: "Sie folgen keinem Shop"
+      empty_body: "Folgen Sie einem Shop, um hier seine neuen Anzeigen zu sehen."
+      empty_cta: "Shops entdecken"
+  stores:
+    unfollow: "Nicht mehr folgen"

@@ -1,0 +1,153 @@
+<% partner = conversation_partner(conversation, current_user) %>
+<% own_block = current_user.blocks_made.find_by(blocked_id: partner.id) %>
+<% blocked_me = current_user.blocks_received.find_by(blocker_id: partner.id) %>
+<% blocked = own_block.present? || blocked_me.present? || conversation.blocked? %>
+<% listing_unavailable = listing.present? && (!listing.viewable_by?(current_user) || listing.archived?) %>
+
+<%= turbo_stream_from conversation, current_user %>
+
+<section class="surface flex h-full min-h-[32rem] flex-col">
+  <header class="flex flex-wrap items-center gap-3 border-b border-slate-200 p-4 dark:border-zinc-800">
+    <%= link_to conversations_path, class: "inline-flex size-9 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 lg:hidden dark:text-zinc-300 dark:hover:bg-zinc-800",
+                aria: { label: t("messaging.thread.back") } do %>
+      <%= icon "chevron-left", class: "size-4" %>
+    <% end %>
+
+    <span class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 font-heading text-sm font-bold text-slate-700 dark:bg-zinc-800 dark:text-zinc-200">
+      <% if partner.avatar.attached? %>
+        <%= image_tag partner.avatar.variant(resize_to_fill: [ 80, 80 ]), alt: "", class: "size-full object-cover" %>
+      <% else %>
+        <%= partner.initials %>
+      <% end %>
+    </span>
+    <div class="min-w-0 flex-1">
+      <p class="truncate text-sm font-semibold text-slate-950 dark:text-white"><%= partner.display_name %></p>
+      <p class="truncate text-xs text-slate-500 dark:text-zinc-400">
+        <% if conversation.listing %>
+          <%= conversation.listing.title %>
+        <% else %>
+          <%= t("messaging.thread.direct") %>
+        <% end %>
+      </p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-1.5">
+      <%= button_to conversation_read_path(conversation), method: :post,
+                    class: ui_button_classes(variant: :ghost, size: :sm) do %>
+        <%= icon "check", class: "size-4" %><span class="hidden sm:inline"><%= t("messaging.thread.mark_read") %></span>
+      <% end %>
+
+      <% if conversation.archived_for?(current_user) %>
+        <%= button_to conversation_archive_path(conversation), method: :delete,
+                      class: ui_button_classes(variant: :ghost, size: :sm) do %>
+          <%= icon "message-circle", class: "size-4" %><span class="hidden sm:inline"><%= t("messaging.thread.unarchive") %></span>
+        <% end %>
+      <% else %>
+        <%= button_to conversation_archive_path(conversation), method: :post,
+                      class: ui_button_classes(variant: :ghost, size: :sm) do %>
+          <%= icon "bookmark", class: "size-4" %><span class="hidden sm:inline"><%= t("messaging.thread.archive") %></span>
+        <% end %>
+      <% end %>
+
+      <% if own_block %>
+        <%= button_to t("messaging.blocks.unblock"), block_path(own_block), method: :delete,
+                      class: ui_button_classes(variant: :outline, size: :sm) %>
+      <% elsif !blocked_me %>
+        <%= button_to t("messaging.blocks.block"), blocks_path(user_id: partner.id), method: :post,
+                      class: ui_button_classes(variant: :ghost, size: :sm) %>
+      <% end %>
+
+      <details class="relative">
+        <summary class="inline-flex min-h-9 cursor-pointer list-none items-center gap-1 rounded-full px-3 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-zinc-300 dark:hover:bg-zinc-800 [&::-webkit-details-marker]:hidden">
+          <%= icon "shield-check", class: "size-4" %><span class="hidden sm:inline"><%= t("messaging.thread.report") %></span>
+        </summary>
+        <div class="absolute right-0 z-20 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-3 shadow-[var(--shadow-panel)] dark:border-zinc-800 dark:bg-zinc-900">
+          <%= form_with url: reports_path, method: :post, class: "space-y-2" do %>
+            <%= hidden_field_tag :reportable_type, "Conversation" %>
+            <%= hidden_field_tag :reportable_id, conversation.id %>
+            <%= select_tag :reason,
+                           options_for_select(Report.reasons.keys.map { |reason| [ t("reports.reasons.#{reason}"), reason ] }, "other"),
+                           class: ui_input_classes("!min-h-9 text-xs") %>
+            <%= text_area_tag :details, nil, rows: 2, class: ui_input_classes("!min-h-9 text-xs"),
+                              placeholder: t("messaging.thread.report_details") %>
+            <%= submit_tag t("messaging.thread.report_submit"), class: ui_button_classes(variant: :primary, size: :sm, extra: "w-full") %>
+          <% end %>
+        </div>
+      </details>
+    </div>
+  </header>
+
+  <% if listing %>
+    <div class="flex gap-3 border-b border-slate-200 bg-slate-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-900/40">
+      <%= link_to listing_path(listing), class: "shrink-0" do %>
+        <div class="size-16 overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800">
+          <% if listing.images.attached? %>
+            <%= image_tag listing.ordered_images.first.variant(resize_to_limit: [ 160, 160 ], format: :webp),
+                          alt: "", class: "size-full object-cover", loading: "lazy" %>
+          <% else %>
+            <%= image_tag "listing-placeholder.svg", alt: "", class: "size-full object-cover" %>
+          <% end %>
+        </div>
+      <% end %>
+      <div class="min-w-0 flex-1">
+        <%= link_to listing.title, listing_path(listing),
+                    class: "line-clamp-2 text-sm font-semibold text-slate-950 hover:text-brand-700 dark:text-white dark:hover:text-brand-300" %>
+        <p class="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-zinc-400">
+          <span class="font-heading text-sm font-bold text-slate-950 dark:text-white"><%= format_price(listing.price_cents) %></span>
+          <span class="<%= ui_badge_classes(tone: listing.sold? ? :neutral : :success, extra: "!px-2 !py-0.5") %>">
+            <%= t("listings.statuses.#{listing.status}") %>
+          </span>
+        </p>
+      </div>
+      <% if listing.visible? %>
+        <%= button_to t("listings.show.buy_now"), cart_items_path(listing_id: listing.id, buy_now: 1),
+                      method: :post, form: { data: { turbo: false } },
+                      class: ui_button_classes(variant: :accent, size: :sm) %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div id="conversation-messages" class="flex-1 space-y-4 overflow-y-auto p-4">
+    <% messages.group_by { |message| message.created_at.to_date }.each do |day, day_messages| %>
+      <div class="flex items-center gap-3">
+        <span class="h-px flex-1 bg-slate-200 dark:bg-zinc-800"></span>
+        <span class="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+          <%= message_day_label(day) %>
+        </span>
+        <span class="h-px flex-1 bg-slate-200 dark:bg-zinc-800"></span>
+      </div>
+      <% day_messages.each do |message| %>
+        <%= render "messages/message", message: message, viewer: current_user %>
+      <% end %>
+    <% end %>
+
+    <% if messages.empty? %>
+      <p class="py-10 text-center text-sm text-slate-500 dark:text-zinc-400"><%= t("messaging.thread.no_messages") %></p>
+    <% end %>
+  </div>
+
+  <div class="border-t border-slate-200 p-4 dark:border-zinc-800">
+    <% if blocked_me %>
+      <p class="rounded-xl bg-slate-100 px-3 py-2 text-sm text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">
+        <%= t("messaging.thread.blocked_notice") %>
+      </p>
+    <% elsif blocked %>
+      <p class="rounded-xl bg-slate-100 px-3 py-2 text-sm text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">
+        <%= t("messaging.thread.you_blocked_notice") %>
+      </p>
+    <% elsif !chat_enabled? %>
+      <p class="rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:bg-amber-500/10 dark:text-amber-200">
+        <%= t("messaging.inbox.chat_disabled") %>
+      </p>
+    <% elsif listing_unavailable %>
+      <p class="rounded-xl bg-slate-100 px-3 py-2 text-sm text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">
+        <%= t("messaging.thread.listing_unavailable") %>
+      </p>
+    <% else %>
+      <% if conversation.listing&.accepts_offers? && current_user.id == conversation.buyer_id %>
+        <%= render "conversations/offer_form", conversation: conversation, listing: conversation.listing %>
+      <% end %>
+      <%= render "conversations/composer", conversation: conversation %>
+    <% end %>
+  </div>
+</section>

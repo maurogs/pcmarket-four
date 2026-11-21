@@ -45,6 +45,15 @@
         <% end %>
 
         <% if user_signed_in? %>
+          <%= link_to conversations_path,
+                      class: "relative inline-flex size-11 items-center justify-center rounded-full text-slate-700 transition hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800",
+                      aria: { label: t("messaging.inbox.title") } do %>
+            <%= icon "message-circle", class: "size-5" %>
+            <%= render "messaging/inbox_badge", count: unread_inbox_count %>
+          <% end %>
+        <% end %>
+
+        <% if user_signed_in? %>
           <details class="relative hidden md:block" data-controller="dropdown">
             <summary class="relative inline-flex size-11 cursor-pointer list-none items-center justify-center rounded-full text-slate-700 transition hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800 [&::-webkit-details-marker]:hidden"
                      aria-label="<%= t("layout.header.notifications") %>">

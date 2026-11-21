@@ -74,6 +74,11 @@ class Listing < ApplicationRecord
 
   before_validation :assign_store, on: :create
 
+  after_update_commit :dispatch_publish_alerts,
+                      if: -> { previous_changes["status"]&.last == "published" }
+  after_update_commit :dispatch_price_drop_alert,
+                      if: -> { previous_changes["price_cents"] && published? }
+
   validate :original_price_must_exceed_price
   validate :postal_code_format
   validate :country_must_be_enabled
@@ -301,6 +306,25 @@ class Listing < ApplicationRecord
       .limit(limit)
   end
 
+  # SQL pre-filter for saved-search digests so only plausible rows are loaded
+  # before the Ruby-level matches? check (query, specs, visibility).
+  def self.prefilter_for_saved_search(saved_search)
+    scope = visible.where.not(user_id: saved_search.user_id)
+    if saved_search.country_code.present?
+      scope = scope.where(country_code: saved_search.country_code)
+    end
+    if saved_search.min_price_cents.present?
+      scope = scope.where("listings.price_cents >= ?", saved_search.min_price_cents)
+    end
+    if saved_search.max_price_cents.present?
+      scope = scope.where("listings.price_cents <= ?", saved_search.max_price_cents)
+    end
+    if saved_search.category_id.present?
+      scope = scope.where(category_id: saved_search.category.subtree_ids)
+    end
+    scope
+  end
+
   # Increments the view counter with a single UPDATE. The caller decides
   # whether the current visitor counts as a view.
   def self.register_view!(id)
@@ -308,6 +332,18 @@ class Listing < ApplicationRecord
   end
 
   private
+
+  def dispatch_publish_alerts
+    NotifyFollowersJob.perform_later(id)
+    SavedSearchAlertJob.perform_later(id)
+  end
+
+  def dispatch_price_drop_alert
+    previous_price, current_price = previous_changes["price_cents"]
+    return unless previous_price.to_i > current_price.to_i
+
+    PriceDropAlertJob.perform_later(id, previous_price.to_i)
+  end
 
   def slug_candidates
     [ title, "#{title}-#{SecureRandom.hex(3)}" ]

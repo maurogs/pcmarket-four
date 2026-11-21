@@ -19,7 +19,7 @@ class SavedSearchesController < ApplicationController
   def update
     saved_search = current_user.saved_searches.find(params[:id])
 
-    if saved_search.update(notify: !saved_search.notify)
+    if saved_search.update(update_attributes(saved_search))
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(
@@ -28,7 +28,7 @@ class SavedSearchesController < ApplicationController
             locals: { saved_search: saved_search }
           )
         end
-        format.html { redirect_back fallback_location: saved_searches_path }
+        format.html { redirect_back fallback_location: saved_searches_path, notice: t("saved_searches.updated") }
       end
     else
       redirect_back fallback_location: saved_searches_path, alert: t("saved_searches.invalid")
@@ -41,6 +41,19 @@ class SavedSearchesController < ApplicationController
   end
 
   private
+
+  def update_attributes(saved_search)
+    submitted = params.fetch(:saved_search, {}).permit(:name, :frequency, :notify).to_h
+    return { notify: !saved_search.notify? } if submitted.empty?
+
+    if submitted.key?("notify")
+      submitted["notify"] = ActiveModel::Type::Boolean.new.cast(submitted["notify"]) == true
+    end
+    if submitted["frequency"].present? && !SavedSearch.frequencies.key?(submitted["frequency"])
+      submitted.delete("frequency")
+    end
+    submitted
+  end
 
   def search_params_from_query
     query = params[:search_query].to_s

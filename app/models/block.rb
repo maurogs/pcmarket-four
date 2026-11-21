@@ -5,6 +5,16 @@ class Block < ApplicationRecord
   validates :blocked_id, uniqueness: { scope: :blocker_id }
   validate :cannot_block_self
 
+  scope :involving, ->(user) { where(blocker_id: user.id).or(where(blocked_id: user.id)) }
+
+  def self.between?(first, second)
+    return false if first.blank? || second.blank?
+
+    where(blocker_id: first.id, blocked_id: second.id)
+      .or(where(blocker_id: second.id, blocked_id: first.id))
+      .exists?
+  end
+
   private
 
   def cannot_block_self

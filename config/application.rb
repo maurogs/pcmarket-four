@@ -27,5 +27,7 @@ module AppTestFour
     config.i18n.available_locales = %i[es en fr de it pt]
     config.i18n.default_locale = :es
     config.i18n.fallbacks = %i[es en]
+    config.time_zone = "Europe/Madrid"
+    config.active_record.default_timezone = :utc
   end
 end

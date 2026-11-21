@@ -1,0 +1,8 @@
+<span id="inbox-badge">
+  <% if count.to_i.positive? %>
+    <span class="absolute right-1 top-1 flex size-5 items-center justify-center rounded-full bg-brand-600 text-[10px] font-bold text-white"
+          aria-label="<%= t("messaging.inbox.unread_count", count: count) %>">
+      <%= count.to_i > 9 ? "9+" : count.to_i %>
+    </span>
+  <% end %>
+</span>

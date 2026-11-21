@@ -1,0 +1,12 @@
+<h1 style="font-family: sans-serif; font-size: 20px; color: #0f172a;">
+  <%= t("messaging.mailer.price_drop.title") %>
+</h1>
+
+<p style="font-family: sans-serif; font-size: 14px; color: #334155;">
+  <%= t("messaging.mailer.price_drop.body",
+        listing: @listing.title,
+        old_price: format_price(@previous_price_cents),
+        price: format_price(@listing.price_cents)) %>
+</p>
+
+<p><%= link_to t("messaging.mailer.cta"), @url, style: "color: #0f766e;" %></p>

@@ -1,0 +1,7 @@
+<%= t("messaging.mailer.saved_search_match.title", search: @saved_search.name) %>
+
+<% @listings.each do |listing| %>
+- <%= listing.title %> — <%= format_price(listing.price_cents) %>
+<% end %>
+
+<%= @url %>

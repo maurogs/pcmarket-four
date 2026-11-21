@@ -2,12 +2,28 @@
 
 ## Status
 
-Phase 4B complete: full order lifecycle (paid, shipped, delivered, completed,
-cancelled, disputed, refunded), seller fulfilment screens, buyer delivery
-confirmation/disputes/reviews, order notifications with email fan-out and
-real-time badge updates. Discovery (Phase 2B), listing creation (Phase 3A) and
-checkout/payments (Phase 4A) remain intact. Admin moderation screens, messaging,
-offers and saved-search alert delivery remain for later phases.
+Phase 5 complete: internal chat with conversations, unread counters and
+real-time messages, offers with accepted-offer cart pricing, blocks and
+message safety warnings; follower notifications, instant and daily saved-search
+alerts and favourite price-drop alerts. Phase 4B order lifecycle (paid,
+shipped, delivered, completed, cancelled, disputed, refunded), seller
+fulfilment screens, buyer delivery confirmation/disputes/reviews, order
+notifications with email fan-out and real-time badge updates remain intact.
+Discovery (Phase 2B), listing creation (Phase 3A) and checkout/payments
+(Phase 4A) are unchanged. Admin moderation screens and online payouts remain
+for later phases.
+
+## Phase status
+
+| Phase | Scope | Status |
+|---|---|---|
+| 1 | Foundation, localisation, design system | Complete |
+| 2B | Discovery, search, listings, stores, favourites, auth | Complete |
+| 3A | Listing creation and seller board | Complete |
+| 3B | Seller area and account settings | Complete |
+| 4A | Cart, checkout and payments | Complete |
+| 4B | Order lifecycle and seller fulfilment | Complete |
+| 5 | Messaging, offers, follows and saved-search alerts | Complete |
 
 ## Stack
 
@@ -405,6 +421,57 @@ offers and saved-search alert delivery remain for later phases.
   `auto_delivered_after_shipping_days` 14,
   `seller_ship_deadline_days` 3, `support_email` and `blocked_words`.
 
+### Messaging, offers and alerts (Phase 5)
+
+- `Conversation` is one thread per `[listing, buyer, seller]`; seller-only
+  threads support store and order entry points. `ConversationStarter` owns the
+  rules: chat enabled, no self-messaging, no block in either direction, listing
+  visibility, first message and optional first offer.
+- The inbox lives at `/inbox` with tabs Chats, Offers, Archived and Blocked
+  users. Desktop shows the list and a lazy `turbo-frame#conversation-thread`;
+  mobile shows the list and then the thread with a back link. Unread counters
+  are atomically incremented by `Message` and reset by `Conversation#
+  mark_read_for!`; `Conversation.broadcast_inbox_badge` keeps the header badge
+  live over `[user, :inbox]`.
+- Messages broadcast `append` to `[conversation, user]` for both participants so
+  own/other alignment stays correct. Composer: autosize textarea, Enter sends,
+  Shift+Enter newline, 2,000-character maximum, disabled for blocks, deleted
+  listings or disabled chat. Day separators use the request locale.
+- `MessageSafetyScanner` flags emails, ES/EN phone numbers, IBANs and
+  off-platform payment phrases (Bizum, PayPal Friends, Western Union, transfers
+  outside the marketplace). The flag is stored on `messages.flagged` and shows a
+  translated warning to the recipient without blocking delivery.
+- `Message` rate-limits each sender to 30 messages per 10 minutes.
+- Offers are `kind: offer` messages with bounds (< listing price, ≥ 50%,
+  `accepts_offers`), a 48-hour TTL and `ExpireOffersJob` every ten minutes.
+  `OfferResponse` accepts, declines or counters; countering marks the previous
+  offer declined and creates a new pending offer. Acceptance writes
+  `cart_items.offer_price_cents`/`offer_expires_at` (24 hours); `CartSummary`
+  and `Checkout::PlaceOrder` snapshot the offer price on `OrderItem`.
+- Blocks are a `Block` row in either direction; the thread header blocks or
+  unblocks and the inbox lists blocked users. Reports extend the polymorphic
+  `Report` to conversations.
+- `MessageNotifier` creates notifications for new messages/offers and emails
+  through `MessageMailer` respecting `email_messages`/`email_offers`; message
+  emails are throttled to one per conversation and recipient every 15 minutes.
+- Publishing a listing enqueues `NotifyFollowersJob` (notification only) and
+  `SavedSearchAlertJob` (instant matches, SQL pre-filter by category subtree,
+  price and country, then `SavedSearch#matches?`; owner excluded).
+  `SavedSearchDigestJob` runs daily at 08:00 Europe/Madrid for saved searches
+  with `frequency: daily`, groups up to 20 matches per user and updates
+  `last_notified_at`. Both respect `email_saved_search_alerts` and
+  `Setting saved_search_alerts_enabled`.
+- `PriceDropAlertJob` notifies favourite users when a published price falls and
+  emails them when `email_price_drops_favourites` is enabled.
+- Saved-search management supports rename, frequency (instant/daily), notify
+  toggle, replay and delete. `/account/following` lists followed stores with
+  their latest listings. `config.time_zone` is Europe/Madrid while timestamps
+  remain stored in UTC.
+- New settings default `chat_enabled` already existed; new notification kinds
+  are `message_received`, `offer_received`, `offer_accepted`, `offer_declined`,
+  `offer_countered`, `followed_store_listing`, `saved_search_match` and
+  `price_drop_favourite`.
+
 ### Performance guardrails
 
 - `ListingSearch::INCLUDES` preloads store, category, region, user and image
@@ -472,7 +539,28 @@ app/controllers/orders/disputes_controller.rb
 app/controllers/orders/reviews_controller.rb
 app/controllers/notifications_controller.rb   list, mark one read
 app/controllers/notifications/read_alls_controller.rb
+app/controllers/conversations_controller.rb   inbox tabs, thread, start conversation
+app/controllers/conversations/                messages, offers, reads, archives, read all
+app/controllers/messages/offer_responses_controller.rb
+app/controllers/blocks_controller.rb          block/unblock users
+app/controllers/account/following_controller.rb
 app/services/notifier.rb                    notification + preference email
+app/services/message_notifier.rb            message/offer notifications + throttled email
+app/services/message_safety_scanner.rb      contact and off-platform payment detection
+app/services/conversation_starter.rb        chat creation rules and first message
+app/services/offer_response.rb              accept/decline/counter + reserved cart price
+app/mailers/message_mailer.rb               message and offer emails
+app/mailers/saved_search_mailer.rb          instant match and daily digest emails
+app/mailers/favourite_mailer.rb             favourite price-drop email
+app/jobs/notify_followers_job.rb
+app/jobs/saved_search_alert_job.rb
+app/jobs/saved_search_digest_job.rb
+app/jobs/price_drop_alert_job.rb
+app/jobs/expire_offers_job.rb
+app/views/conversations/                   inbox list, thread, composer, offer form
+app/views/messages/_message.html.erb       bubble, offer card, safety and receipts
+app/views/messaging/_inbox_badge.html.erb  live header unread total
+app/views/account/following/               followed stores + latest listings
 app/services/order_notifier.rb              order event fan-out
 app/services/profanity_filter.rb            blocked words
 app/services/seller_order_export.rb         filtered CSV
@@ -582,11 +670,7 @@ test/seeds_test.rb
   submission already exists.
 - Admin UI to resolve disputes and issue refunds (the model transitions and
   policies exist, but no admin screens yet).
-- Messaging: conversations render placeholders; `conversations#create` only
-  opens the thread. Offers, unread counters and message notifications are
-  pending.
-- Saved-search alert delivery (the model stores exact replay params under
-  `filters["_search"]`, but no background job sends alerts yet).
+- Admin UI to review flagged messages and reports.
 - Seller dashboard performance is cached for five minutes; order-level events
   do not invalidate it immediately.
 - Order lifecycle emails to admins rely on `Setting.support_email`; there is no
@@ -603,3 +687,5 @@ test/seeds_test.rb
   `GOOGLE_CLIENT_SECRET` are configured.
 - Real social profile URLs and legal copy per locale.
 - API endpoints (ListingSearch is already API-ready).
+- No typing indicator in conversations (explicitly out of scope).
+- Message safety detection is heuristic; moderation review is still manual.

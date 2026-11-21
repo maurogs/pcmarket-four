@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PCMarket — Contexto del proyecto</title>
+  <style>:root {
+  color-scheme: light dark;
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: #e2e8f0;
+  --brand: #0f766e;
+  --brand-soft: #ccfbf1;
+  --accent: #d97706;
+  --code-bg: #f1f5f9;
+  --shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 8px 24px rgba(15, 23, 42, .05);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #09090b;
+    --card: #18181b;
+    --text: #f4f4f5;
+    --muted: #a1a1aa;
+    --border: #27272a;
+    --brand: #2dd4bf;
+    --brand-soft: rgba(20, 184, 166, .12);
+    --accent: #fbbf24;
+    --code-bg: #111113;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 12px 32px rgba(0, 0, 0, .25);
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.hero {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 56px 24px 24px;
+}
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.hero h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 46px);
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+.lede { margin: 12px 0 0; color: var(--muted); font-size: 18px; }
+.meta { margin: 16px 0 0; color: var(--muted); font-size: 13px; }
+main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 8px 24px 64px;
+  display: grid;
+  gap: 20px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card.status {
+  border-left: 4px solid var(--brand);
+  background: linear-gradient(90deg, var(--brand-soft), transparent 45%), var(--card);
+}
+.card.open-items { border-left: 4px solid var(--accent); }
+.card.code-map { border-left: 4px solid var(--muted); }
+h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+}
+h3 { margin: 24px 0 8px; font-size: 16px; color: var(--brand); }
+p { margin: 0 0 12px; }
+.card p:last-child { margin-bottom: 0; }
+ul { margin: 0 0 12px; padding-left: 22px; }
+li { margin: 0 0 6px; }
+li::marker { color: var(--brand); }
+code {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1px 5px;
+  font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+pre {
+  margin: 12px 0 0;
+  padding: 18px;
+  overflow: auto;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+pre code { background: none; border: 0; padding: 0; white-space: pre; }
+.table-wrap { overflow-x: auto; margin: 8px 0 4px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th {
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--code-bg);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.badge-success { background: rgba(16, 185, 129, .16); color: #047857; }
+.badge-warn { background: rgba(245, 158, 11, .18); color: #b45309; }
+@media (prefers-color-scheme: dark) {
+  .badge-success { color: #6ee7b7; }
+  .badge-warn { color: #fcd34d; }
+}
+a { color: var(--brand); }
+footer {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+  color: var(--muted);
+  font-size: 13px;
+}
+@media (max-width: 640px) {
+  .hero { padding-top: 36px; }
+  .card { padding: 20px; border-radius: 14px; }
+}
+@media print {
+  body { background: #fff; color: #000; }
+  .card { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+  <header class="hero">
+    <p class="eyebrow">PCMarket</p>
+    <h1>PCMarket — Contexto del proyecto</h1>
+    <p class="lede">Arquitectura, decisiones y mapa de código</p>
+    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-21 23:08</p>
+  </header>
+  <main><section class="card status">
+<h2><span>Estado</span><span class="badge badge-success">Complete</span></h2>
+<p>Fase 5 completada: chat interno con conversaciones, contadores de no leídos y mensajes en tiempo real, ofertas con precio reservado en la cesta, bloqueos y avisos de seguridad en los mensajes; notificaciones a seguidores, alertas instantáneas y resumen diario de búsquedas guardadas y alertas de bajada de precio en favoritos. El ciclo de vida de pedidos de la fase 4B (pagado, enviado, entregado, completado, cancelado, en disputa y reembolsado), las pantallas de gestión del vendedor, la confirmación de entrega, las disputas y las reseñas del comprador, las notificaciones de pedido con envío de correos y la actualización del contador en tiempo real siguen intactos. El descubrimiento (fase 2B), la creación de anuncios (fase 3A) y el pago (fase 4A) no han cambiado. Las pantallas de moderación de administración y los pagos en línea quedan para fases posteriores.</p>
+</section>
+<section class="card status">
+<h2><span>Estado de las fases</span><span class="badge badge-success">Complete</span></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Fase</th><th>Alcance</th><th>Estado</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Base, localización y sistema de diseño</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>2B</td><td>Descubrimiento, búsqueda, anuncios, tiendas, favoritos y acceso</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>3A</td><td>Creación de anuncios y panel del vendedor</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>3B</td><td>Área del vendedor y ajustes de cuenta</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>4A</td><td>Cesta, pago y cobros</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>4B</td><td>Ciclo de pedidos y gestión del vendedor</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>5</td><td>Mensajería, ofertas, seguidores y alertas de búsquedas</td><td><span class="badge badge-success">Completada</span></td></tr>
+</tbody></table></div>
+</section>
+<section class="card ">
+<h2><span>Stack</span></h2>
+<ul>
+<li>Ruby 4.0.9, Rails 8.1.4, PostgreSQL 16</li>
+<li>Hotwire (Turbo, Stimulus), import maps, Propshaft, Tailwind CSS 4</li>
+<li>Devise 5 (database authenticatable, registerable, recoverable, rememberable, validatable, confirmable, trackable, lockable, omniauthable)</li>
+<li>Pundit (autorización), Pagy 9 (paginación)</li>
+<li>pg_search (tsearch + trigram), FriendlyId, Ancestry</li>
+<li>rack-attack, meta-tags</li>
+<li>Stripe (sesiones Checkout y webhooks firmados); WebMock en las pruebas</li>
+<li>Minitest con fixtures</li>
+</ul>
+</section>
+<section class="card ">
+<h2><span>Decisiones de arquitectura</span></h2>
+<h3>Localización</h3>
+<ul>
+<li><code>available_locales</code>: <code>es</code>, <code>en</code>, <code>fr</code>, <code>de</code>, <code>it</code>, <code>pt</code>; por defecto <code>es</code>; alternativas <code>es</code>, <code>en</code>.</li>
+<li>Todas las rutas excepto <code>/up</code>, <code>/robots.txt</code> y <code>/sitemap.xml</code> están dentro de <code>scope &quot;(:locale)&quot;, locale: /es|en|fr|de|it|pt/</code>.</li>
+<li><code>ApplicationController#switch_locale</code> valida <code>params[:locale]</code> y envuelve cada petición en <code>I18n.with_locale</code>.</li>
+<li>Los callbacks OmniAuth de Devise viven fuera del ámbito de idioma porque Devise no admite callbacks OmniAuth bajo un segmento dinámico.</li>
+<li>Los archivos de idioma se dividen por dominio (<code>models</code>, <code>home</code>, <code>layout</code>, <code>listings</code>, <code>pages</code>, <code>newsletter</code>, <code>errors</code>, <code>common</code>, <code>countries</code>, <code>cart</code>, <code>checkout</code>, <code>orders</code>, <code>notifications</code>, <code>messaging</code>); cada clave existe en los seis idiomas. <code>test/i18n/locale_parity_test.rb</code> exige paridad.</li>
+<li>El inglés es inglés británico (favourite, colour, authorised).</li>
+<li>Los selectores de idioma del pie y del cajón conservan la ruta y la consulta actuales.</li>
+</ul>
+<h3>Modelo de datos</h3>
+<ul>
+<li>Claves primarias bigint, claves foráneas reales, <code>null: false</code> donde el dominio exige un valor e índices en cada FK y en las columnas de filtrado y ordenación.</li>
+<li>El dinero se guarda en céntimos enteros en EUR; los códigos de país son cadenas ISO alpha-2 (<code>ES</code>, <code>FR</code>, <code>GB</code>, <code>DE</code>, <code>IT</code>, <code>PT</code>).</li>
+<li><code>pg_trgm</code> y <code>unaccent</code> están habilitados para la búsqueda.</li>
+<li><code>Setting</code> guarda filas tipadas clave/valor, cachea en <code>settings/v1/&lt;key&gt;</code> y recurre a <code>Setting::DEFAULTS</code>. La caché se invalida al guardar o destruir.</li>
+<li>Los borrados lógicos usan <code>users.deleted_at</code>; <code>User.visible</code> limita a cuentas activas y no eliminadas.</li>
+<li>Los nombres de usuario se generan como <code>Adjective-Animal#1234</code> a partir de listas de palabras integradas.</li>
+<li>El flujo de <code>Listing</code> son métodos tipo máquina de estados (<code>submit_for_review!</code>, <code>approve!</code>, <code>reject!</code>, <code>pause!</code>, <code>resume!</code>, <code>mark_sold!</code>), sin AASM.</li>
+<li><code>Listing.visible</code> exige estado publicado, stock, propietario activo y país habilitado. <code>Listing.on_sale</code> y <code>Listing.recently_sold</code> alimentan las secciones de la portada.</li>
+<li><code>Listing::LABELS</code> y <code>Listing::TAGS</code> contienen los vocabularios de etiquetas del mercado y del vendedor; ambos se traducen en <code>listings.labels.*</code> y <code>listings.tags.*</code>.</li>
+<li>Slugs: FriendlyId en <code>Store</code> (nombre), <code>Category</code> (nombre en inglés) y <code>Listing</code> (título, con historial mediante <code>friendly_id_slugs</code>).</li>
+<li><code>Category.find_by_path_slugs</code> resuelve <code>/c/components/gpus</code>; <code>#path_slugs</code> devuelve la cadena de slugs.</li>
+<li>Las reseñas recalculan <code>stores.rating_avg</code>/<code>reviews_count</code> en <code>after_commit</code>.</li>
+<li>Los pedidos calculan subtotal, comisión (solo si está activa) y total en <code>Order#compute_totals!</code>. Los pedidos son compras del comprador: <code>buyer_id</code> puede ser nulo para invitados, <code>buyer_email</code> es obligatorio para invitados y cada pedido lleva <code>payment_method</code>, <code>locale</code>, <code>checkout_token</code> (único por vendedor), <code>guest_access_token</code> (has_secure_token), <code>terms_accepted_at</code> y <code>stock_restored_at</code>.</li>
+<li>El ciclo de vida del pedido es una máquina de estados de métodos transaccionales protegidos en <code>Order</code>: <code>mark_paid!</code>, <code>ship!</code>, <code>mark_ready_for_pickup!</code>, <code>confirm_delivery!</code>, <code>complete!</code>, <code>cancel!</code>, <code>open_dispute!</code>, <code>resolve_dispute!</code>, <code>refund!</code> y <code>flag_late_shipment!</code>. Cada transición bloquea la fila, valida el estado de origen y el actor, escribe un <code>OrderEvent</code> y envía notificaciones mediante <code>OrderNotifier</code>.</li>
+<li><code>OrderEvent</code> guarda <code>order_id</code>, <code>actor_id</code> opcional, <code>kind</code>, <code>data</code> jsonb y <code>created_at</code>; las cronologías del comprador y del vendedor lo leen en orden cronológico. Los pedidos también llevan <code>disputed_at</code>, <code>refunded_at</code>, <code>refund_required</code> y <code>late_shipment_notified_at</code>.</li>
+<li>La cancelación repone el stock y vuelve a publicar los anuncios vendidos exactamente una vez mediante <code>stock_restored_at</code>. La finalización incrementa <code>stores.sales_count</code>. <code>Order</code> expone URL de seguimiento para diez transportistas y ayudantes para la ventana de inspección.</li>
+<li><code>Notifier.call(user, kind, params:, url:)</code> crea una <code>Notification</code> y encola el correo de pedido correspondiente cuando <code>email_order_updates</code> está activo. Las notificaciones difunden reemplazos del contador en <code>turbo_stream_from user, :notifications</code>.</li>
+<li><code>orders.number</code> procede de la secuencia PostgreSQL <code>order_number_seq</code> como <code>PCM-YYYY-NNNNNN</code>; la secuencia la crea una migración y se asegura de forma perezosa en bases de datos de prueba cargadas desde el esquema.</li>
+<li>Favoritos y seguidores usan contadores en caché.</li>
+</ul>
+<h3>Datos de ejemplo</h3>
+<ul>
+<li><code>db/seeds.rb</code> carga <code>db/seeds/*.rb</code> en orden de dependencias: ajustes, países, regiones, categorías, filtros, juegos, páginas legales y datos de demostración.</li>
+<li>Cada archivo de datos es idempotente. Los datos de referencia usan <code>find_or_initialize_by</code> más <code>save!</code>; ejecutar los datos dos veces no produce duplicados.</li>
+<li>La taxonomía de categorías tiene dos niveles. Las categorías hoja contienen anuncios; las asignaciones de filtros de un padre se heredan mediante <code>Category#effective_filters</code>.</li>
+<li>Las categorías de la fase 1 que ya no forman parte de la taxonomía se eliminan solo cuando no contienen anuncios, de modo que nunca se destruyen datos de usuario.</li>
+<li>Los datos de demostración solo se crean en desarrollo; el administrador se crea en todos los entornos que no son producción.</li>
+</ul>
+<h3>Sistema de diseño</h3>
+<ul>
+<li>Tokens <code>@theme</code> de Tailwind v4 en <code>app/assets/tailwind/application.css</code>: teal de marca <code>--color-brand-50..950</code>, ámbar <code>--color-accent-*</code>, títulos en Space Grotesk, cuerpo en Inter, radio de tarjeta de 12 px y tokens de sombra compartidos.</li>
+<li>Modo oscuro por clase mediante <code>@custom-variant dark</code>; un script en línea de la cabecera aplica el tema guardado o preferido antes del pintado.</li>
+<li>Las primitivas de UI viven en <code>app/views/shared/</code> y en métodos de ayudante (<code>ui_button_classes</code>, <code>ui_badge_classes</code>, <code>ui_chip_classes</code>, <code>ui_input_classes</code>, <code>ui_card_classes</code>).</li>
+<li>Los iconos son SVG de Lucide incluidos en el proyecto y leídos por <code>ApplicationHelper#icon</code>.</li>
+</ul>
+<h3>Navegación y diseño</h3>
+<ul>
+<li><code>MenuBuilder</code> cachea el menú gigante con una clave que contiene el idioma y <code>Category.maximum(:updated_at)</code>.</li>
+<li>Cabecera: fija, con desenfoque al desplazar, búsqueda con autocompletado, botón &quot;Véndenoslo a PCMarket&quot; tras un flag, contadores de favoritos, notificaciones, cesta y bandeja de entrada, menú de cuenta, selector de tema y menú gigante.</li>
+<li>El menú gigante se abre con 150 ms de intención al pasar o al hacer clic, se cierra al hacer clic fuera y con Escape, y muestra categorías hijas, enlaces rápidos por etiqueta y precio y tarjetas promocionales.</li>
+<li>En móvil se usa un cajón lateral izquierdo (trampa de foco, bloqueo de desplazamiento, Escape) y una barra inferior por debajo de 768 px.</li>
+<li>El consentimiento de cookies es un controlador Stimulus en <code>&lt;body&gt;</code>; las opciones se guardan en <code>cookie_consent</code> durante seis meses. <code>consent_given?(:analytics)</code> permite condicionar futuros scripts de terceros.</li>
+</ul>
+<h3>Portada</h3>
+<ul>
+<li><code>HomeFeed</code> concentra todas las consultas de la portada y usa <code>Listing.visible.includes(:store, :category, images_attachments: :blob)</code>.</li>
+<li>Las secciones se cachean por idioma durante cinco minutos; las tarjetas de anuncio se cachean por fragmentos en <code>[listing, I18n.locale]</code> mientras el botón de favorito dependiente del visitante queda fuera de la caché.</li>
+<li>Secciones: carrusel principal, mosaicos promocionales, llamada al buscador de PC, compra por ambiente, filas con desplazamiento, franja de confianza, carrusel de reseñas con testimonios traducidos de reserva, llamada a vender y texto SEO.</li>
+<li><code>listings/_card.html.erb</code> es la tarjeta compartida por portada, búsqueda y favoritos.</li>
+</ul>
+<h3>Búsqueda y filtrado (fase 2B)</h3>
+<ul>
+<li><code>ListingSearch</code> (<code>app/services/listing_search.rb</code>) es el único punto de entrada para web, API y alertas de búsquedas guardadas. Normaliza parámetros, limita la consulta a 100 caracteres y la página a 100, y convierte entradas en euros a céntimos. Acepta <code>q</code>, <code>category</code>, <code>min_price</code>, <code>max_price</code>, <code>condition[]</code>, <code>labels[]</code>, <code>tags[]</code>, <code>f[key][]</code>, <code>region_id[]</code>, <code>shipping[]</code>, <code>free_shipping</code>, <code>on_sale</code>, <code>seller</code>, <code>sort</code> y <code>page</code>.</li>
+<li>Los filtros de especificaciones usan contención JSONB (<code>listings.specs @&gt; &#39;{&quot;key&quot;:&quot;value&quot;}&#39;</code>), con OR dentro de una clave y AND entre claves. Solo se aceptan claves de <code>FilterDefinition</code> efectivas para la categoría actual, lo que neutraliza intentos de inyección en claves de filtro.</li>
+<li><code>Result</code> expone registros paginados (Pagy, 24 por página), total (cacheado 60 s), chips de filtros activos con parámetros eliminables, recuentos de facetas para filtros de casilla efectivos y recuentos de estado.</li>
+<li>Las facetas se calculan con UNA consulta agrupada sobre <code>jsonb_each_text(listings.specs)</code> contra la relación filtrada por categoría, consulta, precio y estado (todo excepto los filtros de especificaciones), cacheadas 5 minutos por resumen de (categoría, q, precio, estado, claves de filtro). Las opciones con cero resultados se ocultan salvo que estén seleccionadas.</li>
+<li>La interfaz de búsqueda se ejecuta dentro de un único <code>turbo-frame#listing_results</code>; la barra lateral, la barra de herramientas, la cuadrícula y la paginación viven dentro, así que filtrar solo reemplaza el frame. Los formularios usan <code>data-turbo-action=&quot;advance&quot;</code> para URL compartibles y compatibilidad con el botón Atrás. El controlador Stimulus <code>filters_controller</code> envía casillas y selects al instante y aplica 400 ms de retardo a texto y precio, mostrando tarjetas esqueleto. La hoja de filtros móvil contiene el mismo formulario parcial.</li>
+<li>Las páginas de categoría, <code>/search</code> y los anuncios de tienda reutilizan el mismo parcial de resultados. Las páginas de tienda pasan una relación base limitada a la tienda y un conmutador <code>include_sold</code>, y ocultan las secciones de especificaciones, etiquetas y región (modo <code>compact</code>).</li>
+<li>Índices añadidos para búsqueda: <code>(status, category_id, published_at DESC)</code>, <code>(status, price_cents)</code>, <code>(status, favorites_count DESC)</code>, <code>(status, store_id, published_at DESC)</code>, <code>(status, region_id, published_at DESC)</code> y un parcial <code>(status, published_at DESC)</code> para publicados con stock. Los índices GIN existentes cubren <code>specs</code>, <code>labels</code>, <code>tags</code> y trigram en título y descripción.</li>
+<li>Plan de consulta con 5.000 anuncios generados (revertido): <code>RAILS_ENV=test bin/rails db:test:prepare</code> y después <code>RAILS_ENV=test bin/rails runner script/search_explain.rb</code>. La consulta combinada de categoría + estado + precio + envío + especificaciones (1.917 resultados) usa <code>Index Scan using index_listings_search_category</code> con el resto de predicados como filtros; planificación 1,7 ms, ejecución 13,5 ms, 238 búferes compartidos para el escaneo de anuncios. El GIN <code>index_listings_on_specs</code> sigue disponible cuando el planificador prefiere la contención frente al índice compuesto.</li>
+</ul>
+<h3>Detalle de anuncio, tiendas y favoritos (fase 2B)</h3>
+<ul>
+<li>Las páginas de detalle usan una cuadrícula 7/5 en escritorio con una caja de compra fija, una galería Stimulus (deslizamiento con puntero, teclas de flecha, miniaturas, <code>&lt;dialog&gt;</code> lightbox) y una barra inferior fija de precio/CTA en móvil. Las imágenes usan variantes WebP con <code>resize_to_limit</code>; la primera es eager + <code>fetchpriority=high</code> y el resto perezosas.</li>
+<li>Los contadores de visitas usan un único <code>UPDATE</code> mediante <code>Listing.register_view!</code>, omiten bots y propietarios y recuerdan los últimos 50 identificadores en la sesión (también usados para &quot;vistos recientemente&quot; en portada y detalle).</li>
+<li>Los slugs antiguos se resuelven mediante <code>friendly_id_slugs</code> y redirigen 301 a la URL actual. Los anuncios no visibles son 404 para extraños pero visibles para propietarios y personal con una franja de estado; los anuncios vendidos siguen siendo públicos y muestran la oferta de agotado.</li>
+<li>Datos estructurados: Product + Offer (precio, moneda, disponibilidad, estado del artículo), BreadcrumbList y aggregateRating de la tienda. Las páginas de búsqueda emiten BreadcrumbList + ItemList.</li>
+<li>Las páginas de tienda tienen cabecera con banner/logo, insignia de profesional o particular, datos de empresa/fiscales, aviso de vacaciones, pestañas (anuncios/acerca de/reseñas) cargadas mediante <code>turbo-frame#store-panel</code>, un conmutador <code>include_sold</code>, barras de distribución de reseñas, ordenación y reseñas paginadas con respuestas del vendedor.</li>
+<li>Los favoritos se alternan mediante Turbo Streams: <code>replace_all</code> actualiza todas las instancias de corazón de un anuncio, el contador se reemplaza por separado y las tarjetas se eliminan de la cuadrícula de favoritos. Un controlador Stimulus alterna el corazón de forma optimista y lo restaura si la petición falla. Las intenciones de invitados se guardan en la sesión, se completan tras iniciar sesión y después vuelven al anuncio.</li>
+<li>Seguir tiendas usa un contador en caché y reemplazo Turbo del botón y del número de seguidores.</li>
+</ul>
+<h3>Cesta y autenticación (fase 2B)</h3>
+<ul>
+<li>Las cestas de invitado usan un <code>cart_token</code> firmado permanente; las de usuario usan <code>user_id</code>. Un hook <code>after_authentication</code> de Warden fusiona los artículos de invitado en la cesta del usuario, limita cantidades por stock y elimina las filas de invitado.</li>
+<li>La creación de artículos de cesta rechaza anuncios propios y no visibles, limita la cantidad por stock y responde con Turbo Streams que actualizan el contador de cabecera y añaden un aviso. &quot;Comprar ahora&quot; añade el artículo y redirige a la cesta.</li>
+<li>Las vistas de Devise usan un diseño de dos columnas con testimonios rotativos. El registro exige la casilla de términos (<code>users.terms_accepted_at</code>), registra la aceptación de marketing y respeta <code>Setting registrations_enabled</code>. El enlace de acceso de la cabecera abre el mismo formulario dentro de un <code>&lt;dialog&gt;</code> en Turbo Frame con alternativa de página completa. En desarrollo, el correo se ve con <code>letter_opener</code> en <code>/letter_opener</code>.</li>
+<li>Las búsquedas guardadas se crean a partir de la cadena de consulta actual, se listan en <code>/saved_searches</code> y en la página de cuenta, y pueden alternar notificaciones con Turbo Streams. Las denuncias son una por usuario y anuncio.</li>
+</ul>
+<h3>Creación de anuncios y panel del vendedor (fase 3A)</h3>
+<ul>
+<li>El formulario del vendedor es una única página con cinco secciones (categoría, fotos, detalles, precio, entrega). <code>listing_form_controller</code> añade contadores, progreso, ordenación por arrastre, previsualización de archivos y validación de tipo/tamaño en cliente; el formulario sigue siendo usable sin JavaScript.</li>
+<li>El selector de categoría usa tarjetas <code>&lt;details&gt;</code> raíz y enlaces hoja. Un enlace hoja navega solo <code>turbo-frame#listing_specs</code> a <code>new_listing_path(category_id:)</code> / <code>edit_listing_path(category_id:)</code>, de modo que los campos ya escritos no se tocan. El frame lleva el <code>listing[category_id]</code> oculto.</li>
+<li><code>ListingForm</code> es el único escritor del formulario del vendedor: asigna escalares, conserva especificaciones solo para las claves de filtro efectivas de la categoría (guardadas como cadenas), adjunta/elimina/reordena imágenes, fuerza cantidad 1 para vendedores particulares, exige imagen al enviar y aplica la transición borrador → pending_review/published.</li>
+<li>Las imágenes se suben mediante Active Storage direct uploads (<code>@rails/activestorage</code> fijado en el import map). El orden de visualización se guarda en <code>metadata[&quot;position&quot;]</code> del blob y toda representación usa <code>Listing#ordered_images</code>.</li>
+<li>Las entradas de dinero usan atributos virtuales (<code>price=</code>, <code>original_price=</code>, <code>shipping_price=</code>) que aceptan <code>1.299,50</code>, <code>1299.50</code> y <code>1299</code>.</li>
+<li>Un anuncio creado sin tienda llama a <code>User#ensure_store!</code>, que crea una tienda individual con el nombre del usuario.</li>
+<li>Los anuncios publicados siguen activos tras editar precio, cantidad, envío o descripción. Los cambios de título, categoría o imágenes marcan <code>Listing#requires_re_review?</code> a partir de <code>saved_changes</code> y de los cambios de medios, y devuelven el anuncio a <code>pending_review</code> cuando la aprobación está activa.</li>
+<li>Destruir archiva (<code>status: archived</code>) cuando existen líneas de pedido y elimina definitivamente en caso contrario. Duplicar copia el anuncio como borrador y reutiliza los blobs de imagen.</li>
+<li>Rutas miembro anidadas modelan las acciones de ciclo de vida: <code>listing_submission</code> (enviar), <code>listing_pause</code> (POST pausar, DELETE reanudar) y <code>listing_sale</code> (marcar vendido). <code>Seller::ListingsController#index</code> filtra por estado con recuentos y búsqueda; las acciones masivas pausar/reanudar/eliminar pasan por <code>Seller::BulkListingActionsController</code> y el servicio <code>BulkListingAction</code>, que limita la acción permitida.</li>
+<li>El detalle del anuncio usa colocación de cuadrícula para que la caja de compra siga al título en móvil y quede junto a la galería en escritorio; la fila de estadísticas se ajusta por grupos con elementos <code>whitespace-nowrap</code>. El envío gratuito con envío activo muestra la etiqueta traducida &quot;Envío gratis&quot; en la caja de compra, las tarjetas y la sección de envío.</li>
+</ul>
+<h3>Área del vendedor y ajustes de cuenta (fase 3B)</h3>
+<ul>
+<li><code>Seller::BaseController</code> aporta autenticación, el diseño <code>seller</code> y <code>seller_store</code> (<code>User#ensure_store!</code>). El diseño tiene una tarjeta de cabecera de tienda y navegación adaptable: barra lateral en escritorio y pestañas desplazables en móvil.</li>
+<li><code>SellerDashboard</code> cachea una carga agregada durante 5 minutos por tienda y emite tarjetas KPI con variaciones de 30 días, un gráfico de pedidos SVG en línea renderizado en servidor (con <code>&lt;title&gt;/&lt;desc&gt;</code> accesibles y tabla visualmente oculta), enlaces de acción, completitud de tienda y anuncios recientes. Los agregados condicionales <code>FILTER</code> mantienen el panel por debajo de 30 consultas incluida la interfaz.</li>
+<li>Los ajustes del vendedor son recursos singulares: <code>seller/store</code>, <code>seller/store_policy</code>, <code>seller/vacation</code> y <code>seller/payout</code>. El logotipo (≤5 MB) y el banner (≤8 MB) aceptan JPEG/PNG/WebP; <code>image_preview_controller</code> previsualiza las subidas.</li>
+<li><code>Store</code> usa el historial de FriendlyId. Los cambios de nombre archivan el slug anterior y las URL antiguas de tienda redirigen 301 al slug actual. <code>Store#completeness</code> pondera logotipo, descripción, ambas políticas y ubicación con 25 puntos cada uno.</li>
+<li>Las tiendas profesionales exigen <code>company_name</code> y <code>tax_id</code>; los identificadores fiscales españoles se validan con <code>SpanishTaxIdValidator</code> (NIF/NIE módulo 23, dígito de control CIF).</li>
+<li>El modo vacaciones mantiene visibles los anuncios pero desactiva la compra en la caja de compra y rechaza <code>CartItemsController#create</code> con un aviso traducido.</li>
+<li>Los pagos en línea no están implementados: <code>seller/payout</code> explica el modelo de pago por pedido y muestra un botón Stripe Connect desactivado.</li>
+<li>Los ajustes de cuenta son recursos singulares bajo <code>account</code>: perfil (<code>show/update</code>), contraseña, direcciones, preferencias de notificación, exportación de datos y eliminación. <code>Account::BaseController</code> aporta el diseño <code>account</code>.</li>
+<li>Las direcciones promueven la primera a predeterminada, limpian las demás dentro de la transacción de guardado y promueven una alternativa cuando se elimina la predeterminada.</li>
+<li><code>users.notification_preferences</code> es un hash jsonb (verdadero por defecto salvo el boletín, que refleja <code>accepts_marketing</code>). <code>User#notify_by_email?</code> es la API de lectura; <code>User#update_notification_preferences!</code> es la de escritura.</li>
+<li><code>UserDataExport</code> genera la descarga JSON de los artículos 15/20 del RGPD solo para el usuario autenticado. <code>User#soft_delete!</code> anonimiza correo, nombre de usuario y nombres, borra el avatar, archiva anuncios y conserva pedidos.</li>
+<li>Los cambios de correo pasan por Devise reconfirmable (<code>unconfirmed_email</code>); las contraseñas exigen la actual salvo en cuentas solo OAuth, que pueden establecer una.</li>
+<li><code>ApplicationController#switch_locale</code> resuelve el idioma explícito, después el del usuario autenticado, después la mejor coincidencia de <code>Accept-Language</code> y por último el español. Seleccionar un idioma con sesión iniciada lo persiste en <code>users.locale</code>.</li>
+</ul>
+<h3>Cesta, pago y cobros (fase 4A)</h3>
+<ul>
+<li><code>CartSummary</code> (<code>app/services/cart_summary.rb</code>) es el único modelo de lectura de la página de cesta, el contador de cabecera y el pago. Agrupa filas de cesta por vendedor y tienda, limita cantidades al stock actual, marca artículos vendidos/no disponibles/de vacaciones, excluye los no disponibles de los totales y devuelve envío por grupo (suma del envío de artículos, gratis o solo recogida).</li>
+<li>La página de cesta renderiza una tarjeta por tienda con miniaturas, estado y precio de los artículos, un selector de cantidad solo cuando el stock supera uno, eliminar y guardar en favoritos. La barra lateral muestra subtotal, envío, una nota interna de comisión de plataforma cuando las comisiones están activas (el comprador nunca la paga), total estimado, caja de protección del comprador y las llamadas al pago o acceso de invitado. <code>Setting checkout_enabled</code> oculta las llamadas y muestra el aviso traducido de desactivado.</li>
+<li>Las mutaciones de cesta (cantidad, eliminar, favorito) responden con Turbo Streams que reemplazan <code>#cart-groups</code>, <code>#cart-summary</code> y <code>#cart-count</code>. Guardar en favoritos es un recurso anidado <code>cart_item_favorite</code>.</li>
+<li>El pago es un recurso singular <code>checkout</code> con un <code>confirmation</code> anidado. <code>Checkout::Form</code> valida correo de contacto, envío o recogida por vendedor, la dirección de envío compartida (dirección guardada o campos escritos), país habilitado, prefijo de provincia/código postal español, disponibilidad de pago y ambas aceptaciones legales. La página usa cuatro pasos <code>&lt;details&gt;</code> con un pequeño controlador Stimulus que abre el siguiente.</li>
+<li><code>Checkout::PlaceOrder</code> se ejecuta en una transacción: revalida el resumen, bloquea cada anuncio <code>FOR UPDATE</code> en orden de identificador, vuelve a comprobar visibilidad/stock, crea un pedido pending_payment por vendedor con instantáneas de título/precio, decrementa stock (marcando vendidos los de stock cero), guarda opcionalmente la dirección y vacía las filas compradas. <code>checkout_token</code> (campo oculto, único por vendedor) hace que un doble envío devuelva los pedidos originales.</li>
+<li>Los proveedores de pago implementan <code>start(orders, return_urls)</code> y <code>handle_webhook(request)</code>: <code>BankTransfer</code> (por defecto, IBAN/beneficiario/plazo desde ajustes), <code>CashOnPickup</code> (solo cuando todos los grupos son de recogida) y <code>Stripe</code> (sesión Checkout por pedido, metadatos con identificadores de pedido, webhook firmado, marcado pagado idempotente y reposición de stock al caducar). <code>Payments::Availability</code> calcula los métodos ofrecidos a partir de ajustes, la clave de Stripe y el estado de recogida.</li>
+<li><code>ExpireUnpaidOrdersJob</code> se ejecuta cada hora en todos los entornos y cancela pedidos con transferencia pendientes de pago anteriores a <code>payment_deadline_days</code>, reponiendo stock y republicando anuncios agotados.</li>
+<li>La confirmación muestra números de pedido por vendedor, totales, instrucciones de pago, próximos pasos y enlaces de invitado. <code>OrderMailer#placed_buyer</code> y <code>#placed_seller</code> envían HTML + texto en el idioma del pedido; el correo del vendedor respeta <code>email_order_updates</code>.</li>
+<li>Los pedidos del comprador están en <code>/orders</code> (pestañas Todos/Por pagar/En curso/Completados/Cancelados, búsqueda por número/título) y <code>/orders/:number</code> (cronología de estado, artículos, tarjeta del vendedor, dirección de entrega, instrucciones de pago, totales). <code>OrderPolicy</code> solo permite compradores; los invitados usan el parámetro de consulta <code>guest_access_token</code>. <code>Orders::CancellationsController</code> permite al comprador cancelar un pedido impagado y repone el stock.</li>
+<li>Nuevos valores por defecto de ajustes: <code>payment_bank_transfer_enabled</code>, <code>bank_iban</code>, <code>bank_beneficiary</code>, <code>payment_deadline_days</code>, <code>stripe_enabled</code>.</li>
+</ul>
+<h3>Ciclo de pedidos y gestión del vendedor (fase 4B)</h3>
+<ul>
+<li>Las transiciones del ciclo de vida de <code>Order</code> son métodos de modelo transaccionales y protegidos. Administración puede marcar pagado, reembolsar y resolver disputas; los vendedores pueden marcar pagado el pago contra reembolso, enviar con un transportista de <code>Order::CARRIERS</code> y seguimiento (opcional solo para <code>other</code>), marcar listas las recogidas locales y cancelar pedidos pagados con indicador de reembolso. Los compradores confirman la recepción y abren disputas dentro de la ventana de inspección.</li>
+<li><code>OrderNotifier</code> distribuye notificaciones en la aplicación y correos HTML/texto por idioma para eventos pagado, enviado, entregado, completado, cancelado, disputa, reembolso y envío tardío. Los compradores invitados reciben correo sin cuenta. El correo de disputa de administración va a <code>Setting.support_email</code>.</li>
+<li>Trabajos recurrentes de Solid Queue: <code>AutoDeliverOrdersJob</code> (enviados hace más de <code>auto_delivered_after_shipping_days</code>), <code>AutoCompleteOrdersJob</code> (entregados hace más de <code>inspection_window_days</code>, omitiendo disputas) y <code>LateShipmentReminderJob</code> (un recordatorio tras <code>seller_ship_deadline_days</code> y cancelación automática con reembolso al doble).</li>
+<li>Las acciones del comprador son recursos singulares anidados: <code>delivery_confirmation</code>, <code>dispute</code> (new/create con hasta cinco fotos), <code>review</code> y <code>cancellation</code>.</li>
+<li>El panel <code>/seller/orders</code> tiene pestañas (por enviar, esperando pago, enviados, completados incluidos entregados, cancelados/reembolsados, disputas), recuentos, búsqueda, tabla en escritorio/tarjetas en móvil, exportación CSV, página de pedido con dirección protegida por privacidad (solo pagados), línea de comisión cuando no es cero, pago neto, seguimiento, modales de envío/recogida/efectivo/cancelación, respuestas a reseñas y albarán optimizado para impresión en <code>/seller/orders/:id/packing_slip</code>.</li>
+<li>Los ingresos de <code>SellerDashboard</code> son <code>sum(total_cents - commission_cents)</code> de pedidos pagados, enviados, entregados y completados.</li>
+<li>Las reseñas exigen pedido completado, propiedad del comprador, una por pedido, un cuerpo de 20–1000 caracteres y ninguna palabra de <code>Setting blocked_words</code>. Los vendedores responden una vez y pueden editar esa respuesta. <code>reviews_enabled</code> oculta formularios del comprador, paneles de reseñas de tienda y secciones de reseñas del anuncio.</li>
+<li>Las notificaciones están en <code>/notifications</code> (no leídas primero, paginadas, marcar todas como leídas, lectura individual al hacer clic) y en una campana perezosa de cabecera en Turbo Frame con las últimas ocho. <code>Notification#after_create_commit</code> reemplaza el contador mediante <code>Turbo::StreamsChannel</code>.</li>
+<li>Nuevos valores por defecto de ajustes: <code>inspection_window_days</code> 2, <code>auto_complete_after_delivery_days</code> 2, <code>auto_delivered_after_shipping_days</code> 14, <code>seller_ship_deadline_days</code> 3, <code>support_email</code> y <code>blocked_words</code>.</li>
+</ul>
+<h3>Mensajería, ofertas y alertas (fase 5)</h3>
+<ul>
+<li><code>Conversation</code> es una conversación por <code>[anuncio, comprador, vendedor]</code>; las conversaciones sin anuncio cubren las entradas desde tienda y pedidos. <code>ConversationStarter</code> concentra las reglas: chat activo, sin auto-mensajes, sin bloqueo en ninguna dirección, visibilidad del anuncio, primer mensaje y primera oferta opcional.</li>
+<li>La bandeja está en <code>/inbox</code> con pestañas Chats, Ofertas, Archivadas y Usuarios bloqueados. En escritorio se muestra la lista y un <code>turbo-frame#conversation-thread</code> perezoso; en móvil se muestra la lista y después la conversación con un enlace de vuelta. Los contadores de no leídos los incrementa <code>Message</code> de forma atómica y los reinicia <code>Conversation#mark_read_for!</code>; <code>Conversation.broadcast_inbox_badge</code> mantiene vivo el contador de cabecera mediante <code>[user, :inbox]</code>.</li>
+<li>Los mensajes difunden <code>append</code> a <code>[conversation, user]</code> para ambos participantes, de modo que la alineación propio/otro es correcta. El compositor tiene área de texto autoajustable, Intro envía, Mayús+Intro añade una línea, máximo 2.000 caracteres y se desactiva con bloqueos, anuncios eliminados o chat desactivado. Los separadores de día usan el idioma de la petición.</li>
+<li><code>MessageSafetyScanner</code> marca correos, teléfonos ES/EN, IBAN y frases de pago fuera de la plataforma (Bizum, PayPal Friends, Western Union, transferencias fuera del mercado). La marca se guarda en <code>messages.flagged</code> y muestra un aviso traducido al destinatario sin bloquear la entrega.</li>
+<li><code>Message</code> limita a cada remitente a 30 mensajes cada 10 minutos.</li>
+<li>Las ofertas son mensajes <code>kind: offer</code> con límites (&lt; precio del anuncio, ≥ 50 %, <code>accepts_offers</code>), caducidad de 48 horas y <code>ExpireOffersJob</code> cada diez minutos. <code>OfferResponse</code> acepta, rechaza o hace contraoferta; la contraoferta marca la anterior como rechazada y crea una nueva oferta pendiente. La aceptación escribe <code>cart_items.offer_price_cents</code>/<code>offer_expires_at</code> (24 horas); <code>CartSummary</code> y <code>Checkout::PlaceOrder</code> guardan el precio de la oferta en <code>OrderItem</code>.</li>
+<li>Los bloqueos son una fila <code>Block</code> en cualquier dirección; la cabecera de la conversación bloquea o desbloquea y la bandeja lista a los usuarios bloqueados. Las denuncias amplían el <code>Report</code> polimórfico a conversaciones.</li>
+<li><code>MessageNotifier</code> crea notificaciones para mensajes y ofertas nuevas y envía correos mediante <code>MessageMailer</code> respetando <code>email_messages</code>/<code>email_offers</code>; los correos de mensaje se limitan a uno por conversación y destinatario cada 15 minutos.</li>
+<li>Publicar un anuncio encola <code>NotifyFollowersJob</code> (solo notificación) y <code>SavedSearchAlertJob</code> (coincidencias instantáneas, prefiltro SQL por subárbol de categoría, precio y país, después <code>SavedSearch#matches?</code>; se excluye al propietario). <code>SavedSearchDigestJob</code> se ejecuta a diario a las 08:00 Europe/Madrid para búsquedas con <code>frequency: daily</code>, agrupa hasta 20 coincidencias por usuario y actualiza <code>last_notified_at</code>. Ambos respetan <code>email_saved_search_alerts</code> y <code>Setting saved_search_alerts_enabled</code>.</li>
+<li><code>PriceDropAlertJob</code> avisa a los usuarios que tienen el anuncio en favoritos cuando baja el precio de un anuncio publicado y les envía correo si <code>email_price_drops_favourites</code> está activo.</li>
+<li>La gestión de búsquedas guardadas permite renombrar, elegir frecuencia (instantánea/diaria), activar o desactivar avisos, repetir la búsqueda y eliminar. <code>/account/following</code> lista las tiendas seguidas con sus últimos anuncios. <code>config.time_zone</code> es Europe/Madrid y las marcas de tiempo se siguen guardando en UTC.</li>
+<li>El ajuste <code>chat_enabled</code> ya existía; los nuevos tipos de notificación son <code>message_received</code>, <code>offer_received</code>, <code>offer_accepted</code>, <code>offer_declined</code>, <code>offer_countered</code>, <code>followed_store_listing</code>, <code>saved_search_match</code> y <code>price_drop_favourite</code>.</li>
+</ul>
+<h3>Límites de rendimiento</h3>
+<ul>
+<li><code>ListingSearch::INCLUDES</code> precarga tienda, categoría, región, usuario y adjuntos/blobs de imágenes. Las tarjetas nunca llaman a <code>category.root</code> ni a <code>user.store</code>; los slugs raíz vienen de un <code>Category.root_slug_map</code> cacheado y los nombres de vendedor prefieren la tienda precargada.</li>
+<li><code>MenuBuilder</code> obtiene raíces e hijos directos en dos consultas y construye rutas desde slugs sin recorrer la ascendencia.</li>
+<li><code>Setting</code> cachea toda la pequeña tabla de ajustes bajo una clave.</li>
+<li>Las páginas de búsqueda anónimas envían <code>Cache-Control: public, max-age=60</code> y <code>fresh_when</code> sobre <code>[locale, params digest, Listing.maximum(:updated_at)]</code>; las páginas de anuncio usan <code>fresh_when</code> sobre <code>[listing, locale, store.updated_at]</code>.</li>
+<li>Protección contra N+1: <code>test/integration/search_performance_test.rb</code> renderiza una página de categoría con 24 anuncios y exige menos de 25 consultas SQL mediante <code>ActiveSupport::Notifications</code>.</li>
+</ul>
+<h3>SEO y seguridad</h3>
+<ul>
+<li><code>ApplicationController#set_default_meta_tags</code> establece título, descripción, canónica, alternativas hreflang más <code>x-default</code>, Open Graph y Twitter.</li>
+<li>JSON-LD <code>Organization</code> + <code>WebSite</code> con <code>SearchAction</code> se emite una vez en el diseño.</li>
+<li><code>/robots.txt</code> y <code>/sitemap.xml</code> los gestiona <code>SeoController</code> fuera del ámbito de idioma. <code>SitemapBuilder</code> cachea la salida una hora y divide en un índice de sitemaps a partir de 45.000 URL.</li>
+<li>Una CSP estricta basada en nonce permite recursos propios, Google Fonts, imágenes data/blob y el import map. <code>Permissions-Policy</code> y <code>Referrer-Policy</code> se establecen en <code>config/initializers/security_headers.rb</code>.</li>
+<li>Producción fuerza SSL y usa <code>solid_cache</code>; desarrollo usa <code>memory_store</code>, alternable con <code>bin/rails dev:cache</code>.</li>
+</ul>
+<h3>Autorización</h3>
+<ul>
+<li><code>ApplicationController</code> incluye <code>Pundit::Authorization</code>; las peticiones no autorizadas redirigen atrás con <code>errors.not_authorized</code>.</li>
+<li><code>ListingPolicy</code> permite a los propietarios editar/eliminar sus anuncios y a moderadores/administradores aprobar o rechazar. <code>ListingPolicy::Scope</code> oculta los anuncios no visibles al público.</li>
+<li>Las rutas de administración exigen <code>current_user.staff?</code>; los visitantes que no son personal se redirigen a la portada con un aviso traducido.</li>
+</ul>
+</section>
+<section class="card code-map">
+<h2><span>Mapa de código</span></h2>
+<pre><code>app/controllers/application_controller.rb   idioma, metaetiquetas, menú, acceso de personal,
+                                            parámetros de búsqueda
+app/controllers/concerns/search_rendering.rb render compartido de búsqueda/categoría/tienda
+app/controllers/home_controller.rb          portada + vistos recientemente
+app/controllers/listings_controller.rb      index/show/new/create/edit/update/destroy,
+                                            Turbo Frame de especificaciones, visitas, SEO, caché
+app/controllers/listings/                   recursos miembro de envío, pausa y venta
+app/controllers/seller/listings_controller.rb  panel del vendedor (pestañas, recuentos, búsqueda)
+app/controllers/seller/bulk_listing_actions_controller.rb
+app/controllers/seller/base_controller.rb      autenticación, diseño seller, seller_store
+app/controllers/seller/dashboard_controller.rb panel KPI
+app/controllers/seller/{stores,store_policies,vacations,payouts}_controller.rb
+                                            recursos singulares de ajustes de tienda
+app/controllers/seller/orders_controller.rb pestañas y detalle de ventas
+app/controllers/seller/orders/              envíos, recogidas, pagos,
+                                            cancelaciones, albaranes
+app/controllers/seller/order_exports_controller.rb exportación CSV de ventas
+app/controllers/seller/review_replies_controller.rb respuestas a reseñas
+app/controllers/orders/delivery_confirmations_controller.rb
+app/controllers/orders/disputes_controller.rb
+app/controllers/orders/reviews_controller.rb
+app/controllers/notifications_controller.rb   listado, marcar una leída
+app/controllers/notifications/read_alls_controller.rb
+app/controllers/conversations_controller.rb   pestañas de bandeja, conversación, iniciar chat
+app/controllers/conversations/                mensajes, ofertas, lecturas, archivos, leer todo
+app/controllers/messages/offer_responses_controller.rb
+app/controllers/blocks_controller.rb          bloquear/desbloquear usuarios
+app/controllers/account/following_controller.rb
+app/services/notifier.rb                    notificación + correo según preferencia
+app/services/message_notifier.rb            notificaciones de mensajes/ofertas + correo limitado
+app/services/message_safety_scanner.rb      detección de contactos y pagos externos
+app/services/conversation_starter.rb        reglas de creación de chat y primer mensaje
+app/services/offer_response.rb              aceptar/rechazar/contraoferta + precio reservado
+app/mailers/message_mailer.rb               correos de mensajes y ofertas
+app/mailers/saved_search_mailer.rb          correos de coincidencia y resumen diario
+app/mailers/favourite_mailer.rb             correo de bajada de precio en favoritos
+app/jobs/notify_followers_job.rb
+app/jobs/saved_search_alert_job.rb
+app/jobs/saved_search_digest_job.rb
+app/jobs/price_drop_alert_job.rb
+app/jobs/expire_offers_job.rb
+app/views/conversations/                   lista de bandeja, conversación, compositor, oferta
+app/views/messages/_message.html.erb       burbuja, tarjeta de oferta, seguridad y recibos
+app/views/messaging/_inbox_badge.html.erb  total de no leídos vivo en cabecera
+app/views/account/following/               tiendas seguidas + últimos anuncios
+app/services/order_notifier.rb              distribución de eventos de pedido
+app/services/profanity_filter.rb            palabras bloqueadas
+app/services/seller_order_export.rb         CSV filtrado
+app/jobs/auto_deliver_orders_job.rb
+app/jobs/auto_complete_orders_job.rb
+app/jobs/late_shipment_reminder_job.rb
+app/views/seller/orders/                   índice, detalle, albarán
+app/views/notifications/                   índice, menú, contador
+app/views/layouts/packing_slip.html.erb    diseño imprimible
+app/controllers/cart_controller.rb           modelo de lectura de cesta agrupada
+app/controllers/cart_items_controller.rb     mutaciones de cesta + Turbo Streams
+app/controllers/cart_items/favorites_controller.rb mover fila de cesta a favoritos
+app/controllers/checkouts_controller.rb      formulario de pago, PlaceOrder, redirección al proveedor
+app/controllers/checkout/confirmations_controller.rb  página de confirmación
+app/controllers/orders_controller.rb         historial/detalle de pedidos + token de invitado
+app/controllers/orders/cancellations_controller.rb    cancelar pedido impagado
+app/controllers/payments/stripe_webhooks_controller.rb webhook firmado de Stripe
+app/controllers/account_controller.rb        perfil de cuenta show/update
+app/controllers/account/                     contraseña, direcciones, preferencias de
+                                            notificación, exportación de datos, eliminación
+app/services/seller_dashboard.rb             agregados cacheados del panel
+app/services/user_data_export.rb             exportación JSON RGPD
+app/validators/spanish_tax_id_validator.rb   validación de NIF/NIE/CIF
+app/services/listing_form.rb                escritor del formulario (especificaciones/imágenes/estado)
+app/services/bulk_listing_action.rb          pausa/reanudar/eliminar masivo permitido
+app/controllers/categories_controller.rb    resolución de rutas de categoría
+app/controllers/stores_controller.rb        cabecera, pestañas y reseñas de tienda
+app/controllers/{cart,cart_items,favorites,follows,reports,saved_searches}_controller.rb
+app/controllers/users/registrations_controller.rb
+app/controllers/{conversations,orders,account,pc_finder,pages,legal_pages,sell_offers}_controller.rb
+app/controllers/{search_suggestions,seo,newsletter_subscribers}_controller.rb
+app/controllers/admin/dashboard_controller.rb
+app/controllers/seller/dashboard_controller.rb
+app/services/listing_search.rb              búsqueda, facetas, chips, ordenación
+app/services/cart_summary.rb                 grupos de cesta, avisos, límite de stock
+app/services/checkout/form.rb                validación del pago
+app/services/checkout/place_order.rb         creación transaccional de pedidos multiproveedor
+app/services/payments/{provider,bank_transfer,cash_on_pickup,stripe,availability}.rb
+                                             proveedores y métodos de pago ofrecidos
+app/jobs/expire_unpaid_orders_job.rb         barrido de transferencias impagadas
+app/mailers/order_mailer.rb                  correos de pedido al comprador/vendedor
+app/policies/order_policy.rb                 autorización de pedidos del comprador
+app/services/cart_merger.rb                 fusión de cesta invitado -&gt; usuario
+app/services/menu_builder.rb                menú gigante cacheado
+app/services/home_feed.rb                   consultas de portada
+app/services/search_suggestions.rb          sugerencias de anuncios/categorías/tiendas
+app/services/newsletter_subscription.rb     estados de suscripción idempotentes
+app/services/sitemap_builder.rb             sitemap XML + índice
+app/helpers/application_helper.rb           iconos, clases de UI, dinero, JSON-LD, especificaciones
+app/views/layouts/application.html.erb      cabecera global, cabecera, main, pie, diálogo de acceso
+app/views/shared/                           parciales de diseño, paginación, filtros, avisos
+app/views/listings/index.html.erb           página de búsqueda/categoría
+app/views/listings/_results.html.erb        resultados en Turbo Frame + barra lateral + hoja
+app/views/listings/_filters.html.erb        formulario de filtros compartido escritorio/móvil
+app/views/listings/show.html.erb            página de detalle, galería, caja de compra
+app/views/listings/_form.html.erb           formulario del vendedor de cinco secciones
+app/views/listings/_specs.html.erb          Turbo Frame de especificaciones por categoría
+app/views/listings/_actions.html.erb        menú de acciones de fila del vendedor
+app/views/seller/listings/index.html.erb    pestañas, tabla/tarjetas, acciones masivas
+app/views/seller/dashboard/show.html.erb    KPI, gráfico SVG, acciones, recientes
+app/views/seller/{stores,store_policies,vacations,payouts,orders}/
+                                             pantallas de ajustes del vendedor
+app/views/{cart,checkouts,checkout,orders}/
+                                             cesta, pago, confirmación, pedidos del comprador
+app/views/order_mailer/                      placed_buyer/placed_seller HTML + texto
+app/views/account/                          perfil, contraseña, direcciones,
+                                            notificaciones, privacidad/eliminación
+app/views/layouts/{seller,account}.html.erb diseños compartidos de área
+app/views/stores/show.html.erb              cabecera y pestañas de tienda
+app/views/stores/tabs/                      paneles de anuncios/acerca de/reseñas
+app/views/favorites/                        parciales de botón/contador de corazón
+app/views/devise/                           pantallas de autenticación con estilo
+app/views/listings/_card.html.erb           tarjeta de anuncio compartida
+app/views/home/index.html.erb               secciones de portada + vistos recientemente
+app/assets/tailwind/application.css         tokens de diseño y estilos base
+app/assets/images/icons/                    SVG de Lucide incluidos
+app/javascript/controllers/                 tema, cajón, menú gigante, autocompletado,
+                                            carrusel, desplegable, modal, pestañas, avisos,
+                                            consentimiento de cookies, filas con desplazamiento,
+                                            volver arriba, filtros, lista de opciones, vista,
+                                            favorito, galería, compartir, modal de acceso,
+                                            compositor de mensajes
+config/routes.rb                            ámbito de idioma + SEO + recursos de fase 2B
+config/initializers/warden_hooks.rb         fusión de cesta de invitado al acceder
+config/initializers/content_security_policy.rb
+config/initializers/security_headers.rb
+config/locales/                             textos de UI en seis idiomas (+ archivos por dominio)
+db/seeds.rb                                 cargador
+db/seeds/*.rb                               taxonomía y datos de referencia
+script/search_explain.rb                    EXPLAIN ANALYZE con 5k anuncios
+test/integration/                           portada, SEO, búsqueda, acceso, rendimiento
+test/services/listing_search_test.rb
+test/services/cart_summary_test.rb
+test/services/checkout/place_order_test.rb
+test/services/payments/availability_test.rb
+test/jobs/expire_unpaid_orders_job_test.rb
+test/mailers/order_mailer_test.rb
+test/integration/{checkout,orders,stripe_webhook}_test.rb
+test/system/checkout_flow_test.rb
+test/system/                                adaptable + modal de acceso
+test/i18n/locale_parity_test.rb
+test/seeds_test.rb
+</code></pre>
+</section>
+<section class="card open-items">
+<h2><span>Pendientes para fases posteriores</span></h2>
+<ul>
+<li>Pantallas de moderación de administración (cola de aprobación/rechazo) de anuncios; el envío del vendedor ya existe.</li>
+<li>Interfaz de administración para resolver disputas y emitir reembolsos (las transiciones y políticas existen, pero aún no hay pantallas).</li>
+<li>Interfaz de administración para revisar mensajes marcados y denuncias.</li>
+<li>El rendimiento del panel del vendedor se cachea cinco minutos; los eventos de pedido no lo invalidan de inmediato.</li>
+<li>Los correos de ciclo de vida a administración dependen de <code>Setting.support_email</code>; aún no hay bandeja de personal.</li>
+<li>Pagos en línea (Stripe Connect) e historial de pagos al vendedor pendientes.</li>
+<li>Los códigos de descuento aparecen en la navegación del vendedor como elemento desactivado.</li>
+<li>Las pestañas de tienda renderizan el panel activo en línea para SEO y cargan las demás mediante Turbo Frame; se pueden añadir marcadores <code>loading=&quot;lazy&quot;</code> si los paneles crecen.</li>
+<li>&quot;Cargar más&quot; en móvil navega a la página siguiente dentro del frame de resultados en lugar de añadir; la adición infinita real puede añadirse con un endpoint de stream.</li>
+<li>El acceso con Google solo se muestra cuando <code>GOOGLE_CLIENT_ID</code> y <code>GOOGLE_CLIENT_SECRET</code> están configurados.</li>
+<li>URL reales de perfiles sociales y textos legales por idioma.</li>
+<li>Endpoints de API (ListingSearch ya está preparado para API).</li>
+<li>Sin indicador de escritura en las conversaciones (fuera de alcance de forma explícita).</li>
+<li>La detección de seguridad de mensajes es heurística; la revisión de moderación sigue siendo manual.</li>
+</ul>
+</section>
+</main>
+  <footer>
+    <p>PCMarket — Contexto del proyecto · <code>bin/rails context:html</code></p>
+  </footer>
+</body>
+</html>

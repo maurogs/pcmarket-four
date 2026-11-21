@@ -184,8 +184,8 @@ class CartSummary
       cart_item: cart_item,
       listing: listing,
       quantity: quantity,
-      unit_price_cents: listing.price_cents.to_i,
-      subtotal_cents: listing.price_cents.to_i * quantity,
+      unit_price_cents: cart_item.effective_price_cents,
+      subtotal_cents: cart_item.effective_price_cents * quantity,
       available: available,
       warning_code: code
     )

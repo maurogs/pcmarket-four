@@ -1,0 +1,157 @@
+en:
+  messaging:
+    inbox:
+      title: "Inbox"
+      subtitle: "Your conversations, offers and blocked users."
+      mark_all_read: "Mark all as read"
+      marked_all_read: "All conversations marked as read."
+      chat_disabled: "Messaging is temporarily disabled."
+      tabs_label: "Inbox sections"
+      tabs:
+        chats: "Chats"
+        offers: "Offers"
+        archived: "Archived"
+        blocked: "Blocked users"
+      empty_title: "No conversations yet"
+      empty_body: "Message a seller from a listing to start a conversation."
+      browse: "Browse listings"
+      no_messages: "No messages yet"
+      unread_count: "%{count} unread messages"
+    thread:
+      back: "Back to inbox"
+      direct: "Direct conversation"
+      mark_read: "Mark read"
+      marked_read: "Conversation marked as read."
+      archive: "Archive"
+      unarchive: "Unarchive"
+      archived: "Conversation archived."
+      unarchived: "Conversation moved back to your inbox."
+      report: "Report"
+      report_details: "Tell us what happened."
+      report_submit: "Send report"
+      no_messages: "Say hello and ask about the item."
+      today: "Today"
+      yesterday: "Yesterday"
+      blocked_notice: "This user has blocked you. You cannot send more messages."
+      you_blocked_notice: "You have blocked this user. Unblock them to continue."
+      listing_unavailable: "This listing is no longer available for messages."
+      sent: "Sent"
+      read: "Read"
+    composer:
+      placeholder: "Write a message…"
+      label: "Message"
+      send: "Send"
+      hint: "Enter sends, Shift+Enter adds a new line. Maximum %{count} characters."
+    safety:
+      warning: "Never share phone numbers, emails or bank details, and never pay outside PCMarket. If someone asks you to, report the conversation."
+    offers:
+      label: "Offer"
+      preview: "Offer: %{amount}"
+      statuses:
+        pending: "Pending"
+        accepted: "Accepted"
+        declined: "Declined"
+        expired: "Expired"
+      expires_at: "Expires %{time}"
+      accept: "Accept"
+      decline: "Decline"
+      counter: "Counter"
+      counter_placeholder: "Your price"
+      counter_amount: "Counter-offer amount"
+      make_offer: "Make an offer (listed at %{price})"
+      amount: "Your offer"
+      amount_placeholder: "e.g. 450"
+      submit: "Send offer"
+      rules: "Offers must be below the listing price and at least %{min}."
+      sent: "Offer sent."
+      invalid: "The offer could not be sent."
+      response_sent: "Your response has been sent."
+      default_body: "Offer of %{amount}"
+      counter_body: "Counter-offer of %{amount}"
+      errors:
+        invalid_decision: "Invalid decision."
+        not_participant: "You are not part of this conversation."
+        own_offer: "You cannot respond to your own offer."
+        offer_not_pending: "This offer is no longer pending."
+        offer_expired: "This offer has expired."
+        listing_unavailable: "The listing is no longer available."
+        invalid_amount: "Enter a valid amount."
+    blocks:
+      block: "Block user"
+      unblock: "Unblock"
+      blocked: "You have blocked %{name}."
+      unblocked: "You have unblocked %{name}."
+      cannot_block_self: "You cannot block yourself."
+      you_blocked: "You blocked this user"
+      blocked_you: "This user blocked you"
+      empty_title: "No blocked users"
+      empty_body: "Blocked users cannot message you."
+    errors:
+      chat_disabled: "Messaging is temporarily disabled."
+      seller_missing: "The seller could not be found."
+      own_listing: "You cannot start a conversation about your own listing."
+      blocked: "You cannot message this user."
+      listing_unavailable: "This listing is not available."
+      message_invalid: "The message could not be sent."
+    mailer:
+      greeting: "Hi %{name},"
+      cta: "Open the conversation"
+      offer_amount: "Offer amount: %{amount}"
+      message_received:
+        title: "You have a new message"
+        subject: "New message from %{sender}"
+      offer_received:
+        title: "You have received an offer"
+        subject: "New offer from %{sender}"
+      offer_accepted:
+        title: "Your offer was accepted"
+        subject: "Your offer was accepted"
+      offer_declined:
+        title: "Your offer was declined"
+        subject: "Your offer was declined"
+      offer_countered:
+        title: "You received a counter-offer"
+        subject: "Counter-offer from %{sender}"
+      saved_search_match:
+        title: "New match for “%{search}”"
+        subject: "New listings for “%{search}”"
+      saved_search_digest:
+        title: "Your daily saved-search digest"
+        subject: "Your daily saved-search digest"
+      price_drop:
+        title: "A favourite just got cheaper"
+        subject: "%{listing} is now cheaper"
+        body: "The price of %{listing} dropped from %{old_price} to %{price}. It may not last long."
+  conversations:
+    cannot_start: "The conversation could not be started."
+  notifications:
+    kinds:
+      message_received: "New message from %{sender}."
+      offer_received: "New offer from %{sender} for %{listing}."
+      offer_accepted: "Your offer for %{listing} was accepted."
+      offer_declined: "Your offer for %{listing} was declined."
+      offer_countered: "%{sender} sent you a counter-offer for %{listing}."
+      followed_store_listing: "New listing from a store you follow: %{listing}."
+      saved_search_match: "New match for “%{search}”: %{listing}."
+      price_drop_favourite: "A listing you saved is now cheaper: %{listing}."
+  saved_searches:
+    name: "Name"
+    frequency_label: "Alerts"
+    save: "Save"
+    updated: "Saved search updated."
+    frequencies:
+      instant: "Instant alerts"
+      daily: "Daily digest"
+  account:
+    area:
+      following: "Following"
+    following:
+      title: "Stores you follow"
+      subtitle: "New listings from these stores and their latest items."
+      browse: "Browse listings"
+      no_listings: "No active listings right now."
+      empty_title: "You are not following any stores"
+      empty_body: "Follow a store to see its new listings here."
+      empty_cta: "Discover stores"
+  stores:
+    unfollow: "Unfollow"

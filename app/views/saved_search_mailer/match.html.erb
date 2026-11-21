@@ -1,0 +1,14 @@
+<h1 style="font-family: sans-serif; font-size: 20px; color: #0f172a;">
+  <%= t("messaging.mailer.saved_search_match.title", search: @saved_search.name) %>
+</h1>
+
+<ul style="font-family: sans-serif; font-size: 14px; color: #334155;">
+  <% @listings.each do |listing| %>
+    <li style="margin-bottom: 8px;">
+      <%= link_to listing.title, listing_url(listing, locale: I18n.locale), style: "color: #0f766e;" %>
+      — <%= format_price(listing.price_cents) %>
+    </li>
+  <% end %>
+</ul>
+
+<p><%= link_to t("messaging.mailer.cta"), @url, style: "color: #0f766e;" %></p>

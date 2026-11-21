@@ -210,6 +210,43 @@ module ApplicationHelper
     current_user ? current_user.notifications.unread.count : 0
   end
 
+  def unread_inbox_count
+    current_user ? current_user.inbox_unread_count : 0
+  end
+
+  def chat_enabled?
+    Setting.enabled?("chat_enabled")
+  end
+
+  def conversation_partner(conversation, viewer)
+    conversation.other_party(viewer)
+  end
+
+  def relative_time(time)
+    return "" if time.blank?
+
+    time_ago_in_words(time)
+  end
+
+  def message_offer_expired?(message)
+    message.offer? && message.offer_expired?
+  end
+
+  def message_day_label(date)
+    return t("messaging.thread.today") if date == Date.current
+    return t("messaging.thread.yesterday") if date == Date.yesterday
+
+    l(date, format: :long)
+  end
+
+  def offer_status_tone(message)
+    case message.offer_status
+    when "accepted" then :success
+    when "declined", "expired" then :danger
+    else :accent
+    end
+  end
+
   def notification_text(notification)
     t("notifications.kinds.#{notification.kind}",
       **notification.params.to_h.symbolize_keys,

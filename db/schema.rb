@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_22_100100) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_22_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -107,6 +107,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_100100) do
     t.integer "quantity", default: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "offer_price_cents"
+    t.datetime "offer_expires_at"
     t.index ["cart_token", "listing_id"], name: "index_cart_items_on_cart_token_and_listing_id", unique: true, where: "(cart_token IS NOT NULL)"
     t.index ["cart_token"], name: "index_cart_items_on_cart_token"
     t.index ["listing_id"], name: "index_cart_items_on_listing_id"
@@ -155,6 +157,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_100100) do
     t.integer "seller_unread_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "buyer_archived_at"
+    t.datetime "seller_archived_at"
     t.index ["buyer_id", "last_message_at"], name: "index_conversations_on_buyer_id_and_last_message_at"
     t.index ["buyer_id"], name: "index_conversations_on_buyer_id"
     t.index ["listing_id", "buyer_id", "seller_id"], name: "index_conversations_on_listing_and_participants", unique: true
@@ -337,7 +341,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_100100) do
     t.datetime "read_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "flagged", default: false, null: false
+    t.datetime "offer_expires_at"
     t.index ["conversation_id", "created_at"], name: "index_messages_on_conversation_id_and_created_at"
+    t.index ["conversation_id", "kind", "offer_status"], name: "index_messages_on_conversation_kind_and_offer_status"
     t.index ["conversation_id"], name: "index_messages_on_conversation_id"
     t.index ["read_at"], name: "index_messages_on_read_at"
     t.index ["sender_id"], name: "index_messages_on_sender_id"
@@ -509,6 +516,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_100100) do
     t.datetime "last_notified_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "frequency", default: 0, null: false
     t.index ["category_id"], name: "index_saved_searches_on_category_id"
     t.index ["country_code"], name: "index_saved_searches_on_country_code"
     t.index ["user_id", "notify"], name: "index_saved_searches_on_user_id_and_notify"

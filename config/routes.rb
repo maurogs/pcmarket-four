@@ -45,7 +45,18 @@ Rails.application.routes.draw do
     resources :follows, only: %i[create destroy]
     resources :reports, only: %i[create]
     resources :saved_searches, only: %i[index create update destroy]
-    resources :conversations, only: %i[index show create]
+    resources :conversations, only: %i[index show create] do
+      resources :messages, only: :create, module: :conversations
+      resources :offers, only: :create, module: :conversations
+      resource :read, only: :create, module: :conversations
+      resource :archive, only: %i[create destroy], module: :conversations
+    end
+    resources :messages, only: [] do
+      resource :offer_response, only: :create, module: :messages
+    end
+    resources :blocks, only: %i[index create destroy]
+    resource :inbox_read_all, only: :create, controller: "conversations/read_alls"
+    resources :followings, only: :index, path: "account/following", controller: "account/following"
     resources :orders, only: %i[index show], param: :number do
       resource :cancellation, only: :create, module: :orders
       resource :delivery_confirmation, only: :create, module: :orders

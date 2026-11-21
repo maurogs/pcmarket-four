@@ -124,6 +124,23 @@ class User < ApplicationRecord
     moderator? || admin?
   end
 
+  def blocked_by?(other)
+    other.present? && blocks_received.exists?(blocker_id: other.id)
+  end
+
+  def blocks?(other)
+    other.present? && blocks_made.exists?(blocked_id: other.id)
+  end
+
+  def blocked_with?(other)
+    other.present? && Block.between?(self, other)
+  end
+
+  def inbox_unread_count
+    Conversation.where(buyer_id: id).or(Conversation.where(seller_id: id))
+                .sum(Arel.sql("CASE WHEN buyer_id = #{id.to_i} THEN buyer_unread_count ELSE seller_unread_count END"))
+  end
+
   def deleted?
     deleted_at.present?
   end

@@ -227,32 +227,38 @@
                           class: ui_button_classes(variant: :outline, size: :lg, extra: "w-full") do %>
               <%= icon "shopping-cart", class: "size-4" %><%= t("listings.show.add_to_cart") %>
             <% end %>
-            <% if @listing.accepts_offers? %>
-              <% if user_signed_in? %>
+            <% if chat_enabled? %>
+              <% if @listing.accepts_offers? %>
+                <% if user_signed_in? %>
+                  <%= button_to conversations_path(listing_id: @listing.id), method: :post,
+                                disabled: unavailable,
+                                form: { data: { turbo: false } },
+                                class: ui_button_classes(variant: :outline, size: :md, extra: "w-full") do %>
+                    <%= t("listings.show.make_offer") %>
+                  <% end %>
+                <% else %>
+                  <%= link_to new_user_session_path, data: { turbo_frame: "auth-modal" },
+                              class: ui_button_classes(variant: :outline, size: :md, extra: "w-full") do %>
+                    <%= t("listings.show.make_offer") %>
+                  <% end %>
+                <% end %>
+              <% end %>
+              <% if user_signed_in? && current_user.id != @listing.user_id %>
                 <%= button_to conversations_path(listing_id: @listing.id), method: :post,
-                              disabled: unavailable,
                               form: { data: { turbo: false } },
                               class: ui_button_classes(variant: :outline, size: :md, extra: "w-full") do %>
-                  <%= t("listings.show.make_offer") %>
+                  <%= icon "message-circle", class: "size-4" %><%= t("listings.show.message_seller") %>
                 <% end %>
-              <% else %>
+              <% elsif !user_signed_in? %>
                 <%= link_to new_user_session_path, data: { turbo_frame: "auth-modal" },
                             class: ui_button_classes(variant: :outline, size: :md, extra: "w-full") do %>
-                  <%= t("listings.show.make_offer") %>
+                  <%= icon "message-circle", class: "size-4" %><%= t("listings.show.message_seller") %>
                 <% end %>
               <% end %>
-            <% end %>
-            <% if user_signed_in? && current_user.id != @listing.user_id %>
-              <%= button_to conversations_path(listing_id: @listing.id), method: :post,
-                            form: { data: { turbo: false } },
-                            class: ui_button_classes(variant: :outline, size: :md, extra: "w-full") do %>
-                <%= icon "message-circle", class: "size-4" %><%= t("listings.show.message_seller") %>
-              <% end %>
-            <% elsif !user_signed_in? %>
-              <%= link_to new_user_session_path, data: { turbo_frame: "auth-modal" },
-                          class: ui_button_classes(variant: :outline, size: :md, extra: "w-full") do %>
-                <%= icon "message-circle", class: "size-4" %><%= t("listings.show.message_seller") %>
-              <% end %>
+            <% else %>
+              <p class="rounded-xl bg-slate-100 px-3 py-2 text-xs text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">
+                <%= t("messaging.inbox.chat_disabled") %>
+              </p>
             <% end %>
           </div>
 
@@ -320,7 +326,7 @@
             <div class="mt-4 flex flex-wrap gap-2">
               <%= render "stores/follow_button", store: @store,
                          follow: current_user&.follows&.find_by(store_id: @store.id), compact: true %>
-              <% if user_signed_in? && current_user.id != @listing.user_id %>
+              <% if chat_enabled? && user_signed_in? && current_user.id != @listing.user_id %>
                 <%= button_to conversations_path(listing_id: @listing.id), method: :post,
                               form: { data: { turbo: false } },
                               class: ui_button_classes(variant: :outline, size: :md, extra: "flex-1") do %>

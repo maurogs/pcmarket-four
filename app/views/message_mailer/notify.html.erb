@@ -1,0 +1,28 @@
+<h1 style="font-family: sans-serif; font-size: 20px; color: #0f172a;">
+  <%= t("messaging.mailer.#{@kind}.title") %>
+</h1>
+
+<p style="font-family: sans-serif; font-size: 14px; color: #334155;">
+  <%= t("messaging.mailer.greeting", name: @recipient.full_name) %>
+</p>
+
+<% if @listing %>
+  <p style="font-family: sans-serif; font-size: 14px; color: #334155;">
+    <%= link_to @listing.title, @url, style: "color: #0f766e;" %>
+  </p>
+<% end %>
+
+<% if @message.offer? && @message.offer_amount_cents.present? %>
+  <p style="font-family: sans-serif; font-size: 14px; font-weight: bold; color: #0f172a;">
+    <%= t("messaging.mailer.offer_amount", amount: format_price(@message.offer_amount_cents)) %>
+  </p>
+<% end %>
+
+<blockquote style="font-family: sans-serif; font-size: 14px; color: #334155; border-left: 3px solid #14b8a6; padding-left: 12px;">
+  <%= simple_format(@message.body) %>
+</blockquote>
+
+<p style="font-family: sans-serif; font-size: 14px;">
+  <%= link_to t("messaging.mailer.cta"), @url,
+              style: "display: inline-block; background: #0f766e; color: #ffffff; padding: 10px 18px; border-radius: 999px; text-decoration: none;" %>
+</p>

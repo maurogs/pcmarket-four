@@ -11,8 +11,16 @@ class CartItem < ApplicationRecord
     user || cart_token
   end
 
+  def offer_price_active?
+    offer_price_cents.to_i.positive? && offer_expires_at.present? && offer_expires_at > Time.current
+  end
+
+  def effective_price_cents
+    offer_price_active? ? offer_price_cents.to_i : listing.price_cents.to_i
+  end
+
   def subtotal_cents
-    listing.price_cents * quantity
+    effective_price_cents * quantity
   end
 
   private

@@ -1,0 +1,15 @@
+<%= form_with url: conversation_messages_path(conversation), method: :post,
+              data: { turbo: false, controller: "composer", action: "keydown->composer#submitOnEnter input->composer#resize" },
+              class: "relative z-40 space-y-2" do %>
+  <div class="flex items-end gap-2">
+    <%= text_area_tag "message[body]", nil, rows: 1, maxlength: Message::MAX_BODY_LENGTH,
+                      required: true,
+                      data: { composer_target: "input" },
+                      placeholder: t("messaging.composer.placeholder"),
+                      aria: { label: t("messaging.composer.label") },
+                      class: ui_input_classes("resize-none min-h-11 max-h-40") %>
+    <%= submit_tag t("messaging.composer.send"),
+                   class: ui_button_classes(variant: :primary, size: :md, extra: "shrink-0") %>
+  </div>
+  <p class="text-[11px] text-slate-400 dark:text-zinc-500"><%= t("messaging.composer.hint", count: Message::MAX_BODY_LENGTH) %></p>
+<% end %>

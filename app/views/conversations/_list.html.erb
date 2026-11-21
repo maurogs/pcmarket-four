@@ -1,0 +1,107 @@
+<% tab = local_assigns.fetch(:tab, "chats") %>
+<% blocked_users = local_assigns[:blocked_users] %>
+<% active = local_assigns[:active] %>
+
+<div class="surface overflow-hidden">
+  <nav class="flex gap-1 overflow-x-auto border-b border-slate-200 p-2 scrollbar-hide dark:border-zinc-800"
+       aria-label="<%= t("messaging.inbox.tabs_label") %>">
+    <% %w[chats offers archived blocked].each do |key| %>
+      <%= link_to t("messaging.inbox.tabs.#{key}"), conversations_path(tab: key),
+                  class: ui_chip_classes(active: tab == key, extra: "shrink-0 !text-xs"),
+                  aria: { current: tab == key ? "page" : nil } %>
+    <% end %>
+  </nav>
+
+  <% if tab == "blocked" %>
+    <div class="divide-y divide-slate-100 dark:divide-zinc-800">
+      <% Array(blocked_users).each do |user| %>
+        <% own_block = current_user.blocks_made.find_by(blocked_id: user.id) %>
+        <div class="flex items-center justify-between gap-3 px-4 py-4">
+          <div class="flex min-w-0 items-center gap-3">
+            <span class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 font-heading text-sm font-bold text-slate-700 dark:bg-zinc-800 dark:text-zinc-200">
+              <% if user.avatar.attached? %>
+                <%= image_tag user.avatar.variant(resize_to_fill: [ 80, 80 ]), alt: "", class: "size-full object-cover" %>
+              <% else %>
+                <%= user.initials %>
+              <% end %>
+            </span>
+            <div class="min-w-0">
+              <p class="truncate text-sm font-semibold text-slate-950 dark:text-white"><%= user.display_name %></p>
+              <p class="text-xs text-slate-500 dark:text-zinc-400">
+                <%= own_block ? t("messaging.blocks.you_blocked") : t("messaging.blocks.blocked_you") %>
+              </p>
+            </div>
+          </div>
+          <% if own_block %>
+            <%= button_to t("messaging.blocks.unblock"), block_path(own_block),
+                          method: :delete,
+                          class: ui_button_classes(variant: :outline, size: :sm) %>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if Array(blocked_users).empty? %>
+        <div class="p-6">
+          <%= render "shared/empty_state", title: t("messaging.blocks.empty_title"),
+                     body: t("messaging.blocks.empty_body") %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="divide-y divide-slate-100 dark:divide-zinc-800">
+      <% conversations.each do |conversation| %>
+        <% partner = conversation_partner(conversation, current_user) %>
+        <% unread = conversation.unread_count_for(current_user) %>
+        <% last_message = conversation.messages.last %>
+        <%= link_to conversation_path(conversation),
+                    class: "flex gap-3 px-4 py-4 transition hover:bg-slate-50 dark:hover:bg-zinc-800/60 #{'bg-brand-50/60 dark:bg-brand-500/5' if active == conversation}" do %>
+          <span class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 font-heading text-sm font-bold text-slate-700 dark:bg-zinc-800 dark:text-zinc-200">
+            <% if partner.avatar.attached? %>
+              <%= image_tag partner.avatar.variant(resize_to_fill: [ 80, 80 ]), alt: "", class: "size-full object-cover" %>
+            <% else %>
+              <%= partner.initials %>
+            <% end %>
+          </span>
+
+          <span class="min-w-0 flex-1">
+            <span class="flex items-baseline justify-between gap-2">
+              <span class="truncate text-sm font-semibold text-slate-950 dark:text-white"><%= partner.display_name %></span>
+              <span class="shrink-0 text-[11px] text-slate-400 dark:text-zinc-500">
+                <%= relative_time(conversation.last_message_at || conversation.created_at) %>
+              </span>
+            </span>
+            <% if conversation.listing %>
+              <span class="mt-0.5 block truncate text-xs text-slate-500 dark:text-zinc-400"><%= conversation.listing.title %></span>
+            <% end %>
+            <span class="mt-1 flex items-center justify-between gap-2">
+              <span class="truncate text-xs text-slate-600 dark:text-zinc-300">
+                <% if last_message&.offer? %>
+                  <%= t("messaging.offers.preview", amount: format_price(last_message.offer_amount_cents)) %>
+                <% elsif last_message %>
+                  <%= truncate(last_message.body, length: 70) %>
+                <% else %>
+                  <%= t("messaging.inbox.no_messages") %>
+                <% end %>
+              </span>
+              <% if unread.positive? %>
+                <span class="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-brand-600 text-[10px] font-bold text-white">
+                  <%= unread > 9 ? "9+" : unread %>
+                </span>
+              <% end %>
+            </span>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if conversations.empty? %>
+      <div class="p-6">
+        <%= render "shared/empty_state",
+                   title: t("messaging.inbox.empty_title"),
+                   body: t("messaging.inbox.empty_body"),
+                   cta_label: t("messaging.inbox.browse"),
+                   cta_path: listings_path %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
