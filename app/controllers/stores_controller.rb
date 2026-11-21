@@ -6,6 +6,11 @@ class StoresController < ApplicationController
 
   def show
     @store = Store.friendly.find(params[:id])
+    if params[:id] != @store.slug
+      redirect_to store_path(@store, locale: I18n.locale, tab: params[:tab].presence),
+                  status: :moved_permanently
+      return
+    end
     @tab = TABS.include?(params[:tab]) ? params[:tab] : "listings"
     load_store_counters
 

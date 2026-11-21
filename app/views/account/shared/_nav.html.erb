@@ -1,0 +1,28 @@
+<nav aria-label="<%= t("account.area.nav_label") %>" class="lg:w-56 lg:shrink-0">
+  <ul class="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide lg:flex-col lg:overflow-visible lg:pb-0">
+    <li class="shrink-0 lg:w-full">
+      <%= link_to account_path, aria: { current: controller_name == "account" ? "page" : nil },
+                  class: nav_item_classes(controller_name == "account") do %>
+        <%= icon "user", class: "size-4 shrink-0" %><%= t("account.area.security") %>
+      <% end %>
+    </li>
+    <li class="shrink-0 lg:w-full">
+      <%= link_to account_addresses_path, aria: { current: controller_name == "addresses" ? "page" : nil },
+                  class: nav_item_classes(controller_name == "addresses") do %>
+        <%= icon "map-pin", class: "size-4 shrink-0" %><%= t("account.area.addresses") %>
+      <% end %>
+    </li>
+    <li class="shrink-0 lg:w-full">
+      <%= link_to edit_account_notification_preferences_path, aria: { current: controller_name == "notification_preferences" ? "page" : nil },
+                  class: nav_item_classes(controller_name == "notification_preferences") do %>
+        <%= icon "bell", class: "size-4 shrink-0" %><%= t("account.area.notifications") %>
+      <% end %>
+    </li>
+    <li class="shrink-0 lg:w-full">
+      <%= link_to new_account_deletion_path, aria: { current: %w[deletions data_exports].include?(controller_name) ? "page" : nil },
+                  class: nav_item_classes(%w[deletions data_exports].include?(controller_name)) do %>
+        <%= icon "lock", class: "size-4 shrink-0" %><%= t("account.area.privacy") %>
+      <% end %>
+    </li>
+  </ul>
+</nav>

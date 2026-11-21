@@ -4,6 +4,8 @@ seller_store:
   slug: falcon-tech
   description: Tienda especializada en componentes de segunda mano verificados.
   store_type: professional
+  company_name: Falcon Tech SL
+  tax_id: B12345674
   verified: true
   country_code: ES
   region: madrid

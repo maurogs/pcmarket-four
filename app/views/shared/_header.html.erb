@@ -96,7 +96,16 @@
                 <%= icon "bookmark", class: "size-4" %><%= t("layout.account_menu.saved_searches") %>
               <% end %>
               <%= link_to account_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
-                <%= icon "settings", class: "size-4" %><%= t("layout.account_menu.settings") %>
+                <%= icon "user", class: "size-4" %><%= t("layout.account_menu.settings") %>
+              <% end %>
+              <%= link_to account_addresses_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+                <%= icon "map-pin", class: "size-4" %><%= t("layout.account_menu.addresses") %>
+              <% end %>
+              <%= link_to edit_account_notification_preferences_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+                <%= icon "bell", class: "size-4" %><%= t("layout.account_menu.notifications") %>
+              <% end %>
+              <%= link_to new_account_deletion_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+                <%= icon "lock", class: "size-4" %><%= t("layout.account_menu.privacy") %>
               <% end %>
 
               <% if current_user.store.present? %>
@@ -113,11 +122,20 @@
                 <%= link_to seller_listings_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
                   <%= icon "tag", class: "size-4" %><%= t("layout.account_menu.my_listings") %>
                 <% end %>
-                <%= link_to seller_root_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+                <%= link_to seller_orders_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
                   <%= icon "wallet", class: "size-4" %><%= t("layout.account_menu.my_sales") %>
                 <% end %>
-                <%= link_to seller_root_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+                <%= link_to edit_seller_store_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
                   <%= icon "settings", class: "size-4" %><%= t("layout.account_menu.store_settings") %>
+                <% end %>
+                <%= link_to edit_seller_store_policy_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+                  <%= icon "shield-check", class: "size-4" %><%= t("layout.account_menu.store_policies") %>
+                <% end %>
+                <%= link_to edit_seller_vacation_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+                  <%= icon "clock", class: "size-4" %><%= t("layout.account_menu.vacation_mode") %>
+                <% end %>
+                <%= link_to seller_payout_path, class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+                  <%= icon "wallet", class: "size-4" %><%= t("layout.account_menu.payouts") %>
                 <% end %>
               <% end %>
 

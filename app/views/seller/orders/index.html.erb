@@ -1,0 +1,37 @@
+<% content_for :title, t("seller.orders.title") %>
+
+<div>
+  <h2 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("seller.orders.title") %></h2>
+  <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("seller.orders.subtitle") %></p>
+</div>
+
+<% if @orders.any? %>
+  <div class="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+    <table class="w-full text-left text-sm">
+      <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400">
+        <tr>
+          <th scope="col" class="px-4 py-3"><%= t("seller.orders.number") %></th>
+          <th scope="col" class="px-4 py-3"><%= t("seller.orders.buyer") %></th>
+          <th scope="col" class="px-4 py-3"><%= t("seller.orders.status") %></th>
+          <th scope="col" class="px-4 py-3"><%= t("seller.orders.date") %></th>
+          <th scope="col" class="px-4 py-3 text-right"><%= t("seller.orders.total") %></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+        <% @orders.each do |order| %>
+          <tr>
+            <td class="px-4 py-3 font-medium text-slate-900 dark:text-zinc-100"><%= order.number %></td>
+            <td class="px-4 py-3 text-slate-600 dark:text-zinc-400"><%= order.buyer.display_name %></td>
+            <td class="px-4 py-3"><span class="<%= ui_badge_classes(tone: :neutral) %>"><%= t("seller.orders.statuses.#{order.status}") %></span></td>
+            <td class="px-4 py-3 text-slate-600 dark:text-zinc-400"><%= l(order.created_at.to_date, format: :short) %></td>
+            <td class="px-4 py-3 text-right font-semibold text-slate-900 dark:text-white"><%= format_price(order.total_cents) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="mt-6">
+    <%= render "shared/empty_state", title: t("seller.orders.empty_title"), body: t("seller.orders.empty_body") %>
+  </div>
+<% end %>

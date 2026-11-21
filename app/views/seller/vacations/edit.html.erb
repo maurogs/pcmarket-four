@@ -1,0 +1,45 @@
+<% content_for :title, t("seller.vacation.title") %>
+
+<div>
+  <h2 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("seller.vacation.title") %></h2>
+  <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("seller.vacation.subtitle") %></p>
+</div>
+
+<%= form_with model: @store, url: seller_vacation_path, method: :patch, class: "mt-6 space-y-5" do |form| %>
+  <% if @store.errors.any? %>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200" role="alert">
+      <ul class="list-disc space-y-1 pl-5">
+        <% @store.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <section class="surface p-5">
+    <label class="flex cursor-pointer items-start gap-3">
+      <%= form.check_box :vacation_mode, class: "mt-0.5 size-4 rounded text-brand-700 focus:ring-brand-500" %>
+      <span>
+        <span class="block text-sm font-semibold text-slate-900 dark:text-white"><%= t("seller.vacation.toggle") %></span>
+        <span class="block text-xs text-slate-500 dark:text-zinc-400"><%= t("seller.vacation.toggle_hint") %></span>
+      </span>
+    </label>
+
+    <div class="mt-5">
+      <%= form.label :vacation_message, t("seller.vacation.message"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+      <%= form.text_area :vacation_message, rows: 4, maxlength: 500, class: ui_input_classes %>
+      <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("seller.vacation.message_hint") %></p>
+    </div>
+
+    <% if @store.on_vacation? %>
+      <div class="mt-5 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+        <%= icon "clock", class: "mt-0.5 size-4 shrink-0" %>
+        <span><%= t("seller.vacation.active_notice") %></span>
+      </div>
+    <% end %>
+  </section>
+
+  <div class="flex justify-end">
+    <%= form.submit t("seller.vacation.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+  </div>
+<% end %>

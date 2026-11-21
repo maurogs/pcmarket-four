@@ -15,6 +15,13 @@ class User < ApplicationRecord
          :validatable, :confirmable, :trackable, :lockable, :omniauthable,
          omniauth_providers: [ :google_oauth2 ]
 
+  NOTIFICATION_EMAIL_KEYS = %w[
+    email_messages email_offers email_order_updates
+    email_saved_search_alerts email_price_drops_favourites
+  ].freeze
+  USERNAME_FORMAT = /\A[A-Za-z0-9\-_#]{3,30}\z/
+  PHONE_FORMAT = /\A\+?[1-9]\d{6,14}\z/
+
   enum :role, { user: 0, moderator: 1, admin: 2 }
   enum :status, { active: 0, suspended: 1, banned: 2 }
 
@@ -55,7 +62,9 @@ class User < ApplicationRecord
 
   attr_accessor :terms_accepted, :terms_required
 
-  validates :username, presence: true, uniqueness: { case_sensitive: false }, length: { maximum: 40 }
+  validates :username, presence: true, uniqueness: { case_sensitive: false },
+                       format: { with: USERNAME_FORMAT }
+  validates :phone, format: { with: PHONE_FORMAT }, allow_blank: true
   validates :country_code, presence: true
   validates :locale, inclusion: { in: ->(_) { I18n.available_locales.map(&:to_s) } }
 
@@ -119,8 +128,52 @@ class User < ApplicationRecord
     deleted_at.present?
   end
 
+  # GDPR erasure: keeps the row (orders are legally retained) but removes
+  # personal data and archives every listing.
   def soft_delete!
-    update_columns(deleted_at: Time.current, updated_at: Time.current)
+    transaction do
+      avatar.purge if avatar.attached?
+      listings.update_all(status: Listing.statuses[:archived], updated_at: Time.current)
+      update_columns(
+        email: "deleted-#{id}@example.invalid",
+        unconfirmed_email: nil,
+        username: "deleted-user-#{id}",
+        first_name: nil,
+        last_name: nil,
+        phone: nil,
+        deleted_at: Time.current,
+        updated_at: Time.current
+      )
+    end
+  end
+
+  def notification_preference_enabled?(key)
+    value = notification_preferences.to_h[key.to_s]
+    return default_notification_preference(key) if value.nil?
+
+    ActiveModel::Type::Boolean.new.cast(value) == true
+  end
+
+  def notify_by_email?(kind)
+    key = kind.to_s
+    return accepts_marketing? if key == "email_newsletter"
+
+    notification_preference_enabled?(key)
+  end
+
+  def update_notification_preferences!(attributes)
+    submitted = attributes.to_h.slice(*(NOTIFICATION_EMAIL_KEYS + [ "email_newsletter" ]))
+    preferences = notification_preferences.to_h.merge(
+      submitted.transform_values { |value| ActiveModel::Type::Boolean.new.cast(value) == true }
+    )
+    update!(
+      notification_preferences: preferences,
+      accepts_marketing: preferences["email_newsletter"] == true
+    )
+  end
+
+  def oauth_only?
+    provider.present?
   end
 
   # Every listing needs a store: the first listing creates an individual store
@@ -129,7 +182,7 @@ class User < ApplicationRecord
     return store if store.present?
 
     create_store!(
-      name: username.to_s.first(80),
+      name: username.to_s.first(50),
       store_type: :individual,
       country_code: country_code.presence || "ES",
       region_id: region_id,
@@ -150,6 +203,10 @@ class User < ApplicationRecord
 
   def normalise_locale
     self.locale = I18n.default_locale.to_s if locale.blank?
+  end
+
+  def default_notification_preference(key)
+    NOTIFICATION_EMAIL_KEYS.include?(key.to_s)
   end
 
   def stamp_terms_acceptance

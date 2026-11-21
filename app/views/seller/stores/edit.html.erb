@@ -1,0 +1,127 @@
+<% content_for :title, t("seller.store_profile.title") %>
+
+<div>
+  <h2 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("seller.store_profile.title") %></h2>
+  <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("seller.store_profile.subtitle") %></p>
+</div>
+
+<%= form_with model: @store, url: seller_store_path, method: :patch, multipart: true, class: "mt-6 space-y-5" do |form| %>
+  <% if @store.errors.any? %>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200" role="alert">
+      <p class="font-semibold"><%= t("seller.store_profile.errors", count: @store.errors.count) %></p>
+      <ul class="mt-1 list-disc space-y-1 pl-5">
+        <% @store.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <section class="surface p-5">
+    <h3 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("seller.store_profile.general_section") %></h3>
+    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+      <div class="sm:col-span-2">
+        <%= form.label :name, t("seller.store_profile.name"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :name, required: true, minlength: 3, maxlength: 50, class: ui_input_classes,
+                            aria: { describedby: "store-name-hint" } %>
+        <p id="store-name-hint" class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("seller.store_profile.name_hint") %></p>
+      </div>
+      <div class="sm:col-span-2">
+        <%= form.label :description, t("seller.store_profile.description"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_area :description, rows: 5, maxlength: 2000, class: ui_input_classes,
+                           aria: { describedby: "store-description-hint" } %>
+        <p id="store-description-hint" class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("seller.store_profile.description_hint") %></p>
+      </div>
+      <fieldset class="sm:col-span-2">
+        <legend class="mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200"><%= t("seller.store_profile.store_type") %></legend>
+        <div class="flex flex-wrap gap-4">
+          <% Store.store_types.keys.each do |type| %>
+            <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700 dark:text-zinc-300">
+              <%= form.radio_button :store_type, type, class: "size-4 text-brand-700 focus:ring-brand-500" %>
+              <%= t("seller.store_profile.types.#{type}") %>
+            </label>
+          <% end %>
+        </div>
+        <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("seller.store_profile.store_type_hint") %></p>
+      </fieldset>
+      <div>
+        <%= form.label :company_name, t("seller.store_profile.company_name"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :company_name, class: ui_input_classes %>
+      </div>
+      <div>
+        <%= form.label :tax_id, t("seller.store_profile.tax_id"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :tax_id, class: ui_input_classes, aria: { describedby: "store-tax-hint" } %>
+        <p id="store-tax-hint" class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("seller.store_profile.tax_id_hint") %></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="surface p-5">
+    <h3 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("seller.store_profile.media_section") %></h3>
+    <div class="mt-4 grid gap-5 sm:grid-cols-2">
+      <div data-controller="image-preview">
+        <p class="mb-1 text-sm font-medium text-slate-800 dark:text-zinc-200"><%= t("seller.store_profile.logo") %></p>
+        <div class="flex items-center gap-4">
+          <span class="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-100 dark:bg-zinc-800">
+            <% if @store.logo.attached? %>
+              <%= image_tag @store.logo.variant(resize_to_fill: [ 160, 160 ]), alt: "", class: "size-full object-cover", data: { image_preview_target: "preview" } %>
+            <% else %>
+              <img alt="" class="hidden size-full object-cover" data-image-preview-target="preview">
+              <span class="font-heading text-lg font-bold text-slate-400 dark:text-zinc-500" data-image-preview-target="placeholder"><%= @store.name.to_s.first(2).upcase %></span>
+            <% end %>
+          </span>
+          <div class="min-w-0 flex-1">
+            <%= form.file_field :logo, accept: Store::IMAGE_CONTENT_TYPES.join(","),
+                                class: "block w-full text-sm text-slate-600 file:mr-3 file:rounded-full file:border-0 file:bg-brand-700 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white dark:text-zinc-300",
+                                data: { image_preview_target: "input", action: "change->image-preview#preview" } %>
+            <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("seller.store_profile.logo_hint") %></p>
+          </div>
+        </div>
+      </div>
+
+      <div data-controller="image-preview">
+        <p class="mb-1 text-sm font-medium text-slate-800 dark:text-zinc-200"><%= t("seller.store_profile.banner") %></p>
+        <div class="overflow-hidden rounded-xl bg-slate-100 dark:bg-zinc-800">
+          <% if @store.banner.attached? %>
+            <%= image_tag @store.banner.variant(resize_to_limit: [ 640, 240 ]), alt: "", class: "aspect-[8/3] w-full object-cover", data: { image_preview_target: "preview" } %>
+          <% else %>
+            <img alt="" class="hidden aspect-[8/3] w-full object-cover" data-image-preview-target="preview">
+            <div class="flex aspect-[8/3] items-center justify-center text-slate-400 dark:text-zinc-500" data-image-preview-target="placeholder">
+              <%= icon "store", class: "size-8" %>
+            </div>
+          <% end %>
+        </div>
+        <div class="mt-2">
+          <%= form.file_field :banner, accept: Store::IMAGE_CONTENT_TYPES.join(","),
+                              class: "block w-full text-sm text-slate-600 file:mr-3 file:rounded-full file:border-0 file:bg-brand-700 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white dark:text-zinc-300",
+                              data: { image_preview_target: "input", action: "change->image-preview#preview" } %>
+          <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("seller.store_profile.banner_hint") %></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="surface p-5">
+    <h3 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("seller.store_profile.location_section") %></h3>
+    <div class="mt-4 grid gap-4 sm:grid-cols-3">
+      <div>
+        <%= form.label :country_code, t("seller.store_profile.country"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.select :country_code, @countries.map { |country| [ country.name, country.code ] },
+                        { include_blank: true }, class: ui_input_classes %>
+      </div>
+      <div>
+        <%= form.label :region_id, t("seller.store_profile.region"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.collection_select :region_id, @regions, :id, :name,
+                                   { include_blank: true }, class: ui_input_classes %>
+      </div>
+      <div>
+        <%= form.label :city, t("seller.store_profile.city"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :city, class: ui_input_classes %>
+      </div>
+    </div>
+  </section>
+
+  <div class="flex justify-end">
+    <%= form.submit t("seller.store_profile.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+  </div>
+<% end %>

@@ -1,0 +1,61 @@
+<%= form_with model: @address, url: @address.persisted? ? account_address_path(@address) : account_addresses_path,
+              method: @address.persisted? ? :patch : :post, class: "space-y-5" do |form| %>
+  <% if @address.errors.any? %>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200" role="alert">
+      <ul class="list-disc space-y-1 pl-5">
+        <% @address.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <section class="surface p-5">
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div class="sm:col-span-2">
+        <%= form.label :full_name, t("account.addresses.full_name"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :full_name, required: true, class: ui_input_classes %>
+      </div>
+      <div class="sm:col-span-2">
+        <%= form.label :line1, t("account.addresses.line1"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :line1, required: true, class: ui_input_classes %>
+      </div>
+      <div class="sm:col-span-2">
+        <%= form.label :line2, t("account.addresses.line2"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :line2, class: ui_input_classes %>
+      </div>
+      <div>
+        <%= form.label :postal_code, t("account.addresses.postal_code"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :postal_code, required: true, class: ui_input_classes %>
+      </div>
+      <div>
+        <%= form.label :city, t("account.addresses.city"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :city, required: true, class: ui_input_classes %>
+      </div>
+      <div>
+        <%= form.label :region_id, t("account.addresses.region"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.collection_select :region_id, @regions, :id, :name,
+                                   { include_blank: true }, class: ui_input_classes %>
+      </div>
+      <div>
+        <%= form.label :country_code, t("account.addresses.country"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.select :country_code, @countries.map { |country| [ country.name, country.code ] },
+                        { include_blank: true }, class: ui_input_classes %>
+      </div>
+      <div class="sm:col-span-2">
+        <%= form.label :phone, t("account.addresses.phone"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.telephone_field :phone, class: ui_input_classes %>
+      </div>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700 sm:col-span-2 dark:text-zinc-300">
+        <%= form.check_box :default, class: "size-4 rounded text-brand-700 focus:ring-brand-500" %>
+        <%= t("account.addresses.set_default") %>
+      </label>
+    </div>
+  </section>
+
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <%= link_to t("account.addresses.back"), account_addresses_path,
+                class: "text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+    <%= form.submit t("account.addresses.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+  </div>
+<% end %>

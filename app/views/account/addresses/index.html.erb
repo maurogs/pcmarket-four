@@ -1,0 +1,50 @@
+<% content_for :title, t("account.addresses.title") %>
+
+<div class="flex flex-wrap items-end justify-between gap-3">
+  <div>
+    <h2 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("account.addresses.title") %></h2>
+    <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("account.addresses.subtitle") %></p>
+  </div>
+  <%= link_to new_account_address_path, class: ui_button_classes(variant: :primary, size: :sm) do %>
+    <%= icon "plus", class: "size-4" %><%= t("account.addresses.new") %>
+  <% end %>
+</div>
+
+<% if @addresses.any? %>
+  <ul class="mt-6 space-y-3">
+    <% @addresses.each do |address| %>
+      <li class="surface flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <p class="font-semibold text-slate-900 dark:text-white"><%= address.full_name %></p>
+            <% if address.default? %>
+              <span class="<%= ui_badge_classes(tone: :brand) %>"><%= t("account.addresses.default") %></span>
+            <% end %>
+          </div>
+          <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= address.full_address %></p>
+          <% if address.phone.present? %>
+            <p class="text-sm text-slate-500 dark:text-zinc-400"><%= address.phone %></p>
+          <% end %>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <% unless address.default? %>
+            <%= button_to t("account.addresses.make_default"), account_address_path(address),
+                          method: :patch, params: { address: { default: true } },
+                          class: ui_button_classes(variant: :ghost, size: :sm) %>
+          <% end %>
+          <%= link_to t("account.addresses.edit"), edit_account_address_path(address),
+                      class: ui_button_classes(variant: :outline, size: :sm) %>
+          <%= button_to t("account.addresses.destroy"), account_address_path(address), method: :delete,
+                        form: { data: { turbo_confirm: t("account.addresses.destroy_confirm") } },
+                        class: ui_button_classes(variant: :ghost, size: :sm, extra: "text-rose-600 dark:text-rose-400") %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <div class="mt-6">
+    <%= render "shared/empty_state", title: t("account.addresses.empty_title"),
+               body: t("account.addresses.empty_body"), cta_label: t("account.addresses.new"),
+               cta_path: new_account_address_path %>
+  </div>
+<% end %>

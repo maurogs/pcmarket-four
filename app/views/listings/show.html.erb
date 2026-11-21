@@ -206,7 +206,14 @@
           </div>
 
           <div class="mt-5 space-y-2.5">
-            <% unavailable = @listing.sold? || @listing.quantity.to_i.zero? %>
+            <% vacation = @listing.store&.on_vacation? %>
+            <% if vacation %>
+              <div class="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+                <%= icon "clock", class: "mt-0.5 size-4 shrink-0" %>
+                <span><%= @listing.store.vacation_message.presence || t("listings.show.vacation_unavailable") %></span>
+              </div>
+            <% end %>
+            <% unavailable = vacation || @listing.sold? || @listing.quantity.to_i.zero? %>
             <%= button_to cart_items_path(listing_id: @listing.id, buy_now: 1), method: :post,
                           form: { data: { turbo: false } },
                           disabled: unavailable,
@@ -533,7 +540,8 @@
         <p class="font-heading text-lg font-bold text-slate-950 dark:text-white"><%= format_price(@listing.price_cents) %></p>
         <p class="truncate text-xs text-slate-500 dark:text-zinc-400"><%= listing_condition_label(@listing) %> · <%= listing_location(@listing) %></p>
       </div>
-      <% unavailable = @listing.sold? || @listing.quantity.to_i.zero? %>
+      <% vacation = @listing.store&.on_vacation? %>
+      <% unavailable = vacation || @listing.sold? || @listing.quantity.to_i.zero? %>
       <%= button_to cart_items_path(listing_id: @listing.id, buy_now: 1), method: :post,
                     form: { data: { turbo: false } }, disabled: unavailable,
                     class: ui_button_classes(variant: :accent, size: :md, extra: "shrink-0") do %>

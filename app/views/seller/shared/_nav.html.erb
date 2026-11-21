@@ -1,0 +1,52 @@
+<nav aria-label="<%= t("seller.area.nav_label") %>" class="lg:w-56 lg:shrink-0">
+  <ul class="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide lg:flex-col lg:overflow-visible lg:pb-0">
+    <li class="shrink-0 lg:w-full">
+      <%= link_to seller_root_path, aria: { current: current_page?(seller_root_path) ? "page" : nil },
+                  class: nav_item_classes(current_page?(seller_root_path)) do %>
+        <%= icon "layout-grid", class: "size-4 shrink-0" %><%= t("seller.area.dashboard") %>
+      <% end %>
+    </li>
+    <li class="shrink-0 lg:w-full">
+      <%= link_to seller_listings_path, aria: { current: controller_name == "listings" ? "page" : nil },
+                  class: nav_item_classes(controller_name == "listings") do %>
+        <%= icon "tag", class: "size-4 shrink-0" %><%= t("seller.area.listings") %>
+      <% end %>
+    </li>
+    <li class="shrink-0 lg:w-full">
+      <%= link_to seller_orders_path, aria: { current: controller_name == "orders" ? "page" : nil },
+                  class: nav_item_classes(controller_name == "orders") do %>
+        <%= icon "package", class: "size-4 shrink-0" %><%= t("seller.area.sales") %>
+      <% end %>
+    </li>
+    <li class="shrink-0 lg:w-full">
+      <%= link_to edit_seller_store_path, aria: { current: controller_name == "stores" ? "page" : nil },
+                  class: nav_item_classes(controller_name == "stores") do %>
+        <%= icon "store", class: "size-4 shrink-0" %><%= t("seller.area.store_profile") %>
+      <% end %>
+    </li>
+    <li class="shrink-0 lg:w-full">
+      <%= link_to edit_seller_store_policy_path, aria: { current: controller_name == "store_policies" ? "page" : nil },
+                  class: nav_item_classes(controller_name == "store_policies") do %>
+        <%= icon "shield-check", class: "size-4 shrink-0" %><%= t("seller.area.policies") %>
+      <% end %>
+    </li>
+    <li class="shrink-0 lg:w-full">
+      <%= link_to edit_seller_vacation_path, aria: { current: controller_name == "vacations" ? "page" : nil },
+                  class: nav_item_classes(controller_name == "vacations") do %>
+        <%= icon "clock", class: "size-4 shrink-0" %><%= t("seller.area.vacation") %>
+      <% end %>
+    </li>
+    <li class="shrink-0 lg:w-full">
+      <span class="<%= nav_item_classes(false, extra: "cursor-not-allowed opacity-60") %>">
+        <%= icon "gift", class: "size-4 shrink-0" %><%= t("seller.area.discount_codes") %>
+        <span class="<%= ui_badge_classes(tone: :neutral, extra: "ml-auto !px-2 !py-0.5 !text-[10px]") %>"><%= t("seller.area.coming_soon") %></span>
+      </span>
+    </li>
+    <li class="shrink-0 lg:w-full">
+      <%= link_to seller_payout_path, aria: { current: controller_name == "payouts" ? "page" : nil },
+                  class: nav_item_classes(controller_name == "payouts") do %>
+        <%= icon "wallet", class: "size-4 shrink-0" %><%= t("seller.area.payouts") %>
+      <% end %>
+    </li>
+  </ul>
+</nav>

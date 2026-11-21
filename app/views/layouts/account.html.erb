@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>" class="h-full">
+  <%= render "layouts/head" %>
+
+  <body class="flex min-h-full flex-col overflow-x-clip bg-slate-50 pb-14 text-slate-900 antialiased md:pb-0 dark:bg-zinc-950 dark:text-zinc-100"
+        data-controller="theme cookie-consent drawer">
+    <a href="#main-content"
+       class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-brand-700 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white">
+      <%= t("layout.skip_to_content") %>
+    </a>
+
+    <%= render "shared/header" %>
+    <%= render "shared/mobile_drawer" %>
+
+    <div id="flash-messages" class="pointer-events-none fixed inset-x-4 top-24 z-[70] mx-auto flex max-w-md flex-col gap-2">
+      <%= render "shared/flash" %>
+    </div>
+
+    <main id="main-content" tabindex="-1" class="flex-1">
+      <div class="page-container py-6 sm:py-10">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-100 font-heading text-lg font-bold text-brand-800 dark:bg-brand-900/50 dark:text-brand-200">
+              <% if current_user.avatar.attached? %>
+                <%= image_tag current_user.avatar.variant(resize_to_fill: [ 112, 112 ]), alt: "", class: "size-full object-cover" %>
+              <% else %>
+                <%= current_user.initials %>
+              <% end %>
+            </span>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300"><%= t("account.area.label") %></p>
+              <h1 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= current_user.username %></h1>
+              <p class="text-sm text-slate-500 dark:text-zinc-400"><%= current_user.email %></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
+          <%= render "account/shared/nav" %>
+          <div class="min-w-0 flex-1">
+            <%= yield %>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%= render "shared/footer" %>
+    <%= render "shared/mobile_tab_bar" %>
+    <%= render "shared/cookie_consent" %>
+    <%= render "shared/back_to_top" %>
+  </body>
+</html>

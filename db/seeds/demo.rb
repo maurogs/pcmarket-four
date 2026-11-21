@@ -46,6 +46,8 @@ unless Rails.env.production?
       name: "Falcon Tech",
       description: "Componentes de segunda mano revisados por técnicos.",
       store_type: :professional,
+      company_name: "Falcon Tech SL",
+      tax_id: "B12345674",
       verified: true,
       country_code: "ES",
       region: madrid,

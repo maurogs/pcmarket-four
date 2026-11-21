@@ -1,7 +1,5 @@
 module Seller
-  class BulkListingActionsController < ApplicationController
-    before_action :authenticate_user!
-
+  class BulkListingActionsController < BaseController
     def create
       action = (params[:bulk_action].presence || params[:action]).to_s
       count = BulkListingAction.new(

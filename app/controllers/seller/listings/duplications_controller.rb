@@ -1,7 +1,6 @@
 module Seller
   module Listings
-    class DuplicationsController < ApplicationController
-      before_action :authenticate_user!
+    class DuplicationsController < BaseController
       before_action :set_listing
 
       def create

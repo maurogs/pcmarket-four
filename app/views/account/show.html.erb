@@ -1,63 +1,111 @@
-<% content_for :title, t("account.title") %>
+<% content_for :title, t("account.profile.title") %>
 
-<div class="page-container py-8 sm:py-10">
-  <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+<div>
+  <h2 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("account.profile.title") %></h2>
+  <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("account.profile.subtitle") %></p>
+</div>
+
+<%= form_with model: @user, url: account_path, method: :patch, multipart: true, class: "mt-6 space-y-5" do |form| %>
+  <% if @user.errors.any? %>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200" role="alert">
+      <p class="font-semibold"><%= t("account.profile.errors", count: @user.errors.count) %></p>
+      <ul class="mt-1 list-disc space-y-1 pl-5">
+        <% @user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <section class="surface p-5">
     <div class="flex items-center gap-4">
-      <span class="flex size-16 items-center justify-center rounded-full bg-brand-100 font-heading text-xl font-bold text-brand-800 dark:bg-brand-900/50 dark:text-brand-200">
-        <%= current_user.initials %>
+      <span class="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-100 font-heading text-xl font-bold text-brand-800 dark:bg-brand-900/50 dark:text-brand-200">
+        <% if @user.avatar.attached? %>
+          <%= image_tag @user.avatar.variant(resize_to_fill: [ 160, 160 ]), alt: "", class: "size-full object-cover" %>
+        <% else %>
+          <%= @user.initials %>
+        <% end %>
       </span>
       <div>
-        <h1 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
-          <%= current_user.display_name %>
-        </h1>
-        <p class="text-sm text-slate-500 dark:text-zinc-400"><%= current_user.email %></p>
+        <%= form.label :avatar, t("account.profile.avatar"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.file_field :avatar, accept: "image/jpeg,image/png,image/webp",
+                            class: "block w-full text-sm text-slate-600 file:mr-3 file:rounded-full file:border-0 file:bg-brand-700 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white dark:text-zinc-300" %>
+        <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("account.profile.avatar_hint") %></p>
       </div>
     </div>
-    <%= link_to t("account.edit_profile"), "#", class: ui_button_classes(variant: :outline, size: :md) %>
-  </div>
 
-  <div class="mt-8 grid gap-4 sm:grid-cols-3">
-    <%= link_to favorites_path, class: "surface card-lift flex items-center justify-between p-5" do %>
+    <div class="mt-5 grid gap-4 sm:grid-cols-2">
       <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("account.favourites") %></p>
-        <p class="mt-1 font-heading text-2xl font-bold text-slate-950 dark:text-white"><%= @favorites_count %></p>
+        <%= form.label :first_name, t("account.profile.first_name"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :first_name, class: ui_input_classes %>
       </div>
-      <%= icon "heart", class: "size-6 text-rose-500" %>
-    <% end %>
-    <%= link_to saved_searches_path, class: "surface card-lift flex items-center justify-between p-5" do %>
       <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("account.saved_searches") %></p>
-        <p class="mt-1 font-heading text-2xl font-bold text-slate-950 dark:text-white"><%= @saved_searches.size %></p>
+        <%= form.label :last_name, t("account.profile.last_name"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :last_name, class: ui_input_classes %>
       </div>
-      <%= icon "bookmark", class: "size-6 text-brand-600" %>
-    <% end %>
-    <%= link_to orders_path, class: "surface card-lift flex items-center justify-between p-5" do %>
       <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("account.orders") %></p>
-        <p class="mt-1 font-heading text-2xl font-bold text-slate-950 dark:text-white"><%= @orders_count %></p>
+        <%= form.label :username, t("account.profile.username"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_field :username, required: true, minlength: 3, maxlength: 30, class: ui_input_classes,
+                            aria: { describedby: "account-username-hint" } %>
+        <p id="account-username-hint" class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("account.profile.username_hint") %></p>
       </div>
-      <%= icon "package", class: "size-6 text-slate-500" %>
-    <% end %>
-  </div>
-
-  <section id="saved-searches" class="mt-10">
-    <div class="flex items-end justify-between gap-3">
       <div>
-        <h2 class="font-heading text-xl font-semibold text-slate-950 dark:text-white"><%= t("saved_searches.title") %></h2>
-        <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("saved_searches.body") %></p>
+        <%= form.label :phone, t("account.profile.phone"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.telephone_field :phone, class: ui_input_classes, placeholder: "+34 600 000 000",
+                                 aria: { describedby: "account-phone-hint" } %>
+        <p id="account-phone-hint" class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("account.profile.phone_hint") %></p>
       </div>
-      <%= link_to t("saved_searches.manage"), saved_searches_path,
-                  class: "text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
-    </div>
-
-    <% if @saved_searches.any? %>
-      <div class="mt-4 space-y-3">
-        <% @saved_searches.first(5).each do |saved_search| %>
-          <%= render "saved_searches/saved_search", saved_search: saved_search %>
+      <div class="sm:col-span-2">
+        <%= form.label :email, t("account.profile.email"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.email_field :email, required: true, class: ui_input_classes,
+                            aria: { describedby: "account-email-hint" } %>
+        <p id="account-email-hint" class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("account.profile.email_hint") %></p>
+        <% if @user.unconfirmed_email.present? %>
+          <p class="mt-1 text-xs font-medium text-amber-700 dark:text-amber-300"><%= t("account.profile.pending_email", email: @user.unconfirmed_email) %></p>
         <% end %>
       </div>
-    <% else %>
-      <p class="mt-4 text-sm text-slate-500 dark:text-zinc-400"><%= t("saved_searches.empty_body") %></p>
+      <div class="sm:col-span-2">
+        <%= form.label :locale, t("account.profile.language"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.select :locale, I18n.available_locales.map { |locale| [ locale_display_name(locale), locale ] },
+                        {}, class: ui_input_classes %>
+      </div>
+    </div>
+
+    <% if @user.oauth_only? %>
+      <div class="mt-4 flex items-start gap-2 rounded-xl border border-brand-200 bg-brand-50 px-3 py-2.5 text-sm text-brand-900 dark:border-brand-500/30 dark:bg-brand-500/10 dark:text-brand-200">
+        <%= icon "shield-check", class: "mt-0.5 size-4 shrink-0" %>
+        <span><%= t("account.profile.google_note") %></span>
+      </div>
     <% end %>
   </section>
-</div>
+
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <%= link_to t("account.profile.change_password"), edit_account_password_path,
+                class: "text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+    <%= form.submit t("account.profile.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+  </div>
+<% end %>
+
+<section class="mt-8 grid gap-4 sm:grid-cols-3">
+  <%= link_to favorites_path, class: "surface card-lift flex items-center justify-between p-4" do %>
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("account.favourites") %></p>
+      <p class="mt-1 font-heading text-xl font-bold text-slate-950 dark:text-white"><%= @favorites_count %></p>
+    </div>
+    <%= icon "heart", class: "size-5 text-rose-500" %>
+  <% end %>
+  <%= link_to saved_searches_path, class: "surface card-lift flex items-center justify-between p-4" do %>
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("account.saved_searches") %></p>
+      <p class="mt-1 font-heading text-xl font-bold text-slate-950 dark:text-white"><%= @saved_searches.size %></p>
+    </div>
+    <%= icon "bookmark", class: "size-5 text-brand-600" %>
+  <% end %>
+  <%= link_to orders_path, class: "surface card-lift flex items-center justify-between p-4" do %>
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("account.orders") %></p>
+      <p class="mt-1 font-heading text-xl font-bold text-slate-950 dark:text-white"><%= @orders_count %></p>
+    </div>
+    <%= icon "package", class: "size-5 text-slate-500" %>
+  <% end %>
+</section>

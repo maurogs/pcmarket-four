@@ -1,0 +1,43 @@
+<% content_for :title, t("account.notifications.title") %>
+
+<div>
+  <h2 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("account.notifications.title") %></h2>
+  <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("account.notifications.subtitle") %></p>
+</div>
+
+<%= form_with url: account_notification_preferences_path, method: :patch, class: "mt-6" do %>
+  <section class="surface p-5">
+    <ul class="divide-y divide-slate-100 dark:divide-zinc-800">
+      <% User::NOTIFICATION_EMAIL_KEYS.each do |key| %>
+        <li class="flex items-start justify-between gap-4 py-3 first:pt-0 last:pb-0">
+          <label for="pref_<%= key %>" class="cursor-pointer">
+            <span class="block text-sm font-medium text-slate-900 dark:text-white"><%= t("account.notifications.keys.#{key}") %></span>
+            <span class="block text-xs text-slate-500 dark:text-zinc-400"><%= t("account.notifications.hints.#{key}") %></span>
+          </label>
+          <span class="pt-1">
+            <%= hidden_field_tag "notification_preferences[#{key}]", "0", id: nil %>
+            <%= check_box_tag "notification_preferences[#{key}]", "1",
+                              current_user.notify_by_email?(key), id: "pref_#{key}",
+                              class: "size-4 rounded text-brand-700 focus:ring-brand-500" %>
+          </span>
+        </li>
+      <% end %>
+      <li class="flex items-start justify-between gap-4 py-3 last:pb-0">
+        <label for="pref_email_newsletter" class="cursor-pointer">
+          <span class="block text-sm font-medium text-slate-900 dark:text-white"><%= t("account.notifications.keys.email_newsletter") %></span>
+          <span class="block text-xs text-slate-500 dark:text-zinc-400"><%= t("account.notifications.hints.email_newsletter") %></span>
+        </label>
+        <span class="pt-1">
+          <%= hidden_field_tag "notification_preferences[email_newsletter]", "0", id: nil %>
+          <%= check_box_tag "notification_preferences[email_newsletter]", "1",
+                            current_user.notify_by_email?("email_newsletter"), id: "pref_email_newsletter",
+                            class: "size-4 rounded text-brand-700 focus:ring-brand-500" %>
+        </span>
+      </li>
+    </ul>
+  </section>
+
+  <div class="mt-5 flex justify-end">
+    <%= submit_tag t("account.notifications.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+  </div>
+<% end %>

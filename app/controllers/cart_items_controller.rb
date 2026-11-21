@@ -8,6 +8,10 @@ class CartItemsController < ApplicationController
       return respond_error(t("cart.errors.own_listing"), listing)
     end
 
+    if listing.store&.on_vacation?
+      return respond_error(t("cart.errors.vacation"), listing)
+    end
+
     item = cart_scope.find_or_initialize_by(listing_id: listing.id)
     item.user = current_user if current_user
     item.cart_token = guest_token unless current_user

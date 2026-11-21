@@ -238,3 +238,73 @@ intact for published content.
 `config/locales/{listings,models,errors}.*.yml`,
 `test/{integration/listings_management_test.rb,system/listing_creation_test.rb}`,
 `.claude/context/project.md`.
+
+## 2026-11-21 — Phase 3B: seller area, store settings and account settings
+
+### What changed
+
+- Added a shared seller layout (`layouts/seller.html.erb`) with a store header
+  card and responsive navigation: desktop sidebar, mobile horizontal tabs.
+  Dashboard, My listings, My sales, Store profile, Store policies, Vacation
+  mode, a disabled Discount codes item and Payouts.
+- Replaced the dashboard placeholder with `SellerDashboard`, a cached
+  (5 minutes per store) aggregate service: seven KPI cards with 30-day deltas,
+  an accessible inline SVG orders chart with a visually hidden data table,
+  action-needed links, store completeness progress and recent listings.
+  All metrics are aggregated with conditional `FILTER` queries to stay below
+  30 SQL queries per request.
+- Added `Seller::OrdersController#index` with an empty state for phase 4.
+- Added singular seller resources: `seller/store` (profile edit/update with
+  logo/banner uploads and Stimulus previews), `seller/store_policy`,
+  `seller/vacation` and `seller/payout`. Profile validates the 3–50 character
+  name, 2,000 character description and professional company/tax details.
+- `Store` now uses FriendlyId history; renames archive the previous slug and
+  `StoresController#show` 301-redirects old URLs. Added `Store#completeness`
+  (0–100) and attachment size/format validations.
+- Added `SpanishTaxIdValidator` with NIF, NIE and CIF check-digit algorithms.
+- Added the platform buyer-protection card (locked) to store policies and a
+  vacation mode that shows a banner on listings and rejects cart additions.
+- Added singular account resources: `account` (show/update), `account/password`,
+  `account/addresses` (full CRUD), `account/notification_preferences`,
+  `account/data_export` and `account/deletion`. The shared account layout uses
+  the same responsive navigation pattern.
+- Addresses now promote the first address to default, clear other defaults in
+  the save transaction and promote a fallback when the default is deleted.
+- Added `users.notification_preferences` (jsonb) with defaults true except the
+  newsletter, which maps to `accepts_marketing`; `User#notify_by_email?` is the
+  single read API.
+- Added `UserDataExport` (GDPR articles 15/20) returning only the signed-in
+  user's records as a JSON download, and `User#soft_delete!` to anonymise the
+  account, purge the avatar, archive listings and keep orders.
+- Added reconfirmation-aware email changes, E.164-ish phone validation, public
+  username format validation and account language persistence. `switch_locale`
+  now falls back to the signed-in user's locale, then the best
+  `Accept-Language` match, then Spanish.
+- Updated the header account dropdown and mobile drawer with the new account
+  and seller routes.
+- Added integration tests for the seller area and account settings, unit tests
+  for the Spanish tax validator, and locale keys in all six languages.
+
+### Why
+
+Phase 3B gives sellers a complete operational area and gives every user a
+RESTful account/privacy area, closing the remaining profile and settings gaps
+before checkout and messaging arrive in later phases.
+
+### Files touched
+
+`app/controllers/{application,account}_controller.rb`,
+`app/controllers/account/*`, `app/controllers/seller/*`,
+`app/models/{address,store,user}.rb`,
+`app/services/{seller_dashboard,user_data_export}.rb`,
+`app/validators/spanish_tax_id_validator.rb`,
+`app/views/layouts/{_head,application,seller,account}.html.erb`,
+`app/views/seller/**`, `app/views/account/**`,
+`app/views/shared/{_header,_mobile_drawer}.html.erb`,
+`app/views/listings/show.html.erb`,
+`app/javascript/controllers/image_preview_controller.js`,
+`app/helpers/application_helper.rb`, `config/routes.rb`,
+`config/locales/phase3b.*.yml`, `db/migrate/*notification_preferences*`,
+`db/seeds/demo.rb`,
+`test/{integration/seller_area_test.rb,integration/account_settings_test.rb,validators/spanish_tax_id_validator_test.rb}`,
+`test/fixtures/stores.yml`, `.claude/context/project.md`.

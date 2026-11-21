@@ -1,0 +1,23 @@
+<div class="surface flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+  <div class="flex min-w-0 items-center gap-4">
+    <span class="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-brand-100 font-heading text-xl font-bold text-brand-800 dark:bg-brand-900/50 dark:text-brand-200">
+      <% if seller_store.logo.attached? %>
+        <%= image_tag seller_store.logo.variant(resize_to_fill: [ 128, 128 ]), alt: "", class: "size-full object-cover" %>
+      <% else %>
+        <%= seller_store.name.to_s.first(2).upcase %>
+      <% end %>
+    </span>
+    <div class="min-w-0">
+      <h1 class="truncate font-heading text-xl font-bold tracking-tight text-slate-950 sm:text-2xl dark:text-white"><%= seller_store.name %></h1>
+      <p class="truncate text-sm text-slate-500 dark:text-zinc-400">@<%= seller_store.slug %></p>
+    </div>
+  </div>
+  <div class="flex flex-wrap items-center gap-2">
+    <%= link_to store_path(seller_store), class: ui_button_classes(variant: :outline, size: :sm) do %>
+      <%= icon "store", class: "size-4" %><%= t("seller.area.view_store") %>
+    <% end %>
+    <%= link_to new_listing_path, class: ui_button_classes(variant: :primary, size: :sm) do %>
+      <%= icon "plus", class: "size-4" %><%= t("listings.seller.new_listing") %>
+    <% end %>
+  </div>
+</div>

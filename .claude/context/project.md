@@ -2,12 +2,12 @@
 
 ## Status
 
-Phase 3A complete: listing creation and the seller board. Sellers can create,
-edit, submit, pause, resume, duplicate, archive and bulk-manage listings,
-upload and reorder photos through Active Storage direct uploads, and browse
-their listings by status. Discovery (Phase 2B) remains intact. Checkout,
-messaging, offers, review creation and admin moderation screens remain for
-later phases.
+Phase 3B complete: the seller area, store settings and account settings.
+Sellers have a dashboard, store profile, policies, vacation mode and payouts
+pages; every user has RESTful account, address, notification, data-export and
+deletion resources. Discovery (Phase 2B) and listing creation (Phase 3A) remain
+intact. Checkout, messaging, offers, review creation and admin moderation
+screens remain for later phases.
 
 ## Stack
 
@@ -249,6 +249,45 @@ later phases.
   renders the translated "Free shipping" label in the buy box, cards and
   shipping section.
 
+### Seller area and account settings (Phase 3B)
+
+- `Seller::BaseController` supplies authentication, the `seller` layout and
+  `seller_store` (`User#ensure_store!`). The layout has a store header card and
+  responsive nav: desktop sidebar, mobile scrolling tabs.
+- `SellerDashboard` caches one aggregate payload for 5 minutes per store and
+  emits KPI cards with 30-day deltas, a server-rendered inline SVG orders chart
+  (with an accessible `<title>/<desc>` and visually hidden table), action links,
+  store completeness and recent listings. Conditional `FILTER` aggregates keep
+  the dashboard under 30 queries including chrome.
+- Seller settings are singular resources: `seller/store`, `seller/store_policy`,
+  `seller/vacation` and `seller/payout`. Logo (≤5 MB) and banner (≤8 MB) accept
+  JPEG/PNG/WebP; `image_preview_controller` previews uploads.
+- `Store` uses FriendlyId history. Renames archive the previous slug and old
+  store URLs 301 to the current slug. `Store#completeness` weights logo,
+  description, both policies and location at 25 points each.
+- Professional stores require `company_name` and `tax_id`; Spanish tax IDs are
+  validated by `SpanishTaxIdValidator` (NIF/NIE module-23, CIF control digit).
+- Vacation mode keeps listings visible but disables purchase in the listing buy
+  box and rejects `CartItemsController#create` with a translated alert.
+- Online payouts are not implemented: `seller/payout` explains the order-based
+  payment model and shows a disabled Stripe Connect button.
+- Account settings are singular resources under `account`: profile
+  (`show/update`), password, addresses, notification preferences, data export
+  and deletion. `Account::BaseController` supplies the `account` layout.
+- Addresses promote the first address to default, clear other defaults inside
+  the save transaction and promote a fallback when the default is deleted.
+- `users.notification_preferences` is a jsonb hash (defaults true except the
+  newsletter, which mirrors `accepts_marketing`). `User#notify_by_email?` is the
+  read API; `User#update_notification_preferences!` is the writer.
+- `UserDataExport` produces the GDPR articles 15/20 JSON download from the
+  signed-in user only. `User#soft_delete!` anonymises email/username/names,
+  purges the avatar, archives listings and retains orders.
+- Email changes go through Devise reconfirmable (`unconfirmed_email`); passwords
+  require the current password except for OAuth-only accounts, which can set one.
+- `ApplicationController#switch_locale` resolves explicit locale, then the
+  signed-in user's locale, then the best `Accept-Language` match, then Spanish.
+  Selecting a locale while signed in persists it to `users.locale`.
+
 ### Performance guardrails
 
 - `ListingSearch::INCLUDES` preloads store, category, region, user and image
@@ -302,6 +341,17 @@ app/controllers/listings_controller.rb      index/show/new/create/edit/update/de
 app/controllers/listings/                   submissions, pauses, sales member resources
 app/controllers/seller/listings_controller.rb  seller board (tabs, counts, search)
 app/controllers/seller/bulk_listing_actions_controller.rb
+app/controllers/seller/base_controller.rb      auth, seller layout, seller_store
+app/controllers/seller/dashboard_controller.rb KPI dashboard
+app/controllers/seller/{stores,store_policies,vacations,payouts}_controller.rb
+                                            singular store settings resources
+app/controllers/seller/orders_controller.rb seller sales placeholder
+app/controllers/account_controller.rb        account profile show/update
+app/controllers/account/                     password, addresses, notification
+                                            preferences, data export, deletion
+app/services/seller_dashboard.rb             cached dashboard aggregates
+app/services/user_data_export.rb             GDPR JSON export
+app/validators/spanish_tax_id_validator.rb   NIF/NIE/CIF checksum validation
 app/services/listing_form.rb                seller form writer (specs/images/status)
 app/services/bulk_listing_action.rb          whitelisted bulk pause/resume/delete
 app/controllers/categories_controller.rb    category path resolution
@@ -330,6 +380,12 @@ app/views/listings/_form.html.erb           five-section seller form
 app/views/listings/_specs.html.erb          category-driven specs Turbo Frame
 app/views/listings/_actions.html.erb        seller row actions menu
 app/views/seller/listings/index.html.erb    tabs, table/cards, bulk actions
+app/views/seller/dashboard/show.html.erb    KPIs, SVG chart, actions, recent
+app/views/seller/{stores,store_policies,vacations,payouts,orders}/
+                                            seller settings screens
+app/views/account/                          profile, password, addresses,
+                                            notifications, privacy/deletion
+app/views/layouts/{seller,account}.html.erb shared area layouts
 app/views/stores/show.html.erb              store header, tabs
 app/views/stores/tabs/                      listings/about/reviews panels
 app/views/favorites/                        heart button/count partials
@@ -367,7 +423,14 @@ test/seeds_test.rb
   opens the thread. Offers, unread counters and notifications are pending.
 - Saved-search alert delivery (the model stores exact replay params under
   `filters["_search"]`, but no background job sends alerts yet).
-- Seller dashboard, sell-to-us flow and profile management.
+- Seller dashboard performance is cached for five minutes; order-level events
+  do not invalidate it immediately.
+- Store dashboard deltas for listing views and average rating are shown without
+  a period comparison because views are stored as a running total.
+- Online payouts (Stripe Connect) and seller payout history are pending.
+- Discount codes are visible in the seller navigation as a disabled item.
+- Seller sales (`seller/orders`) is an empty-state placeholder until checkout
+  and order management arrive.
 - Store tabs currently render the active panel inline for SEO and load other
   tabs through Turbo Frame navigation; `loading="lazy"` placeholders can be
   added if the panels grow heavier.

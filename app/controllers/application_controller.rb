@@ -51,14 +51,51 @@ class ApplicationController < ActionController::Base
   private
 
   def switch_locale(&action)
-    I18n.with_locale(extract_locale || I18n.default_locale, &action)
+    locale = resolved_locale
+    persist_preferred_locale(locale)
+    I18n.with_locale(locale, &action)
+  end
+
+  def persist_preferred_locale(locale)
+    return if params[:locale].blank?
+    return unless user_signed_in?
+    return if current_user.locale.to_s == locale.to_s
+
+    current_user.update_column(:locale, locale.to_s)
+  end
+
+  def resolved_locale
+    extract_locale || user_locale || browser_locale || I18n.default_locale
   end
 
   def extract_locale
     requested = params[:locale].to_s
     return nil if requested.blank?
 
-    requested if I18n.available_locales.map(&:to_s).include?(requested)
+    requested if available_locale?(requested)
+  end
+
+  def user_locale
+    return nil unless user_signed_in?
+
+    locale = current_user.locale.to_s
+    locale if available_locale?(locale)
+  end
+
+  def browser_locale
+    header = request.env["HTTP_ACCEPT_LANGUAGE"].to_s
+    header.split(",").each do |entry|
+      tag = entry.split(";").first.to_s.strip.downcase
+      next if tag.blank?
+
+      candidate = tag.split("-").first
+      return candidate if available_locale?(candidate)
+    end
+    nil
+  end
+
+  def available_locale?(locale)
+    I18n.available_locales.map(&:to_s).include?(locale.to_s)
   end
 
   def set_default_meta_tags

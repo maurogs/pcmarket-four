@@ -238,6 +238,18 @@ module ApplicationHelper
     t("common.locales.#{locale}", default: locale.to_s.upcase)
   end
 
+  def nav_item_classes(active = false, extra: nil)
+    base = "inline-flex min-h-10 w-auto items-center gap-2 whitespace-nowrap rounded-xl px-3 py-2 " \
+           "text-sm font-medium transition lg:w-full"
+    state = if active
+      "bg-brand-50 text-brand-800 dark:bg-brand-500/10 dark:text-brand-200"
+    else
+      "text-slate-600 hover:bg-slate-100 hover:text-slate-950 " \
+        "dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white"
+    end
+    [ base, state, extra ].compact.join(" ")
+  end
+
   def nav_link_classes(active = false)
     base = "inline-flex min-h-11 shrink-0 items-center gap-1 whitespace-nowrap px-2.5 text-sm font-medium transition-colors xl:px-3"
     if active

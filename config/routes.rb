@@ -39,10 +39,21 @@ Rails.application.routes.draw do
     resources :saved_searches, only: %i[index create update destroy]
     resources :conversations, only: %i[index show create]
     resources :orders, only: %i[index show]
-    resource :account, only: :show, controller: "account"
+    resource :account, only: %i[show update], controller: "account" do
+      resource :password, only: %i[edit update], module: :account
+      resources :addresses, only: %i[index new create edit update destroy], module: :account
+      resource :notification_preferences, only: %i[edit update], module: :account
+      resource :data_export, only: :create, module: :account
+      resource :deletion, only: %i[new create], module: :account
+    end
 
     namespace :seller do
       root "dashboard#show"
+      resources :orders, only: :index
+      resource :store, only: %i[edit update], controller: "stores"
+      resource :store_policy, only: %i[edit update], controller: "store_policies"
+      resource :vacation, only: %i[edit update], controller: "vacations"
+      resource :payout, only: :show, controller: "payouts"
       resources :listings, only: :index do
         resource :duplication, only: :create, module: :listings
       end

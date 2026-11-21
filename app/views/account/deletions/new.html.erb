@@ -1,0 +1,37 @@
+<% content_for :title, t("account.privacy.title") %>
+
+<div>
+  <h2 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("account.privacy.title") %></h2>
+  <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("account.privacy.subtitle") %></p>
+</div>
+
+<section class="surface mt-6 p-5">
+  <h3 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("account.privacy.export_title") %></h3>
+  <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("account.privacy.export_body") %></p>
+  <%= button_to account_data_export_path, method: :post,
+                class: ui_button_classes(variant: :outline, size: :md, extra: "mt-4") do %>
+    <%= icon "arrow-up", class: "size-4 rotate-180" %><%= t("account.privacy.export_button") %>
+  <% end %>
+</section>
+
+<section class="surface mt-5 border-rose-200 p-5 dark:border-rose-500/30" aria-labelledby="delete-account-heading">
+  <h3 id="delete-account-heading" class="font-heading text-lg font-semibold text-rose-700 dark:text-rose-300"><%= t("account.deletion.title") %></h3>
+  <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("account.deletion.body") %></p>
+
+  <%= form_with url: account_deletion_path, method: :post, class: "mt-4 space-y-3" do %>
+    <% if current_user.oauth_only? %>
+      <div>
+        <%= label_tag :confirmation, t("account.deletion.type_delete"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= text_field_tag :confirmation, nil, class: ui_input_classes, autocomplete: "off" %>
+      </div>
+    <% else %>
+      <div>
+        <%= label_tag :current_password, t("account.deletion.password"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= password_field_tag :current_password, nil, class: ui_input_classes, autocomplete: "current-password" %>
+      </div>
+    <% end %>
+    <%= submit_tag t("account.deletion.submit"),
+                   data: { turbo_confirm: t("account.deletion.confirm") },
+                   class: ui_button_classes(variant: :danger, size: :md) %>
+  <% end %>
+</section>

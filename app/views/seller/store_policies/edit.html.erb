@@ -1,0 +1,57 @@
+<% content_for :title, t("seller.policies.title") %>
+
+<div>
+  <h2 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("seller.policies.title") %></h2>
+  <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("seller.policies.subtitle") %></p>
+</div>
+
+<%= form_with model: @store, url: seller_store_policy_path, method: :patch, class: "mt-6 space-y-5" do |form| %>
+  <% if @store.errors.any? %>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200" role="alert">
+      <ul class="list-disc space-y-1 pl-5">
+        <% @store.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <section class="surface p-5">
+    <div class="space-y-4">
+      <div>
+        <%= form.label :return_policy, t("seller.policies.return_policy"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_area :return_policy, rows: 5, class: ui_input_classes %>
+      </div>
+      <div>
+        <%= form.label :shipping_policy, t("seller.policies.shipping_policy"), class: "mb-1 block text-sm font-medium text-slate-800 dark:text-zinc-200" %>
+        <%= form.text_area :shipping_policy, rows: 5, class: ui_input_classes %>
+      </div>
+      <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-3 dark:border-zinc-700">
+        <%= form.check_box :allow_offers_default, class: "mt-0.5 size-4 rounded text-brand-700 focus:ring-brand-500" %>
+        <span>
+          <span class="block text-sm font-medium text-slate-800 dark:text-zinc-200"><%= t("seller.policies.allow_offers") %></span>
+          <span class="block text-xs text-slate-500 dark:text-zinc-400"><%= t("seller.policies.allow_offers_hint") %></span>
+        </span>
+      </label>
+    </div>
+  </section>
+
+  <section class="surface border-brand-200 p-5 dark:border-brand-500/30" aria-labelledby="buyer-protection-title">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-start gap-3">
+        <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">
+          <%= icon "shield-check", class: "size-5" %>
+        </span>
+        <div>
+          <h3 id="buyer-protection-title" class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("seller.policies.buyer_protection_title") %></h3>
+          <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("seller.policies.buyer_protection_body") %></p>
+        </div>
+      </div>
+      <span class="<%= ui_badge_classes(tone: :brand) %>"><%= icon "lock", class: "size-3" %><%= t("seller.policies.locked") %></span>
+    </div>
+  </section>
+
+  <div class="flex justify-end">
+    <%= form.submit t("seller.policies.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+  </div>
+<% end %>

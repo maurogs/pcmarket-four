@@ -1,8 +1,7 @@
 module Seller
-  class DashboardController < ApplicationController
-    before_action :authenticate_user!
-
+  class DashboardController < BaseController
     def show
+      @dashboard = SellerDashboard.new(seller_store).call
     end
   end
 end

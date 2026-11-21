@@ -1,0 +1,33 @@
+<% content_for :title, t("seller.payouts.title") %>
+
+<div>
+  <h2 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("seller.payouts.title") %></h2>
+  <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= t("seller.payouts.subtitle") %></p>
+</div>
+
+<section class="surface mt-6 p-5">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <span class="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-zinc-800 dark:text-zinc-400">
+        <%= icon "credit-card", class: "size-5" %>
+      </span>
+      <div>
+        <p class="text-sm font-semibold text-slate-900 dark:text-white"><%= t("seller.payouts.status") %></p>
+        <p class="text-sm text-slate-500 dark:text-zinc-400"><%= t("seller.payouts.not_connected") %></p>
+      </div>
+    </div>
+    <%= button_tag t("seller.payouts.connect"), type: "button", disabled: true,
+                   class: ui_button_classes(variant: :outline, size: :md) %>
+  </div>
+  <p class="mt-3 text-xs text-slate-500 dark:text-zinc-400"><%= t("seller.payouts.connect_hint") %></p>
+</section>
+
+<section class="surface mt-4 p-5">
+  <h3 class="font-heading text-lg font-semibold text-slate-950 dark:text-white"><%= t("seller.payouts.how_title") %></h3>
+  <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400"><%= t("seller.payouts.body") %></p>
+  <ol class="mt-4 space-y-2 text-sm text-slate-700 dark:text-zinc-300">
+    <li class="flex gap-2"><span class="font-semibold text-brand-700 dark:text-brand-300">1.</span><%= t("seller.payouts.step_one") %></li>
+    <li class="flex gap-2"><span class="font-semibold text-brand-700 dark:text-brand-300">2.</span><%= t("seller.payouts.step_two") %></li>
+    <li class="flex gap-2"><span class="font-semibold text-brand-700 dark:text-brand-300">3.</span><%= t("seller.payouts.step_three") %></li>
+  </ol>
+</section>

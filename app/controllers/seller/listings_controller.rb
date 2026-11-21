@@ -1,7 +1,5 @@
 module Seller
-  class ListingsController < ApplicationController
-    before_action :authenticate_user!
-
+  class ListingsController < BaseController
     def index
       @status = params[:status].to_s
       @status = "all" unless Listing.statuses.key?(@status)
