@@ -43,6 +43,8 @@ en:
       collapse_hint: Collapse
       open: Open navigation
       payments: Payment reconciliation
+      help_articles: Help articles
+      feature_requests: Feature requests
     topbar:
       view_site: View site
     search:
@@ -265,8 +267,7 @@ en:
         reviewed_by: Reviewed by %{name} on %{time}
         images: Photos
         description: Description
-        safety_warning: 'The description contains contact details or off-platform
-          payment hints:'
+        safety_warning: 'The description contains contact details or off-platform payment hints:'
         orders: Orders
         no_orders: No orders include this listing.
         order_number: Order
@@ -405,8 +406,7 @@ en:
       edit:
         title: Edit user
         subtitle: "%{name}"
-        role_hint: Roles and status are managed from the user page with dedicated
-          actions.
+        role_hint: Roles and status are managed from the user page with dedicated actions.
       confirm:
         ban: Ban %{name}? Their listings will be archived.
         soft_delete: Delete %{name}? Personal data will be anonymised.
@@ -492,6 +492,9 @@ en:
         resource: Resource
         ip: IP
         changeset: Changes
+        attribute: Attribute
+        before: Before
+        after: After
       actions:
         listing_approved: Listing approved
         listing_rejected: Listing rejected
@@ -533,6 +536,38 @@ en:
         report_dismissed: Report dismissed
         review_updated: Review updated
         review_deleted: Review deleted
+        category_created: Category created
+        category_updated: Category updated
+        category_deleted: Category deleted
+        category_reordered: Categories reordered
+        filter_created: Filter created
+        filter_updated: Filter updated
+        filter_deleted: Filter deleted
+        filter_option_created: Filter option created
+        filter_option_updated: Filter option updated
+        filter_option_deleted: Filter option deleted
+        filter_options_bulk_created: Filter options bulk added
+        filter_options_merged: Filter options merged
+        settings_updated: Settings updated
+        country_updated: Country updated
+        region_created: Region created
+        region_updated: Region updated
+        region_deleted: Region deleted
+        legal_page_created: Legal page created
+        legal_page_updated: Legal page updated
+        legal_page_deleted: Legal page deleted
+        game_created: Game created
+        game_updated: Game updated
+        game_deleted: Game deleted
+        help_article_created: Help article created
+        help_article_updated: Help article updated
+        help_article_deleted: Help article deleted
+        newsletter_subscriber_deleted: Subscriber deleted
+        feature_request_approved: Feature request approved
+      from: From
+      to: To
+      open_diff: Open diff
+      diff_title: Audit entry
     reports:
       reasons:
         spam: Spam
@@ -606,8 +641,9 @@ en:
       not_impersonating: No impersonation session is active.
     placeholder:
       label: Next update
-      body: This admin area is being built in phases 6B and 6C. The foundation, dashboard,
-        listing moderation, users and stores are already available.
+      body: >-
+        This admin area is being built in phases 6B and 6C. The foundation, dashboard, listing moderation, users and stores
+        are already available.
       coming: Coming in next update
       titles:
         orders: Orders
@@ -763,8 +799,7 @@ en:
         mark_paid: Mark paid
       bulk:
         title: Bulk mark as paid
-        hint: Paste one order number per line. Each pending order is marked as paid
-          with the same reference.
+        hint: Paste one order number per line. Each pending order is marked as paid with the same reference.
         placeholder: |-
           PCM-2026-000001
           PCM-2026-000002
@@ -777,8 +812,7 @@ en:
         wrong_status: Wrong status
     disputes:
       title: Disputes
-      subtitle: Open buyer disputes, oldest first. Resolve with a refund or release
-        to the seller.
+      subtitle: Open buyer disputes, oldest first. Resolve with a refund or release to the seller.
       resolved: Dispute resolved and both parties notified.
       cannot_resolve: This dispute cannot be resolved.
       empty_title: No open disputes
@@ -816,8 +850,7 @@ en:
         seller: Seller
         timeline: Order timeline
         resolve: Resolve dispute
-        resolve_hint: The resolution message is sent to both parties by email and
-          in-app notification.
+        resolve_hint: The resolution message is sent to both parties by email and in-app notification.
         outcome: Outcome
         refund_admin_only: Only administrators can issue refunds.
         message_placeholder: Explain the decision to both parties…
@@ -835,8 +868,7 @@ en:
       reply_visible: Reply visible
       reply_hidden: Reply hidden
       rating_option: "%{count} / 5"
-      blocked_words_hint: Reviews are checked against the blocked-words list before
-        publication.
+      blocked_words_hint: Reviews are checked against the blocked-words list before publication.
       blocked_words_link: Manage blocked words
       empty_title: No reviews found
       empty_body: Adjust the filters or come back later.
@@ -876,6 +908,374 @@ en:
         settings: Review settings
       confirm:
         delete: Delete this review permanently? The store rating will be recalculated.
+    categories:
+      title: Categories
+      subtitle: Taxonomy tree, menu placement and category filters.
+      new: New category
+      new_title: New category
+      new_subtitle: Create a root or child category.
+      edit_subtitle: Slug /c/%{slug}
+      created: Category created.
+      updated: Category updated.
+      deleted: Category deleted.
+      delete_blocked: 'Cannot delete: %{listings} listings and %{children} child categories remain. Deactivate it instead.'
+      confirm_delete: Delete this category? This cannot be undone.
+      listing_count:
+        one: 1 listing
+        other: "%{count} listings"
+      children_count:
+        one: 1 child
+        other: "%{count} children"
+      active: Active
+      inactive: Inactive
+      in_menu: In menu
+      root: Root
+      move_up: Move up
+      move_down: Move down
+      empty_title: No categories yet
+      empty_body: Create the first category to build the catalogue.
+      form:
+        names: Names
+        name_for: Name (%{code})
+        seo_for: SEO description (%{code})
+        seo: SEO
+        structure: Structure
+        slug_placeholder: Generated from English when blank
+        no_parent: No parent (root)
+        no_icon: No icon
+        active: Active
+        show_in_menu: Show in mega menu
+        filters: Assigned filters
+        filters_hint: Filters are inherited by children. Lower order numbers appear first.
+        inherited: Inherited from ancestors (read-only)
+        filter_order: Filter order
+    filters:
+      title: Filters
+      subtitle: Specification filters, options and category assignments.
+      new: New filter
+      new_title: New filter
+      new_subtitle: Filters are stored in listing specs by key.
+      edit_title: Edit %{name}
+      edit_subtitle: Key %{key} is immutable after creation.
+      created: Filter created.
+      updated: Filter updated.
+      deleted: Filter deleted.
+      confirm_key_mismatch: Type the filter key exactly to confirm deletion.
+      danger_title: Delete filter
+      danger_hint: Used by %{count} listings. Deleting removes the key from every listing spec in the background.
+      confirm_key: Type “%{key}” to confirm
+      confirm_delete: Delete this filter permanently?
+      columns:
+        key: Key
+        name: Name
+        type: Input type
+        options: Options
+        categories: Categories
+        usage: Usage
+        status: Status
+      input_types:
+        checkbox: Checkbox
+        range: Range
+        select: Select
+        boolean: Yes / no
+      form:
+        key_locked: The key cannot change because listing specs already reference it.
+        key_hint: Lowercase snake_case, unique across filters.
+        names: Names
+        categories: Categories
+      options:
+        title: Options
+        hint: Drag to reorder or use the arrow buttons.
+        empty: No options yet.
+        usage: "%{count} listings"
+        value: Value
+        add: Add option
+        created: Option added.
+        updated: Option updated.
+        deleted: Option deleted.
+        invalid: The option is invalid.
+        confirm_delete: Delete this option?
+        bulk_title: Bulk add
+        bulk_placeholder: One value per line
+        bulk_submit: Add values
+        bulk_created: "%{count} options added."
+        merge_title: Merge option
+        merge_hint: Rewrites listing specs from the source value to the target value, then deletes the source.
+        merge_source: Source
+        merge_target: Target
+        merge_submit: Merge options
+        merged: Options merged and specs rewritten.
+        merge_failed: Options could not be merged.
+    settings:
+      title: Settings & feature flags
+      subtitle: Typed marketplace configuration. Only changed keys are written.
+      feature_flag: Feature flag
+      toggle: Enabled
+      range: 'Allowed range: %{min}–%{max}'
+      updated: Settings updated.
+      unchanged: No settings changed.
+      groups:
+        general: General
+        marketplace: Marketplace
+        monetisation: Monetisation
+        payments: Payments
+        orders: Orders
+        limits: Limits
+        content: Content
+        communication: Communication
+      keys:
+        site_name:
+          label: Site name
+          help: Shown in the header, emails and page titles.
+        maintenance_mode:
+          label: Maintenance mode
+          help: Signed-in staff keep browsing with a warning banner. Everyone else sees a 503 page.
+        allow_non_eur_countries:
+          label: Allow non-EUR countries
+          help: Only enable when multi-currency pricing is ready.
+        listings_require_approval:
+          label: Listings require approval
+          help: New listings wait in the moderation queue.
+        checkout_enabled:
+          label: Checkout enabled
+          help: Turns cart checkout on or off.
+        chat_enabled:
+          label: Chat enabled
+          help: Enables buyer and seller conversations.
+        registrations_enabled:
+          label: Registrations enabled
+          help: Allows new accounts to sign up.
+        reviews_enabled:
+          label: Reviews enabled
+          help: Buyers can review completed orders.
+        saved_search_alerts_enabled:
+          label: Saved search alerts
+          help: Sends instant and daily saved-search alerts.
+        commissions_enabled:
+          label: Commissions enabled
+          help: Adds the platform commission to orders.
+        commission_percent:
+          label: Commission percent
+          help: Platform fee charged to sellers.
+        featured_listings_enabled:
+          label: Featured listings
+          help: Sellers can request paid featured placement.
+        featured_price_cents:
+          label: Featured price (cents)
+          help: Price for seven days of featured placement.
+        sell_to_us_enabled:
+          label: Sell to PCMarket
+          help: Shows the sell-to-us entry point.
+        payment_bank_transfer_enabled:
+          label: Bank transfer
+          help: Offers bank transfer at checkout.
+        bank_iban:
+          label: Bank IBAN
+          help: Shown in payment instructions.
+        bank_beneficiary:
+          label: Bank beneficiary
+          help: Account holder for transfers.
+        payment_deadline_days:
+          label: Payment deadline (days)
+          help: Unpaid bank-transfer orders expire after this.
+        stripe_enabled:
+          label: Stripe
+          help: Offers card payments through Stripe.
+        inspection_window_days:
+          label: Inspection window (days)
+          help: Time to confirm or dispute a delivery.
+        auto_complete_after_delivery_days:
+          label: Auto-complete after delivery
+          help: Days after delivery before orders complete.
+        auto_delivered_after_shipping_days:
+          label: Auto-delivered after shipping
+          help: Days after shipping before delivery is assumed.
+        seller_ship_deadline_days:
+          label: Seller ship deadline
+          help: Days before a late-shipment reminder is sent.
+        max_images_per_listing:
+          label: Maximum images
+          help: Photos allowed per listing.
+        max_active_listings_per_user:
+          label: Maximum active listings
+          help: Active listings allowed per seller.
+        announcement_bar_text:
+          label: Announcement bar text
+          help: Leave empty to hide the bar.
+        blocked_words:
+          label: Blocked words
+          help: Comma-separated words rejected in reviews.
+        support_email:
+          label: Support email
+          help: Receives dispute and support notifications.
+      maintenance_confirm: Put the marketplace into maintenance mode? Visitors will see a 503 page.
+    countries:
+      title: Countries
+      subtitle: Marketplace launch state, currency and regional data.
+      enabled: Enabled
+      disabled: Disabled
+      stats: "%{listings} listings · %{users} users · %{regions} regions"
+      manage_regions: Manage regions
+      updated: "%{name} updated."
+      cannot_update: The country could not be updated.
+      currency_blocked: "%{currency} is not supported yet. Enable allow_non_eur_countries only when multi-currency pricing
+        is ready."
+      currency_notice: Prices are stored in EUR only. Launching in %{currency} requires multi-currency support.
+      checklist:
+        title: Launch checklist
+        status:
+          ready: Ready
+          attention: Needs attention
+        legal_pages: Legal pages published in the default locale
+        legal_pages_en: Legal pages published in English
+        regions: Regions seeded
+        currency: Currency supported
+        currency_warning: GBP launch requires multi-currency pricing
+      regions:
+        title: Regions · %{country}
+        subtitle: Regions group listings by area.
+        new: Add region
+        add: Add
+        created: Region created.
+        updated: Region updated.
+        deleted: Region deleted.
+        invalid: The region is invalid.
+        empty: No regions yet.
+        confirm_delete: Delete this region? Listings keep their city but lose the region.
+      confirm_save: Save %{name}? Review the launch checklist before enabling a country.
+    legal_pages:
+      title: Legal pages
+      subtitle: Country and locale legal copy with versioning.
+      new: New page
+      new_title: New legal page
+      new_subtitle: Publish a page for a country and locale.
+      edit_subtitle: "%{slug} · %{language}"
+      created: Legal page created.
+      updated: Legal page updated.
+      deleted: Legal page deleted.
+      published: Published
+      draft: Draft
+      global: Global
+      version_hint: Current version %{version}. Saving content or publishing increments it.
+      delete: Delete page
+      confirm_delete: Delete this legal page permanently?
+      empty_title: No legal pages found
+      empty_body: Adjust the filters or create a page.
+      filters:
+        country: Country
+        any_country: Any country
+        locale: Locale
+        any_locale: Any locale
+        slug: Page
+        any_slug: Any page
+      columns:
+        page: Page
+        country: Country
+        locale: Locale
+        version: Version
+        status: Status
+        updated: Updated
+      slugs:
+        terms: Terms
+        privacy: Privacy
+        cookies: Cookies
+        legal_notice: Legal notice
+        returns: Returns
+        buyer_protection: Buyer protection
+        seller_terms: Seller terms
+        prohibited_items: Prohibited items
+        dsa_contact: DSA contact
+      copy:
+        title: Copy from another page
+        hint: Loads the title and body into this form without saving. Useful for translations.
+        load: Load copy
+      editor:
+        body: Body (HTML)
+        edit_tab: Edit
+        preview_tab: Preview
+        toolbar: Formatting
+        bold: Bold
+        italic: Italic
+        link_prompt: Link URL
+        list_item: List item
+    games:
+      title: Games
+      subtitle: Games used by PC Finder performance data.
+      new: New game
+      new_title: New game
+      edit_subtitle: Game details and order.
+      created: Game created.
+      updated: Game updated.
+      deleted: Game deleted.
+      delete: Delete game
+      confirm_delete: Delete this game? PC Finder data will lose its label.
+    help_articles:
+      title: Help articles
+      subtitle: Localised help centre content, published in phase 7.
+      new: New article
+      new_title: New help article
+      edit_subtitle: Article content and translations.
+      created: Help article created.
+      updated: Help article updated.
+      deleted: Help article deleted.
+      delete: Delete article
+      confirm_delete: Delete this help article permanently?
+      published: Published
+      content: Localised content
+      title_field: Title
+      empty_title: No help articles
+      empty_body: Create the first article for the help centre.
+      categories:
+        buying: Buying
+        selling: Selling
+        shipping: Shipping
+        payments: Payments
+        account: Account
+        safety: Safety
+    newsletter:
+      title: Newsletter
+      subtitle: Confirmed, pending and unsubscribed subscribers.
+      export: Export CSV
+      status: Status
+      all_statuses: All statuses
+      search: Search
+      search_placeholder: Email address
+      deleted: Subscriber deleted.
+      confirm_delete: Delete this subscriber?
+      empty_title: No subscribers found
+      empty_body: Adjust the filters or wait for sign-ups.
+      statuses:
+        confirmed: Confirmed
+        unconfirmed: Unconfirmed
+        unsubscribed: Unsubscribed
+      columns:
+        email: Email
+        locale: Locale
+        status: Status
+        subscribed: Subscribed
+    feature_requests:
+      title: Feature requests
+      subtitle: Paid featured-listing requests awaiting approval.
+      status: Status
+      all_statuses: All statuses
+      approve: Approve
+      approved: Request approved and listing featured.
+      not_pending: This request is not pending.
+      confirm_approve: Approve this request and feature the listing?
+      empty_title: No feature requests
+      empty_body: Requests from sellers will appear here.
+      statuses:
+        pending: Pending
+        paid: Paid
+        active: Active
+        expired: Expired
+      columns:
+        listing: Listing
+        seller: Seller
+        days: Days
+        price: Price
+        status: Status
+        requested: Requested
   devise:
     failure:
       suspended: Your account is suspended. Contact support for more information.

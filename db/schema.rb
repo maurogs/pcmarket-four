@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_22_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_22_225000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -190,6 +190,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_130000) do
     t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
+  create_table "feature_requests", force: :cascade do |t|
+    t.bigint "listing_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "days", default: 7, null: false
+    t.integer "price_cents", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "paid_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["listing_id", "status"], name: "index_feature_requests_on_listing_id_and_status"
+    t.index ["listing_id"], name: "index_feature_requests_on_listing_id"
+    t.index ["status", "created_at"], name: "index_feature_requests_on_status_and_created_at"
+    t.index ["user_id"], name: "index_feature_requests_on_user_id"
+  end
+
   create_table "filter_definitions", force: :cascade do |t|
     t.string "key", null: false
     t.jsonb "names", default: {}, null: false
@@ -246,6 +261,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_130000) do
     t.index ["slug"], name: "index_games_on_slug", unique: true
   end
 
+  create_table "help_articles", force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "category", default: 0, null: false
+    t.jsonb "titles", default: {}, null: false
+    t.jsonb "bodies", default: {}, null: false
+    t.integer "position", default: 0, null: false
+    t.boolean "published", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["published", "category", "position"], name: "index_help_articles_on_published_and_category_and_position"
+    t.index ["slug"], name: "index_help_articles_on_slug", unique: true
+  end
+
   create_table "legal_pages", force: :cascade do |t|
     t.string "slug", null: false
     t.string "country_code"
@@ -257,6 +285,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_130000) do
     t.bigint "updated_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "published_at"
     t.index ["published", "locale"], name: "index_legal_pages_on_published_and_locale"
     t.index ["slug", "country_code", "locale"], name: "index_legal_pages_on_slug_and_country_code_and_locale", unique: true
     t.index ["slug"], name: "index_legal_pages_on_slug"
@@ -559,6 +588,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_130000) do
     t.string "description_key"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "feature_flag", default: false, null: false
     t.index ["group"], name: "index_settings_on_group"
     t.index ["key"], name: "index_settings_on_key", unique: true
   end
@@ -665,6 +695,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_130000) do
   add_foreign_key "conversations", "users", column: "seller_id"
   add_foreign_key "favorites", "listings"
   add_foreign_key "favorites", "users"
+  add_foreign_key "feature_requests", "listings"
+  add_foreign_key "feature_requests", "users"
   add_foreign_key "filter_options", "filter_definitions"
   add_foreign_key "follows", "stores"
   add_foreign_key "follows", "users", column: "follower_id"

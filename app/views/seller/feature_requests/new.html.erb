@@ -1,0 +1,50 @@
+<div class="page-container max-w-2xl py-8">
+  <nav class="mb-4 text-xs text-slate-500 dark:text-zinc-400">
+    <%= link_to t("listings.seller.title"), seller_listings_path, class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+    <span class="mx-1">/</span><span><%= t("seller.feature_requests.title") %></span>
+  </nav>
+
+  <div class="surface p-6">
+    <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300"><%= t("seller.feature_requests.eyebrow") %></p>
+    <h1 class="mt-1 font-heading text-2xl font-bold text-slate-950 dark:text-white"><%= t("seller.feature_requests.title") %></h1>
+    <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-zinc-400"><%= t("seller.feature_requests.intro", days: @days) %></p>
+
+    <div class="mt-4 rounded-xl border border-slate-200 p-4 dark:border-zinc-700">
+      <div class="flex items-center gap-3">
+        <span class="size-14 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800">
+          <% thumbnail = @listing.ordered_images.first %>
+          <% if thumbnail %>
+            <%= image_tag thumbnail.variant(resize_to_limit: [ 112, 112 ], format: :webp), alt: "", class: "size-14 object-cover" %>
+          <% end %>
+        </span>
+        <div class="min-w-0">
+          <p class="truncate font-medium text-slate-900 dark:text-white"><%= @listing.title %></p>
+          <p class="text-sm text-slate-500 dark:text-zinc-400"><%= format_price(@listing.price_cents) %></p>
+        </div>
+      </div>
+      <dl class="mt-4 grid grid-cols-2 gap-3 text-sm">
+        <div>
+          <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-zinc-400"><%= t("seller.feature_requests.price") %></dt>
+          <dd class="font-heading text-xl font-bold text-slate-950 dark:text-white"><%= format_price(@price_cents) %></dd>
+        </div>
+        <div>
+          <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-zinc-400"><%= t("seller.feature_requests.duration") %></dt>
+          <dd class="font-semibold"><%= t("seller.feature_requests.days", count: @days) %></dd>
+        </div>
+      </dl>
+    </div>
+
+    <p class="mt-4 text-sm text-slate-600 dark:text-zinc-400"><%= t("seller.feature_requests.payment_note") %></p>
+
+    <% if @pending_request %>
+      <p class="mt-4 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:bg-amber-500/10 dark:text-amber-200">
+        <%= t("seller.feature_requests.pending") %>
+      </p>
+    <% else %>
+      <%= button_to t("seller.feature_requests.submit"), seller_feature_requests_path(listing_id: @listing.id),
+                    method: :post, class: ui_button_classes(variant: :primary, size: :md, extra: "mt-4 w-full") %>
+    <% end %>
+    <%= link_to t("seller.feature_requests.back"), seller_listings_path,
+                class: ui_button_classes(variant: :ghost, size: :md, extra: "mt-2 w-full") %>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+---
+en:
+  seller:
+    feature_requests:
+      eyebrow: Featured listing
+      title: Feature this listing
+      intro: Show this listing at the top of category and search results for %{days} days.
+      price: Price
+      duration: Duration
+      days:
+        one: 1 day
+        other: "%{count} days"
+      payment_note: >-
+        We will confirm your request and send payment instructions by bank transfer or Stripe. Your listing is featured as
+        soon as an administrator approves it.
+      pending: You already have a request awaiting approval for this listing.
+      submit: Request featured placement
+      back: Back to my listings
+      disabled: Featured placements are currently disabled.
+      created: Request sent. We will contact you with payment instructions.
+      invalid: The request could not be created.

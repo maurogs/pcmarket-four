@@ -595,3 +595,37 @@ with every destructive action authorised and audited.
 `app/helpers/admin_helper.rb`, `app/controllers/admin/base_controller.rb`,
 `config/routes.rb`, `config/locales/{admin,notifications,orders}.*.yml`,
 `test/**`, `.claude/context/{project,project.es}.md`.
+
+## Phase 6C — Admin catalogue, settings, countries, content and marketing
+
+### What changed
+
+- Replaced the remaining admin placeholders with category tree CRUD and
+  drag-and-drop sibling ordering, filter and option management (bulk add, merge
+  with `jsonb_set`, usage counts, immutable keys), grouped typed settings with
+  feature flags, translated maintenance mode, country launch checklists and
+  nested regions.
+- Added legal page editor, versioning and sanitised rendering, games reorder,
+  help article CRUD, newsletter counts/CSV export, audit-log date filters and a
+  diff page, plus the featured-listing request flow for sellers and admins.
+- Mutations in the new areas are administrator-only; moderators keep read
+  access. Category, filter, menu and facet caches are explicitly versioned.
+- Added six-locale admin, maintenance and seller strings, fixtures-free tests
+  covering the new flows, and synchronised English/Spanish context docs.
+
+### Why
+
+Phase 6C closes the admin surface so the marketplace can be operated without
+placeholders, with audited configuration changes and safe catalogue editing.
+
+### Files touched
+
+`db/migrate/20261122225000_add_phase6c_catalogue_and_content.rb`,
+`app/models/{category,filter_definition,filter_option,country,legal_page,setting,feature_request,help_article}.rb`,
+`app/controllers/application_controller.rb`, `app/controllers/admin/**`,
+`app/controllers/seller/feature_requests_controller.rb`, `app/jobs/cleanup_spec_key_job.rb`,
+`app/services/{admin,listing_search,menu_builder}*`, `app/policies/admin/**`,
+`app/helpers/admin_helper.rb`, `app/views/admin/**`, `app/views/seller/**`,
+`app/views/{maintenance,shared}/**`, `app/javascript/controllers/**`,
+`config/routes.rb`, `config/locales/**`, `test/integration/admin_catalogue_test.rb`,
+`.claude/context/{project,project.es}.md`.

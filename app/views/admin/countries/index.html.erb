@@ -1,0 +1,88 @@
+<div class="mx-auto max-w-[90rem]">
+  <%= render "admin/shared/page_header", title: t("admin.countries.title"),
+             subtitle: t("admin.countries.subtitle"), eyebrow: t("admin.nav.sections.settings") %>
+
+  <div class="mt-5 space-y-4">
+    <% @countries.each do |country| %>
+      <% checklist = @checklists[country] %>
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 class="flex items-center gap-2 font-heading text-base font-semibold text-slate-900 dark:text-white">
+              <%= country.name %>
+              <span class="font-mono text-xs text-slate-400"><%= country.code %></span>
+              <span class="<%= ui_badge_classes(tone: country.enabled? ? :success : :neutral, extra: '!px-2 !py-0.5') %>">
+                <%= country.enabled? ? t("admin.countries.enabled") : t("admin.countries.disabled") %>
+              </span>
+            </h2>
+            <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+              <%= t("admin.countries.stats", listings: @listing_counts[country.code].to_i,
+                        users: @user_counts[country.code].to_i,
+                        regions: country.regions.count) %>
+            </p>
+          </div>
+          <%= link_to t("admin.countries.manage_regions"), admin_country_regions_path(country),
+                      class: ui_button_classes(variant: :outline, size: :sm) %>
+        </div>
+
+        <details class="mt-3 rounded-lg bg-slate-50 p-3 dark:bg-zinc-800/60">
+          <summary class="cursor-pointer text-xs font-semibold text-slate-700 dark:text-zinc-200">
+            <%= t("admin.countries.checklist.title") %>
+            <span class="<%= ui_badge_classes(tone: checklist.ready? ? :success : :accent, extra: '!px-2 !py-0.5') %>">
+              <%= t("admin.countries.checklist.status.#{checklist.ready? ? 'ready' : 'attention'}") %>
+            </span>
+          </summary>
+          <ul class="mt-2 space-y-1.5 text-xs">
+            <% checklist.checks.each do |check| %>
+              <li class="flex items-start gap-2 <%= check.passed ? 'text-emerald-700 dark:text-emerald-300' : 'text-amber-700 dark:text-amber-300' %>">
+                <%= icon(check.passed ? "badge-check" : "clock", class: "mt-0.5 size-3.5 shrink-0") %>
+                <span>
+                  <%= t("admin.countries.checklist.#{check.key}") %>
+                  <% if check.key == "currency" && country.currency != "EUR" %>
+                    — <%= t("admin.countries.checklist.currency_warning", currency: country.currency) %>
+                  <% end %>
+                  <% if check.key.start_with?("legal_pages") && check.detail.present? %>
+                    — <span class="font-mono"><%= check.detail.join(", ") %></span>
+                  <% end %>
+                </span>
+              </li>
+            <% end %>
+          </ul>
+        </details>
+
+        <%= form_with model: [ :admin, country ], class: "mt-3 grid grid-cols-1 gap-3 sm:grid-cols-5 sm:items-end" do |form| %>
+          <div class="flex items-center gap-2 pb-1.5">
+            <%= form.check_box :enabled, class: "size-4 rounded text-brand-700" %>
+            <%= form.label :enabled, t("admin.countries.enabled"), class: "text-sm" %>
+          </div>
+          <div>
+            <%= form.label :currency, class: "mb-1 block text-[10px] font-semibold uppercase tracking-wide text-slate-500" %>
+            <%= form.select :currency, %w[EUR GBP USD].map { |currency| [ currency, currency ] }, {},
+                            class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+          </div>
+          <div>
+            <%= form.label :vat_rate, class: "mb-1 block text-[10px] font-semibold uppercase tracking-wide text-slate-500" %>
+            <%= form.number_field :vat_rate, step: "0.01", min: 0, max: 100,
+                                  class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+          </div>
+          <div>
+            <%= form.label :default_locale, class: "mb-1 block text-[10px] font-semibold uppercase tracking-wide text-slate-500" %>
+            <%= form.select :default_locale, I18n.available_locales.map { |locale| [ locale.to_s.upcase, locale ] }, {},
+                            class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+          </div>
+          <div class="flex justify-end">
+            <%= form.submit t("admin.actions.save"),
+                            data: { turbo_confirm: t("admin.countries.confirm_save", name: country.name) },
+                            class: ui_button_classes(variant: :primary, size: :sm) %>
+          </div>
+        <% end %>
+
+        <% if country.currency != "EUR" %>
+          <p class="mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-200">
+            <%= t("admin.countries.currency_notice", currency: country.currency) %>
+          </p>
+        <% end %>
+      </section>
+    <% end %>
+  </div>
+</div>

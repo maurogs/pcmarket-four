@@ -1,0 +1,31 @@
+<%= form_with model: [ :admin, @game ], class: "space-y-4" do |form| %>
+  <% if @game.errors.any? %>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
+      <ul class="list-inside list-disc"><% @game.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>
+    </div>
+  <% end %>
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div>
+        <%= form.label :name, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.text_field :name, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <div>
+        <%= form.label :slug, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.text_field :slug, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm font-mono") %>
+      </div>
+      <div>
+        <%= form.label :position, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.number_field :position, min: 0, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <div class="flex items-center gap-2">
+        <%= form.check_box :active, class: "size-4 rounded text-brand-700" %>
+        <%= form.label :active, t("admin.categories.active"), class: "text-sm" %>
+      </div>
+    </div>
+  </section>
+  <div class="flex justify-end gap-2">
+    <%= link_to t("admin.actions.cancel"), admin_games_path, class: ui_button_classes(variant: :ghost, size: :md) %>
+    <%= form.submit t("admin.actions.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+  </div>
+<% end %>

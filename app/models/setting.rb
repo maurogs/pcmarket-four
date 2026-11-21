@@ -28,7 +28,42 @@ class Setting < ApplicationRecord
     "auto_delivered_after_shipping_days" => 14,
     "seller_ship_deadline_days" => 3,
     "support_email" => "soporte@pcmarket.test",
-    "blocked_words" => ""
+    "blocked_words" => "",
+    "allow_non_eur_countries" => false
+  }.freeze
+
+  GROUPS = {
+    "general" => %w[site_name maintenance_mode allow_non_eur_countries],
+    "marketplace" => %w[listings_require_approval checkout_enabled chat_enabled
+                        registrations_enabled reviews_enabled saved_search_alerts_enabled],
+    "monetisation" => %w[commissions_enabled commission_percent featured_listings_enabled
+                         featured_price_cents sell_to_us_enabled],
+    "payments" => %w[payment_bank_transfer_enabled bank_iban bank_beneficiary
+                     payment_deadline_days stripe_enabled],
+    "orders" => %w[inspection_window_days auto_complete_after_delivery_days
+                   auto_delivered_after_shipping_days seller_ship_deadline_days],
+    "limits" => %w[max_images_per_listing max_active_listings_per_user],
+    "content" => %w[announcement_bar_text blocked_words],
+    "communication" => %w[support_email]
+  }.freeze
+
+  FEATURE_FLAGS = %w[
+    commissions_enabled featured_listings_enabled sell_to_us_enabled checkout_enabled
+    chat_enabled registrations_enabled maintenance_mode reviews_enabled
+    saved_search_alerts_enabled stripe_enabled payment_bank_transfer_enabled
+    listings_require_approval
+  ].freeze
+
+  LIMITS = {
+    "commission_percent" => { min: 0, max: 100 },
+    "featured_price_cents" => { min: 0, max: 100_000 },
+    "max_images_per_listing" => { min: 1, max: 30 },
+    "max_active_listings_per_user" => { min: 1, max: 10_000 },
+    "payment_deadline_days" => { min: 1, max: 60 },
+    "inspection_window_days" => { min: 1, max: 60 },
+    "auto_complete_after_delivery_days" => { min: 1, max: 90 },
+    "auto_delivered_after_shipping_days" => { min: 1, max: 180 },
+    "seller_ship_deadline_days" => { min: 1, max: 60 }
   }.freeze
 
   enum :value_type, { boolean: "boolean", integer: "integer", string: "string", decimal: "decimal" }
@@ -74,7 +109,34 @@ class Setting < ApplicationRecord
 
         record.value_type = infer_value_type(value)
         record.value = serialise(value)
+        record.group = group_for(key)
+        record.feature_flag = FEATURE_FLAGS.include?(key)
         record.save!
+      end
+    end
+
+    def group_for(key)
+      GROUPS.find { |_group, keys| keys.include?(key.to_s) }&.first || "general"
+    end
+
+    def type_for(key)
+      infer_value_type(DEFAULTS[key.to_s]).to_s
+    end
+
+    def feature_flag?(key)
+      FEATURE_FLAGS.include?(key.to_s)
+    end
+
+    def limits_for(key)
+      LIMITS[key.to_s]
+    end
+
+    def cast(key, raw)
+      case type_for(key)
+      when "boolean" then ActiveModel::Type::Boolean.new.cast(raw) == true
+      when "integer" then raw.to_s.gsub(/[^0-9-]/, "").to_i
+      when "decimal" then raw.to_s.tr(",", ".").to_d
+      else raw.to_s
       end
     end
 

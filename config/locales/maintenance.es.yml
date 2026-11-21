@@ -1,0 +1,7 @@
+---
+es:
+  maintenance:
+    title: Estamos realizando tareas de mantenimiento
+    body: PCMarket no está disponible unos minutos mientras mejoramos el mercado. Vuelve a intentarlo en breve.
+    staff_banner: El modo mantenimiento está activo. Solo el personal ve el sitio.
+    disable: Ir a ajustes

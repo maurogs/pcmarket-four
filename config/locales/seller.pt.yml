@@ -1,0 +1,21 @@
+---
+pt:
+  seller:
+    feature_requests:
+      eyebrow: Anúncio em destaque
+      title: Destacar este anúncio
+      intro: Mostra este anúncio no topo da categoria e dos resultados durante %{days} dias.
+      price: Preço
+      duration: Duração
+      days:
+        one: 1 dia
+        other: "%{count} dias"
+      payment_note: >-
+        Vamos confirmar o pedido e enviar instruções de pagamento por transferência ou Stripe. O anúncio fica em destaque
+        após aprovação de um administrador.
+      pending: Já existe um pedido pendente para este anúncio.
+      submit: Pedir destaque
+      back: Voltar aos meus anúncios
+      disabled: Os destaques estão desativados.
+      created: Pedido enviado. Entraremos em contacto com as instruções de pagamento.
+      invalid: Não foi possível criar o pedido.

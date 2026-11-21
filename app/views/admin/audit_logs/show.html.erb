@@ -1,0 +1,35 @@
+<div class="mx-auto max-w-4xl space-y-5">
+  <%= render "admin/shared/page_header", title: t("admin.audit.diff_title"),
+             subtitle: "#{admin_audit_action_label(@audit_log.action)} · #{admin_datetime(@audit_log.created_at)}",
+             back_path: admin_audit_logs_path, back_label: t("admin.nav.audit_log") %>
+
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <dl class="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+      <div><dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.audit.admin") %></dt><dd class="font-medium"><%= @audit_log.admin.display_name %></dd></div>
+      <div><dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.audit.resource") %></dt><dd class="font-medium"><%= @audit_log.auditable_type %> #<%= @audit_log.auditable_id %></dd></div>
+      <div><dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.audit.columns.ip") %></dt><dd class="font-mono text-xs"><%= @audit_log.ip.presence || "—" %></dd></div>
+      <div><dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.audit.columns.time") %></dt><dd class="font-medium"><%= admin_datetime(@audit_log.created_at) %></dd></div>
+    </dl>
+  </section>
+
+  <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <table class="w-full text-left text-sm">
+      <thead class="border-b border-slate-200 bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400">
+        <tr>
+          <th class="px-3 py-2.5"><%= t("admin.audit.columns.attribute") %></th>
+          <th class="px-3 py-2.5"><%= t("admin.audit.columns.before") %></th>
+          <th class="px-3 py-2.5"><%= t("admin.audit.columns.after") %></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+        <% admin_changeset_rows(@audit_log.changeset).each do |attribute, before, after| %>
+          <tr>
+            <td class="px-3 py-2.5 font-mono text-xs"><%= attribute %></td>
+            <td class="px-3 py-2.5 text-xs text-rose-700 dark:text-rose-300"><%= admin_truncate(before, length: 200) %></td>
+            <td class="px-3 py-2.5 text-xs text-emerald-700 dark:text-emerald-300"><%= admin_truncate(after, length: 200) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+</div>

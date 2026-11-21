@@ -1,0 +1,79 @@
+<%= form_with model: [ :admin, @page ], class: "space-y-4" do |form| %>
+  <% if @page.errors.any? %>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
+      <ul class="list-inside list-disc"><% @page.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>
+    </div>
+  <% end %>
+
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-4">
+      <div>
+        <%= form.label :slug, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.select :slug, LegalPage::SLUGS.map { |slug| [ t("admin.legal_pages.slugs.#{slug}"), slug ] }, {},
+                        class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <div>
+        <%= form.label :country_code, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.collection_select :country_code, Country.order(:code), :code, :name, { include_blank: t("admin.legal_pages.global") },
+                                   class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <div>
+        <%= form.label :locale, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.select :locale, I18n.available_locales.map { |locale| [ locale.to_s.upcase, locale ] }, {},
+                        class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <div class="flex items-end pb-1.5">
+        <label class="flex items-center gap-2 text-sm"><%= form.check_box :published, class: "size-4 rounded text-brand-700" %><%= t("admin.legal_pages.published") %></label>
+      </div>
+    </div>
+    <% if @page.persisted? %>
+      <p class="mt-2 text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.legal_pages.version_hint", version: @page.version) %></p>
+    <% end %>
+    <div class="mt-3">
+      <%= form.label :title, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+      <%= form.text_field :title, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+    </div>
+  </section>
+
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+           data-controller="html-editor"
+           data-link-prompt="<%= t('admin.legal_pages.editor.link_prompt') %>"
+           data-list-item="<%= t('admin.legal_pages.editor.list_item') %>">
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.legal_pages.editor.body") %></h2>
+      <div class="flex gap-1" role="tablist">
+        <button type="button" data-html-editor-target="tab" data-panel="edit" aria-selected="true"
+                data-action="html-editor#showEdit" class="rounded-md px-2.5 py-1 text-xs font-semibold bg-brand-700 text-white"><%= t("admin.legal_pages.editor.edit_tab") %></button>
+        <button type="button" data-html-editor-target="tab" data-panel="preview" aria-selected="false"
+                data-action="html-editor#showPreview" class="rounded-md px-2.5 py-1 text-xs font-semibold text-slate-600 dark:text-zinc-300"><%= t("admin.legal_pages.editor.preview_tab") %></button>
+      </div>
+    </div>
+
+    <div class="mt-2 flex flex-wrap gap-1" aria-label="<%= t('admin.legal_pages.editor.toolbar') %>">
+      <% [ [ "b", "B" ], [ "strong", t("admin.legal_pages.editor.bold") ], [ "i", "I" ], [ "em", t("admin.legal_pages.editor.italic") ] ].each do |tag, label| %>
+        <% next if tag == "b" %>
+        <button type="button" data-tag="<%= tag %>" data-action="html-editor#wrap"
+                class="rounded-md border border-slate-200 px-2 py-1 text-xs font-semibold dark:border-zinc-700"><%= label %></button>
+      <% end %>
+      <% %w[h2 h3 ul a].each do |tag| %>
+        <button type="button" data-tag="<%= tag %>" data-action="html-editor#wrap"
+                class="rounded-md border border-slate-200 px-2 py-1 text-xs font-semibold uppercase dark:border-zinc-700"><%= tag %></button>
+      <% end %>
+    </div>
+
+    <div data-html-editor-target="editPanel" class="mt-2">
+      <%= form.text_area :body, rows: 18, id: "legal_page_body",
+                         data: { html_editor_target: "textarea", action: "input->html-editor#updatePreview" },
+                         class: ui_input_classes("!font-mono !text-xs") %>
+    </div>
+    <div data-html-editor-target="previewPanel" hidden
+         class="prose-pcm mt-2 min-h-40 rounded-lg border border-dashed border-slate-300 p-4 dark:border-zinc-700">
+      <div data-html-editor-target="preview"></div>
+    </div>
+  </section>
+
+  <div class="flex items-center justify-end gap-2">
+    <%= link_to t("admin.actions.cancel"), admin_legal_pages_path, class: ui_button_classes(variant: :ghost, size: :md) %>
+    <%= form.submit t("admin.actions.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+  </div>
+<% end %>

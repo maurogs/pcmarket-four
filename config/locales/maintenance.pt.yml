@@ -1,0 +1,7 @@
+---
+pt:
+  maintenance:
+    title: Manutenção em curso
+    body: O PCMarket está temporariamente indisponível enquanto melhoramos o marketplace. Tente novamente dentro de minutos.
+    staff_banner: O modo de manutenção está ativo. Só a equipa vê o site.
+    disable: Ir para definições

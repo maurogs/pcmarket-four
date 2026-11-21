@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
 
   around_action :switch_locale
   before_action :set_default_meta_tags
+  before_action :enforce_maintenance_mode
   before_action :complete_pending_favorite, if: :user_signed_in?
   before_action :configure_permitted_parameters, if: :devise_controller?
 
@@ -117,6 +118,26 @@ class ApplicationController < ActionController::Base
 
   def available_locale?(locale)
     I18n.available_locales.map(&:to_s).include?(locale.to_s)
+  end
+
+  def enforce_maintenance_mode
+    return unless Setting.enabled?("maintenance_mode")
+    return unless request.format.html?
+
+    if user_signed_in? && current_user.staff?
+      @maintenance_mode_staff_view = true
+      return
+    end
+    return if maintenance_exempt_request?
+
+    response.headers["Retry-After"] = "3600"
+    render "maintenance/show", layout: false, status: :service_unavailable
+  end
+
+  def maintenance_exempt_request?
+    devise_controller? ||
+      controller_path.start_with?("admin", "seo", "payments") ||
+      controller_path == "rails/health"
   end
 
   def set_default_meta_tags

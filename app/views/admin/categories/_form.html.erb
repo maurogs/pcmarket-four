@@ -1,0 +1,115 @@
+<%= form_with model: [ :admin, @category ], class: "space-y-4" do |form| %>
+  <% if @category.errors.any? %>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
+      <ul class="list-inside list-disc"><% @category.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>
+    </div>
+  <% end %>
+
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.categories.form.names") %></h2>
+    <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <% I18n.available_locales.each do |locale| %>
+        <div>
+          <%= label_tag "category_names_#{locale}", t("admin.categories.form.name_for", code: locale.to_s.upcase),
+                        class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= text_field_tag "category[names][#{locale}]", @category.names[locale.to_s],
+                             id: "category_names_#{locale}", required: %w[es en].include?(locale.to_s),
+                             class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <% I18n.available_locales.each do |locale| %>
+        <div>
+          <%= label_tag "category_seo_#{locale}", t("admin.categories.form.seo_for", code: locale.to_s.upcase),
+                        class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+          <%= text_area_tag "category[seo_descriptions][#{locale}]", @category.seo_descriptions[locale.to_s],
+                            id: "category_seo_#{locale}", rows: 2,
+                            class: ui_input_classes("!text-sm") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.categories.form.structure") %></h2>
+    <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div>
+        <%= form.label :slug, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.text_field :slug, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm"),
+                            placeholder: t("admin.categories.form.slug_placeholder") %>
+      </div>
+      <div>
+        <%= form.label :parent_id, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <% excluded = @category.persisted? ? [ @category.id ] + @category.descendant_ids : [] %>
+        <%= form.select :parent_id,
+                        Category.where.not(id: excluded).order(:ancestry, :position, :id)
+                                .map { |category| [ (category.is_root? ? category.name : "— #{category.name}"), category.id ] },
+                        { include_blank: t("admin.categories.form.no_parent") },
+                        class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <div data-controller="icon-preview">
+        <%= form.label :icon, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <div class="flex items-center gap-2">
+          <span class="flex size-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
+                data-icon-preview-target="preview" data-template="/assets/icons/__ICON__.svg">
+            <%= icon(@category.icon.presence || "tag", class: "size-5") if icon_available?(@category.icon.presence || "tag") %>
+          </span>
+          <%= form.select :icon, admin_icon_options.map { |name| [ name, name ] },
+                          { include_blank: t("admin.categories.form.no_icon") },
+                          class: ui_input_classes("!min-h-9 !py-1.5 !text-sm"),
+                          data: { icon_preview_target: "select", action: "icon-preview#render" } %>
+        </div>
+      </div>
+      <div>
+        <%= form.label :menu_group, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.text_field :menu_group, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <div>
+        <%= form.label :position, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.number_field :position, min: 0, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <div class="flex flex-col justify-center gap-2">
+        <label class="flex items-center gap-2 text-sm"><%= form.check_box :active, class: "size-4 rounded text-brand-700" %><%= t("admin.categories.form.active") %></label>
+        <label class="flex items-center gap-2 text-sm"><%= form.check_box :show_in_menu, class: "size-4 rounded text-brand-700" %><%= t("admin.categories.form.show_in_menu") %></label>
+      </div>
+    </div>
+  </section>
+
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.categories.form.filters") %></h2>
+    <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.categories.form.filters_hint") %></p>
+    <% if @inherited_filters.present? %>
+      <div class="mt-3 rounded-lg bg-slate-50 p-3 dark:bg-zinc-800/60">
+        <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400"><%= t("admin.categories.form.inherited") %></p>
+        <ul class="mt-1 flex flex-wrap gap-1.5">
+          <% @inherited_filters.each do |filter| %>
+            <li class="<%= ui_badge_classes(tone: :neutral, extra: '!px-2 !py-0.5') %>"><%= filter.name %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <%= hidden_field_tag "category[filter_definition_ids][]", "", id: nil %>
+    <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <% FilterDefinition.ordered.each do |filter| %>
+        <% assigned = @assigned_filter_ids.include?(filter.id) %>
+        <% position = @assigned_filter_ids.index(filter.id) %>
+        <div class="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 dark:border-zinc-700">
+          <%= check_box_tag "category[filter_definition_ids][]", filter.id, assigned,
+                            id: "category_filter_#{filter.id}",
+                            class: "size-4 rounded text-brand-700" %>
+          <label for="category_filter_<%= filter.id %>" class="min-w-0 flex-1 truncate text-sm"><%= filter.name %></label>
+          <%= number_field_tag "category[filter_positions][#{filter.id}]", position, min: 0,
+                               class: ui_input_classes("!w-16 !min-h-8 !py-1 !text-xs"),
+                               aria: { label: t("admin.categories.form.filter_order") } %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <div class="flex items-center justify-end gap-2">
+    <%= link_to t("admin.actions.cancel"), admin_categories_path, class: ui_button_classes(variant: :ghost, size: :md) %>
+    <%= form.submit t("admin.actions.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+  </div>
+<% end %>

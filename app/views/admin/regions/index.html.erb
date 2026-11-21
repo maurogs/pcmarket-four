@@ -1,0 +1,42 @@
+<div class="mx-auto max-w-4xl space-y-5">
+  <%= render "admin/shared/page_header", title: t("admin.countries.regions.title", country: @country.name),
+             subtitle: t("admin.countries.regions.subtitle"), back_path: admin_countries_path,
+             back_label: t("admin.countries.title") %>
+
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <h2 class="font-heading text-sm font-semibold"><%= t("admin.countries.regions.new") %></h2>
+    <%= form_with model: [ :admin, @country, Region.new ], class: "mt-2 flex flex-wrap items-end gap-2" do |form| %>
+      <div class="min-w-48 flex-1">
+        <%= form.label :name, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.text_field :name, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <div class="w-32">
+        <%= form.label :code, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.text_field :code, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <%= form.submit t("admin.countries.regions.add"), class: ui_button_classes(variant: :primary, size: :sm) %>
+    <% end %>
+  </section>
+
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <% if @regions.any? %>
+      <ul class="divide-y divide-slate-100 dark:divide-zinc-800">
+        <% @regions.each do |region| %>
+          <li class="py-2">
+            <%= form_with model: [ :admin, @country, region ], class: "flex flex-wrap items-end gap-2" do |form| %>
+              <div class="min-w-40 flex-1"><%= form.text_field :name, class: ui_input_classes("!min-h-8 !py-1 !text-sm") %></div>
+              <div class="w-28"><%= form.text_field :code, class: ui_input_classes("!min-h-8 !py-1 !text-sm") %></div>
+              <%= form.submit t("admin.actions.save"), class: ui_button_classes(variant: :outline, size: :sm) %>
+              <%= button_to t("admin.actions.delete"), admin_country_region_path(@country, region),
+                            method: :delete,
+                            form: { data: { turbo_confirm: t("admin.countries.regions.confirm_delete") } },
+                            class: ui_button_classes(variant: :ghost, size: :sm, extra: "!text-rose-600") %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="py-6 text-center text-sm text-slate-500 dark:text-zinc-400"><%= t("admin.countries.regions.empty") %></p>
+    <% end %>
+  </section>
+</div>

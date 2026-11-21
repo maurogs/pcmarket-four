@@ -1,0 +1,7 @@
+---
+en:
+  maintenance:
+    title: We are carrying out maintenance
+    body: PCMarket is briefly unavailable while we improve the marketplace. Please try again in a few minutes.
+    staff_banner: Maintenance mode is on. Only staff can see the site.
+    disable: Go to settings

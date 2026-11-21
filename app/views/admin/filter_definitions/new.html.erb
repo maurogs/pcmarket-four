@@ -1,0 +1,6 @@
+<div class="mx-auto max-w-5xl space-y-5">
+  <%= render "admin/shared/page_header", title: t("admin.filters.new_title"),
+             subtitle: t("admin.filters.new_subtitle"), back_path: admin_filter_definitions_path,
+             back_label: t("admin.nav.filters") %>
+  <%= render "admin/filter_definitions/form" %>
+</div>

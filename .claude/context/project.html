@@ -168,11 +168,12 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Project Context</h1>
     <p class="lede">Architecture, decisions and code map</p>
-    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-21 23:50</p>
+    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-22 00:04</p>
   </header>
   <main><section class="card status">
 <h2><span>Status</span><span class="badge badge-success">Complete</span></h2>
-<p>Phase 6B complete: admin operations for orders and payment reconciliation, disputes, reports and review moderation, with dashboard links and cached sidebar badges. Phase 6A admin foundation (dashboard, listing moderation, users, stores, audit log and impersonation) is intact. Phase 5 internal chat with conversations, unread counters and real-time messages, offers with accepted-offer cart pricing, blocks and message safety warnings; follower notifications, instant and daily saved-search alerts and favourite price-drop alerts are intact. Phase 4B order lifecycle (paid, shipped, delivered, completed, cancelled, disputed, refunded), seller fulfilment screens, buyer delivery confirmation/disputes/reviews, order notifications with email fan-out and real-time badge updates remain intact. Discovery (Phase 2B), listing creation (Phase 3A) and checkout/payments (Phase 4A) are unchanged. Catalogue, content, marketing and settings admin screens remain for phase 6C and link to translated placeholder pages.</p>
+<p>Phase 6C complete: admin catalogue, settings, countries, content, marketing and audit screens, replacing all remaining admin placeholders. Phase 6B admin operations for orders, payments, disputes, reports and review moderation remain intact. Phase 6A admin foundation (dashboard, listing moderation, users, stores, audit log and impersonation) is unchanged. Phase 5 internal chat with conversations, unread counters and real-time messages, offers with accepted-offer cart pricing, blocks and message safety warnings; follower notifications, instant and daily saved-search alerts and favourite price-drop alerts are intact. Phase 4B order lifecycle (paid, shipped, delivered, completed, cancelled, disputed, refunded), seller fulfilment screens, buyer delivery confirmation/disputes/reviews, order notifications with email fan-out and real-time badge updates remain intact. Discovery (Phase 2B), listing creation (Phase 3A) and checkout/payments (Phase 4A) are unchanged.</p>
+<p>Admin catalogue and content mutations are administrator-only; moderators keep read access.</p>
 </section>
 <section class="card status">
 <h2><span>Phase status</span></h2>
@@ -188,6 +189,7 @@ footer {
 <tr><td>5</td><td>Messaging, offers, follows and saved-search alerts</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>6A</td><td>Admin foundation, dashboard, moderation, users and stores</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>6B</td><td>Admin orders, payments, disputes, reports and reviews</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>6C</td><td>Admin catalogue, settings, countries, content, marketing and audit</td><td><span class="badge badge-success">Complete</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -393,6 +395,22 @@ footer {
 <li>Dashboard dispute, report and pending-payment stat cards link to their screens. <code>Admin::SidebarCounts</code> caches open disputes, open reports and pending payments for one minute; the dashboard reuses its own cached aggregates to avoid extra queries.</li>
 <li>New schema: <code>order_notes</code> (<code>order_id</code>, <code>author_id</code>, <code>body</code>), <code>orders .refund_reference</code> and <code>reviews.seller_reply_visible</code>.</li>
 </ul>
+<h3>Admin catalogue, settings, countries, content and marketing (Phase 6C)</h3>
+<ul>
+<li><code>Admin::CategoriesController</code> provides full CRUD plus a nested tree view with listing counts, active/menu badges and inline inherited-filter display. <code>Admin::CategoryPositionsController#update</code> persists sibling order from HTML5 drag-and-drop or keyboard up/down buttons through <code>Admin::CategoryPositioner</code>; cross-parent moves use the parent select. <code>Admin::CategoryFilterAssigner</code> keeps <code>CategoryFilter</code> rows and positions in sync. Deletion is refused while listings or children remain.</li>
+<li>Every category write calls <code>MenuBuilder.bust!</code> and <code>ListingSearch.bust_caches!</code>; the menu and facet cache keys include explicit version counters in addition to <code>Category.maximum(:updated_at)</code>.</li>
+<li><code>Admin::FilterDefinitionsController</code> manages specification filters. Keys are immutable after creation (<code>before_update</code> guard), input type/unit/position and six-locale names are editable, and categories are assigned through checkboxes. Options are managed inline with drag reorder, bulk add (one value per line) and per-option listing usage counts. <code>Admin::FilterOptionMergesController#create</code> uses <code>Admin::FilterOptionMerger</code> to rewrite every <code>listings.specs</code> value from A to B in one <code>jsonb_set</code> UPDATE and then deletes A. Deleting a filter requires typing its key and enqueues <code>CleanupSpecKeyJob</code> when listings use it.</li>
+<li><code>Admin::SettingsController</code> renders <code>Setting::DEFAULTS</code> grouped by <code>Setting::GROUPS</code>, with typed controls (toggle switches, bounded numbers, textareas) and translated labels/help in all six locales. Feature flags are badged. <code>Admin::SettingsUpdater</code> writes only changed keys, casts values by declared type, returns old/new pairs for the audit log and relies on <code>Setting</code> cache invalidation. Enabling <code>maintenance_mode</code> asks for a danger confirmation.</li>
+<li><code>ApplicationController#enforce_maintenance_mode</code> serves a translated 503 page to non-staff HTML visitors when maintenance is on. Staff keep browsing with a top banner; <code>/up</code>, robots/sitemap, Devise, payment webhooks and admin routes stay reachable.</li>
+<li>Featured listings: sellers see &quot;Feature this listing&quot; on published listings when <code>featured_listings_enabled</code> is on. <code>Seller::FeatureRequestsController</code> creates a pending <code>FeatureRequest</code> (<code>listing_id</code>, <code>user_id</code>, <code>days</code>, <code>price_cents</code>, status, <code>paid_at</code>). <code>Admin::FeatureRequestsController</code> lists requests and <code>Admin::FeatureRequestApprovalsController#create</code> calls <code>FeatureRequest#approve!</code>, which sets <code>paid_at</code>, extends <code>listings.featured_until</code> by the requested days and adds the <code>featured</code> label.</li>
+<li><code>Admin::CountriesController</code> lists the six countries with enabled state, currency, VAT, default locale and listing/user/region counts. <code>Admin::CountryLaunchChecklist</code> computes legal-page coverage in the default locale and English, region seeding and currency support live. Non-EUR countries are blocked while <code>allow_non_eur_countries</code> is false, which blocks GBP until multi-currency exists. Enabling a country busts listing-search caches. <code>Admin::RegionsController</code> is nested under countries.</li>
+<li><code>Admin::LegalPagesController</code> filters by country, locale and slug; the editor has a small formatting toolbar, preview tab, published toggle and &quot;copy from&quot; source selector. <code>LegalPage</code> increments its version on publish or content change and <code>#body_html</code> sanitises with a tag/attribute allowlist on render.</li>
+<li><code>Admin::GamesController</code> provides CRUD plus <code>Admin::GamePositionsController</code> reordering for PC Finder. <code>Admin::HelpArticlesController</code> provides CRUD for the new <code>HelpArticle</code> model (slug, category enum, six-locale titles/bodies, position, published) with the same per-locale editor; public help pages are phase 7.</li>
+<li><code>Admin::NewsletterSubscribersController</code> filters confirmed/pending/ unsubscribed subscribers, deletes one and exports CSV through <code>Admin::NewsletterExportsController</code>. There is no campaign sender.</li>
+<li><code>Admin::AuditLogsController</code> adds admin, action, auditable type and date-range filters plus a per-entry diff page with before/after columns. New catalogue, content and marketing actions are labelled in all locales.</li>
+<li>Phase 6C policies inherit <code>Admin::CataloguePolicy</code>: staff can read, only administrators can create/update/delete. Existing phase 6A/6B moderator permissions are unchanged.</li>
+<li>New schema: <code>feature_requests</code>, <code>help_articles</code>, <code>legal_pages.published_at</code> and <code>settings.feature_flag</code>. New default <code>allow_non_eur_countries</code> (false).</li>
+</ul>
 <h3>Performance guardrails</h3>
 <ul>
 <li><code>ListingSearch::INCLUDES</code> preloads store, category, region, user and image attachments/blobs. Cards never call <code>category.root</code> or <code>user.store</code>; root slugs come from a cached <code>Category.root_slug_map</code> and seller names prefer the preloaded store.</li>
@@ -509,6 +527,34 @@ app/controllers/admin/{impersonations,user_exports}_controller.rb
 app/controllers/admin/stores_controller.rb      store table, detail, edit
 app/controllers/admin/{store_verifications,store_vacations}_controller.rb
 app/controllers/admin/{audit_logs,search,placeholders}_controller.rb
+app/controllers/admin/categories_controller.rb     category tree CRUD
+app/controllers/admin/category_positions_controller.rb  sibling reorder
+app/controllers/admin/filter_definitions_controller.rb  filter CRUD + usage
+app/controllers/admin/filter_options_controller.rb  inline options
+app/controllers/admin/filter_option_{bulks,merges,positions}_controller.rb
+app/controllers/admin/settings_controller.rb       grouped typed settings
+app/controllers/admin/countries_controller.rb      launch state + checklist
+app/controllers/admin/regions_controller.rb        nested country regions
+app/controllers/admin/{legal_pages,games,help_articles}_controller.rb
+app/controllers/admin/{game,help_article}_positions_controller.rb
+app/controllers/admin/newsletter_subscribers_controller.rb
+app/controllers/admin/newsletter_exports_controller.rb
+app/controllers/admin/feature_requests_controller.rb
+app/controllers/admin/feature_request_approvals_controller.rb
+app/controllers/seller/feature_requests_controller.rb
+app/services/admin/{category_positioner,category_filter_assigner}.rb
+app/services/admin/{filter_option_merger,settings_updater}.rb
+app/services/admin/country_launch_checklist.rb
+app/jobs/cleanup_spec_key_job.rb
+app/models/{feature_request,help_article}.rb
+app/policies/admin/catalogue_policy.rb             admin-only writes
+app/views/admin/{categories,filters,settings,countries,regions}/**
+app/views/admin/{legal_pages,games,help_articles,newsletter_subscribers}/**
+app/views/admin/{feature_requests,audit_logs}/**
+app/views/seller/feature_requests/new.html.erb
+app/views/maintenance/show.html.erb                503 page
+app/views/shared/_maintenance_banner.html.erb
+app/javascript/controllers/{sortable_list,icon_preview,html_editor,maintenance_toggle}_controller.js
 app/controllers/admin/orders_controller.rb         order table, detail, timeline
 app/controllers/admin/order_{payments,cancellations,refunds,emails,notes,exports}_controller.rb
                                                    nested order resources + CSV
@@ -621,7 +667,9 @@ test/seeds_test.rb
 <section class="card open-items">
 <h2><span>Open items for later phases</span></h2>
 <ul>
-<li>Admin screens for categories, filters, legal pages, games, newsletter and settings are placeholders until phase 6C.</li>
+<li>Featured listing payments are confirmed manually by administrators; bank transfer or Stripe collection is not automated for feature requests.</li>
+<li>The launch checklist is informational except for the non-EUR currency gate; missing legal pages or regions do not block enabling a country.</li>
+<li>Help article public pages and search are phase 7.</li>
 <li>Refunds are recorded manually with a reference; no payment-provider refund API is called yet.</li>
 <li>Admin two-factor authentication is not implemented; Devise lockable already throttles failed sign-ins. Decide whether staff 2FA is required before phase 6C.</li>
 <li>Impersonation is session-based and audited; there is no automatic timeout.</li>

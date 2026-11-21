@@ -1,0 +1,21 @@
+<div class="mx-auto max-w-[90rem]">
+  <%= render "admin/shared/page_header", title: t("admin.categories.title"),
+             subtitle: t("admin.categories.subtitle"), eyebrow: t("admin.nav.sections.catalogue"),
+             actions: [ { label: t("admin.categories.new"), path: new_admin_category_path, icon: "plus", variant: :primary } ] %>
+
+  <% if @roots.blank? %>
+    <%= render "admin/shared/empty_state", title: t("admin.categories.empty_title"),
+               body: t("admin.categories.empty_body") %>
+  <% else %>
+    <div class="mt-5" data-controller="sortable-list"
+         data-sortable-url-value="<%= admin_category_positions_path %>" data-sortable-parent-value="">
+      <ol class="space-y-2" data-sortable-list
+          data-action="dragover->sortable-list#dragOver">
+        <% @roots.each do |root| %>
+          <%= render "admin/categories/node", category: root, depth: 0,
+                     children_by_parent: @children_by_parent %>
+        <% end %>
+      </ol>
+    </div>
+  <% end %>
+</div>

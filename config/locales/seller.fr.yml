@@ -1,0 +1,21 @@
+---
+fr:
+  seller:
+    feature_requests:
+      eyebrow: Annonce mise en avant
+      title: Mettre cette annonce en avant
+      intro: Affichez cette annonce en tête de la catégorie et des résultats pendant %{days} jours.
+      price: Prix
+      duration: Durée
+      days:
+        one: 1 jour
+        other: "%{count} jours"
+      payment_note: >-
+        Nous confirmerons votre demande et enverrons les instructions de paiement par virement ou Stripe. L’annonce est mise
+        en avant dès validation par un administrateur.
+      pending: Une demande est déjà en attente pour cette annonce.
+      submit: Demander la mise en avant
+      back: Retour à mes annonces
+      disabled: La mise en avant est désactivée.
+      created: Demande envoyée. Nous vous contacterons pour le paiement.
+      invalid: La demande n’a pas pu être créée.

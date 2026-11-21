@@ -13,7 +13,7 @@
       <%= @legal_page.updated_at.to_date.to_fs(:long) %>
     </p>
     <div class="prose-pcm mt-8">
-      <%= @legal_page.body.html_safe %>
+      <%= @legal_page.body_html %>
     </div>
   </article>
 </div>

@@ -1,180 +1,185 @@
+---
 es:
   listings:
     labels:
-      value: "Ocasión"
-      mid_range: "Gama media"
-      pro_gamer: "Pro gamer"
-      rare: "Raro"
-      featured: "Destacado"
-      deal: "Oferta"
-      free_shipping: "Envío gratis"
+      value: Ocasión
+      mid_range: Gama media
+      pro_gamer: Pro gamer
+      rare: Raro
+      featured: Destacado
+      deal: Oferta
+      free_shipping: Envío gratis
     tags:
-      minimalist: "Minimalista"
-      rgb: "RGB"
-      white: "Blanco"
-      black: "Negro"
-      anime: "Anime"
-      retro: "Retro"
-      compact: "Compacto"
-      cozy: "Acogedor"
-      glass: "Cristal"
-      luxe: "Lujo"
-      noctua: "Noctua"
-      sci_fi: "Ciencia ficción"
-      space: "Espacio"
-      steampunk: "Steampunk"
-      wood: "Madera"
-      whiteout: "Blanco total"
-      blackout: "Negro total"
-      sakura: "Sakura"
-      superhero: "Superhéroes"
-      rainbow: "Arcoíris"
+      minimalist: Minimalista
+      rgb: RGB
+      white: Blanco
+      black: Negro
+      anime: Anime
+      retro: Retro
+      compact: Compacto
+      cozy: Acogedor
+      glass: Cristal
+      luxe: Lujo
+      noctua: Noctua
+      sci_fi: Ciencia ficción
+      space: Espacio
+      steampunk: Steampunk
+      wood: Madera
+      whiteout: Blanco total
+      blackout: Negro total
+      sakura: Sakura
+      superhero: Superhéroes
+      rainbow: Arcoíris
     card:
-      favourite: "Añadir a favoritos"
-      login_to_favourite: "Inicia sesión para guardar este anuncio"
-      verified_seller: "Vendedor verificado"
-      sold: "Vendido"
+      favourite: Añadir a favoritos
+      login_to_favourite: Inicia sesión para guardar este anuncio
+      verified_seller: Vendedor verificado
+      sold: Vendido
       discount: "-%{percent}%"
-      location_unknown: "España"
-      image_alt: "Imagen de %{title}"
-      no_image: "Sin imagen disponible"
+      location_unknown: España
+      image_alt: Imagen de %{title}
+      no_image: Sin imagen disponible
     form:
-      sell_label: "Vender en PCMarket"
-      new_title: "Publica tu anuncio"
-      new_subtitle: "Cinco pasos rápidos. Puedes guardar un borrador y terminarlo más tarde."
-      edit_title: "Editar anuncio"
-      edit_subtitle: "Actualiza los datos de tu anuncio y guárdalo."
-      view_listing: "Ver anuncio"
-      nav_label: "Secciones del anuncio"
-      progress_label: "Progreso"
-      progress: "Paso %{step} de %{total}"
-      step_number: "Paso %{number}"
+      sell_label: Vender en PCMarket
+      new_title: Publica tu anuncio
+      new_subtitle: Cinco pasos rápidos. Puedes guardar un borrador y terminarlo más tarde.
+      edit_title: Editar anuncio
+      edit_subtitle: Actualiza los datos de tu anuncio y guárdalo.
+      view_listing: Ver anuncio
+      nav_label: Secciones del anuncio
+      progress_label: Progreso
+      progress: Paso %{step} de %{total}
+      step_number: Paso %{number}
       steps:
-        category: "Categoría"
-        photos: "Fotos"
-        details: "Detalles"
-        price: "Precio"
-        delivery: "Envío"
+        category: Categoría
+        photos: Fotos
+        details: Detalles
+        price: Precio
+        delivery: Envío
       error_summary:
-        one: "Revisa %{count} campo"
-        other: "Revisa %{count} campos"
-      re_review_warning: "Si cambias el título, la categoría o las fotos de un anuncio publicado, volverá a revisión antes de publicarse de nuevo."
-      save_draft: "Guardar borrador"
-      save_changes: "Guardar cambios"
-      submit_review: "Enviar a revisión"
-      publish: "Publicar"
-      cancel: "Cancelar"
+        one: Revisa %{count} campo
+        other: Revisa %{count} campos
+      re_review_warning: Si cambias el título, la categoría o las fotos de un anuncio publicado, volverá a revisión antes
+        de publicarse de nuevo.
+      save_draft: Guardar borrador
+      save_changes: Guardar cambios
+      submit_review: Enviar a revisión
+      publish: Publicar
+      cancel: Cancelar
       category:
-        title: "Categoría"
-        hint: "Elige primero una familia y después la categoría exacta. Los campos técnicos se adaptan a tu categoría."
+        title: Categoría
+        hint: Elige primero una familia y después la categoría exacta. Los campos técnicos se adaptan a tu categoría.
       photos:
-        title: "Fotos"
-        hint: "Sube hasta %{max} fotos. Arrastra para ordenarlas; la primera será la portada."
-        add: "Añadir fotos"
-        formats: "JPG, PNG o WebP, hasta %{size} MB cada una"
-        remove: "Quitar"
-        tips_title: "Consejos para buenas fotos"
-        tip_light: "Usa luz natural y evita el flash directo."
-        tip_serial: "No muestres números de serie ni datos personales."
-        tip_accessories: "Incluye caja, cables y accesorios que entregues."
-        invalid_type: "Solo se permiten imágenes JPG, PNG o WebP."
-        too_large: "Cada imagen debe pesar menos de %{size} MB."
-        too_many: "Puedes subir como máximo %{max} imágenes."
-        alt: "Foto del anuncio"
+        title: Fotos
+        hint: Sube hasta %{max} fotos. Arrastra para ordenarlas; la primera será la portada.
+        add: Añadir fotos
+        formats: JPG, PNG o WebP, hasta %{size} MB cada una
+        remove: Quitar
+        tips_title: Consejos para buenas fotos
+        tip_light: Usa luz natural y evita el flash directo.
+        tip_serial: No muestres números de serie ni datos personales.
+        tip_accessories: Incluye caja, cables y accesorios que entregues.
+        invalid_type: Solo se permiten imágenes JPG, PNG o WebP.
+        too_large: Cada imagen debe pesar menos de %{size} MB.
+        too_many: Puedes subir como máximo %{max} imágenes.
+        alt: Foto del anuncio
       conditions:
-        new_sealed: "Sin abrir y precintado."
-        new_open_box: "Nuevo, con la caja abierta o usado solo para probar."
-        used_like_new: "Muy poco uso y sin marcas visibles."
-        used_good: "Uso normal con ligeros signos de desgaste."
-        used_fair: "Desgaste evidente, pero funciona correctamente."
-        for_parts: "No funciona o es para piezas."
+        new_sealed: Sin abrir y precintado.
+        new_open_box: Nuevo, con la caja abierta o usado solo para probar.
+        used_like_new: Muy poco uso y sin marcas visibles.
+        used_good: Uso normal con ligeros signos de desgaste.
+        used_fair: Desgaste evidente, pero funciona correctamente.
+        for_parts: No funciona o es para piezas.
       details:
-        title: "Detalles del producto"
-        title_placeholder: "Ej.: NVIDIA RTX 4070 Super 12 GB"
-        brand_placeholder: "Ej.: NVIDIA"
-        model_placeholder: "Ej.: RTX 4070 Super"
-        condition: "Estado"
-        single_quantity: "Los vendedores particulares publican una unidad por anuncio."
-        tags: "Etiquetas"
-        tags_hint: "Elige hasta 5 etiquetas para ayudar a los compradores."
-        description_placeholder: "Describe el estado, el uso y lo que incluye. Consejo para %{category}: menciona modelos compatibles y cualquier detalle relevante."
-        description_hint: "Mínimo %{min} caracteres. Sé claro y honesto."
-        specs: "Especificaciones"
-        select_category: "Elige una categoría para ver los campos técnicos."
-        no_specs: "Esta categoría no tiene campos técnicos adicionales."
-        any_option: "Cualquiera"
-        spec_placeholder: "Escribe un valor"
-        this_category: "esta categoría"
+        title: Detalles del producto
+        title_placeholder: 'Ej.: NVIDIA RTX 4070 Super 12 GB'
+        brand_placeholder: 'Ej.: NVIDIA'
+        model_placeholder: 'Ej.: RTX 4070 Super'
+        condition: Estado
+        single_quantity: Los vendedores particulares publican una unidad por anuncio.
+        tags: Etiquetas
+        tags_hint: Elige hasta 5 etiquetas para ayudar a los compradores.
+        description_placeholder: >-
+          Describe el estado, el uso y lo que incluye. Consejo para %{category}: menciona modelos compatibles y cualquier
+          detalle relevante.
+        description_hint: Mínimo %{min} caracteres. Sé claro y honesto.
+        specs: Especificaciones
+        select_category: Elige una categoría para ver los campos técnicos.
+        no_specs: Esta categoría no tiene campos técnicos adicionales.
+        any_option: Cualquiera
+        spec_placeholder: Escribe un valor
+        this_category: esta categoría
       price:
-        title: "Precio"
-        price_hint: "Acepta formatos como 1.299,50 o 1299.50."
-        original_hint: "Opcional. Debe ser mayor que el precio de venta para mostrar el descuento."
-        accepts_offers: "Aceptar ofertas"
-        accepts_offers_hint: "Los compradores podrán proponerte un precio."
+        title: Precio
+        price_hint: Acepta formatos como 1.299,50 o 1299.50.
+        original_hint: Opcional. Debe ser mayor que el precio de venta para mostrar el descuento.
+        accepts_offers: Aceptar ofertas
+        accepts_offers_hint: Los compradores podrán proponerte un precio.
       delivery:
-        title: "Envío y ubicación"
-        shipping_available: "Ofrezco envío"
-        shipping_hint: "Indica el coste y el plazo de entrega."
-        free_shipping: "Envío gratis"
+        title: Envío y ubicación
+        shipping_available: Ofrezco envío
+        shipping_hint: Indica el coste y el plazo de entrega.
+        free_shipping: Envío gratis
         days:
           one: "%{count} día"
           other: "%{count} días"
-        local_pickup: "Permitir recogida en mano"
-        province_prompt: "Selecciona una provincia"
-        city_placeholder: "Ej.: Madrid"
+        local_pickup: Permitir recogida en mano
+        province_prompt: Selecciona una provincia
+        city_placeholder: 'Ej.: Madrid'
     seller:
-      label: "Área de vendedor"
-      title: "Mis anuncios"
-      subtitle: "Gestiona tus borradores, anuncios publicados y ventas."
-      new_listing: "Nuevo anuncio"
-      tabs_label: "Filtrar por estado"
+      label: Área de vendedor
+      title: Mis anuncios
+      subtitle: Gestiona tus borradores, anuncios publicados y ventas.
+      new_listing: Nuevo anuncio
+      tabs_label: Filtrar por estado
       tabs:
-        all: "Todos"
-      search_placeholder: "Buscar por título o marca"
-      search: "Buscar"
-      clear_search: "Limpiar"
-      select_all: "Seleccionar todo"
-      select_listing: "Seleccionar %{title}"
-      bulk_pause: "Pausar"
-      bulk_resume: "Reactivar"
-      bulk_delete: "Eliminar"
+        all: Todos
+      search_placeholder: Buscar por título o marca
+      search: Buscar
+      clear_search: Limpiar
+      select_all: Seleccionar todo
+      select_listing: Seleccionar %{title}
+      bulk_pause: Pausar
+      bulk_resume: Reactivar
+      bulk_delete: Eliminar
       bulk_delete_confirm: "¿Eliminar los anuncios seleccionados?"
       bulk_done: "%{count} anuncios actualizados."
-      bulk_none: "No se pudo actualizar ningún anuncio."
-      empty_title: "Todavía no tienes anuncios"
-      empty_body: "Publica tu primer anuncio y empieza a vender en PCMarket."
-      rejection_reason: "Motivo del rechazo: %{reason}"
-      edit_and_resubmit: "Editar y reenviar"
+      bulk_none: No se pudo actualizar ningún anuncio.
+      empty_title: Todavía no tienes anuncios
+      empty_body: Publica tu primer anuncio y empieza a vender en PCMarket.
+      rejection_reason: 'Motivo del rechazo: %{reason}'
+      edit_and_resubmit: Editar y reenviar
       stats: "%{views} visitas · %{favourites} favoritos"
       columns:
-        listing: "Anuncio"
-        price: "Precio"
-        status: "Estado"
-        views: "Visitas"
-        favourites: "Favoritos"
-        updated: "Actualizado"
+        listing: Anuncio
+        price: Precio
+        status: Estado
+        views: Visitas
+        favourites: Favoritos
+        updated: Actualizado
       actions:
-        view: "Ver"
-        edit: "Editar"
-        pause: "Pausar"
-        resume: "Reactivar"
-        mark_sold: "Marcar como vendido"
-        duplicate: "Duplicar"
-        delete: "Eliminar"
+        view: Ver
+        edit: Editar
+        pause: Pausar
+        resume: Reactivar
+        mark_sold: Marcar como vendido
+        duplicate: Duplicar
+        delete: Eliminar
         delete_confirm: "¿Eliminar este anuncio?"
+      feature_listing: Destacar anuncio
     flash:
-      submitted: "Anuncio enviado. Lo revisaremos normalmente en menos de 24 horas."
-      draft_saved: "Borrador guardado."
-      updated: "Anuncio actualizado."
-      sent_back: "El anuncio vuelve a revisión porque cambiaste el título, la categoría o las fotos."
-      archived: "El anuncio se ha archivado porque tiene pedidos asociados."
-      destroyed: "Anuncio eliminado."
-      image_required: "Añade al menos una foto antes de enviar el anuncio a revisión."
-      cannot_submit: "Este anuncio no se puede enviar a revisión en su estado actual."
-      paused: "Anuncio pausado."
-      cannot_pause: "Solo se pueden pausar anuncios publicados."
-      resumed: "Anuncio reactivado."
-      cannot_resume: "Solo se pueden reactivar anuncios pausados."
-      marked_sold: "Anuncio marcado como vendido."
-      cannot_mark_sold: "Solo se pueden marcar como vendidos anuncios publicados o pausados."
-      duplicated: "Copia creada como borrador."
+      submitted: Anuncio enviado. Lo revisaremos normalmente en menos de 24 horas.
+      draft_saved: Borrador guardado.
+      updated: Anuncio actualizado.
+      sent_back: El anuncio vuelve a revisión porque cambiaste el título, la categoría o las fotos.
+      archived: El anuncio se ha archivado porque tiene pedidos asociados.
+      destroyed: Anuncio eliminado.
+      image_required: Añade al menos una foto antes de enviar el anuncio a revisión.
+      cannot_submit: Este anuncio no se puede enviar a revisión en su estado actual.
+      paused: Anuncio pausado.
+      cannot_pause: Solo se pueden pausar anuncios publicados.
+      resumed: Anuncio reactivado.
+      cannot_resume: Solo se pueden reactivar anuncios pausados.
+      marked_sold: Anuncio marcado como vendido.
+      cannot_mark_sold: Solo se pueden marcar como vendidos anuncios publicados o pausados.
+      duplicated: Copia creada como borrador.

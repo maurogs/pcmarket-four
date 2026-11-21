@@ -1,180 +1,184 @@
+---
 de:
   listings:
     labels:
-      value: "Schnäppchen"
-      mid_range: "Mittelklasse"
-      pro_gamer: "Pro Gamer"
-      rare: "Selten"
-      featured: "Hervorgehoben"
-      deal: "Angebot"
-      free_shipping: "Kostenloser Versand"
+      value: Schnäppchen
+      mid_range: Mittelklasse
+      pro_gamer: Pro Gamer
+      rare: Selten
+      featured: Hervorgehoben
+      deal: Angebot
+      free_shipping: Kostenloser Versand
     tags:
-      minimalist: "Minimalistisch"
-      rgb: "RGB"
-      white: "Weiß"
-      black: "Schwarz"
-      anime: "Anime"
-      retro: "Retro"
-      compact: "Kompakt"
-      cozy: "Gemütlich"
-      glass: "Glas"
-      luxe: "Luxus"
-      noctua: "Noctua"
-      sci_fi: "Science-Fiction"
-      space: "Weltraum"
-      steampunk: "Steampunk"
-      wood: "Holz"
-      whiteout: "Ganz weiß"
-      blackout: "Ganz schwarz"
-      sakura: "Sakura"
-      superhero: "Superhelden"
-      rainbow: "Regenbogen"
+      minimalist: Minimalistisch
+      rgb: RGB
+      white: Weiß
+      black: Schwarz
+      anime: Anime
+      retro: Retro
+      compact: Kompakt
+      cozy: Gemütlich
+      glass: Glas
+      luxe: Luxus
+      noctua: Noctua
+      sci_fi: Science-Fiction
+      space: Weltraum
+      steampunk: Steampunk
+      wood: Holz
+      whiteout: Ganz weiß
+      blackout: Ganz schwarz
+      sakura: Sakura
+      superhero: Superhelden
+      rainbow: Regenbogen
     card:
-      favourite: "Zu Favoriten hinzufügen"
-      login_to_favourite: "Melde dich an, um diesen Artikel zu speichern"
-      verified_seller: "Verifizierter Verkäufer"
-      sold: "Verkauft"
+      favourite: Zu Favoriten hinzufügen
+      login_to_favourite: Melde dich an, um diesen Artikel zu speichern
+      verified_seller: Verifizierter Verkäufer
+      sold: Verkauft
       discount: "-%{percent}%"
-      location_unknown: "Spanien"
-      image_alt: "Bild von %{title}"
-      no_image: "Kein Bild verfügbar"
+      location_unknown: Spanien
+      image_alt: Bild von %{title}
+      no_image: Kein Bild verfügbar
     form:
-      sell_label: "Auf PCMarket verkaufen"
-      new_title: "Anzeige erstellen"
-      new_subtitle: "Fünf schnelle Schritte. Speichere einen Entwurf und vervollständige ihn später."
-      edit_title: "Anzeige bearbeiten"
-      edit_subtitle: "Aktualisiere deine Anzeige und speichere die Änderungen."
-      view_listing: "Anzeige ansehen"
-      nav_label: "Abschnitte der Anzeige"
-      progress_label: "Fortschritt"
-      progress: "Schritt %{step} von %{total}"
-      step_number: "Schritt %{number}"
+      sell_label: Auf PCMarket verkaufen
+      new_title: Anzeige erstellen
+      new_subtitle: Fünf schnelle Schritte. Speichere einen Entwurf und vervollständige ihn später.
+      edit_title: Anzeige bearbeiten
+      edit_subtitle: Aktualisiere deine Anzeige und speichere die Änderungen.
+      view_listing: Anzeige ansehen
+      nav_label: Abschnitte der Anzeige
+      progress_label: Fortschritt
+      progress: Schritt %{step} von %{total}
+      step_number: Schritt %{number}
       steps:
-        category: "Kategorie"
-        photos: "Fotos"
-        details: "Details"
-        price: "Preis"
-        delivery: "Versand"
+        category: Kategorie
+        photos: Fotos
+        details: Details
+        price: Preis
+        delivery: Versand
       error_summary:
-        one: "Prüfe %{count} Feld"
-        other: "Prüfe %{count} Felder"
-      re_review_warning: "Änderungen an Titel, Kategorie oder Fotos einer veröffentlichten Anzeige führen zu einer erneuten Prüfung."
-      save_draft: "Entwurf speichern"
-      save_changes: "Änderungen speichern"
-      submit_review: "Zur Prüfung senden"
-      publish: "Veröffentlichen"
-      cancel: "Abbrechen"
+        one: Prüfe %{count} Feld
+        other: Prüfe %{count} Felder
+      re_review_warning: Änderungen an Titel, Kategorie oder Fotos einer veröffentlichten Anzeige führen zu einer erneuten
+        Prüfung.
+      save_draft: Entwurf speichern
+      save_changes: Änderungen speichern
+      submit_review: Zur Prüfung senden
+      publish: Veröffentlichen
+      cancel: Abbrechen
       category:
-        title: "Kategorie"
-        hint: "Wähle zuerst eine Familie und dann die genaue Kategorie. Die technischen Felder passen sich an."
+        title: Kategorie
+        hint: Wähle zuerst eine Familie und dann die genaue Kategorie. Die technischen Felder passen sich an.
       photos:
-        title: "Fotos"
-        hint: "Lade bis zu %{max} Fotos hoch. Ziehe sie zum Sortieren; das erste ist das Titelbild."
-        add: "Fotos hinzufügen"
-        formats: "JPG, PNG oder WebP, je bis zu %{size} MB"
-        remove: "Entfernen"
-        tips_title: "Tipps für gute Fotos"
-        tip_light: "Nutze Tageslicht und vermeide direkten Blitz."
-        tip_serial: "Zeige keine Seriennummern oder persönlichen Daten."
-        tip_accessories: "Fotografiere Karton, Kabel und mitgeliefertes Zubehör."
-        invalid_type: "Nur JPG-, PNG- oder WebP-Bilder sind erlaubt."
-        too_large: "Jedes Bild muss kleiner als %{size} MB sein."
-        too_many: "Du kannst höchstens %{max} Bilder hochladen."
-        alt: "Foto der Anzeige"
+        title: Fotos
+        hint: Lade bis zu %{max} Fotos hoch. Ziehe sie zum Sortieren; das erste ist das Titelbild.
+        add: Fotos hinzufügen
+        formats: JPG, PNG oder WebP, je bis zu %{size} MB
+        remove: Entfernen
+        tips_title: Tipps für gute Fotos
+        tip_light: Nutze Tageslicht und vermeide direkten Blitz.
+        tip_serial: Zeige keine Seriennummern oder persönlichen Daten.
+        tip_accessories: Fotografiere Karton, Kabel und mitgeliefertes Zubehör.
+        invalid_type: Nur JPG-, PNG- oder WebP-Bilder sind erlaubt.
+        too_large: Jedes Bild muss kleiner als %{size} MB sein.
+        too_many: Du kannst höchstens %{max} Bilder hochladen.
+        alt: Foto der Anzeige
       conditions:
-        new_sealed: "Ungeöffnet und versiegelt."
-        new_open_box: "Neu, Karton geöffnet oder nur zum Testen benutzt."
-        used_like_new: "Sehr wenig genutzt, keine sichtbaren Spuren."
-        used_good: "Normale Nutzung mit leichten Gebrauchsspuren."
-        used_fair: "Deutliche Gebrauchsspuren, funktioniert aber."
-        for_parts: "Defekt oder als Ersatzteil."
+        new_sealed: Ungeöffnet und versiegelt.
+        new_open_box: Neu, Karton geöffnet oder nur zum Testen benutzt.
+        used_like_new: Sehr wenig genutzt, keine sichtbaren Spuren.
+        used_good: Normale Nutzung mit leichten Gebrauchsspuren.
+        used_fair: Deutliche Gebrauchsspuren, funktioniert aber.
+        for_parts: Defekt oder als Ersatzteil.
       details:
-        title: "Produktdetails"
-        title_placeholder: "z. B. NVIDIA RTX 4070 Super 12 GB"
-        brand_placeholder: "z. B. NVIDIA"
-        model_placeholder: "z. B. RTX 4070 Super"
-        condition: "Zustand"
-        single_quantity: "Privatverkäufer bieten ein Stück pro Anzeige an."
-        tags: "Tags"
-        tags_hint: "Wähle bis zu 5 Tags, damit Käufer die Anzeige finden."
-        description_placeholder: "Beschreibe Zustand, Nutzung und Lieferumfang. Tipp für %{category}: Nenne kompatible Modelle und wichtige Details."
-        description_hint: "Mindestens %{min} Zeichen. Sei klar und ehrlich."
-        specs: "Technische Daten"
-        select_category: "Wähle eine Kategorie, um die technischen Felder zu sehen."
-        no_specs: "Diese Kategorie hat keine zusätzlichen technischen Felder."
-        any_option: "Alle"
-        spec_placeholder: "Wert eingeben"
-        this_category: "diese Kategorie"
+        title: Produktdetails
+        title_placeholder: z. B. NVIDIA RTX 4070 Super 12 GB
+        brand_placeholder: z. B. NVIDIA
+        model_placeholder: z. B. RTX 4070 Super
+        condition: Zustand
+        single_quantity: Privatverkäufer bieten ein Stück pro Anzeige an.
+        tags: Tags
+        tags_hint: Wähle bis zu 5 Tags, damit Käufer die Anzeige finden.
+        description_placeholder: 'Beschreibe Zustand, Nutzung und Lieferumfang. Tipp für %{category}: Nenne kompatible Modelle
+          und wichtige Details.'
+        description_hint: Mindestens %{min} Zeichen. Sei klar und ehrlich.
+        specs: Technische Daten
+        select_category: Wähle eine Kategorie, um die technischen Felder zu sehen.
+        no_specs: Diese Kategorie hat keine zusätzlichen technischen Felder.
+        any_option: Alle
+        spec_placeholder: Wert eingeben
+        this_category: diese Kategorie
       price:
-        title: "Preis"
-        price_hint: "Akzeptiert Formate wie 1.299,50 oder 1299.50."
-        original_hint: "Optional. Muss höher als der Verkaufspreis sein, um den Rabatt zu zeigen."
-        accepts_offers: "Angebote annehmen"
-        accepts_offers_hint: "Käufer können einen Preis vorschlagen."
+        title: Preis
+        price_hint: Akzeptiert Formate wie 1.299,50 oder 1299.50.
+        original_hint: Optional. Muss höher als der Verkaufspreis sein, um den Rabatt zu zeigen.
+        accepts_offers: Angebote annehmen
+        accepts_offers_hint: Käufer können einen Preis vorschlagen.
       delivery:
-        title: "Versand und Standort"
-        shipping_available: "Ich versende"
-        shipping_hint: "Gib Kosten und Versandzeit an."
-        free_shipping: "Kostenloser Versand"
+        title: Versand und Standort
+        shipping_available: Ich versende
+        shipping_hint: Gib Kosten und Versandzeit an.
+        free_shipping: Kostenloser Versand
         days:
           one: "%{count} Tag"
           other: "%{count} Tage"
-        local_pickup: "Abholung erlauben"
-        province_prompt: "Provinz auswählen"
-        city_placeholder: "z. B. Madrid"
+        local_pickup: Abholung erlauben
+        province_prompt: Provinz auswählen
+        city_placeholder: z. B. Madrid
     seller:
-      label: "Verkäuferbereich"
-      title: "Meine Anzeigen"
-      subtitle: "Verwalte Entwürfe, veröffentlichte Anzeigen und Verkäufe."
-      new_listing: "Neue Anzeige"
-      tabs_label: "Nach Status filtern"
+      label: Verkäuferbereich
+      title: Meine Anzeigen
+      subtitle: Verwalte Entwürfe, veröffentlichte Anzeigen und Verkäufe.
+      new_listing: Neue Anzeige
+      tabs_label: Nach Status filtern
       tabs:
-        all: "Alle"
-      search_placeholder: "Nach Titel oder Marke suchen"
-      search: "Suchen"
-      clear_search: "Löschen"
-      select_all: "Alle auswählen"
+        all: Alle
+      search_placeholder: Nach Titel oder Marke suchen
+      search: Suchen
+      clear_search: Löschen
+      select_all: Alle auswählen
       select_listing: "%{title} auswählen"
-      bulk_pause: "Pausieren"
-      bulk_resume: "Fortsetzen"
-      bulk_delete: "Löschen"
-      bulk_delete_confirm: "Ausgewählte Anzeigen löschen?"
+      bulk_pause: Pausieren
+      bulk_resume: Fortsetzen
+      bulk_delete: Löschen
+      bulk_delete_confirm: Ausgewählte Anzeigen löschen?
       bulk_done: "%{count} Anzeigen aktualisiert."
-      bulk_none: "Keine Anzeige konnte aktualisiert werden."
-      empty_title: "Du hast noch keine Anzeigen"
-      empty_body: "Erstelle deine erste Anzeige und verkaufe auf PCMarket."
-      rejection_reason: "Ablehnungsgrund: %{reason}"
-      edit_and_resubmit: "Bearbeiten und erneut senden"
+      bulk_none: Keine Anzeige konnte aktualisiert werden.
+      empty_title: Du hast noch keine Anzeigen
+      empty_body: Erstelle deine erste Anzeige und verkaufe auf PCMarket.
+      rejection_reason: 'Ablehnungsgrund: %{reason}'
+      edit_and_resubmit: Bearbeiten und erneut senden
       stats: "%{views} Aufrufe · %{favourites} Favoriten"
       columns:
-        listing: "Anzeige"
-        price: "Preis"
-        status: "Status"
-        views: "Aufrufe"
-        favourites: "Favoriten"
-        updated: "Aktualisiert"
+        listing: Anzeige
+        price: Preis
+        status: Status
+        views: Aufrufe
+        favourites: Favoriten
+        updated: Aktualisiert
       actions:
-        view: "Ansehen"
-        edit: "Bearbeiten"
-        pause: "Pausieren"
-        resume: "Fortsetzen"
-        mark_sold: "Als verkauft markieren"
-        duplicate: "Duplizieren"
-        delete: "Löschen"
-        delete_confirm: "Diese Anzeige löschen?"
+        view: Ansehen
+        edit: Bearbeiten
+        pause: Pausieren
+        resume: Fortsetzen
+        mark_sold: Als verkauft markieren
+        duplicate: Duplizieren
+        delete: Löschen
+        delete_confirm: Diese Anzeige löschen?
+      feature_listing: Anzeige hervorheben
     flash:
-      submitted: "Anzeige eingereicht. Wir prüfen sie normalerweise innerhalb von 24 Stunden."
-      draft_saved: "Entwurf gespeichert."
-      updated: "Anzeige aktualisiert."
-      sent_back: "Die Anzeige wird erneut geprüft, da du Titel, Kategorie oder Fotos geändert hast."
-      archived: "Die Anzeige wurde archiviert, weil zugehörige Bestellungen existieren."
-      destroyed: "Anzeige gelöscht."
-      image_required: "Füge mindestens ein Foto hinzu, bevor du die Anzeige zur Prüfung sendest."
-      cannot_submit: "Diese Anzeige kann im aktuellen Zustand nicht zur Prüfung gesendet werden."
-      paused: "Anzeige pausiert."
-      cannot_pause: "Nur veröffentlichte Anzeigen können pausiert werden."
-      resumed: "Anzeige fortgesetzt."
-      cannot_resume: "Nur pausierte Anzeigen können fortgesetzt werden."
-      marked_sold: "Anzeige als verkauft markiert."
-      cannot_mark_sold: "Nur veröffentlichte oder pausierte Anzeigen können als verkauft markiert werden."
-      duplicated: "Kopie als Entwurf erstellt."
+      submitted: Anzeige eingereicht. Wir prüfen sie normalerweise innerhalb von 24 Stunden.
+      draft_saved: Entwurf gespeichert.
+      updated: Anzeige aktualisiert.
+      sent_back: Die Anzeige wird erneut geprüft, da du Titel, Kategorie oder Fotos geändert hast.
+      archived: Die Anzeige wurde archiviert, weil zugehörige Bestellungen existieren.
+      destroyed: Anzeige gelöscht.
+      image_required: Füge mindestens ein Foto hinzu, bevor du die Anzeige zur Prüfung sendest.
+      cannot_submit: Diese Anzeige kann im aktuellen Zustand nicht zur Prüfung gesendet werden.
+      paused: Anzeige pausiert.
+      cannot_pause: Nur veröffentlichte Anzeigen können pausiert werden.
+      resumed: Anzeige fortgesetzt.
+      cannot_resume: Nur pausierte Anzeigen können fortgesetzt werden.
+      marked_sold: Anzeige als verkauft markiert.
+      cannot_mark_sold: Nur veröffentlichte oder pausierte Anzeigen können als verkauft markiert werden.
+      duplicated: Kopie als Entwurf erstellt.

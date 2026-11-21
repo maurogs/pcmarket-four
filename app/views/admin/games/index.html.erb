@@ -1,0 +1,28 @@
+<div class="mx-auto max-w-4xl">
+  <%= render "admin/shared/page_header", title: t("admin.games.title"),
+             subtitle: t("admin.games.subtitle"), eyebrow: t("admin.nav.sections.content"),
+             actions: [ { label: t("admin.games.new"), path: new_admin_game_path, icon: "plus", variant: :primary } ] %>
+
+  <div class="mt-5" data-controller="sortable-list"
+       data-sortable-url-value="<%= admin_game_positions_path %>" data-sortable-parent-value="">
+    <ol class="space-y-2" data-sortable-list data-action="dragover->sortable-list#dragOver">
+      <% @games.each do |game| %>
+        <li data-sortable-id="<%= game.id %>" data-sortable-parent="" draggable="true"
+            data-action="dragstart->sortable-list#dragStart dragend->sortable-list#dragEnd"
+            class="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <span class="cursor-grab text-slate-400"><%= icon "menu", class: "size-4" %></span>
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-semibold text-slate-900 dark:text-white"><%= game.name %></p>
+            <p class="font-mono text-xs text-slate-500 dark:text-zinc-400"><%= game.slug %> · #<%= game.position %></p>
+          </div>
+          <span class="<%= ui_badge_classes(tone: game.active? ? :success : :neutral, extra: '!px-2 !py-0.5') %>">
+            <%= game.active? ? t("admin.categories.active") : t("admin.categories.inactive") %>
+          </span>
+          <button type="button" data-action="sortable-list#moveUp" class="rounded p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-800" aria-label="<%= t("admin.categories.move_up") %>"><%= icon "chevron-up", class: "size-4" %></button>
+          <button type="button" data-action="sortable-list#moveDown" class="rounded p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-800" aria-label="<%= t("admin.categories.move_down") %>"><%= icon "chevron-down", class: "size-4" %></button>
+          <%= link_to t("admin.actions.edit"), edit_admin_game_path(game), class: ui_button_classes(variant: :ghost, size: :sm) %>
+        </li>
+      <% end %>
+    </ol>
+  </div>
+</div>

@@ -2,11 +2,12 @@
 
 ## Estado
 
-Fase 6B completada: operaciones de administración para pedidos y conciliación
-de pagos, disputas, denuncias y moderación de reseñas, con enlaces desde el
-panel y contadores cacheados en la barra lateral. La base del panel de la fase
-6A (panel, moderación de anuncios, usuarios, tiendas, auditoría y suplantación)
-sigue intacta. El chat interno de la fase 5 con conversaciones, contadores de no
+Fase 6C completada: catálogo, ajustes, países, contenido, marketing y auditoría
+del panel, sustituyendo todas las páginas provisionales restantes. Las
+operaciones de administración de la fase 6B para pedidos, pagos, disputas,
+denuncias y reseñas siguen intactas. La base del panel de la fase 6A (panel,
+moderación de anuncios, usuarios, tiendas, auditoría y suplantación) no ha
+cambiado. El chat interno de la fase 5 con conversaciones, contadores de no
 leídos y mensajes en tiempo real, ofertas con precio reservado en la cesta,
 bloqueos y avisos de seguridad en los mensajes; notificaciones a seguidores,
 alertas instantáneas y resumen diario de búsquedas guardadas y alertas de bajada
@@ -16,8 +17,10 @@ reembolsado), las pantallas de gestión del vendedor, la confirmación de entreg
 las disputas y las reseñas del comprador, las notificaciones de pedido con envío
 de correos y la actualización del contador en tiempo real siguen intactos. El
 descubrimiento (fase 2B), la creación de anuncios (fase 3A) y el pago (fase 4A)
-no han cambiado. Las pantallas de catálogo, contenido, marketing y ajustes
-quedan para la fase 6C y enlazan a páginas traducidas de «próximamente».
+no han cambiado.
+
+Las modificaciones de catálogo y contenido son exclusivas de administradores;
+los moderadores mantienen acceso de solo lectura.
 
 ## Estado de las fases
 
@@ -32,6 +35,7 @@ quedan para la fase 6C y enlazan a páginas traducidas de «próximamente».
 | 5 | Mensajería, ofertas, seguidores y alertas de búsquedas | Completada |
 | 6A | Base de administración, panel, moderación, usuarios y tiendas | Completada |
 | 6B | Pedidos, pagos, disputas, denuncias y reseñas de administración | Completada |
+| 6C | Catálogo, ajustes, países, contenido, marketing y auditoría | Completada |
 
 ## Stack
 
@@ -538,6 +542,79 @@ quedan para la fase 6C y enlazan a páginas traducidas de «próximamente».
   `offer_countered`, `followed_store_listing`, `saved_search_match` y
   `price_drop_favourite`.
 
+### Catálogo, ajustes, países, contenido y marketing del panel (fase 6C)
+
+- `Admin::CategoriesController` ofrece CRUD completo y una vista de árbol con
+  contadores de anuncios, distintivos de activa/menú y filtros heredados en
+  solo lectura. `Admin::CategoryPositionsController#update` guarda el orden
+  entre hermanas desde arrastre HTML5 o los botones de teclado mediante
+  `Admin::CategoryPositioner`; el cambio de padre usa el selector del formulario.
+  `Admin::CategoryFilterAssigner` sincroniza las filas y posiciones de
+  `CategoryFilter`. No se permite eliminar una categoría con anuncios o hijas.
+- Cada escritura de categoría invoca `MenuBuilder.bust!` y
+  `ListingSearch.bust_caches!`; las claves del menú y de las facetas incluyen
+  contadores de versión además de `Category.maximum(:updated_at)`.
+- `Admin::FilterDefinitionsController` gestiona filtros de especificaciones. La
+  clave es inmutable tras crearla; tipo, unidad, posición y nombres en seis
+  idiomas son editables, y las categorías se asignan con casillas. Las opciones
+  se gestionan en línea con reordenación por arrastre, alta masiva (un valor por
+  línea) y uso por opción. `Admin::FilterOptionMergesController#create` usa
+  `Admin::FilterOptionMerger` para reescribir todos los valores de
+  `listings.specs` de A a B en un único UPDATE con `jsonb_set` y después elimina
+  A. Eliminar un filtro exige escribir su clave y encola `CleanupSpecKeyJob` si
+  hay anuncios que lo usan.
+- `Admin::SettingsController` muestra `Setting::DEFAULTS` agrupados por
+  `Setting::GROUPS`, con controles tipados (interruptores, números con límites y
+  áreas de texto) y etiquetas/ayuda traducidas en los seis idiomas. Las funciones
+  llevan distintivo. `Admin::SettingsUpdater` guarda solo las claves modificadas,
+  convierte los valores según su tipo, devuelve pares antiguo/nuevo para la
+  auditoría y se apoya en la invalidación de caché de `Setting`. Activar
+  `maintenance_mode` pide una confirmación de peligro.
+- `ApplicationController#enforce_maintenance_mode` sirve una página 503
+  traducida a los visitantes sin rol de personal cuando el mantenimiento está
+  activo. El personal sigue navegando con un aviso superior; `/up`,
+  robots/sitemap, Devise, webhooks de pago y las rutas de administración siguen
+  accesibles.
+- Anuncios destacados: los vendedores ven «Destacar anuncio» en anuncios
+  publicados cuando `featured_listings_enabled` está activo.
+  `Seller::FeatureRequestsController` crea una `FeatureRequest` pendiente
+  (`listing_id`, `user_id`, `days`, `price_cents`, estado, `paid_at`).
+  `Admin::FeatureRequestsController` lista las solicitudes y
+  `Admin::FeatureRequestApprovalsController#create` llama a
+  `FeatureRequest#approve!`, que fija `paid_at`, amplía
+  `listings.featured_until` los días solicitados y añade la etiqueta `featured`.
+- `Admin::CountriesController` lista los seis países con estado, moneda, IVA,
+  idioma por defecto y contadores de anuncios, usuarios y regiones.
+  `Admin::CountryLaunchChecklist` calcula en vivo la cobertura de páginas
+  legales en el idioma por defecto y en inglés, las regiones creadas y la
+  compatibilidad de moneda. Los países que no usan EUR se bloquean mientras
+  `allow_non_eur_countries` sea falso, lo que bloquea GBP hasta que exista
+  multimoneda. Activar un país invalida las cachés de búsqueda.
+  `Admin::RegionsController` está anidado en países.
+- `Admin::LegalPagesController` filtra por país, idioma y slug; el editor tiene
+  una pequeña barra de formato, pestaña de vista previa, publicación y selector
+  «copiar de». `LegalPage` incrementa su versión al publicar o cambiar el
+  contenido y `#body_html` sanea con una lista blanca de etiquetas y atributos
+  al renderizar.
+- `Admin::GamesController` ofrece CRUD y `Admin::GamePositionsController` para
+  reordenar los juegos de PC Finder. `Admin::HelpArticlesController` ofrece CRUD
+  del nuevo modelo `HelpArticle` (slug, categoría, títulos y cuerpos en seis
+  idiomas, posición y publicación) con el mismo editor por idioma; las páginas
+  públicas de ayuda llegan en la fase 7.
+- `Admin::NewsletterSubscribersController` filtra suscriptores confirmados,
+  pendientes y dados de baja, elimina uno y exporta CSV mediante
+  `Admin::NewsletterExportsController`. No hay envío de campañas.
+- `Admin::AuditLogsController` añade filtros por administrador, acción, tipo de
+  recurso y rango de fechas, además de una página de diferencias con columnas
+  antes/después. Las nuevas acciones de catálogo, contenido y marketing están
+  traducidas en todos los idiomas.
+- Las políticas de la fase 6C heredan de `Admin::CataloguePolicy`: el personal
+  puede leer y solo los administradores pueden crear, actualizar o eliminar.
+  Los permisos de moderación de las fases 6A/6B no cambian.
+- Esquema nuevo: `feature_requests`, `help_articles`, `legal_pages.published_at`
+  y `settings.feature_flag`. Nuevo valor por defecto `allow_non_eur_countries`
+  (falso).
+
 ### Límites de rendimiento
 
 - `ListingSearch::INCLUDES` precarga tienda, categoría, región, usuario y
@@ -910,13 +987,16 @@ test/seeds_test.rb
 
 ## Pendientes para fases posteriores
 
-- Las pantallas de administración de categorías, filtros, páginas legales,
-  juegos, boletín y ajustes son marcadores hasta la fase 6C.
+- El pago de anuncios destacados lo confirman manualmente los administradores;
+  no se automatiza el cobro por transferencia o Stripe.
+- La lista de lanzamiento es informativa salvo el bloqueo de monedas distintas
+  de EUR; la falta de páginas legales o regiones no impide activar un país.
+- Las páginas públicas de ayuda y su búsqueda llegan en la fase 7.
 - Los reembolsos se registran manualmente con una referencia; todavía no se llama
   a la API de reembolsos del proveedor de pago.
 - No hay autenticación en dos pasos para administración; Devise lockable ya
   limita los inicios de sesión fallidos. Decidir si el 2FA de personal es
-  obligatorio antes de la fase 6C.
+  obligatorio.
 - La suplantación se basa en sesión y queda auditada; no tiene caducidad
   automática.
 - El panel y las señales de moderación son heurísticos (mediana de precio y

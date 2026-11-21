@@ -168,11 +168,12 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Contexto del proyecto</h1>
     <p class="lede">Arquitectura, decisiones y mapa de código</p>
-    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-21 23:50</p>
+    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-22 00:04</p>
   </header>
   <main><section class="card status">
 <h2><span>Estado</span><span class="badge badge-success">Complete</span></h2>
-<p>Fase 6B completada: operaciones de administración para pedidos y conciliación de pagos, disputas, denuncias y moderación de reseñas, con enlaces desde el panel y contadores cacheados en la barra lateral. La base del panel de la fase 6A (panel, moderación de anuncios, usuarios, tiendas, auditoría y suplantación) sigue intacta. El chat interno de la fase 5 con conversaciones, contadores de no leídos y mensajes en tiempo real, ofertas con precio reservado en la cesta, bloqueos y avisos de seguridad en los mensajes; notificaciones a seguidores, alertas instantáneas y resumen diario de búsquedas guardadas y alertas de bajada de precio en favoritos siguen intactos. El ciclo de vida de pedidos de la fase 4B (pagado, enviado, entregado, completado, cancelado, en disputa y reembolsado), las pantallas de gestión del vendedor, la confirmación de entrega, las disputas y las reseñas del comprador, las notificaciones de pedido con envío de correos y la actualización del contador en tiempo real siguen intactos. El descubrimiento (fase 2B), la creación de anuncios (fase 3A) y el pago (fase 4A) no han cambiado. Las pantallas de catálogo, contenido, marketing y ajustes quedan para la fase 6C y enlazan a páginas traducidas de «próximamente».</p>
+<p>Fase 6C completada: catálogo, ajustes, países, contenido, marketing y auditoría del panel, sustituyendo todas las páginas provisionales restantes. Las operaciones de administración de la fase 6B para pedidos, pagos, disputas, denuncias y reseñas siguen intactas. La base del panel de la fase 6A (panel, moderación de anuncios, usuarios, tiendas, auditoría y suplantación) no ha cambiado. El chat interno de la fase 5 con conversaciones, contadores de no leídos y mensajes en tiempo real, ofertas con precio reservado en la cesta, bloqueos y avisos de seguridad en los mensajes; notificaciones a seguidores, alertas instantáneas y resumen diario de búsquedas guardadas y alertas de bajada de precio en favoritos siguen intactos. El ciclo de vida de pedidos de la fase 4B (pagado, enviado, entregado, completado, cancelado, en disputa y reembolsado), las pantallas de gestión del vendedor, la confirmación de entrega, las disputas y las reseñas del comprador, las notificaciones de pedido con envío de correos y la actualización del contador en tiempo real siguen intactos. El descubrimiento (fase 2B), la creación de anuncios (fase 3A) y el pago (fase 4A) no han cambiado.</p>
+<p>Las modificaciones de catálogo y contenido son exclusivas de administradores; los moderadores mantienen acceso de solo lectura.</p>
 </section>
 <section class="card status">
 <h2><span>Estado de las fases</span><span class="badge badge-success">Complete</span></h2>
@@ -188,6 +189,7 @@ footer {
 <tr><td>5</td><td>Mensajería, ofertas, seguidores y alertas de búsquedas</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>6A</td><td>Base de administración, panel, moderación, usuarios y tiendas</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>6B</td><td>Pedidos, pagos, disputas, denuncias y reseñas de administración</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>6C</td><td>Catálogo, ajustes, países, contenido, marketing y auditoría</td><td><span class="badge badge-success">Completada</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -363,6 +365,22 @@ footer {
 <li><code>PriceDropAlertJob</code> avisa a los usuarios que tienen el anuncio en favoritos cuando baja el precio de un anuncio publicado y les envía correo si <code>email_price_drops_favourites</code> está activo.</li>
 <li>La gestión de búsquedas guardadas permite renombrar, elegir frecuencia (instantánea/diaria), activar o desactivar avisos, repetir la búsqueda y eliminar. <code>/account/following</code> lista las tiendas seguidas con sus últimos anuncios. <code>config.time_zone</code> es Europe/Madrid y las marcas de tiempo se siguen guardando en UTC.</li>
 <li>El ajuste <code>chat_enabled</code> ya existía; los nuevos tipos de notificación son <code>message_received</code>, <code>offer_received</code>, <code>offer_accepted</code>, <code>offer_declined</code>, <code>offer_countered</code>, <code>followed_store_listing</code>, <code>saved_search_match</code> y <code>price_drop_favourite</code>.</li>
+</ul>
+<h3>Catálogo, ajustes, países, contenido y marketing del panel (fase 6C)</h3>
+<ul>
+<li><code>Admin::CategoriesController</code> ofrece CRUD completo y una vista de árbol con contadores de anuncios, distintivos de activa/menú y filtros heredados en solo lectura. <code>Admin::CategoryPositionsController#update</code> guarda el orden entre hermanas desde arrastre HTML5 o los botones de teclado mediante <code>Admin::CategoryPositioner</code>; el cambio de padre usa el selector del formulario. <code>Admin::CategoryFilterAssigner</code> sincroniza las filas y posiciones de <code>CategoryFilter</code>. No se permite eliminar una categoría con anuncios o hijas.</li>
+<li>Cada escritura de categoría invoca <code>MenuBuilder.bust!</code> y <code>ListingSearch.bust_caches!</code>; las claves del menú y de las facetas incluyen contadores de versión además de <code>Category.maximum(:updated_at)</code>.</li>
+<li><code>Admin::FilterDefinitionsController</code> gestiona filtros de especificaciones. La clave es inmutable tras crearla; tipo, unidad, posición y nombres en seis idiomas son editables, y las categorías se asignan con casillas. Las opciones se gestionan en línea con reordenación por arrastre, alta masiva (un valor por línea) y uso por opción. <code>Admin::FilterOptionMergesController#create</code> usa <code>Admin::FilterOptionMerger</code> para reescribir todos los valores de <code>listings.specs</code> de A a B en un único UPDATE con <code>jsonb_set</code> y después elimina A. Eliminar un filtro exige escribir su clave y encola <code>CleanupSpecKeyJob</code> si hay anuncios que lo usan.</li>
+<li><code>Admin::SettingsController</code> muestra <code>Setting::DEFAULTS</code> agrupados por <code>Setting::GROUPS</code>, con controles tipados (interruptores, números con límites y áreas de texto) y etiquetas/ayuda traducidas en los seis idiomas. Las funciones llevan distintivo. <code>Admin::SettingsUpdater</code> guarda solo las claves modificadas, convierte los valores según su tipo, devuelve pares antiguo/nuevo para la auditoría y se apoya en la invalidación de caché de <code>Setting</code>. Activar <code>maintenance_mode</code> pide una confirmación de peligro.</li>
+<li><code>ApplicationController#enforce_maintenance_mode</code> sirve una página 503 traducida a los visitantes sin rol de personal cuando el mantenimiento está activo. El personal sigue navegando con un aviso superior; <code>/up</code>, robots/sitemap, Devise, webhooks de pago y las rutas de administración siguen accesibles.</li>
+<li>Anuncios destacados: los vendedores ven «Destacar anuncio» en anuncios publicados cuando <code>featured_listings_enabled</code> está activo. <code>Seller::FeatureRequestsController</code> crea una <code>FeatureRequest</code> pendiente (<code>listing_id</code>, <code>user_id</code>, <code>days</code>, <code>price_cents</code>, estado, <code>paid_at</code>). <code>Admin::FeatureRequestsController</code> lista las solicitudes y <code>Admin::FeatureRequestApprovalsController#create</code> llama a <code>FeatureRequest#approve!</code>, que fija <code>paid_at</code>, amplía <code>listings.featured_until</code> los días solicitados y añade la etiqueta <code>featured</code>.</li>
+<li><code>Admin::CountriesController</code> lista los seis países con estado, moneda, IVA, idioma por defecto y contadores de anuncios, usuarios y regiones. <code>Admin::CountryLaunchChecklist</code> calcula en vivo la cobertura de páginas legales en el idioma por defecto y en inglés, las regiones creadas y la compatibilidad de moneda. Los países que no usan EUR se bloquean mientras <code>allow_non_eur_countries</code> sea falso, lo que bloquea GBP hasta que exista multimoneda. Activar un país invalida las cachés de búsqueda. <code>Admin::RegionsController</code> está anidado en países.</li>
+<li><code>Admin::LegalPagesController</code> filtra por país, idioma y slug; el editor tiene una pequeña barra de formato, pestaña de vista previa, publicación y selector «copiar de». <code>LegalPage</code> incrementa su versión al publicar o cambiar el contenido y <code>#body_html</code> sanea con una lista blanca de etiquetas y atributos al renderizar.</li>
+<li><code>Admin::GamesController</code> ofrece CRUD y <code>Admin::GamePositionsController</code> para reordenar los juegos de PC Finder. <code>Admin::HelpArticlesController</code> ofrece CRUD del nuevo modelo <code>HelpArticle</code> (slug, categoría, títulos y cuerpos en seis idiomas, posición y publicación) con el mismo editor por idioma; las páginas públicas de ayuda llegan en la fase 7.</li>
+<li><code>Admin::NewsletterSubscribersController</code> filtra suscriptores confirmados, pendientes y dados de baja, elimina uno y exporta CSV mediante <code>Admin::NewsletterExportsController</code>. No hay envío de campañas.</li>
+<li><code>Admin::AuditLogsController</code> añade filtros por administrador, acción, tipo de recurso y rango de fechas, además de una página de diferencias con columnas antes/después. Las nuevas acciones de catálogo, contenido y marketing están traducidas en todos los idiomas.</li>
+<li>Las políticas de la fase 6C heredan de <code>Admin::CataloguePolicy</code>: el personal puede leer y solo los administradores pueden crear, actualizar o eliminar. Los permisos de moderación de las fases 6A/6B no cambian.</li>
+<li>Esquema nuevo: <code>feature_requests</code>, <code>help_articles</code>, <code>legal_pages.published_at</code> y <code>settings.feature_flag</code>. Nuevo valor por defecto <code>allow_non_eur_countries</code> (falso).</li>
 </ul>
 <h3>Límites de rendimiento</h3>
 <ul>
@@ -622,9 +640,11 @@ test/seeds_test.rb
 <section class="card open-items">
 <h2><span>Pendientes para fases posteriores</span></h2>
 <ul>
-<li>Las pantallas de administración de categorías, filtros, páginas legales, juegos, boletín y ajustes son marcadores hasta la fase 6C.</li>
+<li>El pago de anuncios destacados lo confirman manualmente los administradores; no se automatiza el cobro por transferencia o Stripe.</li>
+<li>La lista de lanzamiento es informativa salvo el bloqueo de monedas distintas de EUR; la falta de páginas legales o regiones no impide activar un país.</li>
+<li>Las páginas públicas de ayuda y su búsqueda llegan en la fase 7.</li>
 <li>Los reembolsos se registran manualmente con una referencia; todavía no se llama a la API de reembolsos del proveedor de pago.</li>
-<li>No hay autenticación en dos pasos para administración; Devise lockable ya limita los inicios de sesión fallidos. Decidir si el 2FA de personal es obligatorio antes de la fase 6C.</li>
+<li>No hay autenticación en dos pasos para administración; Devise lockable ya limita los inicios de sesión fallidos. Decidir si el 2FA de personal es obligatorio.</li>
 <li>La suplantación se basa en sesión y queda auditada; no tiene caducidad automática.</li>
 <li>El panel y las señales de moderación son heurísticos (mediana de precio y reutilización de checksum de imagen), no detección de fraude.</li>
 <li>El rendimiento del panel del vendedor se cachea cinco minutos; los eventos de pedido no lo invalidan de inmediato.</li>

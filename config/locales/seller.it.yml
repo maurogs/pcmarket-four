@@ -1,0 +1,21 @@
+---
+it:
+  seller:
+    feature_requests:
+      eyebrow: Annuncio in evidenza
+      title: Metti in evidenza questo annuncio
+      intro: Mostra questo annuncio in cima alla categoria e ai risultati per %{days} giorni.
+      price: Prezzo
+      duration: Durata
+      days:
+        one: 1 giorno
+        other: "%{count} giorni"
+      payment_note: >-
+        Confermeremo la richiesta e invieremo le istruzioni di pagamento tramite bonifico o Stripe. L’annuncio va in evidenza
+        dopo l’approvazione di un amministratore.
+      pending: Hai già una richiesta in attesa per questo annuncio.
+      submit: Richiedi la messa in evidenza
+      back: Torna ai miei annunci
+      disabled: La messa in evidenza è disattivata.
+      created: Richiesta inviata. Ti contatteremo per il pagamento.
+      invalid: Impossibile creare la richiesta.

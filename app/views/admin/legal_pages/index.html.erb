@@ -1,0 +1,63 @@
+<% filter_fields = [
+  { name: "country_code", type: :select, value: params[:country_code],
+    options: @countries.map { |country| [ country.name, country.code ] },
+    include_blank: t("admin.legal_pages.filters.any_country"), label: t("admin.legal_pages.filters.country"), width: "min-w-40" },
+  { name: "locale", type: :select, value: params[:locale],
+    options: I18n.available_locales.map { |locale| [ locale.to_s.upcase, locale ] },
+    include_blank: t("admin.legal_pages.filters.any_locale"), label: t("admin.legal_pages.filters.locale"), width: "min-w-32" },
+  { name: "slug", type: :select, value: params[:slug],
+    options: LegalPage::SLUGS.map { |slug| [ t("admin.legal_pages.slugs.#{slug}"), slug ] },
+    include_blank: t("admin.legal_pages.filters.any_slug"), label: t("admin.legal_pages.filters.slug"), width: "min-w-44" }
+] %>
+
+<div class="mx-auto max-w-[90rem]">
+  <%= render "admin/shared/page_header", title: t("admin.legal_pages.title"),
+             subtitle: t("admin.legal_pages.subtitle"), eyebrow: t("admin.nav.sections.content"),
+             actions: [ { label: t("admin.legal_pages.new"), path: new_admin_legal_page_path, icon: "plus", variant: :primary } ] %>
+
+  <div class="mt-5">
+    <%= render "admin/shared/filter_bar", url: admin_legal_pages_path, fields: filter_fields %>
+  </div>
+
+  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <table class="w-full min-w-[52rem] text-left text-sm">
+      <thead class="border-b border-slate-200 bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400">
+        <tr>
+          <th class="px-3 py-2.5"><%= t("admin.legal_pages.columns.page") %></th>
+          <th class="px-3 py-2.5"><%= t("admin.legal_pages.columns.country") %></th>
+          <th class="px-3 py-2.5"><%= t("admin.legal_pages.columns.locale") %></th>
+          <th class="px-3 py-2.5 text-right"><%= t("admin.legal_pages.columns.version") %></th>
+          <th class="px-3 py-2.5"><%= t("admin.legal_pages.columns.status") %></th>
+          <th class="px-3 py-2.5"><%= t("admin.legal_pages.columns.updated") %></th>
+          <th class="px-3 py-2.5"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+        <% @pages.each do |page| %>
+          <tr class="hover:bg-slate-50/70 dark:hover:bg-zinc-800/40">
+            <td class="px-3 py-2.5">
+              <p class="font-medium text-slate-900 dark:text-white"><%= page.title %></p>
+              <p class="font-mono text-xs text-slate-500 dark:text-zinc-400"><%= page.slug %></p>
+            </td>
+            <td class="px-3 py-2.5"><%= page.country_code.presence || t("admin.legal_pages.global") %></td>
+            <td class="px-3 py-2.5 uppercase"><%= page.locale %></td>
+            <td class="px-3 py-2.5 text-right tabular-nums"><%= page.version %></td>
+            <td class="px-3 py-2.5">
+              <span class="<%= ui_badge_classes(tone: page.published? ? :success : :neutral, extra: '!px-2 !py-0.5') %>">
+                <%= page.published? ? t("admin.legal_pages.published") : t("admin.legal_pages.draft") %>
+              </span>
+            </td>
+            <td class="px-3 py-2.5 text-xs text-slate-500 dark:text-zinc-400"><%= admin_datetime(page.updated_at) %></td>
+            <td class="px-3 py-2.5 text-right">
+              <%= link_to t("admin.actions.edit"), edit_admin_legal_page_path(id: page.id),
+                          class: ui_button_classes(variant: :ghost, size: :sm) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <% if @pages.empty? %>
+    <div class="mt-3"><%= render "admin/shared/empty_state", title: t("admin.legal_pages.empty_title"), body: t("admin.legal_pages.empty_body") %></div>
+  <% end %>
+</div>

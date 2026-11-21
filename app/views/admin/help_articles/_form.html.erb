@@ -1,0 +1,72 @@
+<%= form_with model: [ :admin, @article ], class: "space-y-4" do |form| %>
+  <% if @article.errors.any? %>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
+      <ul class="list-inside list-disc"><% @article.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>
+    </div>
+  <% end %>
+
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-4">
+      <div>
+        <%= form.label :slug, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.text_field :slug, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm font-mono") %>
+      </div>
+      <div>
+        <%= form.label :category, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.select :category, HelpArticle.categories.keys.map { |category| [ t("admin.help_articles.categories.#{category}"), category ] }, {},
+                        class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <div>
+        <%= form.label :position, class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+        <%= form.number_field :position, min: 0, class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+      </div>
+      <div class="flex items-end pb-1.5">
+        <label class="flex items-center gap-2 text-sm"><%= form.check_box :published, class: "size-4 rounded text-brand-700" %><%= t("admin.help_articles.published") %></label>
+      </div>
+    </div>
+  </section>
+
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <h2 class="font-heading text-sm font-semibold"><%= t("admin.help_articles.content") %></h2>
+    <div class="mt-3 space-y-2">
+      <% I18n.available_locales.each do |locale| %>
+        <details class="rounded-lg border border-slate-200 p-3 dark:border-zinc-700" <%= "open" if locale.to_s == "es" %>>
+          <summary class="cursor-pointer text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-300">
+            <%= locale %>
+            <% if @article.titles[locale.to_s].present? %> · <%= @article.titles[locale.to_s] %><% end %>
+          </summary>
+          <div class="mt-3 space-y-2">
+            <div>
+              <%= label_tag "help_titles_#{locale}", t("admin.help_articles.title_field"),
+                            class: "mb-1 block text-xs font-medium text-slate-600 dark:text-zinc-300" %>
+              <%= text_field_tag "help_article[titles][#{locale}]", @article.titles[locale.to_s],
+                                 id: "help_titles_#{locale}", required: %w[es en].include?(locale.to_s),
+                                 class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+            </div>
+            <div data-controller="html-editor" data-link-prompt="<%= t('admin.legal_pages.editor.link_prompt') %>"
+                 data-list-item="<%= t('admin.legal_pages.editor.list_item') %>">
+              <div class="flex gap-1" aria-label="<%= t('admin.legal_pages.editor.toolbar') %>">
+                <% %w[strong em h2 h3 ul a].each do |tag| %>
+                  <button type="button" data-tag="<%= tag %>" data-action="html-editor#wrap"
+                          class="rounded-md border border-slate-200 px-2 py-1 text-xs font-semibold uppercase dark:border-zinc-700"><%= tag %></button>
+                <% end %>
+              </div>
+              <textarea name="help_article[bodies][<%= locale %>]" id="help_bodies_<%= locale %>" rows="8"
+                        data-html-editor-target="textarea" data-action="input->html-editor#updatePreview"
+                        class="<%= ui_input_classes('mt-1 !font-mono !text-xs') %>"><%= @article.bodies[locale.to_s] %></textarea>
+              <div class="prose-pcm mt-1 hidden min-h-24 rounded-lg border border-dashed border-slate-300 p-3 dark:border-zinc-700"
+                   data-html-editor-target="previewPanel" hidden>
+                <div data-html-editor-target="preview"></div>
+              </div>
+            </div>
+          </div>
+        </details>
+      <% end %>
+    </div>
+  </section>
+
+  <div class="flex justify-end gap-2">
+    <%= link_to t("admin.actions.cancel"), admin_help_articles_path, class: ui_button_classes(variant: :ghost, size: :md) %>
+    <%= form.submit t("admin.actions.save"), class: ui_button_classes(variant: :primary, size: :md) %>
+  </div>
+<% end %>

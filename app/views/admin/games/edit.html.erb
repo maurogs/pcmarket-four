@@ -1,0 +1,11 @@
+<div class="mx-auto max-w-3xl space-y-5">
+  <%= render "admin/shared/page_header", title: @game.name,
+             subtitle: t("admin.games.edit_subtitle"), back_path: admin_games_path,
+             back_label: t("admin.nav.games") %>
+  <%= render "admin/games/form" %>
+  <section class="rounded-xl border border-rose-200 bg-rose-50/60 p-4 dark:border-rose-500/30 dark:bg-rose-500/5">
+    <%= button_to t("admin.games.delete"), admin_game_path(@game), method: :delete,
+                  form: { data: { turbo_confirm: t("admin.games.confirm_delete") } },
+                  class: ui_button_classes(variant: :danger, size: :sm) %>
+  </section>
+</div>

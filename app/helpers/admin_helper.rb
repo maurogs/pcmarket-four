@@ -1,6 +1,18 @@
 module AdminHelper
   PAGINATION_LIMITS = [ 25, 50, 100 ].freeze
 
+  ICON_OPTIONS = %w[
+    arrow-right arrow-up badge-check bell bookmark check chevron-down chevron-left
+    chevron-right chevron-up clock cpu credit-card eye filter flame gamepad-2 gamepad
+    gift headset heart home keyboard laptop layout-grid lock mail map-pin menu
+    message-circle package plus rotate-ccw search settings shield-check shopping-cart
+    sliders-horizontal smartphone sparkles star store sun tablet tag truck user wallet zap
+  ].freeze
+
+  def admin_icon_options
+    ICON_OPTIONS
+  end
+
   NAV_SECTIONS = [
     { items: [
       { key: "dashboard", label: "admin.nav.dashboard", icon: "layout-grid", path: :admin_root_path },
@@ -22,19 +34,21 @@ module AdminHelper
       { key: "reviews", label: "admin.nav.reviews", icon: "star", path: :admin_reviews_path }
     ] },
     { title: "admin.nav.sections.catalogue", items: [
-      { key: "categories", label: "admin.nav.categories", icon: "sliders-horizontal", path: :admin_placeholder_path, argument: "categories" },
-      { key: "filters", label: "admin.nav.filters", icon: "filter", path: :admin_placeholder_path, argument: "filters" }
+      { key: "categories", label: "admin.nav.categories", icon: "sliders-horizontal", path: :admin_categories_path },
+      { key: "filters", label: "admin.nav.filters", icon: "filter", path: :admin_filter_definitions_path }
     ] },
     { title: "admin.nav.sections.content", items: [
-      { key: "legal_pages", label: "admin.nav.legal_pages", icon: "bookmark", path: :admin_placeholder_path, argument: "legal-pages" },
-      { key: "games", label: "admin.nav.games", icon: "gamepad-2", path: :admin_placeholder_path, argument: "games" }
+      { key: "legal_pages", label: "admin.nav.legal_pages", icon: "bookmark", path: :admin_legal_pages_path },
+      { key: "games", label: "admin.nav.games", icon: "gamepad-2", path: :admin_games_path },
+      { key: "help_articles", label: "admin.nav.help_articles", icon: "message-circle", path: :admin_help_articles_path }
     ] },
     { title: "admin.nav.sections.marketing", items: [
-      { key: "newsletter", label: "admin.nav.newsletter", icon: "mail", path: :admin_placeholder_path, argument: "newsletter" }
+      { key: "newsletter", label: "admin.nav.newsletter", icon: "mail", path: :admin_newsletter_subscribers_path },
+      { key: "feature_requests", label: "admin.nav.feature_requests", icon: "zap", path: :admin_feature_requests_path }
     ] },
     { title: "admin.nav.sections.settings", items: [
-      { key: "settings", label: "admin.nav.general_settings", icon: "settings", path: :admin_placeholder_path, argument: "settings" },
-      { key: "countries", label: "admin.nav.countries", icon: "map-pin", path: :admin_placeholder_path, argument: "countries" }
+      { key: "settings", label: "admin.nav.general_settings", icon: "settings", path: :admin_settings_path },
+      { key: "countries", label: "admin.nav.countries", icon: "map-pin", path: :admin_countries_path }
     ] },
     { items: [
       { key: "audit_log", label: "admin.nav.audit_log", icon: "clock", path: :admin_audit_logs_path }
@@ -77,7 +91,16 @@ module AdminHelper
     when "reports" then %w[reports bulk_report_actions].include?(controller_name)
     when "reviews" then controller_name == "reviews"
     when "audit_log" then controller_name == "audit_logs"
-    else controller_path == "admin/placeholders" && params[:section].to_s.tr("_", "-") == key.tr("_", "-")
+    when "categories" then %w[categories category_positions].include?(controller_name)
+    when "filters" then %w[filter_definitions filter_options filter_option_bulks filter_option_merges filter_option_positions].include?(controller_name)
+    when "legal_pages" then controller_name == "legal_pages"
+    when "games" then %w[games game_positions].include?(controller_name)
+    when "help_articles" then %w[help_articles help_article_positions].include?(controller_name)
+    when "newsletter" then %w[newsletter_subscribers newsletter_exports].include?(controller_name)
+    when "feature_requests" then %w[feature_requests feature_request_approvals].include?(controller_name)
+    when "settings" then controller_name == "settings"
+    when "countries" then %w[countries regions].include?(controller_name)
+    else controller_path == "admin/placeholders"
     end
   end
 

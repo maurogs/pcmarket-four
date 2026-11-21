@@ -11,7 +11,18 @@ class Category < ApplicationRecord
   validates :slug, presence: true, uniqueness: true
   validate :names_present
 
+  after_commit :bust_caches
+
   scope :roots_ordered, -> { roots.order(:position, :id) }
+
+  def listings_for_delete?
+    listings.exists? || children.exists?
+  end
+
+  def bust_caches
+    MenuBuilder.bust!
+    ListingSearch.bust_caches!
+  end
   scope :active, -> { where(active: true) }
   scope :menu_roots, -> { active.roots.where(show_in_menu: true).order(:position, :id) }
 

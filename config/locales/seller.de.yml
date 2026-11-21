@@ -1,0 +1,21 @@
+---
+de:
+  seller:
+    feature_requests:
+      eyebrow: Hervorgehobene Anzeige
+      title: Diese Anzeige hervorheben
+      intro: Zeige diese Anzeige %{days} Tage lang oben in Kategorie und Suche.
+      price: Preis
+      duration: Dauer
+      days:
+        one: 1 Tag
+        other: "%{count} Tage"
+      payment_note: >-
+        Wir bestätigen die Anfrage und senden Zahlungshinweise per Überweisung oder Stripe. Die Anzeige wird nach Freigabe
+        durch einen Administrator hervorgehoben.
+      pending: Für diese Anzeige liegt bereits eine offene Anfrage vor.
+      submit: Hervorhebung anfragen
+      back: Zurück zu meinen Anzeigen
+      disabled: Hervorhebungen sind derzeit deaktiviert.
+      created: Anfrage gesendet. Wir melden uns mit Zahlungshinweisen.
+      invalid: Die Anfrage konnte nicht erstellt werden.

@@ -1,0 +1,43 @@
+<div class="mx-auto max-w-[90rem]">
+  <%= render "admin/shared/page_header", title: t("admin.filters.title"),
+             subtitle: t("admin.filters.subtitle"), eyebrow: t("admin.nav.sections.catalogue"),
+             actions: [ { label: t("admin.filters.new"), path: new_admin_filter_definition_path, icon: "plus", variant: :primary } ] %>
+
+  <div class="mt-5 overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <table class="w-full min-w-[56rem] text-left text-sm">
+      <thead class="border-b border-slate-200 bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400">
+        <tr>
+          <th class="px-3 py-2.5"><%= t("admin.filters.columns.key") %></th>
+          <th class="px-3 py-2.5"><%= t("admin.filters.columns.name") %></th>
+          <th class="px-3 py-2.5"><%= t("admin.filters.columns.type") %></th>
+          <th class="px-3 py-2.5 text-right"><%= t("admin.filters.columns.options") %></th>
+          <th class="px-3 py-2.5 text-right"><%= t("admin.filters.columns.categories") %></th>
+          <th class="px-3 py-2.5 text-right"><%= t("admin.filters.columns.usage") %></th>
+          <th class="px-3 py-2.5"><%= t("admin.filters.columns.status") %></th>
+          <th class="px-3 py-2.5"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+        <% @filters.each do |filter| %>
+          <tr class="hover:bg-slate-50/70 dark:hover:bg-zinc-800/40">
+            <td class="px-3 py-2.5 font-mono text-xs text-slate-700 dark:text-zinc-300"><%= filter.key %></td>
+            <td class="px-3 py-2.5 font-medium text-slate-900 dark:text-white"><%= filter.name %></td>
+            <td class="px-3 py-2.5"><%= t("admin.filters.input_types.#{filter.input_type}") %></td>
+            <td class="px-3 py-2.5 text-right tabular-nums"><%= filter.filter_options.size %></td>
+            <td class="px-3 py-2.5 text-right tabular-nums"><%= filter.categories.size %></td>
+            <td class="px-3 py-2.5 text-right tabular-nums"><%= @usage_counts[filter.key] %></td>
+            <td class="px-3 py-2.5">
+              <span class="<%= ui_badge_classes(tone: filter.active? ? :success : :neutral, extra: '!px-2 !py-0.5') %>">
+                <%= filter.active? ? t("admin.categories.active") : t("admin.categories.inactive") %>
+              </span>
+            </td>
+            <td class="px-3 py-2.5 text-right">
+              <%= link_to t("admin.actions.edit"), edit_admin_filter_definition_path(filter),
+                          class: ui_button_classes(variant: :ghost, size: :sm) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

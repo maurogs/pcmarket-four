@@ -1,0 +1,21 @@
+---
+es:
+  seller:
+    feature_requests:
+      eyebrow: Anuncio destacado
+      title: Destacar este anuncio
+      intro: Muestra este anuncio en lo más alto de la categoría y de los resultados durante %{days} días.
+      price: Precio
+      duration: Duración
+      days:
+        one: 1 día
+        other: "%{count} días"
+      payment_note: >-
+        Confirmaremos tu solicitud y te enviaremos las instrucciones de pago por transferencia o Stripe. El anuncio se destaca
+        en cuanto lo apruebe un administrador.
+      pending: Ya tienes una solicitud pendiente de aprobación para este anuncio.
+      submit: Solicitar destacado
+      back: Volver a mis anuncios
+      disabled: Los destacados están desactivados.
+      created: Solicitud enviada. Te contactaremos con las instrucciones de pago.
+      invalid: No se pudo crear la solicitud.

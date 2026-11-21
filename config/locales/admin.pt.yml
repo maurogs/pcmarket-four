@@ -43,6 +43,8 @@ pt:
       collapse_hint: Recolher
       open: Abrir navegação
       payments: Reconciliação de pagamentos
+      help_articles: Artigos de ajuda
+      feature_requests: Pedidos de destaque
     topbar:
       view_site: Ver o site
     search:
@@ -51,8 +53,7 @@ pt:
       subtitle: Pesquise entre pessoas, anúncios, encomendas e lojas.
       results_for: Resultados para «%{query}»
       empty_title: Pesquisar no mercado
-      empty_body: Introduza um email, nome de utilizador, título de anúncio, número
-        de encomenda ou nome de loja.
+      empty_body: Introduza um email, nome de utilizador, título de anúncio, número de encomenda ou nome de loja.
       no_results_title: Sem resultados
       no_results_body: Nada corresponde a «%{query}». Tente outro termo.
       groups:
@@ -266,8 +267,7 @@ pt:
         reviewed_by: Revisto por %{name} em %{time}
         images: Fotografias
         description: Descrição
-        safety_warning: 'A descrição contém contactos ou indícios de pagamento fora
-          da plataforma:'
+        safety_warning: 'A descrição contém contactos ou indícios de pagamento fora da plataforma:'
         orders: Encomendas
         no_orders: Nenhuma encomenda inclui este anúncio.
         order_number: Encomenda
@@ -406,8 +406,7 @@ pt:
       edit:
         title: Editar utilizador
         subtitle: "%{name}"
-        role_hint: As funções e o estado gerem-se na página do utilizador com ações
-          dedicadas.
+        role_hint: As funções e o estado gerem-se na página do utilizador com ações dedicadas.
       confirm:
         ban: Banir %{name}? Os anúncios serão arquivados.
         soft_delete: Eliminar %{name}? Os dados pessoais serão anonimizados.
@@ -493,6 +492,9 @@ pt:
         resource: Recurso
         ip: IP
         changeset: Alterações
+        attribute: Atributo
+        before: Antes
+        after: Depois
       actions:
         listing_approved: Anúncio aprovado
         listing_rejected: Anúncio rejeitado
@@ -534,6 +536,38 @@ pt:
         report_dismissed: Denúncia arquivada
         review_updated: Avaliação atualizada
         review_deleted: Avaliação eliminada
+        category_created: Category created
+        category_updated: Category updated
+        category_deleted: Category deleted
+        category_reordered: Categories reordered
+        filter_created: Filter created
+        filter_updated: Filter updated
+        filter_deleted: Filter deleted
+        filter_option_created: Filter option created
+        filter_option_updated: Filter option updated
+        filter_option_deleted: Filter option deleted
+        filter_options_bulk_created: Filter options bulk added
+        filter_options_merged: Filter options merged
+        settings_updated: Settings updated
+        country_updated: Country updated
+        region_created: Region created
+        region_updated: Region updated
+        region_deleted: Region deleted
+        legal_page_created: Legal page created
+        legal_page_updated: Legal page updated
+        legal_page_deleted: Legal page deleted
+        game_created: Game created
+        game_updated: Game updated
+        game_deleted: Game deleted
+        help_article_created: Help article created
+        help_article_updated: Help article updated
+        help_article_deleted: Help article deleted
+        newsletter_subscriber_deleted: Subscriber deleted
+        feature_request_approved: Feature request approved
+      from: De
+      to: Até
+      open_diff: Abrir diff
+      diff_title: Entrada de auditoria
     reports:
       reasons:
         spam: Spam
@@ -607,9 +641,9 @@ pt:
       not_impersonating: Nenhuma personificação ativa.
     placeholder:
       label: Próxima atualização
-      body: Esta área de administração está a ser construída nas fases 6B e 6C. A
-        base, o painel, a moderação de anúncios, os utilizadores e as lojas já estão
-        disponíveis.
+      body: >-
+        Esta área de administração está a ser construída nas fases 6B e 6C. A base, o painel, a moderação de anúncios, os
+        utilizadores e as lojas já estão disponíveis.
       coming: Disponível na próxima atualização
       titles:
         orders: Encomendas
@@ -650,8 +684,7 @@ pt:
         other: "%{count} artigos"
       refund_flag: Reembolso necessário
       late_flag: Envio atrasado
-      reference_required: É necessária uma referência de pagamento para marcar a encomenda
-        como paga.
+      reference_required: É necessária uma referência de pagamento para marcar a encomenda como paga.
       paid: Encomenda marcada como paga.
       cannot_pay: Esta encomenda não pode ser marcada como paga.
       cancelled: Encomenda cancelada.
@@ -750,8 +783,7 @@ pt:
         order: Encomenda
     payments:
       title: Reconciliação de pagamentos
-      subtitle: Transferências pendentes, das mais antigas para as mais recentes,
-        com o prazo de pagamento.
+      subtitle: Transferências pendentes, das mais antigas para as mais recentes, com o prazo de pagamento.
       empty_title: Nada para reconciliar
       empty_body: Neste momento não há encomendas pendentes por transferência.
       due_in: Vence em %{time}
@@ -767,8 +799,7 @@ pt:
         mark_paid: Marcar paga
       bulk:
         title: Marcar em bloco como paga
-        hint: Cole um número de encomenda por linha. Cada encomenda pendente é marcada
-          como paga com a mesma referência.
+        hint: Cole um número de encomenda por linha. Cada encomenda pendente é marcada como paga com a mesma referência.
         placeholder: |-
           PCM-2026-000001
           PCM-2026-000002
@@ -781,8 +812,8 @@ pt:
         wrong_status: Estado errado
     disputes:
       title: Disputas
-      subtitle: Disputas abertas por compradores, das mais antigas para as mais recentes.
-        Resolva com reembolso ou libertação ao vendedor.
+      subtitle: >-
+        Disputas abertas por compradores, das mais antigas para as mais recentes. Resolva com reembolso ou libertação ao vendedor.
       resolved: Disputa resolvida e ambas as partes notificadas.
       cannot_resolve: Esta disputa não pode ser resolvida.
       empty_title: Nenhuma disputa aberta
@@ -820,8 +851,7 @@ pt:
         seller: Vendedor
         timeline: Cronologia da encomenda
         resolve: Resolver disputa
-        resolve_hint: A mensagem de resolução é enviada a ambas as partes por e-mail
-          e notificação na aplicação.
+        resolve_hint: A mensagem de resolução é enviada a ambas as partes por e-mail e notificação na aplicação.
         outcome: Resultado
         refund_admin_only: Apenas administradores podem emitir reembolsos.
         message_placeholder: Explique a decisão a ambas as partes…
@@ -839,8 +869,7 @@ pt:
       reply_visible: Resposta visível
       reply_hidden: Resposta oculta
       rating_option: "%{count} / 5"
-      blocked_words_hint: As avaliações são verificadas contra a lista de palavras
-        bloqueadas antes da publicação.
+      blocked_words_hint: As avaliações são verificadas contra a lista de palavras bloqueadas antes da publicação.
       blocked_words_link: Gerir palavras bloqueadas
       empty_title: Nenhuma avaliação encontrada
       empty_body: Ajuste os filtros ou volte mais tarde.
@@ -879,8 +908,374 @@ pt:
         delete: Eliminar avaliação
         settings: Definições de avaliações
       confirm:
-        delete: Eliminar esta avaliação definitivamente? A classificação da loja será
-          recalculada.
+        delete: Eliminar esta avaliação definitivamente? A classificação da loja será recalculada.
+    categories:
+      title: Categorias
+      subtitle: Taxonomia, menu e filtros por categoria.
+      new: Nova categoria
+      new_title: Nova categoria
+      new_subtitle: Crie uma categoria raiz ou filha.
+      edit_subtitle: Slug /c/%{slug}
+      created: Categoria criada.
+      updated: Categoria atualizada.
+      deleted: Categoria eliminada.
+      delete_blocked: 'Não é possível eliminar: restam %{listings} anúncios e %{children} subcategorias. Desative-a.'
+      confirm_delete: Eliminar esta categoria? Irreversível.
+      listing_count:
+        one: 1 anúncio
+        other: "%{count} anúncios"
+      children_count:
+        one: 1 filha
+        other: "%{count} filhas"
+      active: Ativa
+      inactive: Inativa
+      in_menu: No menu
+      root: Raiz
+      move_up: Subir
+      move_down: Descer
+      empty_title: Ainda sem categorias
+      empty_body: Crie a primeira categoria.
+      form:
+        names: Nomes
+        name_for: Nome (%{code})
+        seo_for: Descrição SEO (%{code})
+        seo: SEO
+        structure: Estrutura
+        slug_placeholder: Gerado a partir do inglês se vazio
+        no_parent: Sem progenitor (raiz)
+        no_icon: Sem ícone
+        active: Ativa
+        show_in_menu: Mostrar no mega menu
+        filters: Filtros atribuídos
+        filters_hint: As filhas herdam os filtros. Números menores aparecem primeiro.
+        inherited: Herdados dos antepassados (só leitura)
+        filter_order: Ordem do filtro
+    filters:
+      title: Filtros
+      subtitle: Filtros de especificações, opções e categorias.
+      new: Novo filtro
+      new_title: Novo filtro
+      new_subtitle: Os filtros são guardados nas especificações pela chave.
+      edit_title: Editar %{name}
+      edit_subtitle: A chave %{key} é imutável após a criação.
+      created: Filtro criado.
+      updated: Filtro atualizado.
+      deleted: Filtro eliminado.
+      confirm_key_mismatch: Escreva a chave exata para confirmar a eliminação.
+      danger_title: Eliminar filtro
+      danger_hint: Usado por %{count} anúncios. A chave será removida em segundo plano.
+      confirm_key: Escreva «%{key}» para confirmar
+      confirm_delete: Eliminar definitivamente este filtro?
+      columns:
+        key: Chave
+        name: Nome
+        type: Tipo
+        options: Opções
+        categories: Categorias
+        usage: Uso
+        status: Estado
+      input_types:
+        checkbox: Caixas
+        range: Intervalo
+        select: Seleção
+        boolean: Sim / não
+      form:
+        key_locked: A chave não pode mudar porque as especificações já a usam.
+        key_hint: snake_case minúsculo, único.
+        names: Nomes
+        categories: Categorias
+      options:
+        title: Opções
+        hint: Arraste ou use as setas.
+        empty: Ainda sem opções.
+        usage: "%{count} anúncios"
+        value: Valor
+        add: Adicionar
+        created: Opção adicionada.
+        updated: Opção atualizada.
+        deleted: Opção eliminada.
+        invalid: Opção inválida.
+        confirm_delete: Eliminar esta opção?
+        bulk_title: Adição em massa
+        bulk_placeholder: Um valor por linha
+        bulk_submit: Adicionar
+        bulk_created: "%{count} opções adicionadas."
+        merge_title: Fundir opção
+        merge_hint: Reescreve as especificações da origem para o destino e elimina a origem.
+        merge_source: Origem
+        merge_target: Destino
+        merge_submit: Fundir
+        merged: Opções fundidas.
+        merge_failed: Não foi possível fundir.
+    settings:
+      title: Definições e funcionalidades
+      subtitle: Configuração tipada. Só as chaves alteradas são guardadas.
+      feature_flag: Funcionalidade
+      toggle: Ativo
+      range: 'Intervalo: %{min}–%{max}'
+      updated: Definições atualizadas.
+      unchanged: Nenhuma alteração.
+      groups:
+        general: Geral
+        marketplace: Marketplace
+        monetisation: Monetização
+        payments: Pagamentos
+        orders: Encomendas
+        limits: Limites
+        content: Conteúdo
+        communication: Comunicação
+      keys:
+        site_name:
+          label: Site name
+          help: Shown in the header, emails and page titles.
+        maintenance_mode:
+          label: Maintenance mode
+          help: Signed-in staff keep browsing with a warning banner. Everyone else sees a 503 page.
+        allow_non_eur_countries:
+          label: Allow non-EUR countries
+          help: Only enable when multi-currency pricing is ready.
+        listings_require_approval:
+          label: Listings require approval
+          help: New listings wait in the moderation queue.
+        checkout_enabled:
+          label: Checkout enabled
+          help: Turns cart checkout on or off.
+        chat_enabled:
+          label: Chat enabled
+          help: Enables buyer and seller conversations.
+        registrations_enabled:
+          label: Registrations enabled
+          help: Allows new accounts to sign up.
+        reviews_enabled:
+          label: Reviews enabled
+          help: Buyers can review completed orders.
+        saved_search_alerts_enabled:
+          label: Saved search alerts
+          help: Sends instant and daily saved-search alerts.
+        commissions_enabled:
+          label: Commissions enabled
+          help: Adds the platform commission to orders.
+        commission_percent:
+          label: Commission percent
+          help: Platform fee charged to sellers.
+        featured_listings_enabled:
+          label: Featured listings
+          help: Sellers can request paid featured placement.
+        featured_price_cents:
+          label: Featured price (cents)
+          help: Price for seven days of featured placement.
+        sell_to_us_enabled:
+          label: Sell to PCMarket
+          help: Shows the sell-to-us entry point.
+        payment_bank_transfer_enabled:
+          label: Bank transfer
+          help: Offers bank transfer at checkout.
+        bank_iban:
+          label: Bank IBAN
+          help: Shown in payment instructions.
+        bank_beneficiary:
+          label: Bank beneficiary
+          help: Account holder for transfers.
+        payment_deadline_days:
+          label: Payment deadline (days)
+          help: Unpaid bank-transfer orders expire after this.
+        stripe_enabled:
+          label: Stripe
+          help: Offers card payments through Stripe.
+        inspection_window_days:
+          label: Inspection window (days)
+          help: Time to confirm or dispute a delivery.
+        auto_complete_after_delivery_days:
+          label: Auto-complete after delivery
+          help: Days after delivery before orders complete.
+        auto_delivered_after_shipping_days:
+          label: Auto-delivered after shipping
+          help: Days after shipping before delivery is assumed.
+        seller_ship_deadline_days:
+          label: Seller ship deadline
+          help: Days before a late-shipment reminder is sent.
+        max_images_per_listing:
+          label: Maximum images
+          help: Photos allowed per listing.
+        max_active_listings_per_user:
+          label: Maximum active listings
+          help: Active listings allowed per seller.
+        announcement_bar_text:
+          label: Announcement bar text
+          help: Leave empty to hide the bar.
+        blocked_words:
+          label: Blocked words
+          help: Comma-separated words rejected in reviews.
+        support_email:
+          label: Support email
+          help: Receives dispute and support notifications.
+      maintenance_confirm: Ativar a manutenção? Os visitantes verão uma página 503.
+    countries:
+      title: Países
+      subtitle: Estado de lançamento, moeda e regiões.
+      enabled: Ativo
+      disabled: Inativo
+      stats: "%{listings} anúncios · %{users} utilizadores · %{regions} regiões"
+      manage_regions: Gerir regiões
+      updated: "%{name} atualizado."
+      cannot_update: Não foi possível atualizar o país.
+      currency_blocked: "%{currency} ainda não é suportada. Ative allow_non_eur_countries só com multimoeda pronta."
+      currency_notice: Os preços são só em EUR. O lançamento em %{currency} exige multimoeda.
+      checklist:
+        title: Lista de lançamento
+        status:
+          ready: Pronto
+          attention: Requer atenção
+        legal_pages: Páginas legais no idioma predefinido
+        legal_pages_en: Páginas legais em inglês
+        regions: Regiões criadas
+        currency: Moeda suportada
+        currency_warning: O lançamento GBP exige multimoeda
+      regions:
+        title: Regiões · %{country}
+        subtitle: As regiões agrupam anúncios.
+        new: Adicionar região
+        add: Adicionar
+        created: Região criada.
+        updated: Região atualizada.
+        deleted: Região eliminada.
+        invalid: Região inválida.
+        empty: Ainda sem regiões.
+        confirm_delete: Eliminar esta região? Os anúncios mantêm a cidade.
+      confirm_save: Guardar %{name}? Reveja a lista antes de ativar um país.
+    legal_pages:
+      title: Páginas legais
+      subtitle: Textos legais por país e idioma com versões.
+      new: Nova página
+      new_title: Nova página legal
+      new_subtitle: Publique uma página para país e idioma.
+      edit_subtitle: "%{slug} · %{language}"
+      created: Página criada.
+      updated: Página atualizada.
+      deleted: Página eliminada.
+      published: Publicada
+      draft: Rascunho
+      global: Global
+      version_hint: Versão atual %{version}. Guardar ou publicar incrementa-a.
+      delete: Eliminar página
+      confirm_delete: Eliminar definitivamente esta página?
+      empty_title: Sem páginas legais
+      empty_body: Ajuste os filtros ou crie uma página.
+      filters:
+        country: País
+        any_country: Todos os países
+        locale: Idioma
+        any_locale: Todos os idiomas
+        slug: Página
+        any_slug: Todas as páginas
+      columns:
+        page: Página
+        country: País
+        locale: Idioma
+        version: Versão
+        status: Estado
+        updated: Atualizada
+      slugs:
+        terms: Termos
+        privacy: Privacidade
+        cookies: Cookies
+        legal_notice: Aviso legal
+        returns: Devoluções
+        buyer_protection: Proteção do comprador
+        seller_terms: Condições do vendedor
+        prohibited_items: Artigos proibidos
+        dsa_contact: Contacto DSA
+      copy:
+        title: Copiar de outra página
+        hint: Carrega título e corpo sem guardar. Útil para traduções.
+        load: Carregar cópia
+      editor:
+        body: Corpo (HTML)
+        edit_tab: Editar
+        preview_tab: Pré-visualizar
+        toolbar: Formatação
+        bold: Negrito
+        italic: Itálico
+        link_prompt: URL da ligação
+        list_item: Item de lista
+    games:
+      title: Jogos
+      subtitle: Jogos usados pelo PC Finder.
+      new: Novo jogo
+      new_title: Novo jogo
+      edit_subtitle: Game details and order.
+      created: Jogo criado.
+      updated: Jogo atualizado.
+      deleted: Jogo eliminado.
+      delete: Eliminar jogo
+      confirm_delete: Eliminar este jogo? O PC Finder perde o rótulo.
+    help_articles:
+      title: Artigos de ajuda
+      subtitle: Conteúdo localizado do centro de ajuda, público na fase 7.
+      new: Novo artigo
+      new_title: Novo artigo
+      edit_subtitle: Article content and translations.
+      created: Artigo criado.
+      updated: Artigo atualizado.
+      deleted: Artigo eliminado.
+      delete: Eliminar artigo
+      confirm_delete: Eliminar definitivamente este artigo?
+      published: Publicado
+      content: Conteúdo localizado
+      title_field: Título
+      empty_title: Sem artigos
+      empty_body: Crie o primeiro artigo.
+      categories:
+        buying: Comprar
+        selling: Vender
+        shipping: Envio
+        payments: Pagamentos
+        account: Conta
+        safety: Segurança
+    newsletter:
+      title: Newsletter
+      subtitle: Subscritores confirmados, pendentes e cancelados.
+      export: Exportar CSV
+      status: Estado
+      all_statuses: Todos os estados
+      search: Pesquisar
+      search_placeholder: Endereço de email
+      deleted: Subscritor eliminado.
+      confirm_delete: Eliminar este subscritor?
+      empty_title: Sem subscritores
+      empty_body: Ajuste os filtros ou aguarde inscrições.
+      statuses:
+        confirmed: Confirmado
+        unconfirmed: Não confirmado
+        unsubscribed: Cancelado
+      columns:
+        email: Email
+        locale: Idioma
+        status: Estado
+        subscribed: Inscrição
+    feature_requests:
+      title: Pedidos de destaque
+      subtitle: Pedidos pagos à espera de aprovação.
+      status: Estado
+      all_statuses: Todos os estados
+      approve: Aprovar
+      approved: Pedido aprovado e anúncio em destaque.
+      not_pending: Este pedido não está pendente.
+      confirm_approve: Aprovar este pedido e destacar o anúncio?
+      empty_title: Sem pedidos
+      empty_body: Os pedidos dos vendedores aparecerão aqui.
+      statuses:
+        pending: Pendente
+        paid: Pago
+        active: Ativo
+        expired: Expirado
+      columns:
+        listing: Anúncio
+        seller: Vendedor
+        days: Dias
+        price: Preço
+        status: Estado
+        requested: Pedido
   devise:
     failure:
       suspended: A sua conta está suspensa. Contacte o suporte.

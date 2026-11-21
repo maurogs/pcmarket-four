@@ -9,6 +9,8 @@ class Country < ApplicationRecord
   validates :name_key, presence: true
   validates :currency, presence: true
 
+  after_commit :bust_caches
+
   scope :enabled, -> { where(enabled: true) }
 
   before_validation :normalise_code
@@ -19,6 +21,11 @@ class Country < ApplicationRecord
 
   def to_s
     name
+  end
+
+  def bust_caches
+    ListingSearch.bust_caches!
+    Rails.cache.delete("country-root-slugs/v1")
   end
 
   private

@@ -12,8 +12,16 @@ class MenuBuilder
 
   private
 
+  def self.bust!
+    Rails.cache.write("menu/v2/version", Time.current.to_f)
+  end
+
+  def self.version
+    Rails.cache.fetch("menu/v2/version", expires_in: 1.day) { 0.0 }
+  end
+
   def cache_key
-    [ CACHE_VERSION, @locale, Category.maximum(:updated_at)&.utc&.to_f ]
+    [ CACHE_VERSION, @locale, self.class.version, Category.maximum(:updated_at)&.utc&.to_f ]
   end
 
   def build_menu

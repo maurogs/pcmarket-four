@@ -92,6 +92,7 @@ Rails.application.routes.draw do
         resource :duplication, only: :create, module: :listings
       end
       resources :bulk_listing_actions, only: :create
+      resources :feature_requests, only: %i[new create]
     end
 
     get "pc-finder" => "pc_finder#show", as: :pc_finder
@@ -155,7 +156,37 @@ Rails.application.routes.draw do
 
       resources :reviews, only: %i[index show update destroy]
 
-      resources :audit_logs, only: :index
+      resources :categories
+      resource :category_positions, only: :update
+
+      resources :filter_definitions do
+        resources :filter_options, only: %i[create update destroy]
+        resource :merge, only: :create, controller: "filter_option_merges"
+        resource :bulk, only: :create, controller: "filter_option_bulks"
+      end
+      resource :filter_option_positions, only: :update
+
+      resources :settings, only: :index
+      patch "settings" => "settings#update", as: :save_settings
+
+      resources :countries, only: %i[index update] do
+        resources :regions, only: %i[index create update destroy]
+      end
+
+      resources :legal_pages
+      resources :games
+      resource :game_positions, only: :update
+      resources :help_articles
+      resource :help_article_positions, only: :update
+
+      resources :newsletter_subscribers, only: %i[index destroy]
+      resource :newsletter_export, only: :show, controller: "newsletter_exports"
+
+      resources :feature_requests, only: %i[index show] do
+        resource :approval, only: :create, controller: "feature_request_approvals"
+      end
+
+      resources :audit_logs, only: %i[index show]
       resources :placeholders, only: :show, param: :section
     end
   end

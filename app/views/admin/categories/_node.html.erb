@@ -1,0 +1,55 @@
+<% children = local_assigns[:children_by_parent][category.id.to_s] || [] %>
+<% parent_key = category.parent_id.presence || "" %>
+<li data-sortable-id="<%= category.id %>" data-sortable-parent="<%= parent_key %>" draggable="true"
+    data-action="dragstart->sortable-list#dragStart dragend->sortable-list#dragEnd"
+    class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+  <div class="flex flex-wrap items-center gap-2 px-3 py-2.5" style="padding-left: <%= 0.75 + depth * 1.5 %>rem">
+    <span class="cursor-grab text-slate-400" aria-hidden="true"><%= icon "menu", class: "size-4" %></span>
+    <div class="min-w-0 flex-1">
+      <p class="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white">
+        <%= category.name %>
+        <% unless category.active? %>
+          <span class="<%= ui_badge_classes(tone: :neutral, extra: '!px-2 !py-0.5') %>"><%= t("admin.categories.inactive") %></span>
+        <% end %>
+        <% if category.show_in_menu? %>
+          <span class="<%= ui_badge_classes(tone: :brand, extra: '!px-2 !py-0.5') %>"><%= t("admin.categories.in_menu") %></span>
+        <% end %>
+        <% if category.is_root? %>
+          <span class="<%= ui_badge_classes(tone: :neutral, extra: '!px-2 !py-0.5') %>"><%= t("admin.categories.root") %></span>
+        <% end %>
+      </p>
+      <p class="text-xs text-slate-500 dark:text-zinc-400">
+        /c/<%= category.path_slugs.join("/") %>
+        · <%= t("admin.categories.listing_count", count: category.listings_count) %>
+        · <%= t("admin.categories.children_count", count: children.size) %>
+        <% if category.menu_group.present? %> · <%= category.menu_group %><% end %>
+      </p>
+    </div>
+    <div class="flex items-center gap-1">
+      <button type="button" data-action="sortable-list#moveUp"
+              class="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-800"
+              aria-label="<%= t("admin.categories.move_up") %>"><%= icon "chevron-up", class: "size-4" %></button>
+      <button type="button" data-action="sortable-list#moveDown"
+              class="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-800"
+              aria-label="<%= t("admin.categories.move_down") %>"><%= icon "chevron-down", class: "size-4" %></button>
+      <%= link_to t("admin.actions.edit"), edit_admin_category_path(category),
+                  class: ui_button_classes(variant: :ghost, size: :sm) %>
+      <%= button_to t("admin.actions.delete"), admin_category_path(category), method: :delete,
+                    form: { data: { turbo_confirm: t("admin.categories.confirm_delete") } },
+                    class: ui_button_classes(variant: :ghost, size: :sm, extra: "!text-rose-600") %>
+    </div>
+  </div>
+
+  <% if children.any? %>
+    <ol class="ml-6 mb-2 space-y-1.5 border-l border-slate-200 pl-3 dark:border-zinc-800"
+        data-controller="sortable-list"
+        data-sortable-url-value="<%= admin_category_positions_path %>"
+        data-sortable-parent-value="<%= category.id %>"
+        data-sortable-list data-action="dragover->sortable-list#dragOver">
+      <% children.each do |child| %>
+        <%= render "admin/categories/node", category: child, depth: depth + 1,
+                   children_by_parent: children_by_parent %>
+      <% end %>
+    </ol>
+  <% end %>
+</li>

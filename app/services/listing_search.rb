@@ -35,6 +35,14 @@ class ListingSearch
                   .includes(*INCLUDES)
   end
 
+  def self.bust_caches!
+    Rails.cache.write("listing_search/version", Time.current.to_f)
+  end
+
+  def self.cache_version
+    Rails.cache.fetch("listing_search/version", expires_in: 1.day) { 0.0 }
+  end
+
   def total_count
     @total_count ||= Rails.cache.fetch(total_cache_key, expires_in: COUNT_CACHE_TTL) do
       relation.except(:order).count
@@ -419,14 +427,14 @@ class ListingSearch
   end
 
   def total_cache_key
-    [ "listing_search", "count", "v1", I18n.locale, category&.id, digest ]
+    [ "listing_search", "count", "v1", I18n.locale, self.class.cache_version, category&.id, digest ]
   end
 
   def facets_cache_key
     facet_digest = Digest::SHA256.hexdigest([
       category&.id, query, min_price_cents, max_price_cents, conditions.sort, filter_keys.sort
     ].to_s)
-    [ "listing_search", "facets", "v1", I18n.locale, facet_digest ]
+    [ "listing_search", "facets", "v1", I18n.locale, self.class.cache_version, facet_digest ]
   end
 
   class Result

@@ -1,0 +1,6 @@
+<div class="mx-auto max-w-5xl space-y-5">
+  <%= render "admin/shared/page_header", title: @category.name,
+             subtitle: t("admin.categories.edit_subtitle", slug: @category.slug),
+             back_path: admin_categories_path, back_label: t("admin.nav.categories") %>
+  <%= render "admin/categories/form" %>
+</div>
