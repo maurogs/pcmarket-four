@@ -66,12 +66,20 @@
     <%= render "admin/shared/stat_card", label: t("admin.dashboard.stats.open_disputes"),
                value: admin_number(stats[:open_disputes][:value]),
                direction: stats[:open_disputes][:direction],
-               hint: t("admin.dashboard.needs_attention") %>
+               hint: t("admin.dashboard.needs_attention"),
+               href: admin_disputes_path %>
 
     <%= render "admin/shared/stat_card", label: t("admin.dashboard.stats.open_reports"),
                value: admin_number(stats[:open_reports][:value]),
                direction: stats[:open_reports][:direction],
-               hint: t("admin.dashboard.needs_attention") %>
+               hint: t("admin.dashboard.needs_attention"),
+               href: admin_reports_path %>
+
+    <%= render "admin/shared/stat_card", label: t("admin.dashboard.stats.pending_payments"),
+               value: admin_number(stats[:pending_payments][:value]),
+               direction: stats[:pending_payments][:direction],
+               hint: t("admin.dashboard.needs_attention"),
+               href: admin_payments_path %>
 
     <%= render "admin/shared/stat_card", label: t("admin.dashboard.stats.newsletter"),
                value: admin_number(stats[:newsletter_subscribers][:value]),
@@ -178,8 +186,8 @@
       <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
         <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-zinc-800">
           <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.dashboard.tables.orders") %></h2>
-          <%= link_to t("admin.dashboard.coming_soon"), admin_placeholder_path("orders"),
-                      class: "text-xs font-medium text-slate-500 hover:underline dark:text-zinc-400" %>
+          <%= link_to t("admin.dashboard.view_all"), admin_orders_path,
+                      class: "text-xs font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
         </div>
         <ul class="divide-y divide-slate-100 dark:divide-zinc-800">
           <% tables[:latest_orders].each do |order| %>

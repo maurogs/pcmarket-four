@@ -135,6 +135,26 @@ Rails.application.routes.draw do
         resource :vacation, only: %i[create destroy], controller: "store_vacations"
       end
 
+      resources :orders, only: %i[index show], param: :number do
+        resource :payment, only: :create, controller: "order_payments"
+        resource :cancellation, only: :create, controller: "order_cancellations"
+        resource :refund, only: :create, controller: "order_refunds"
+        resource :email, only: :create, controller: "order_emails"
+        resources :notes, only: :create, controller: "order_notes"
+      end
+      resources :order_exports, only: :create
+      resources :payments, only: :index
+      resources :bulk_payments, only: :create
+
+      resources :disputes, only: %i[index show] do
+        resource :resolution, only: :create, controller: "dispute_resolutions"
+      end
+
+      resources :reports, only: %i[index show update]
+      resources :bulk_report_actions, only: :create
+
+      resources :reviews, only: %i[index show update destroy]
+
       resources :audit_logs, only: :index
       resources :placeholders, only: :show, param: :section
     end

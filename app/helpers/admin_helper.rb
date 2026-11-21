@@ -11,10 +11,15 @@ module AdminHelper
       { key: "listings", label: "admin.nav.listings", icon: "tag", path: :admin_listings_path },
       { key: "users", label: "admin.nav.users", icon: "user", path: :admin_users_path },
       { key: "stores", label: "admin.nav.stores", icon: "store", path: :admin_stores_path },
-      { key: "orders", label: "admin.nav.orders", icon: "package", path: :admin_placeholder_path, argument: "orders" },
-      { key: "disputes", label: "admin.nav.disputes", icon: "flame", path: :admin_placeholder_path, argument: "disputes" },
-      { key: "reports", label: "admin.nav.reports", icon: "message-circle", path: :admin_placeholder_path, argument: "reports" },
-      { key: "reviews", label: "admin.nav.reviews", icon: "star", path: :admin_placeholder_path, argument: "reviews" }
+      { key: "orders", label: "admin.nav.orders", icon: "package", path: :admin_orders_path,
+        badge: :pending_payments },
+      { key: "payments", label: "admin.nav.payments", icon: "credit-card", path: :admin_payments_path,
+        badge: :pending_payments },
+      { key: "disputes", label: "admin.nav.disputes", icon: "flame", path: :admin_disputes_path,
+        badge: :open_disputes },
+      { key: "reports", label: "admin.nav.reports", icon: "message-circle", path: :admin_reports_path,
+        badge: :open_reports },
+      { key: "reviews", label: "admin.nav.reviews", icon: "star", path: :admin_reviews_path }
     ] },
     { title: "admin.nav.sections.catalogue", items: [
       { key: "categories", label: "admin.nav.categories", icon: "sliders-horizontal", path: :admin_placeholder_path, argument: "categories" },
@@ -36,7 +41,7 @@ module AdminHelper
     ] }
   ].freeze
 
-  def admin_nav_sections(pending_count)
+  def admin_nav_sections(pending_count, counts = {})
     NAV_SECTIONS.map do |section|
       {
         title: section[:title],
@@ -46,7 +51,12 @@ module AdminHelper
           else
             public_send(item[:path])
           end
-          badge = item[:badge] == :pending_moderation ? pending_count : nil
+          badge = case item[:badge]
+          when :pending_moderation then pending_count
+          when :open_disputes then counts[:open_disputes]
+          when :open_reports then counts[:open_reports]
+          when :pending_payments then counts[:pending_payments]
+          end
           item.merge(path: path, badge_count: badge)
         end
       }
@@ -60,6 +70,12 @@ module AdminHelper
     when "listings" then %w[listings listing_approvals listing_rejections bulk_listing_actions].include?(controller_name)
     when "users" then %w[users user_suspensions user_bans user_roles user_confirmations user_password_resets].include?(controller_name)
     when "stores" then %w[stores store_verifications store_vacations].include?(controller_name)
+    when "orders" then %w[orders order_payments order_cancellations order_refunds order_emails
+                          order_notes order_exports bulk_payments].include?(controller_name)
+    when "payments" then controller_name == "payments"
+    when "disputes" then %w[disputes dispute_resolutions].include?(controller_name)
+    when "reports" then %w[reports bulk_report_actions].include?(controller_name)
+    when "reviews" then controller_name == "reviews"
     when "audit_log" then controller_name == "audit_logs"
     else controller_path == "admin/placeholders" && params[:section].to_s.tr("_", "-") == key.tr("_", "-")
     end

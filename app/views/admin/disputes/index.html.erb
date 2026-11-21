@@ -1,0 +1,30 @@
+<% filter_fields = [
+  { name: "q", type: :search, value: params[:q], placeholder: t("admin.disputes.filters.search_placeholder"), width: "min-w-56 flex-[2]" },
+  { name: "reason", type: :select, value: params[:reason],
+    options: Order::DISPUTE_REASONS.map { |reason| [ t("orders.dispute.reasons.#{reason}"), reason ] },
+    include_blank: t("admin.disputes.filters.any_reason"), label: t("admin.disputes.filters.reason"), width: "min-w-40" }
+] %>
+
+<div class="mx-auto max-w-[90rem]">
+  <%= render "admin/shared/page_header", title: t("admin.disputes.title"),
+             subtitle: t("admin.disputes.subtitle"), eyebrow: t("admin.nav.sections.marketplace") %>
+
+  <div class="mt-5">
+    <%= render "admin/shared/filter_bar", url: admin_disputes_path, fields: filter_fields %>
+  </div>
+
+  <%= render "admin/shared/data_table", records: @disputes, columns: [
+               { label: t("admin.disputes.columns.order") },
+               { label: t("admin.disputes.columns.buyer") },
+               { label: t("admin.disputes.columns.seller") },
+               { label: t("admin.disputes.columns.reason") },
+               { label: t("admin.disputes.columns.age") },
+               { label: t("admin.disputes.columns.opened") },
+               { label: "", class: "w-10" }
+             ],
+             row_partial: "admin/disputes/row",
+             sort: "created_at", direction: "asc",
+             empty_title: t("admin.disputes.empty_title"), empty_body: t("admin.disputes.empty_body") %>
+
+  <%= render "admin/shared/pagination", pagy: @pagy %>
+</div>

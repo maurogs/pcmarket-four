@@ -168,11 +168,11 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Contexto del proyecto</h1>
     <p class="lede">Arquitectura, decisiones y mapa de código</p>
-    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-21 23:40</p>
+    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-21 23:50</p>
   </header>
   <main><section class="card status">
 <h2><span>Estado</span><span class="badge badge-success">Complete</span></h2>
-<p>Fase 6A completada: base del panel de administración con un layout propio, panel de control, cola de moderación de anuncios, administración de anuncios, gestión de usuarios y tiendas, registro de auditoría y suplantación de personal. El chat interno de la fase 5 con conversaciones, contadores de no leídos y mensajes en tiempo real, ofertas con precio reservado en la cesta, bloqueos y avisos de seguridad en los mensajes; notificaciones a seguidores, alertas instantáneas y resumen diario de búsquedas guardadas y alertas de bajada de precio en favoritos siguen intactos. El ciclo de vida de pedidos de la fase 4B (pagado, enviado, entregado, completado, cancelado, en disputa y reembolsado), las pantallas de gestión del vendedor, la confirmación de entrega, las disputas y las reseñas del comprador, las notificaciones de pedido con envío de correos y la actualización del contador en tiempo real siguen intactos. El descubrimiento (fase 2B), la creación de anuncios (fase 3A) y el pago (fase 4A) no han cambiado. Las pantallas de pedidos, disputas, denuncias, reseñas, catálogo, contenido, marketing y ajustes quedan para las fases 6B/6C y enlazan a páginas traducidas de «próximamente».</p>
+<p>Fase 6B completada: operaciones de administración para pedidos y conciliación de pagos, disputas, denuncias y moderación de reseñas, con enlaces desde el panel y contadores cacheados en la barra lateral. La base del panel de la fase 6A (panel, moderación de anuncios, usuarios, tiendas, auditoría y suplantación) sigue intacta. El chat interno de la fase 5 con conversaciones, contadores de no leídos y mensajes en tiempo real, ofertas con precio reservado en la cesta, bloqueos y avisos de seguridad en los mensajes; notificaciones a seguidores, alertas instantáneas y resumen diario de búsquedas guardadas y alertas de bajada de precio en favoritos siguen intactos. El ciclo de vida de pedidos de la fase 4B (pagado, enviado, entregado, completado, cancelado, en disputa y reembolsado), las pantallas de gestión del vendedor, la confirmación de entrega, las disputas y las reseñas del comprador, las notificaciones de pedido con envío de correos y la actualización del contador en tiempo real siguen intactos. El descubrimiento (fase 2B), la creación de anuncios (fase 3A) y el pago (fase 4A) no han cambiado. Las pantallas de catálogo, contenido, marketing y ajustes quedan para la fase 6C y enlazan a páginas traducidas de «próximamente».</p>
 </section>
 <section class="card status">
 <h2><span>Estado de las fases</span><span class="badge badge-success">Complete</span></h2>
@@ -187,6 +187,7 @@ footer {
 <tr><td>4B</td><td>Ciclo de pedidos y gestión del vendedor</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>5</td><td>Mensajería, ofertas, seguidores y alertas de búsquedas</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>6A</td><td>Base de administración, panel, moderación, usuarios y tiendas</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>6B</td><td>Pedidos, pagos, disputas, denuncias y reseñas de administración</td><td><span class="badge badge-success">Completada</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -402,6 +403,18 @@ footer {
 <li>La gestión de tiendas verifica/desverifica, alterna el modo vacaciones y edita tipo de tienda, datos fiscales/de empresa, políticas y contadores, con enlace al propietario.</li>
 <li>Los textos de administración viven en <code>admin.&lt;locale&gt;.yml</code> en los seis idiomas; los mensajes de cuenta inactiva de Devise se añaden allí (<code>devise.failure.suspended/banned/deleted</code>).</li>
 </ul>
+<h3>Operaciones de administración: pedidos, pagos, disputas, denuncias y reseñas (fase 6B)</h3>
+<ul>
+<li><code>Admin::OrdersController</code> lista todos los pedidos con <code>Admin::OrderQuery</code> (estado, entrega, método de pago, vendedor/tienda, correo del comprador, rangos de creación y total, envío tardío y reembolso necesario), ordenación permitida, fila de totales (recuento, GMV, comisión) y exportación CSV mediante <code>Admin::OrderExport</code> (CSV manual porque Ruby 4 eliminó la gema <code>csv</code> por defecto).</li>
+<li>El detalle del pedido muestra comprador, vendedor/tienda, instantáneas de los artículos con enlaces a los anuncios, dirección de envío, referencias de pago y reembolso, comisión/neto, la cronología de <code>OrderEvent</code>, la <code>Conversation</code> relacionada, las <code>OrderNote</code> internas y el historial de auditoría.</li>
+<li>Recursos RESTful anidados: <code>payment</code> (conciliación de transferencias, exige referencia y queda auditado), <code>cancellation</code> (motivo, restaura stock con <code>Order#cancel!</code>), <code>refund</code> (solo administrador, guarda <code>refund_reference</code>), <code>email</code> (reenvío al comprador/vendedor) y <code>notes</code>. <code>Order#resolve_dispute!</code> acepta un mensaje de resolución opcional y <code>Order#refund!</code> acepta una referencia.</li>
+<li><code>Admin::PaymentsController#index</code> lista los pedidos pendientes por transferencia de más antiguo a más nuevo con el plazo de pago y un formulario rápido para marcar pagado. <code>Admin::BulkPaymentsController#create</code> delega en <code>Admin::BulkPayment</code>, que interpreta un número de pedido por línea y muestra un resumen de pagados / no encontrados / estado incorrecto.</li>
+<li><code>Admin::DisputesController</code> lista los pedidos en disputa de más antiguo a más nuevo con antigüedad y motivo. El detalle combina el resumen del pedido, motivo/detalles/fotos de la disputa, mensajes de la conversación en solo lectura, cronología, notas internas y el formulario de resolución. <code>Admin::DisputeResolution</code> llama a <code>Order#resolve_dispute!</code>; los reembolsos requieren administrador y las liberaciones están disponibles para moderadores. <code>OrderNotifier</code> envía el mensaje de resolución a ambas partes como notificación interna y correo <code>OrderMailer#dispute_resolved_buyer/#_seller</code> en el idioma correspondiente, respetando las preferencias de correo.</li>
+<li><code>Admin::ReportsController</code> filtra por estado, motivo y tipo denunciado y muestra recuentos por estado. <code>Admin::ReportResolution</code> resuelve con una acción opcional (pausar anuncio, suspender usuario mediante <code>Admin::UserModeration</code>, despublicar reseña) o desestima, notifica al denunciante mediante <code>Notifier</code> y escribe una entrada de auditoría. La desestimación masiva pasa por <code>Admin::BulkReportActionsController</code>.</li>
+<li><code>Admin::ReviewsController</code> filtra valoración, publicación, tienda, presencia de respuesta y rango de creación. Despublicar/publicar y la visibilidad de la respuesta son acciones de personal; eliminar es solo para administradores. Los callbacks de reseña recalculan la valoración de la tienda al despublicar. <code>reviews.seller_reply_visible</code> oculta la respuesta del vendedor en las vistas públicas de tienda, anuncio y pedido, pero la mantiene visible para el vendedor.</li>
+<li>Las tarjetas de disputas, denuncias y pagos pendientes del panel enlazan a sus pantallas. <code>Admin::SidebarCounts</code> cachea disputas abiertas, denuncias abiertas y pagos pendientes durante un minuto; el panel reutiliza sus agregados cacheados para evitar consultas extra.</li>
+<li>Esquema nuevo: <code>order_notes</code> (<code>order_id</code>, <code>author_id</code>, <code>body</code>), <code>orders .refund_reference</code> y <code>reviews.seller_reply_visible</code>.</li>
+</ul>
 </section>
 <section class="card code-map">
 <h2><span>Mapa de código</span></h2>
@@ -496,6 +509,16 @@ app/controllers/admin/{impersonations,user_exports}_controller.rb
 app/controllers/admin/stores_controller.rb      tabla, detalle y edición de tiendas
 app/controllers/admin/{store_verifications,store_vacations}_controller.rb
 app/controllers/admin/{audit_logs,search,placeholders}_controller.rb
+app/controllers/admin/orders_controller.rb         tabla, detalle y cronología de pedidos
+app/controllers/admin/order_{payments,cancellations,refunds,emails,notes,exports}_controller.rb
+                                                   recursos anidados de pedido + CSV
+app/controllers/admin/payments_controller.rb       conciliación de transferencias
+app/controllers/admin/bulk_payments_controller.rb  resumen de números pegados
+app/controllers/admin/disputes_controller.rb       cola y detalle de disputas
+app/controllers/admin/dispute_resolutions_controller.rb
+app/controllers/admin/reports_controller.rb        cola, detalle y resolución de denuncias
+app/controllers/admin/bulk_report_actions_controller.rb
+app/controllers/admin/reviews_controller.rb        moderación de reseñas
 app/controllers/concerns/admin/auditable.rb     escritor de auditoría de mutaciones
 app/policies/admin/                             políticas de personal y administrador
 app/services/admin/dashboard.rb                 agregados cacheados del panel
@@ -506,11 +529,18 @@ app/services/admin/listing_update.rb            escritor del formulario de anunc
 app/services/admin/bulk_listing_action.rb       mutaciones masivas permitidas
 app/services/admin/{user_query,user_export,user_moderation}.rb
 app/services/admin/{store_query,global_search}.rb
+app/services/admin/order_query.rb                relación filtrada y ordenada de pedidos
+app/services/admin/{order_export,bulk_payment}.rb
+app/services/admin/{dispute_query,dispute_resolution}.rb
+app/services/admin/{report_query,report_resolution}.rb
+app/services/admin/{review_query,sidebar_counts}.rb
+app/models/order_note.rb                         notas internas del personal
 app/mailers/listing_mailer.rb                   correos de aprobación/rechazo
 app/helpers/admin_helper.rb                     navegación, insignias, gráficos
 app/views/layouts/admin.html.erb                barra lateral + barra superior
 app/views/admin/shared/                         kit de tabla, filtros, métricas y meta
 app/views/admin/{dashboard,moderation_queue,listings,users,stores}/**
+app/views/admin/{orders,payments,bulk_payments,disputes,reports,reviews}/**
 app/views/admin/{audit_logs,search,placeholders}/
 app/javascript/controllers/admin_sidebar_controller.js
 app/javascript/controllers/admin_queue_controller.js
@@ -583,6 +613,8 @@ test/system/checkout_flow_test.rb
 test/system/                                adaptable + modal de acceso
 test/i18n/locale_parity_test.rb
 test/integration/admin_{access,panel,moderation,users}_test.rb
+test/integration/admin_{orders,disputes,reports,reviews}_test.rb
+test/services/admin/sidebar_counts_test.rb
 test/system/admin_moderation_flow_test.rb
 test/seeds_test.rb
 </code></pre>
@@ -590,7 +622,8 @@ test/seeds_test.rb
 <section class="card open-items">
 <h2><span>Pendientes para fases posteriores</span></h2>
 <ul>
-<li>Las pantallas de administración de pedidos, disputas, reembolsos, denuncias, reseñas, categorías, filtros, páginas legales, juegos, boletín y ajustes son marcadores hasta las fases 6B/6C.</li>
+<li>Las pantallas de administración de categorías, filtros, páginas legales, juegos, boletín y ajustes son marcadores hasta la fase 6C.</li>
+<li>Los reembolsos se registran manualmente con una referencia; todavía no se llama a la API de reembolsos del proveedor de pago.</li>
 <li>No hay autenticación en dos pasos para administración; Devise lockable ya limita los inicios de sesión fallidos. Decidir si el 2FA de personal es obligatorio antes de la fase 6C.</li>
 <li>La suplantación se basa en sesión y queda auditada; no tiene caducidad automática.</li>
 <li>El panel y las señales de moderación son heurísticos (mediana de precio y reutilización de checksum de imagen), no detección de fraude.</li>

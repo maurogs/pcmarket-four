@@ -1,231 +1,240 @@
+---
 it:
   orders:
     index:
-      title: "I tuoi ordini"
-      subtitle: "Segui acquisti, pagamenti e consegne."
-      keep_shopping: "Continua gli acquisti"
-      filters_label: "Filtra ordini"
+      title: I tuoi ordini
+      subtitle: Segui acquisti, pagamenti e consegne.
+      keep_shopping: Continua gli acquisti
+      filters_label: Filtra ordini
       filters:
-        all: "Tutti"
-        to_pay: "Da pagare"
-        in_progress: "In corso"
-        completed: "Completati"
-        cancelled: "Annullati"
-      search_label: "Cerca ordini"
-      search_placeholder: "Cerca per numero d’ordine o articolo"
-      search: "Cerca"
+        all: Tutti
+        to_pay: Da pagare
+        in_progress: In corso
+        completed: Completati
+        cancelled: Annullati
+      search_label: Cerca ordini
+      search_placeholder: Cerca per numero d’ordine o articolo
+      search: Cerca
       items_count:
         one: "%{count} articolo"
         other: "%{count} articoli"
       more_items:
         one: "+%{count} altro"
         other: "+%{count} altri"
-      view: "Vedi ordine"
-      empty_title: "Ancora nessun ordine"
-      empty_body: "Quando acquisterai qualcosa, apparirà qui."
+      view: Vedi ordine
+      empty_title: Ancora nessun ordine
+      empty_body: Quando acquisterai qualcosa, apparirà qui.
     show:
-      title: "Ordine %{number}"
-      placed_on: "Effettuato il %{date}"
-      back: "Torna agli ordini"
-      guest_notice: "Stai vedendo questo ordine come ospite. Conserva il link per controllarlo in seguito."
-      cancelled_notice: "Questo ordine è stato annullato il %{date}."
-      timeline_title: "Stato dell’ordine"
-      items_title: "Articoli"
-      quantity:
-        one: "Quantità: %{count}"
-        other: "Quantità: %{count}"
-      payment_title: "Istruzioni di pagamento"
-      seller_title: "Venditore"
-      view_store: "Vedi negozio"
-      message_seller: "Scrivi al venditore"
-      delivery_title: "Consegna"
-      totals_title: "Totali"
+      tracking_title: Tracciamento
+      carrier: 'Corriere: %{carrier}'
+      tracking_number: 'Numero di tracciamento:'
     statuses:
-      pending_payment: "In attesa di pagamento"
-      paid: "Pagato"
-      shipped: "Spedito"
-      delivered: "Consegnato"
-      completed: "Completato"
-      cancelled: "Annullato"
-      refunded: "Rimborsato"
-      disputed: "Contestato"
+      pending_payment: In attesa di pagamento
+      paid: Pagato
+      shipped: Spedito
+      delivered: Consegnato
+      completed: Completato
+      cancelled: Annullato
+      refunded: Rimborsato
+      disputed: Contestato
     timeline:
-      placed: "Effettuato"
-      paid: "Pagato"
-      shipped: "Spedito"
-      delivered: "Consegnato"
-      completed: "Completato"
-      pending: "In attesa"
-    cancel: "Annulla ordine"
-    cancel_confirm: "Annullare questo ordine non pagato?"
-    cancelled: "Ordine annullato. Gli articoli sono di nuovo disponibili."
-    cannot_cancel: "Questo ordine non può più essere annullato."
+      placed: Effettuato
+      paid: Pagato
+      shipped: Spedito
+      delivered: Consegnato
+      completed: Completato
+      pending: In attesa
+    cancel: Annulla ordine
+    cancel_confirm: Annullare questo ordine non pagato?
+    cancelled: Ordine annullato. Gli articoli sono di nuovo disponibili.
+    cannot_cancel: Questo ordine non può più essere annullato.
     payment:
       bank_transfer:
-        title: "Bonifico bancario"
-        intro: "Paga con bonifico usando il riferimento qui sotto. Il venditore prepara l’ordine quando arriva il pagamento."
-        iban: "IBAN"
-        beneficiary: "Beneficiario"
-        reference: "Riferimento"
-        amount: "Importo"
-        deadline: "Paga entro %{days} giorni. Gli ordini non pagati vengono annullati automaticamente e gli articoli ripubblicati."
+        title: Bonifico bancario
+        intro: Paga con bonifico usando il riferimento qui sotto. Il venditore prepara
+          l’ordine quando arriva il pagamento.
+        iban: IBAN
+        beneficiary: Beneficiario
+        reference: Riferimento
+        amount: Importo
+        deadline: Paga entro %{days} giorni. Gli ordini non pagati vengono annullati
+          automaticamente e gli articoli ripubblicati.
       cash_on_pickup:
-        title: "Contanti al ritiro"
-        intro: "Paga il venditore di persona al ritiro. Fino ad allora l’ordine resta in attesa."
+        title: Contanti al ritiro
+        intro: Paga il venditore di persona al ritiro. Fino ad allora l’ordine resta
+          in attesa.
       stripe:
-        title: "Pagamento con carta"
-        intro: "Il pagamento con carta è elaborato in modo sicuro da Stripe. Confermeremo l’ordine appena riceviamo la notifica."
+        title: Pagamento con carta
+        intro: Il pagamento con carta è elaborato in modo sicuro da Stripe. Confermeremo
+          l’ordine appena riceviamo la notifica.
     mailer:
       events:
         paid_buyer:
-          subject: "Pagamento ricevuto per l'ordine %{number}"
-          title: "Pagamento ricevuto"
-          intro: "Abbiamo ricevuto il pagamento dell'ordine %{number} da %{store}. Il venditore lo preparerà per la spedizione."
-          cta: "Vedi il tuo ordine"
+          subject: Pagamento ricevuto per l'ordine %{number}
+          title: Pagamento ricevuto
+          intro: Abbiamo ricevuto il pagamento dell'ordine %{number} da %{store}.
+            Il venditore lo preparerà per la spedizione.
+          cta: Vedi il tuo ordine
         paid_seller:
-          subject: "L'ordine %{number} è pagato"
-          title: "Ordine pagato"
-          intro: "L'ordine %{number} di %{store} è stato pagato. Preparalo e spediscilo entro la scadenza."
-          cta: "Apri le tue vendite"
+          subject: L'ordine %{number} è pagato
+          title: Ordine pagato
+          intro: L'ordine %{number} di %{store} è stato pagato. Preparalo e spediscilo
+            entro la scadenza.
+          cta: Apri le tue vendite
         shipped_buyer:
-          subject: "Il tuo ordine %{number} è in viaggio"
-          title: "Ordine spedito"
-          intro: "L'ordine %{number} di %{store} è stato spedito con %{carrier}."
-          cta: "Traccia il tuo ordine"
+          subject: Il tuo ordine %{number} è in viaggio
+          title: Ordine spedito
+          intro: L'ordine %{number} di %{store} è stato spedito con %{carrier}.
+          cta: Traccia il tuo ordine
         delivered_buyer:
-          subject: "Il tuo ordine %{number} è stato consegnato"
-          title: "Ordine consegnato"
-          intro: "L'ordine %{number} di %{store} risulta consegnato. Conferma la ricezione dopo averlo controllato."
-          cta: "Conferma ricezione"
+          subject: Il tuo ordine %{number} è stato consegnato
+          title: Ordine consegnato
+          intro: L'ordine %{number} di %{store} risulta consegnato. Conferma la ricezione
+            dopo averlo controllato.
+          cta: Conferma ricezione
         completed_buyer:
-          subject: "Ordine %{number} completato"
-          title: "Ordine completato"
-          intro: "L'ordine %{number} di %{store} è completato. Ci piacerebbe sapere com'è andata."
-          cta: "Lascia una recensione"
+          subject: Ordine %{number} completato
+          title: Ordine completato
+          intro: L'ordine %{number} di %{store} è completato. Ci piacerebbe sapere
+            com'è andata.
+          cta: Lascia una recensione
         cancelled_buyer:
-          subject: "Ordine %{number} annullato"
-          title: "Ordine annullato"
-          intro: "L'ordine %{number} di %{store} è stato annullato."
-          cta: "Vedi il tuo ordine"
+          subject: Ordine %{number} annullato
+          title: Ordine annullato
+          intro: L'ordine %{number} di %{store} è stato annullato.
+          cta: Vedi il tuo ordine
         cancelled_seller:
-          subject: "Ordine %{number} annullato"
-          title: "Ordine annullato"
-          intro: "L'ordine %{number} di %{store} è stato annullato. I pagamenti saranno rimborsati."
-          cta: "Apri le tue vendite"
+          subject: Ordine %{number} annullato
+          title: Ordine annullato
+          intro: L'ordine %{number} di %{store} è stato annullato. I pagamenti saranno
+            rimborsati.
+          cta: Apri le tue vendite
         dispute_seller:
-          subject: "Contestazione aperta sull'ordine %{number}"
-          title: "Un acquirente ha aperto una contestazione"
-          intro: "L'acquirente dell'ordine %{number} ha aperto una contestazione. Motivo: %{reason}. Dettagli: %{details}"
-          cta: "Esamina la contestazione"
+          subject: Contestazione aperta sull'ordine %{number}
+          title: Un acquirente ha aperto una contestazione
+          intro: 'L''acquirente dell''ordine %{number} ha aperto una contestazione.
+            Motivo: %{reason}. Dettagli: %{details}'
+          cta: Esamina la contestazione
         late_shipment_seller:
-          subject: "L'ordine %{number} attende la spedizione"
-          title: "Spedizione in ritardo"
-          intro: "L'ordine %{number} è pagato ma non spedito. Spediscilo entro %{days} giorni o verrà annullato automaticamente."
-          cta: "Spedisci l'ordine"
+          subject: L'ordine %{number} attende la spedizione
+          title: Spedizione in ritardo
+          intro: L'ordine %{number} è pagato ma non spedito. Spediscilo entro %{days}
+            giorni o verrà annullato automaticamente.
+          cta: Spedisci l'ordine
         dispute_admin:
-          subject: "Nuova contestazione sull'ordine %{number}"
-          title: "Nuova contestazione"
-          intro: "L'ordine %{number} di %{store} ha una nuova contestazione. Motivo: %{reason}. Dettagli: %{details}"
-          cta: "Apri l'ordine"
-      order_number: "Ordine"
-      store: "Negozio"
-      tracking_label: "Tracciamento"
-      greeting: "Ciao %{name},"
-      subtotal: "Subtotale"
-      shipping: "Spedizione"
-      total: "Totale"
-      view_order: "Vedi il tuo ordine"
-      signature: "Il team di %{site}"
+          subject: Nuova contestazione sull'ordine %{number}
+          title: Nuova contestazione
+          intro: 'L''ordine %{number} di %{store} ha una nuova contestazione. Motivo:
+            %{reason}. Dettagli: %{details}'
+          cta: Apri l'ordine
+        dispute_resolved_buyer:
+          subject: Controversia sull’ordine %{number} risolta
+          title: La tua controversia è stata risolta
+          intro: 'La controversia sull’ordine %{number} di %{store} è stata risolta:
+            %{outcome}. %{message}'
+          cta: Vedi il tuo ordine
+        dispute_resolved_seller:
+          subject: Controversia sull’ordine %{number} risolta
+          title: Controversia risolta
+          intro: 'La controversia sull’ordine %{number} di %{store} è stata risolta:
+            %{outcome}. %{message}'
+          cta: Apri le tue vendite
+      order_number: Ordine
+      store: Negozio
+      tracking_label: Tracciamento
+      greeting: Ciao %{name},
+      subtotal: Subtotale
+      shipping: Spedizione
+      total: Totale
+      view_order: Vedi il tuo ordine
+      signature: Il team di %{site}
       buyer:
-        subject: "Il tuo ordine %{number} su %{site}"
-        title: "Conferma dell’ordine"
-        intro: "Grazie per il tuo ordine %{number} da %{store}."
-        outro: "Per qualsiasi domanda, rispondi a questa email o scrivi al venditore dalla pagina dell’ordine."
+        subject: Il tuo ordine %{number} su %{site}
+        title: Conferma dell’ordine
+        intro: Grazie per il tuo ordine %{number} da %{store}.
+        outro: Per qualsiasi domanda, rispondi a questa email o scrivi al venditore
+          dalla pagina dell’ordine.
       seller:
-        subject: "Nuovo ordine %{number} su %{site}"
-        title: "Hai un nuovo ordine"
-        intro: "È stato effettuato l’ordine %{number} per %{store}."
-        buyer: "Email dell’acquirente: %{email}"
+        subject: Nuovo ordine %{number} su %{site}
+        title: Hai un nuovo ordine
+        intro: È stato effettuato l’ordine %{number} per %{store}.
+        buyer: 'Email dell’acquirente: %{email}'
         fulfilment:
-          shipping: "L’acquirente ha scelto la spedizione."
-          local_pickup: "L’acquirente ha scelto il ritiro locale."
-        payment: "Metodo di pagamento: %{method}"
-        total: "Totale ordine: %{amount}"
-        open_sales: "Apri le tue vendite"
+          shipping: L’acquirente ha scelto la spedizione.
+          local_pickup: L’acquirente ha scelto il ritiro locale.
+        payment: 'Metodo di pagamento: %{method}'
+        total: 'Totale ordine: %{amount}'
+        open_sales: Apri le tue vendite
     events:
-      placed: "Ordine effettuato"
-      paid: "Pagamento ricevuto"
-      shipped: "Spedito"
-      ready_for_pickup: "Pronto per il ritiro"
-      delivered: "Consegnato"
-      completed: "Completato"
-      cancelled: "Annullato"
-      dispute_opened: "Contestazione aperta"
-      dispute_resolved: "Contestazione risolta"
-      refunded: "Rimborsato"
-      late_shipment_reminder: "Promemoria di spedizione inviato"
-      by_actor: "da %{name}"
-      by_system: "automaticamente"
-      reason_label: "Motivo: %{reason}"
+      placed: Ordine effettuato
+      paid: Pagamento ricevuto
+      shipped: Spedito
+      ready_for_pickup: Pronto per il ritiro
+      delivered: Consegnato
+      completed: Completato
+      cancelled: Annullato
+      dispute_opened: Contestazione aperta
+      dispute_resolved: Contestazione risolta
+      refunded: Rimborsato
+      late_shipment_reminder: Promemoria di spedizione inviato
+      by_actor: da %{name}
+      by_system: automaticamente
+      reason_label: 'Motivo: %{reason}'
     carriers:
-      correos: "Correos"
-      correos_express: "Correos Express"
-      seur: "SEUR"
-      mrw: "MRW"
-      gls: "GLS"
-      dhl: "DHL"
-      ups: "UPS"
-      nacex: "Nacex"
-      inpost: "InPost"
-      other: "Altro"
-    show:
-      tracking_title: "Tracciamento"
-      carrier: "Corriere: %{carrier}"
-      tracking_number: "Numero di tracciamento:"
+      correos: Correos
+      correos_express: Correos Express
+      seur: SEUR
+      mrw: MRW
+      gls: GLS
+      dhl: DHL
+      ups: UPS
+      nacex: Nacex
+      inpost: InPost
+      other: Altro
     actions:
-      title: "Azioni"
-      confirm_receipt: "Conferma ricezione"
-      confirm_receipt_confirm: "Confermi di aver ricevuto l'ordine in buone condizioni?"
-      open_dispute: "Apri una contestazione"
-      leave_review: "Lascia una recensione"
-      inspection_window: "Puoi segnalare un problema fino al %{date}."
+      title: Azioni
+      confirm_receipt: Conferma ricezione
+      confirm_receipt_confirm: Confermi di aver ricevuto l'ordine in buone condizioni?
+      open_dispute: Apri una contestazione
+      leave_review: Lascia una recensione
+      inspection_window: Puoi segnalare un problema fino al %{date}.
     delivery:
-      confirmed: "Ricezione confermata. Grazie!"
-      cannot_confirm: "Questo ordine non può ancora essere confermato."
+      confirmed: Ricezione confermata. Grazie!
+      cannot_confirm: Questo ordine non può ancora essere confermato.
     dispute:
-      title: "Apri una contestazione"
-      subtitle: "Raccontaci cosa non va con l'ordine %{number}."
-      reason_label: "Motivo"
+      title: Apri una contestazione
+      subtitle: Raccontaci cosa non va con l'ordine %{number}.
+      reason_label: Motivo
       reasons:
-        not_received: "Non l'ho ricevuto"
-        not_as_described: "Non è come descritto"
-        damaged: "È arrivato danneggiato"
-        counterfeit: "Sembra contraffatto"
-        other: "Altro"
-      details: "Cosa è successo?"
-      details_placeholder: "Descrivi il problema e cosa vorresti succedesse."
-      photos: "Foto"
-      photos_hint: "Fino a %{count} foto in JPEG, PNG o WebP."
-      submit: "Apri contestazione"
-      cancel: "Annulla"
-      back: "Torna all'ordine"
-      opened: "Contestazione aperta. Il venditore e il nostro supporto sono stati avvisati."
+        not_received: Non l'ho ricevuto
+        not_as_described: Non è come descritto
+        damaged: È arrivato danneggiato
+        counterfeit: Sembra contraffatto
+        other: Altro
+      details: Cosa è successo?
+      details_placeholder: Descrivi il problema e cosa vorresti succedesse.
+      photos: Foto
+      photos_hint: Fino a %{count} foto in JPEG, PNG o WebP.
+      submit: Apri contestazione
+      cancel: Annulla
+      back: Torna all'ordine
+      opened: Contestazione aperta. Il venditore e il nostro supporto sono stati avvisati.
     reviews:
-      title: "Lascia una recensione"
-      subtitle: "Valuta la tua esperienza con %{store}."
-      rating: "Valutazione"
-      rating_hint: "Usa le frecce per scegliere tra 1 e 5 stelle."
-      blocked: "Il testo contiene un linguaggio non consentito."
-      order_not_completed: "Questo ordine non può ancora essere recensito."
+      title: Lascia una recensione
+      subtitle: Valuta la tua esperienza con %{store}.
+      rating: Valutazione
+      rating_hint: Usa le frecce per scegliere tra 1 e 5 stelle.
+      blocked: Il testo contiene un linguaggio non consentito.
+      order_not_completed: Questo ordine non può ancora essere recensito.
       stars:
         one: "%{count} stella"
         other: "%{count} stelle"
-      body: "La tua recensione"
-      body_placeholder: "Cosa è andato bene? Cosa potrebbe migliorare?"
-      body_hint: "Tra %{min} e %{max} caratteri."
-      submit: "Pubblica recensione"
-      cancel: "Annulla"
-      back: "Torna all'ordine"
-      created: "Grazie! La tua recensione è stata pubblicata."
-      disabled: "Le recensioni sono temporaneamente disattivate."
-      your_review: "La tua recensione"
+      body: La tua recensione
+      body_placeholder: Cosa è andato bene? Cosa potrebbe migliorare?
+      body_hint: Tra %{min} e %{max} caratteri.
+      submit: Pubblica recensione
+      cancel: Annulla
+      back: Torna all'ordine
+      created: Grazie! La tua recensione è stata pubblicata.
+      disabled: Le recensioni sono temporaneamente disattivate.
+      your_review: La tua recensione

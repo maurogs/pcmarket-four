@@ -1,576 +1,887 @@
+---
 fr:
   admin:
-    title: "Administration"
+    title: Administration
     roles:
-      user: "Utilisateur"
-      moderator: "Modérateur"
-      admin: "Administrateur"
+      user: Utilisateur
+      moderator: Modérateur
+      admin: Administrateur
     user_statuses:
-      active: "Actif"
-      suspended: "Suspendu"
-      banned: "Banni"
+      active: Actif
+      suspended: Suspendu
+      banned: Banni
     store_types:
-      individual: "Particulier"
-      professional: "Professionnel"
+      individual: Particulier
+      professional: Professionnel
     nav:
-      label: "Navigation d’administration"
-      dashboard: "Tableau de bord"
-      moderation: "File de modération"
+      label: Navigation d’administration
+      dashboard: Tableau de bord
+      moderation: File de modération
       sections:
-        marketplace: "Marketplace"
-        catalogue: "Catalogue"
-        content: "Contenu"
-        marketing: "Marketing"
-        settings: "Paramètres"
-      listings: "Annonces"
-      users: "Utilisateurs"
-      stores: "Boutiques"
-      orders: "Commandes"
-      disputes: "Litiges"
-      reports: "Signalements"
-      reviews: "Avis"
-      categories: "Catégories"
-      filters: "Filtres"
-      legal_pages: "Pages légales"
-      games: "Jeux"
-      newsletter: "Newsletter"
-      general_settings: "Général et options"
-      countries: "Pays"
-      audit_log: "Journal d’audit"
-      close: "Fermer la navigation"
-      collapse: "Réduire la navigation"
-      collapse_hint: "Réduire"
-      open: "Ouvrir la navigation"
+        marketplace: Marketplace
+        catalogue: Catalogue
+        content: Contenu
+        marketing: Marketing
+        settings: Paramètres
+      listings: Annonces
+      users: Utilisateurs
+      stores: Boutiques
+      orders: Commandes
+      disputes: Litiges
+      reports: Signalements
+      reviews: Avis
+      categories: Catégories
+      filters: Filtres
+      legal_pages: Pages légales
+      games: Jeux
+      newsletter: Newsletter
+      general_settings: Général et options
+      countries: Pays
+      audit_log: Journal d’audit
+      close: Fermer la navigation
+      collapse: Réduire la navigation
+      collapse_hint: Réduire
+      open: Ouvrir la navigation
+      payments: Rapprochement des paiements
     topbar:
-      view_site: "Voir le site"
+      view_site: Voir le site
     search:
-      placeholder: "Rechercher utilisateurs, annonces, commandes ou boutiques"
-      title: "Recherche d’administration"
-      subtitle: "Recherchez parmi les personnes, annonces, commandes et boutiques."
-      results_for: "Résultats pour « %{query} »"
-      empty_title: "Rechercher sur la marketplace"
-      empty_body: "Saisissez un e-mail, un nom d’utilisateur, un titre d’annonce, un numéro de commande ou le nom d’une boutique."
-      no_results_title: "Aucun résultat"
-      no_results_body: "Rien ne correspond à « %{query} ». Essayez un autre terme."
+      placeholder: Rechercher utilisateurs, annonces, commandes ou boutiques
+      title: Recherche d’administration
+      subtitle: Recherchez parmi les personnes, annonces, commandes et boutiques.
+      results_for: Résultats pour « %{query} »
+      empty_title: Rechercher sur la marketplace
+      empty_body: Saisissez un e-mail, un nom d’utilisateur, un titre d’annonce, un
+        numéro de commande ou le nom d’une boutique.
+      no_results_title: Aucun résultat
+      no_results_body: Rien ne correspond à « %{query} ». Essayez un autre terme.
       groups:
-        users: "Utilisateurs"
-        listings: "Annonces"
-        orders: "Commandes"
-        stores: "Boutiques"
+        users: Utilisateurs
+        listings: Annonces
+        orders: Commandes
+        stores: Boutiques
     actions:
-      back: "Retour"
-      back_to_listing: "Retour à l’annonce"
-      back_to_user: "Retour à l’utilisateur"
-      back_to_store: "Retour à la boutique"
-      back_to_dashboard: "Retour au tableau de bord"
-      view: "Voir"
-      edit: "Modifier"
-      edit_profile: "Modifier le profil"
-      save: "Enregistrer"
-      cancel: "Annuler"
-      approve: "Approuver"
-      reject: "Rejeter"
-      delete: "Supprimer"
-      feature: "Mettre en avant"
-      unfeature: "Retirer la mise en avant"
-      suspend: "Suspendre le compte"
-      unsuspend: "Réactiver le compte"
-      ban: "Bannir le compte"
-      unban: "Lever le bannissement"
-      change_role: "Changer le rôle"
-      confirm_email: "Confirmer l’e-mail"
-      send_password_reset: "Envoyer la réinitialisation"
-      impersonate: "Usurper l’utilisateur"
-      soft_delete: "Supprimer le compte (RGPD)"
-      verify: "Vérifier la boutique"
-      unverify: "Retirer la vérification"
-      start_vacation: "Activer les vacances"
-      end_vacation: "Terminer les vacances"
-      view_public: "Voir la page publique"
-      manage: "Gérer"
+      back: Retour
+      back_to_listing: Retour à l’annonce
+      back_to_user: Retour à l’utilisateur
+      back_to_store: Retour à la boutique
+      back_to_dashboard: Retour au tableau de bord
+      view: Voir
+      edit: Modifier
+      edit_profile: Modifier le profil
+      save: Enregistrer
+      cancel: Annuler
+      approve: Approuver
+      reject: Rejeter
+      delete: Supprimer
+      feature: Mettre en avant
+      unfeature: Retirer la mise en avant
+      suspend: Suspendre le compte
+      unsuspend: Réactiver le compte
+      ban: Bannir le compte
+      unban: Lever le bannissement
+      change_role: Changer le rôle
+      confirm_email: Confirmer l’e-mail
+      send_password_reset: Envoyer la réinitialisation
+      impersonate: Usurper l’utilisateur
+      soft_delete: Supprimer le compte (RGPD)
+      verify: Vérifier la boutique
+      unverify: Retirer la vérification
+      start_vacation: Activer les vacances
+      end_vacation: Terminer les vacances
+      view_public: Voir la page publique
+      manage: Gérer
     common:
-      empty_title: "Rien pour le moment"
-      empty_body: "Ajustez les filtres ou revenez plus tard."
-      select_all: "Tout sélectionner sur cette page"
-      bulk_actions: "Actions groupées"
-      label: "Étiquette"
-      feature_days: "Jours de mise en avant"
-      filter: "Filtrer"
-      clear: "Effacer"
-      apply: "Appliquer"
-      per_page: "Par page"
+      empty_title: Rien pour le moment
+      empty_body: Ajustez les filtres ou revenez plus tard.
+      select_all: Tout sélectionner sur cette page
+      bulk_actions: Actions groupées
+      label: Étiquette
+      feature_days: Jours de mise en avant
+      filter: Filtrer
+      clear: Effacer
+      apply: Appliquer
+      per_page: Par page
       showing: "%{from}–%{to} sur %{count}"
-      yes: "Oui"
-      no: "Non"
-      no_history: "Aucune activité d’administration enregistrée."
+      true: Oui
+      false: Non
+      no_history: Aucune activité d’administration enregistrée.
       errors:
-        one: "1 erreur a empêché l’enregistrement"
+        one: 1 erreur a empêché l’enregistrement
         other: "%{count} erreurs ont empêché l’enregistrement"
     dashboard:
-      eyebrow: "Vue des opérations"
-      title: "Tableau de bord"
-      subtitle: "Santé de la marketplace, modération et revenus en un coup d’œil."
-      open_queue: "Ouvrir la file de modération"
-      all_listings: "Toutes les annonces"
-      kpis: "Indicateurs clés"
-      last_7_days: "7 derniers jours"
-      last_30_days: "30 derniers jours"
-      vs_previous: "vs 7 jours précédents"
-      vs_yesterday: "vs hier"
-      live_now: "En ligne actuellement"
-      needs_attention: "À surveiller"
-      no_data: "Pas encore de données pour cette période."
-      view_all: "Tout voir"
-      all_caught_up: "La file de modération est vide. Beau travail."
-      coming_soon: "Bientôt disponible"
+      eyebrow: Vue des opérations
+      title: Tableau de bord
+      subtitle: Santé de la marketplace, modération et revenus en un coup d’œil.
+      open_queue: Ouvrir la file de modération
+      all_listings: Toutes les annonces
+      kpis: Indicateurs clés
+      last_7_days: 7 derniers jours
+      last_30_days: 30 derniers jours
+      vs_previous: vs 7 jours précédents
+      vs_yesterday: vs hier
+      live_now: En ligne actuellement
+      needs_attention: À surveiller
+      no_data: Pas encore de données pour cette période.
+      view_all: Tout voir
+      all_caught_up: La file de modération est vide. Beau travail.
+      coming_soon: Bientôt disponible
       stats:
-        new_users: "Nouveaux utilisateurs"
-        active_listings: "Annonces actives"
-        pending_review: "En attente de validation"
-        published_today: "Publiées aujourd’hui"
-        orders: "Commandes"
-        gmv: "Volume de ventes"
-        commission: "Commission gagnée"
-        open_disputes: "Litiges ouverts"
-        open_reports: "Signalements ouverts"
-        newsletter: "Abonnés à la newsletter"
+        new_users: Nouveaux utilisateurs
+        active_listings: Annonces actives
+        pending_review: En attente de validation
+        published_today: Publiées aujourd’hui
+        orders: Commandes
+        gmv: Volume de ventes
+        commission: Commission gagnée
+        open_disputes: Litiges ouverts
+        open_reports: Signalements ouverts
+        newsletter: Abonnés à la newsletter
+        pending_payments: Paiements en attente
       charts:
-        signups: "Inscriptions par jour"
-        orders: "Commandes par jour"
-        categories: "Annonces par catégorie"
+        signups: Inscriptions par jour
+        orders: Commandes par jour
+        categories: Annonces par catégorie
       health:
-        title: "Santé du système"
-        failed_jobs: "Tâches échouées"
-        pending_jobs: "Tâches en attente"
-        storage: "Stockage utilisé"
-        database: "Taille de la base"
-        cached: "Agrégats mis en cache pendant deux minutes."
+        title: Santé du système
+        failed_jobs: Tâches échouées
+        pending_jobs: Tâches en attente
+        storage: Stockage utilisé
+        database: Taille de la base
+        cached: Agrégats mis en cache pendant deux minutes.
       tables:
-        pending: "Dernières annonces en attente"
-        orders: "Dernières commandes"
-        users: "Derniers utilisateurs"
+        pending: Dernières annonces en attente
+        orders: Dernières commandes
+        users: Derniers utilisateurs
     moderation:
-      eyebrow: "Confiance et sécurité"
-      title: "File de modération"
+      eyebrow: Confiance et sécurité
+      title: File de modération
       subtitle:
         one: "%{count} annonce attend une validation."
         other: "%{count} annonces attendent une validation."
-      select_all: "Tout sélectionner sur cette page"
-      bulk_approve: "Approuver la sélection"
-      empty_title: "File vide"
-      empty_body: "Aucune annonce n’attend de validation pour le moment."
-      card_label: "Annonce en attente : %{title}"
-      card_index: "Élément %{index}"
-      submitted: "envoyée %{time}"
-      median: "Médiane de la catégorie %{price}"
-      approve_feature: "Approuver et mettre en avant"
-      reason_placeholder: "Motif du rejet…"
-      other_reason: "Autre motif"
+      select_all: Tout sélectionner sur cette page
+      bulk_approve: Approuver la sélection
+      empty_title: File vide
+      empty_body: Aucune annonce n’attend de validation pour le moment.
+      card_label: 'Annonce en attente : %{title}'
+      card_index: Élément %{index}
+      submitted: envoyée %{time}
+      median: Médiane de la catégorie %{price}
+      approve_feature: Approuver et mettre en avant
+      reason_placeholder: Motif du rejet…
+      other_reason: Autre motif
       approved: "« %{title} » approuvée et publiée."
       rejected: "« %{title} » rejetée et vendeur prévenu."
-      reason_required: "Choisissez d’abord un motif de rejet."
-      cannot_approve: "Cette annonce n’a pas pu être approuvée."
-      no_images: "Aucune image"
-      select_listing: "Sélectionner %{title}"
-      all_listings: "Toutes les annonces"
-      duplicate_hint: "Aussi utilisée dans :"
+      reason_required: Choisissez d’abord un motif de rejet.
+      cannot_approve: Cette annonce n’a pas pu être approuvée.
+      no_images: Aucune image
+      select_listing: Sélectionner %{title}
+      all_listings: Toutes les annonces
+      duplicate_hint: 'Aussi utilisée dans :'
       shortcuts:
-        navigate: "naviguer"
-        approve: "approuver"
-        reject: "rejeter"
+        navigate: naviguer
+        approve: approuver
+        reject: rejeter
       flags:
-        suspicious_price: "Arnaque possible : prix inférieur à 40 % de la médiane"
-        safety: "Analyse de sécurité : %{reasons}"
-        safety_short: "Alerte de sécurité"
+        suspicious_price: 'Arnaque possible : prix inférieur à 40 % de la médiane'
+        safety: 'Analyse de sécurité : %{reasons}'
+        safety_short: Alerte de sécurité
         duplicate:
-          one: "Image réutilisée dans %{count} autre annonce"
-          other: "Image réutilisée dans %{count} autres annonces"
+          one: Image réutilisée dans %{count} autre annonce
+          other: Image réutilisée dans %{count} autres annonces
         previous_rejections:
           one: "%{count} rejet précédent"
           other: "%{count} rejets précédents"
       safety:
-        email: "adresse e-mail"
-        phone: "numéro de téléphone"
-        iban: "IBAN"
-        external_payment: "paiement hors plateforme"
+        email: adresse e-mail
+        phone: numéro de téléphone
+        iban: IBAN
+        external_payment: paiement hors plateforme
       reasons:
-        prohibited: "Article interdit"
-        misleading: "Informations trompeuses"
-        poor_photos: "Photos de mauvaise qualité"
-        wrong_category: "Mauvaise catégorie"
-        suspicious_price: "Prix suspect"
-        duplicate: "Annonce en double"
-        other: "Autre"
+        prohibited: Article interdit
+        misleading: Informations trompeuses
+        poor_photos: Photos de mauvaise qualité
+        wrong_category: Mauvaise catégorie
+        suspicious_price: Prix suspect
+        duplicate: Annonce en double
+        other: Autre
       seller:
-        account_age: "Ancienneté du compte"
-        listings: "Annonces"
-        sales: "Ventes terminées"
-        rating: "Note"
-        name: "Vendeur"
-        rejections: "Rejets précédents"
-        verified: "Vérifié"
+        account_age: Ancienneté du compte
+        listings: Annonces
+        sales: Ventes terminées
+        rating: Note
+        name: Vendeur
+        rejections: Rejets précédents
+        verified: Vérifié
       days:
         one: "%{count} jour"
         other: "%{count} jours"
     listings:
-      title: "Annonces"
-      subtitle: "Recherchez, modérez et modifiez toutes les annonces."
-      open_queue: "File de modération"
-      updated: "Annonce mise à jour."
-      destroyed: "Annonce supprimée."
+      title: Annonces
+      subtitle: Recherchez, modérez et modifiez toutes les annonces.
+      open_queue: File de modération
+      updated: Annonce mise à jour.
+      destroyed: Annonce supprimée.
       bulk_done: "%{count} annonces mises à jour."
-      select_listing: "Sélectionner %{title}"
+      select_listing: Sélectionner %{title}
       confirm:
-        reject: "Rejeter les annonces sélectionnées ?"
-        delete: "Supprimer les annonces sélectionnées ? Action irréversible."
-      bulk_pause: "Mettre en pause"
-      bulk_archive: "Archiver"
-      bulk_add_label: "Ajouter une étiquette"
-      bulk_remove_label: "Retirer une étiquette"
-      bulk_feature: "Mettre en avant"
-      bulk_unfeature: "Retirer la mise en avant"
-      bulk_delete: "Supprimer"
+        reject: Rejeter les annonces sélectionnées ?
+        delete: Supprimer les annonces sélectionnées ? Action irréversible.
+      bulk_pause: Mettre en pause
+      bulk_archive: Archiver
+      bulk_add_label: Ajouter une étiquette
+      bulk_remove_label: Retirer une étiquette
+      bulk_feature: Mettre en avant
+      bulk_unfeature: Retirer la mise en avant
+      bulk_delete: Supprimer
       columns:
-        listing: "Annonce"
-        status: "Statut"
-        price: "Prix"
-        seller: "Vendeur"
-        views: "Vues"
-        created: "Créée"
+        listing: Annonce
+        status: Statut
+        price: Prix
+        seller: Vendeur
+        views: Vues
+        created: Créée
       filters:
-        search_placeholder: "Titre ou ID"
-        status: "Statut"
-        any_status: "Tous les statuts"
-        category: "Catégorie"
-        any_category: "Toutes les catégories"
-        seller: "Vendeur"
-        seller_placeholder: "Nom, e-mail ou ID"
-        min_price: "Min €"
-        max_price: "Max €"
-        featured: "En avant"
-        any_featured: "Indifférent"
-        created_from: "Créée depuis"
-        created_to: "Créée jusqu’à"
-      empty_title: "Aucune annonce trouvée"
-      empty_body: "Essayez d’autres filtres ou effacez la recherche."
+        search_placeholder: Titre ou ID
+        status: Statut
+        any_status: Tous les statuts
+        category: Catégorie
+        any_category: Toutes les catégories
+        seller: Vendeur
+        seller_placeholder: Nom, e-mail ou ID
+        min_price: Min €
+        max_price: Max €
+        featured: En avant
+        any_featured: Indifférent
+        created_from: Créée depuis
+        created_to: Créée jusqu’à
+      empty_title: Aucune annonce trouvée
+      empty_body: Essayez d’autres filtres ou effacez la recherche.
       show:
-        subtitle: "Annonce n° %{id} dans %{category}"
-        created: "Créée %{time}"
-        updated: "Modifiée %{time}"
-        moderation_title: "Cette annonce attend une décision"
-        rejection_title: "Annonce rejetée"
-        reviewed_by: "Vérifiée par %{name} le %{time}"
-        images: "Photos"
-        description: "Description"
-        safety_warning: "La description contient des coordonnées ou des indices de paiement hors plateforme :"
-        orders: "Commandes"
-        no_orders: "Aucune commande ne contient cette annonce."
-        order_number: "Commande"
-        order_buyer: "Acheteur"
-        order_status: "Statut"
-        order_total: "Total"
-        reports: "Signalements"
-        no_reports: "Aucun signalement."
-        history: "Historique d’administration"
-        pricing: "Prix"
-        price: "Prix"
-        original_price: "Prix d’origine"
-        median: "Médiane de la catégorie"
-        currency: "Devise"
-        stats: "Engagement"
-        favourites: "Favoris"
-        performance: "Score de performance"
-        featured_until: "En avant jusqu’au"
-        seller: "Vendeur et boutique"
-        store: "Boutique"
-        meta: "Métadonnées"
-        id: "ID"
-        slug: "Slug"
-        country: "Pays"
-        labels: "Étiquettes"
-        reviewed_at: "Vérifiée le"
-        pickup_only: "Retrait uniquement"
+        subtitle: Annonce n° %{id} dans %{category}
+        created: Créée %{time}
+        updated: Modifiée %{time}
+        moderation_title: Cette annonce attend une décision
+        rejection_title: Annonce rejetée
+        reviewed_by: Vérifiée par %{name} le %{time}
+        images: Photos
+        description: Description
+        safety_warning: 'La description contient des coordonnées ou des indices de
+          paiement hors plateforme :'
+        orders: Commandes
+        no_orders: Aucune commande ne contient cette annonce.
+        order_number: Commande
+        order_buyer: Acheteur
+        order_status: Statut
+        order_total: Total
+        reports: Signalements
+        no_reports: Aucun signalement.
+        history: Historique d’administration
+        pricing: Prix
+        price: Prix
+        original_price: Prix d’origine
+        median: Médiane de la catégorie
+        currency: Devise
+        stats: Engagement
+        favourites: Favoris
+        performance: Score de performance
+        featured_until: En avant jusqu’au
+        seller: Vendeur et boutique
+        store: Boutique
+        meta: Métadonnées
+        id: ID
+        slug: Slug
+        country: Pays
+        labels: Étiquettes
+        reviewed_at: Vérifiée le
+        pickup_only: Retrait uniquement
       form:
-        details: "Détails"
-        pricing: "Prix et livraison"
-        price_eur: "Prix (€)"
-        original_price_eur: "Prix d’origine (€)"
-        shipping_price_eur: "Frais de port (€)"
-        location: "Localisation"
-        visibility: "Visibilité et étiquettes"
-        labels: "Étiquettes marketplace"
-        tags: "Étiquettes vendeur"
-        specs: "Spécifications"
-        specs_hint: "Seuls les filtres applicables à %{category} sont enregistrés."
-        no_specs: "Cette catégorie n’a pas de filtres."
-        game_fps: "JSON FPS par jeu"
-        game_fps_hint: "Objet JSON avec jeux et résolutions. Validé à l’enregistrement."
-        condition: "État"
-        brand: "Marque"
-        model: "Modèle"
-        quantity: "Quantité"
-        shipping: "Livraison"
-        accepts_offers: "Accepte les offres"
-        seller: "Vendeur"
+        details: Détails
+        pricing: Prix et livraison
+        price_eur: Prix (€)
+        original_price_eur: Prix d’origine (€)
+        shipping_price_eur: Frais de port (€)
+        location: Localisation
+        visibility: Visibilité et étiquettes
+        labels: Étiquettes marketplace
+        tags: Étiquettes vendeur
+        specs: Spécifications
+        specs_hint: Seuls les filtres applicables à %{category} sont enregistrés.
+        no_specs: Cette catégorie n’a pas de filtres.
+        game_fps: JSON FPS par jeu
+        game_fps_hint: Objet JSON avec jeux et résolutions. Validé à l’enregistrement.
+        condition: État
+        brand: Marque
+        model: Modèle
+        quantity: Quantité
+        shipping: Livraison
+        accepts_offers: Accepte les offres
+        seller: Vendeur
       edit:
-        title: "Modifier l’annonce"
-        subtitle: "Annonce n° %{id}"
+        title: Modifier l’annonce
+        subtitle: Annonce n° %{id}
     users:
-      title: "Utilisateurs"
-      subtitle: "Comptes, rôles, connexions et modération."
-      export: "Exporter CSV"
-      updated: "Utilisateur mis à jour."
-      suspended: "Compte suspendu."
-      unsuspended: "Compte réactivé."
-      banned: "Compte banni et annonces archivées."
-      unbanned: "Bannissement levé."
-      role_changed: "Rôle mis à jour."
-      confirmed: "E-mail confirmé."
-      password_reset_sent: "Instructions de réinitialisation envoyées."
-      soft_deleted: "Compte anonymisé et annonces archivées."
-      cannot_change_own_role: "Vous ne pouvez pas changer votre propre rôle."
-      cannot_demote_last_admin: "Vous ne pouvez pas rétrograder le dernier administrateur."
-      invalid_role: "Ce rôle n’est pas valide."
-      deleted_badge: "Supprimé (RGPD)"
-      unconfirmed: "Non confirmé"
+      title: Utilisateurs
+      subtitle: Comptes, rôles, connexions et modération.
+      export: Exporter CSV
+      updated: Utilisateur mis à jour.
+      suspended: Compte suspendu.
+      unsuspended: Compte réactivé.
+      banned: Compte banni et annonces archivées.
+      unbanned: Bannissement levé.
+      role_changed: Rôle mis à jour.
+      confirmed: E-mail confirmé.
+      password_reset_sent: Instructions de réinitialisation envoyées.
+      soft_deleted: Compte anonymisé et annonces archivées.
+      cannot_change_own_role: Vous ne pouvez pas changer votre propre rôle.
+      cannot_demote_last_admin: Vous ne pouvez pas rétrograder le dernier administrateur.
+      invalid_role: Ce rôle n’est pas valide.
+      deleted_badge: Supprimé (RGPD)
+      unconfirmed: Non confirmé
       filters:
-        search_placeholder: "E-mail, nom d’utilisateur ou nom"
-        role: "Rôle"
-        any_role: "Tous les rôles"
-        status: "Statut"
-        any_status: "Tous les statuts"
-        confirmed: "Confirmé"
-        any_confirmation: "Indifférent"
-        store: "A une boutique"
-        any_store: "Indifférent"
-        country: "Pays"
-        any_country: "Tous les pays"
-        signed_up_from: "Inscrit depuis"
-        signed_up_to: "Inscrit jusqu’à"
+        search_placeholder: E-mail, nom d’utilisateur ou nom
+        role: Rôle
+        any_role: Tous les rôles
+        status: Statut
+        any_status: Tous les statuts
+        confirmed: Confirmé
+        any_confirmation: Indifférent
+        store: A une boutique
+        any_store: Indifférent
+        country: Pays
+        any_country: Tous les pays
+        signed_up_from: Inscrit depuis
+        signed_up_to: Inscrit jusqu’à
       columns:
-        user: "Utilisateur"
-        role: "Rôle"
-        status: "Statut"
-        store: "Boutique"
-        sign_ins: "Connexions"
-        last_sign_in: "Dernière connexion"
-        created: "Créé"
-      empty_title: "Aucun utilisateur trouvé"
-      empty_body: "Essayez d’autres filtres ou effacez la recherche."
+        user: Utilisateur
+        role: Rôle
+        status: Statut
+        store: Boutique
+        sign_ins: Connexions
+        last_sign_in: Dernière connexion
+        created: Créé
+      empty_title: Aucun utilisateur trouvé
+      empty_body: Essayez d’autres filtres ou effacez la recherche.
       show:
         subtitle: "%{email}"
-        member_since: "Membre depuis %{date}"
-        reason: "Motif"
-        profile: "Profil"
-        recent_listings: "Annonces récentes"
-        no_listings: "Aucune annonce pour le moment."
-        activity: "Activité d’administration"
-        security: "Connexion et sécurité"
-        last_sign_in: "Dernière connexion"
-        last_ip: "Dernière IP"
-        sign_in_count: "Nombre de connexions"
-        confirmed_at: "Confirmé le"
-        locked: "Verrouillé"
-        failed_attempts: "Tentatives échouées"
-        moderation: "Modération"
-        suspension_reason: "Motif de suspension"
-        ban_reason: "Motif du bannissement"
-        store: "Boutique"
-        store_name: "Nom"
+        member_since: Membre depuis %{date}
+        reason: Motif
+        profile: Profil
+        recent_listings: Annonces récentes
+        no_listings: Aucune annonce pour le moment.
+        activity: Activité d’administration
+        security: Connexion et sécurité
+        last_sign_in: Dernière connexion
+        last_ip: Dernière IP
+        sign_in_count: Nombre de connexions
+        confirmed_at: Confirmé le
+        locked: Verrouillé
+        failed_attempts: Tentatives échouées
+        moderation: Modération
+        suspension_reason: Motif de suspension
+        ban_reason: Motif du bannissement
+        store: Boutique
+        store_name: Nom
         stats:
-          listings: "Annonces"
-          buyer_orders: "Commandes acheteur"
-          seller_orders: "Commandes vendeur"
-          gmv: "Volume de ventes"
-          reviews: "Avis"
-          reports: "Signalements"
-        total: "Total"
-        paid_orders: "Commandes payées"
-        received: "Reçus"
-        against_listings: "Contre des annonces"
+          listings: Annonces
+          buyer_orders: Commandes acheteur
+          seller_orders: Commandes vendeur
+          gmv: Volume de ventes
+          reviews: Avis
+          reports: Signalements
+        total: Total
+        paid_orders: Commandes payées
+        received: Reçus
+        against_listings: Contre des annonces
       form:
-        account: "Détails du compte"
-        username: "Nom d’utilisateur"
-        email: "E-mail"
-        first_name: "Prénom"
-        last_name: "Nom"
-        phone: "Téléphone"
-        locale: "Langue"
-        country: "Pays"
-        region: "Région"
+        account: Détails du compte
+        username: Nom d’utilisateur
+        email: E-mail
+        first_name: Prénom
+        last_name: Nom
+        phone: Téléphone
+        locale: Langue
+        country: Pays
+        region: Région
       edit:
-        title: "Modifier l’utilisateur"
+        title: Modifier l’utilisateur
         subtitle: "%{name}"
-        role_hint: "Les rôles et statuts se gèrent depuis la page utilisateur avec des actions dédiées."
+        role_hint: Les rôles et statuts se gèrent depuis la page utilisateur avec
+          des actions dédiées.
       confirm:
-        ban: "Bannir %{name} ? Ses annonces seront archivées."
-        soft_delete: "Supprimer %{name} ? Les données personnelles seront anonymisées."
+        ban: Bannir %{name} ? Ses annonces seront archivées.
+        soft_delete: Supprimer %{name} ? Les données personnelles seront anonymisées.
     stores:
-      title: "Boutiques"
-      subtitle: "Profils vendeurs, vérification et mode vacances."
-      updated: "Boutique mise à jour."
-      verified: "Boutique vérifiée."
-      unverified: "Vérification retirée."
-      vacation_started: "Mode vacances activé."
-      vacation_ended: "Mode vacances désactivé."
-      verified_badge: "Vérifiée"
-      unverified: "Non vérifiée"
-      on_vacation: "En vacances"
+      title: Boutiques
+      subtitle: Profils vendeurs, vérification et mode vacances.
+      updated: Boutique mise à jour.
+      verified: Boutique vérifiée.
+      unverified: Non vérifiée
+      vacation_started: Mode vacances activé.
+      vacation_ended: Mode vacances désactivé.
+      verified_badge: Vérifiée
+      on_vacation: En vacances
       filters:
-        search_placeholder: "Nom de la boutique ou e-mail du propriétaire"
-        verified: "Vérification"
-        any_verification: "Indifférent"
-        type: "Type"
-        any_type: "Tous les types"
-        vacation: "Vacances"
-        any_vacation: "Indifférent"
+        search_placeholder: Nom de la boutique ou e-mail du propriétaire
+        verified: Vérification
+        any_verification: Indifférent
+        type: Type
+        any_type: Tous les types
+        vacation: Vacances
+        any_vacation: Indifférent
       columns:
-        store: "Boutique"
-        owner: "Propriétaire"
-        type: "Type"
-        verified: "Vérification"
-        listings: "Annonces"
-        sales: "Ventes"
-        rating: "Note"
-      empty_title: "Aucune boutique trouvée"
-      empty_body: "Essayez d’autres filtres."
+        store: Boutique
+        owner: Propriétaire
+        type: Type
+        verified: Vérification
+        listings: Annonces
+        sales: Ventes
+        rating: Note
+      empty_title: Aucune boutique trouvée
+      empty_body: Essayez d’autres filtres.
       show:
-        subtitle: "Propriété de %{owner}"
-        listings: "Annonces"
-        sales: "Ventes"
-        rating: "Note"
+        subtitle: Propriété de %{owner}
+        listings: Annonces
+        sales: Ventes
+        rating: Note
         reviews_count:
           one: "%{count} avis"
           other: "%{count} avis"
-        followers: "Abonnés"
-        about: "À propos"
-        no_description: "Aucune description."
-        company: "Entreprise"
-        tax_id: "Numéro fiscal"
-        location: "Localisation"
-        completeness: "Complétude du profil"
-        listings_title: "Annonces récentes"
-        no_listings: "Aucune annonce pour le moment."
-        orders: "Commandes récentes"
-        no_orders: "Aucune commande pour le moment."
-        history: "Historique d’administration"
-        summary: "Résumé"
-        slug: "Slug"
-        created: "Créée"
-        vacation_message: "Message de vacances"
-        policies: "Politiques"
-        return_policy: "Politique de retour"
-        shipping_policy: "Politique d’expédition"
-        type: "Type"
-        verified: "Vérifiée"
+        followers: Abonnés
+        about: À propos
+        no_description: Aucune description.
+        company: Entreprise
+        tax_id: Numéro fiscal
+        location: Localisation
+        completeness: Complétude du profil
+        listings_title: Annonces récentes
+        no_listings: Aucune annonce pour le moment.
+        orders: Commandes récentes
+        no_orders: Aucune commande pour le moment.
+        history: Historique d’administration
+        summary: Résumé
+        slug: Slug
+        created: Créée
+        vacation_message: Message de vacances
+        policies: Politiques
+        return_policy: Politique de retour
+        shipping_policy: Politique d’expédition
+        type: Type
+        verified: Vérifiée
       edit:
-        title: "Modifier la boutique"
+        title: Modifier la boutique
         subtitle: "%{name}"
-        details: "Détails de la boutique"
-        vacation: "Mode vacances"
-        policies: "Politiques de la boutique"
+        details: Détails de la boutique
+        vacation: Mode vacances
+        policies: Politiques de la boutique
     audit:
-      title: "Journal d’audit"
-      subtitle: "Chaque modification d’administration, son auteur et les changements."
-      action: "Action"
-      admin: "Administrateur"
-      resource: "Ressource"
-      any_action: "Toutes les actions"
-      any_admin: "Tous les administrateurs"
-      any_resource: "Toutes les ressources"
-      empty_title: "Aucune entrée d’audit"
-      empty_body: "Les actions d’administration apparaîtront ici."
-      view_changes: "Voir les changements"
+      title: Journal d’audit
+      subtitle: Chaque modification d’administration, son auteur et les changements.
+      action: Action
+      admin: Administrateur
+      resource: Ressource
+      any_action: Toutes les actions
+      any_admin: Tous les administrateurs
+      any_resource: Toutes les ressources
+      empty_title: Aucune entrée d’audit
+      empty_body: Les actions d’administration apparaîtront ici.
+      view_changes: Voir les changements
       columns:
-        time: "Date"
-        admin: "Administrateur"
-        action: "Action"
-        resource: "Ressource"
-        ip: "IP"
-        changeset: "Changements"
+        time: Date
+        admin: Administrateur
+        action: Action
+        resource: Ressource
+        ip: IP
+        changeset: Changements
       actions:
-        listing_approved: "Annonce approuvée"
-        listing_rejected: "Annonce rejetée"
-        listing_updated: "Annonce modifiée"
-        listing_archived: "Annonce archivée"
-        listing_deleted: "Annonce supprimée"
-        listing_bulk_approve: "Annonces approuvées en lot"
-        listing_bulk_reject: "Annonces rejetées en lot"
-        listing_bulk_pause: "Annonces mises en pause"
-        listing_bulk_archive: "Annonces archivées"
-        listing_bulk_delete: "Annonces supprimées"
-        listing_bulk_add_label: "Étiquette ajoutée en lot"
-        listing_bulk_remove_label: "Étiquette retirée en lot"
-        listing_bulk_feature: "Annonces mises en avant"
-        listing_bulk_unfeature: "Annonces retirées de la une"
-        user_updated: "Utilisateur modifié"
-        user_suspended: "Utilisateur suspendu"
-        user_unsuspended: "Utilisateur réactivé"
-        user_banned: "Utilisateur banni"
-        user_unbanned: "Bannissement levé"
-        user_role_changed: "Rôle modifié"
-        user_confirmed: "E-mail confirmé"
-        user_password_reset_sent: "Réinitialisation envoyée"
-        user_impersonated: "Usurpation démarrée"
-        user_impersonation_stopped: "Usurpation terminée"
-        user_soft_deleted: "Utilisateur supprimé (RGPD)"
-        store_updated: "Boutique modifiée"
-        store_verified: "Boutique vérifiée"
-        store_unverified: "Boutique non vérifiée"
-        store_vacation_started: "Vacances commencées"
-        store_vacation_ended: "Vacances terminées"
+        listing_approved: Annonce approuvée
+        listing_rejected: Annonce rejetée
+        listing_updated: Annonce modifiée
+        listing_archived: Annonce archivée
+        listing_deleted: Annonce supprimée
+        listing_bulk_approve: Annonces approuvées en lot
+        listing_bulk_reject: Annonces rejetées en lot
+        listing_bulk_pause: Annonces mises en pause
+        listing_bulk_archive: Annonces archivées
+        listing_bulk_delete: Annonces supprimées
+        listing_bulk_add_label: Étiquette ajoutée en lot
+        listing_bulk_remove_label: Étiquette retirée en lot
+        listing_bulk_feature: Annonces mises en avant
+        listing_bulk_unfeature: Annonces retirées de la une
+        user_updated: Utilisateur modifié
+        user_suspended: Utilisateur suspendu
+        user_unsuspended: Utilisateur réactivé
+        user_banned: Utilisateur banni
+        user_unbanned: Bannissement levé
+        user_role_changed: Rôle modifié
+        user_confirmed: E-mail confirmé
+        user_password_reset_sent: Réinitialisation envoyée
+        user_impersonated: Usurpation démarrée
+        user_impersonation_stopped: Usurpation terminée
+        user_soft_deleted: Utilisateur supprimé (RGPD)
+        store_updated: Boutique modifiée
+        store_verified: Boutique vérifiée
+        store_unverified: Boutique non vérifiée
+        store_vacation_started: Vacances commencées
+        store_vacation_ended: Vacances terminées
+        order_paid: Commande marquée payée
+        order_cancelled: Commande annulée
+        order_refunded: Commande remboursée
+        order_note_added: Note de commande ajoutée
+        order_email_resent: E-mail de commande renvoyé
+        order_dispute_resolved: Litige résolu
+        report_resolved: Signalement résolu
+        report_dismissed: Signalement rejeté
+        review_updated: Avis mis à jour
+        review_deleted: Avis supprimé
     reports:
       reasons:
-        spam: "Spam"
-        fraud: "Fraude"
-        prohibited: "Article interdit"
-        counterfeit: "Contrefaçon"
-        offensive: "Offensant"
-        other: "Autre"
+        spam: Spam
+        fraud: Fraude
+        prohibited: Article interdit
+        counterfeit: Contrefaçon
+        offensive: Offensant
+        other: Autre
       statuses:
-        open: "Ouvert"
-        resolved: "Résolu"
-        dismissed: "Rejeté"
+        open: Ouvert
+        resolved: Résolu
+        dismissed: Rejeté
+      title: Signalements
+      subtitle: Signalements d’annonces, d’utilisateurs, de conversations et d’avis.
+      updated: Signalement résolu.
+      cannot_resolve: Ce signalement n’a pas pu être traité.
+      bulk_dismissed: "%{count} signalements rejetés."
+      counts_label: Signalements par statut
+      counts_hint: Signalements
+      select_report: Sélectionner le signalement %{id}
+      report_number: Signalement n° %{id}
+      empty_title: Aucun signalement trouvé
+      empty_body: Modifiez les filtres ou revenez plus tard.
+      types:
+        listing: Annonce
+        user: Utilisateur
+        conversation: Conversation
+        review: Avis
+      filters:
+        status: Statut
+        any_status: Tous les statuts
+        reason: Motif
+        any_reason: Tous les motifs
+        type: Type signalé
+        any_type: Tous les types
+      columns:
+        report: Signalement
+        type: Type
+        reason: Motif
+        reporter: Auteur
+        status: Statut
+        created: Créé
+      actions:
+        hide_listing: Masquer l’annonce (pause)
+        suspend_user: Suspendre l’utilisateur
+        delete_review: Dépublier l’avis
+      confirm:
+        resolve: Résoudre ce signalement et appliquer l’action choisie ?
+      show:
+        title: Signalement n° %{id}
+        subtitle: "%{type} signalé par %{reporter}"
+        resolved_by: Résolu par %{name}
+        reported_item: Élément signalé
+        conversation_between: Conversation entre %{buyer} et %{seller}
+        unavailable: L’élément signalé n’est plus disponible.
+        details: Détails du signalement
+        other_reports: Autres signalements sur cet élément
+        no_other_reports: Aucun autre signalement sur cet élément.
+        resolve: Résoudre le signalement
+        action: Action
+        no_action: Aucune action supplémentaire
+        action_reason: Motif de l’action (facultatif)
+        resolve_submit: Résoudre le signalement
+        dismiss: Rejeter le signalement
+        meta: Détails du signalement
     impersonation:
-      banner: "Vous consultez en tant que %{name}"
-      stop: "Arrêter l’usurpation"
-      started: "Vous consultez maintenant en tant que %{name}."
-      stopped: "Usurpation arrêtée."
-      not_impersonating: "Aucune usurpation active."
+      banner: Vous consultez en tant que %{name}
+      stop: Arrêter l’usurpation
+      started: Vous consultez maintenant en tant que %{name}.
+      stopped: Usurpation arrêtée.
+      not_impersonating: Aucune usurpation active.
     placeholder:
-      label: "Prochaine mise à jour"
-      body: "Cette zone d’administration est construite lors des phases 6B et 6C. La base, le tableau de bord, la modération, les utilisateurs et les boutiques sont déjà disponibles."
-      coming: "Bientôt disponible"
+      label: Prochaine mise à jour
+      body: Cette zone d’administration est construite lors des phases 6B et 6C. La
+        base, le tableau de bord, la modération, les utilisateurs et les boutiques
+        sont déjà disponibles.
+      coming: Bientôt disponible
       titles:
-        orders: "Commandes"
-        disputes: "Litiges"
-        reports: "Signalements"
-        reviews: "Avis"
-        categories: "Catégories"
-        filters: "Filtres"
-        legal_pages: "Pages légales"
-        games: "Jeux"
-        newsletter: "Newsletter"
-        settings: "Général et options"
-        countries: "Pays"
+        orders: Commandes
+        disputes: Litiges
+        reports: Signalements
+        reviews: Avis
+        categories: Catégories
+        filters: Filtres
+        legal_pages: Pages légales
+        games: Jeux
+        newsletter: Newsletter
+        settings: Général et options
+        countries: Pays
     mailer:
       listing:
-        greeting: "Bonjour %{name},"
-        view_listing: "Voir votre annonce"
-        signature: "L’équipe %{site}"
+        greeting: Bonjour %{name},
+        view_listing: Voir votre annonce
+        signature: L’équipe %{site}
         approved:
-          subject: "Votre annonce « %{title} » est en ligne"
-          title: "Annonce approuvée"
+          subject: Votre annonce « %{title} » est en ligne
+          title: Annonce approuvée
           intro: "« %{title} » a été vérifiée et est désormais publiée sur la marketplace."
-          outro: "Vous pouvez modifier le prix, la description ou les photos à tout moment."
+          outro: Vous pouvez modifier le prix, la description ou les photos à tout
+            moment.
         rejected:
-          subject: "Votre annonce « %{title} » doit être modifiée"
-          title: "Annonce rejetée"
+          subject: Votre annonce « %{title} » doit être modifiée
+          title: Annonce rejetée
           intro: "« %{title} » n’a pas été approuvée dans son état actuel."
-          reason_label: "Motif"
-          outro: "Corrigez les problèmes et soumettez-la à nouveau quand vous voulez."
+          reason_label: Motif
+          outro: Corrigez les problèmes et soumettez-la à nouveau quand vous voulez.
+    orders:
+      title: Commandes
+      subtitle: Chaque achat, état de paiement et expédition au même endroit.
+      export: Exporter en CSV
+      empty_title: Aucune commande trouvée
+      empty_body: Modifiez les filtres ou effacez la recherche.
+      pieces:
+        one: "%{count} article"
+        other: "%{count} articles"
+      refund_flag: Remboursement requis
+      late_flag: Expédition en retard
+      reference_required: Une référence de paiement est requise pour marquer cette
+        commande comme payée.
+      paid: Commande marquée comme payée.
+      cannot_pay: Cette commande ne peut pas être marquée comme payée.
+      cancelled: Commande annulée.
+      cannot_cancel: Cette commande ne peut pas être annulée.
+      refunded: Commande remboursée.
+      cannot_refund: Cette commande ne peut pas être remboursée.
+      note_added: Note interne ajoutée.
+      note_required: Écrivez une note avant d’enregistrer.
+      email_sent: E-mail mis en file d’envoi.
+      invalid_recipient: Choisissez un destinataire valide.
+      filters:
+        status: Statut
+        any_status: Tous les statuts
+        fulfilment: Livraison
+        any_fulfilment: Toutes les livraisons
+        payment_method: Moyen de paiement
+        any_payment: Tous les moyens
+        seller: Vendeur ou boutique
+        seller_placeholder: Nom d’utilisateur, e-mail, boutique ou ID
+        buyer_email: E-mail de l’acheteur
+        buyer_placeholder: acheteur@exemple.com
+        created_from: Créée à partir du
+        created_to: Créée jusqu’au
+        min_total: Min. €
+        max_total: Max. €
+        late_shipment: Expédition en retard
+        refund_needed: Remboursement requis
+        any: Tous
+      columns:
+        number: Commande
+        created: Créée
+        buyer: Acheteur
+        seller: Vendeur
+        status: Statut
+        fulfilment: Livraison
+        payment: Paiement
+        total: Total
+      totals:
+        count: Commandes
+        gmv: GMV
+        commission: Commission
+      fulfilment:
+        shipping: Expédition
+        local_pickup: Retrait sur place
+      payment_methods:
+        bank_transfer: Virement bancaire
+        cash_on_pickup: Espèces au retrait
+        stripe: Carte (Stripe)
+      actions:
+        payments: Rapprochement des paiements
+        disputes: Litiges
+        mark_paid: Marquer comme payée
+        cancel: Annuler la commande
+        refund: Rembourser la commande
+        email_buyer: Renvoyer l’e-mail à l’acheteur
+        email_seller: Renvoyer l’e-mail au vendeur
+      confirm:
+        cancel: Annuler cette commande ? Le stock sera restauré.
+        refund: Rembourser cette commande ? Cette action est irréversible.
+      show:
+        title: Commande %{number}
+        subtitle: "%{buyer} a acheté à %{seller}"
+        placed_on: Passée le %{date}
+        conversation: Ouvrir la conversation
+        items: Articles
+        quantity: 'Quantité : %{count}'
+        shipping_address: Adresse de livraison
+        buyer_email: E-mail de l’acheteur
+        payment: Paiement
+        provider: Fournisseur
+        reference: Référence de paiement
+        refund_reference: Référence du remboursement
+        paid_at: Payée le
+        tracking: "%{carrier} · %{number}"
+        timeline: Chronologie de la commande
+        no_events: Aucun événement enregistré pour le moment.
+        system: Système
+        notes: Notes internes
+        no_notes: Aucune note interne pour le moment.
+        note_placeholder: Note interne visible uniquement par l’équipe…
+        add_note: Ajouter une note
+        history: Historique d’administration
+        summary: Totaux
+        subtotal: Sous-total
+        shipping: Livraison
+        commission: Commission
+        net: Net pour le vendeur
+        total: Total
+        currency: Devise
+        actions: Actions d’administration
+        payment_reference: Référence du virement
+        cancel_reason: Motif d’annulation
+        refund_reference_input: Référence du remboursement
+        parties: Acheteur et vendeur
+        guest: Acheteur invité
+        order: Commande
+    payments:
+      title: Rapprochement des paiements
+      subtitle: Virements en attente, du plus ancien au plus récent, avec leur échéance.
+      empty_title: Rien à rapprocher
+      empty_body: Aucune commande par virement n’est en attente actuellement.
+      due_in: Échéance dans %{time}
+      overdue: En retard de %{time}
+      reference: Référence
+      mark_paid: Marquer payée
+      columns:
+        order: Commande
+        buyer: Acheteur et vendeur
+        age: Ancienneté
+        deadline: Échéance
+        total: Total
+        mark_paid: Marquer payée
+      bulk:
+        title: Marquage groupé comme payé
+        hint: Collez un numéro de commande par ligne. Chaque commande en attente est
+          marquée payée avec la même référence.
+        placeholder: |-
+          PCM-2026-000001
+          PCM-2026-000002
+        submit: Marquer les commandes payées
+        result_title: Résumé du paiement groupé
+        result_subtitle: Ce qui est arrivé à chaque numéro collé.
+        result_hint: Commandes
+        paid: Marquées payées
+        not_found: Introuvables
+        wrong_status: Statut incorrect
+    disputes:
+      title: Litiges
+      subtitle: Litiges acheteurs ouverts, du plus ancien au plus récent. Résolvez
+        par remboursement ou libération au vendeur.
+      resolved: Litige résolu et les deux parties notifiées.
+      cannot_resolve: Ce litige ne peut pas être résolu.
+      empty_title: Aucun litige ouvert
+      empty_body: Tous les litiges ont été résolus.
+      outcomes:
+        refund: Rembourser l’acheteur
+        release: Libérer au vendeur
+      confirm:
+        resolve: Résoudre ce litige ? Les deux parties seront notifiées.
+      filters:
+        search_placeholder: Numéro de commande ou e-mail de l’acheteur
+        reason: Motif
+        any_reason: Tous les motifs
+      columns:
+        order: Commande
+        buyer: Acheteur
+        seller: Vendeur
+        reason: Motif
+        age: Ancienneté
+        opened: Ouvert
+      show:
+        title: Litige sur %{number}
+        subtitle: "%{reason} · ouvert il y a %{age}"
+        unknown_reason: Motif inconnu
+        opened_at: Ouvert le %{date}
+        dispute: Détails du litige
+        reason: Motif
+        amount: Montant de la commande
+        details: Ce que l’acheteur a signalé
+        photos: Photos de l’acheteur
+        conversation: Conversation
+        open_conversation: Ouvrir dans la boîte de réception
+        no_messages: Aucun message pour cette commande.
+        buyer: Acheteur
+        seller: Vendeur
+        timeline: Chronologie de la commande
+        resolve: Résoudre le litige
+        resolve_hint: Le message de résolution est envoyé aux deux parties par e-mail
+          et notification interne.
+        outcome: Issue
+        refund_admin_only: Seuls les administrateurs peuvent émettre des remboursements.
+        message_placeholder: Expliquez la décision aux deux parties…
+        submit: Résoudre le litige
+        parties: Parties
+    reviews:
+      title: Avis
+      subtitle: Avis des acheteurs, réponses des vendeurs et état de publication.
+      updated: Avis mis à jour.
+      cannot_update: Cet avis n’a pas pu être mis à jour.
+      deleted: Avis supprimé.
+      published: Publié
+      unpublished: Dépublié
+      replied: Le vendeur a répondu
+      reply_visible: Réponse visible
+      reply_hidden: Réponse masquée
+      rating_option: "%{count} / 5"
+      blocked_words_hint: Les avis sont vérifiés par rapport à la liste de mots bloqués
+        avant publication.
+      blocked_words_link: Gérer les mots bloqués
+      empty_title: Aucun avis trouvé
+      empty_body: Modifiez les filtres ou revenez plus tard.
+      filters:
+        rating: Note
+        any_rating: Toutes les notes
+        published: Publié
+        any_visibility: Toute visibilité
+        store: Boutique
+        store_placeholder: Nom ou ID de la boutique
+        has_reply: Avec réponse
+        any_reply: Tous
+        created_from: Créé à partir du
+        created_to: Créé jusqu’au
+      columns:
+        review: Avis
+        store: Boutique
+        reviewer: Auteur
+        order: Commande
+        rating: Note
+        status: Statut
+        created: Créé
+      show:
+        title: Avis n° %{id}
+        subtitle: "%{store} · par %{reviewer}"
+        view_store: Voir la boutique
+        body: Avis
+        reply: Réponse du vendeur
+        no_reply: Le vendeur n’a pas répondu.
+        context: Contexte
+        actions: Modération
+        unpublish: Dépublier l’avis
+        publish: Publier l’avis
+        hide_reply: Masquer la réponse du vendeur
+        show_reply: Afficher la réponse du vendeur
+        delete: Supprimer l’avis
+        settings: Paramètres des avis
+      confirm:
+        delete: Supprimer définitivement cet avis ? La note de la boutique sera recalculée.
   devise:
     failure:
-      suspended: "Votre compte est suspendu. Contactez le support pour plus d’informations."
-      banned: "Votre compte a été banni."
-      deleted: "Ce compte a été supprimé."
+      suspended: Votre compte est suspendu. Contactez le support pour plus d’informations.
+      banned: Votre compte a été banni.
+      deleted: Ce compte a été supprimé.

@@ -1,0 +1,238 @@
+<% refundable = %w[paid shipped delivered completed disputed].include?(@order.status) && policy([ :admin, @order ]).refund? %>
+<% actions = [] %>
+<% actions << { label: t("admin.orders.actions.payments"), path: admin_payments_path } if @order.pending_payment? && @order.payment_method == "bank_transfer" %>
+<% actions << { label: t("admin.orders.actions.disputes"), path: admin_disputes_path } if @order.disputed? %>
+
+<div class="mx-auto max-w-[90rem] space-y-5">
+  <%= render "admin/shared/detail_header", title: t("admin.orders.show.title", number: @order.number),
+             subtitle: t("admin.orders.show.subtitle", buyer: @order.buyer&.display_name || @order.buyer_email,
+                           seller: @order.seller.display_name),
+             back_path: admin_orders_path,
+             secondary_actions: [ { label: t("admin.orders.export"), path: admin_orders_path, variant: :outline } ],
+             actions: actions %>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <%= render "admin/shared/status_badge", text: t("orders.statuses.#{@order.status}"),
+               tone: admin_order_status_tone(@order.status) %>
+    <span class="<%= ui_badge_classes(tone: :neutral) %>"><%= t("admin.orders.fulfilment.#{@order.fulfilment}") %></span>
+    <span class="<%= ui_badge_classes(tone: :neutral) %>"><%= t("admin.orders.payment_methods.#{@order.payment_method}") if @order.payment_method %></span>
+    <% if @order.refund_required? %>
+      <span class="<%= ui_badge_classes(tone: :danger) %>"><%= t("admin.orders.refund_flag") %></span>
+    <% end %>
+    <span class="text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.orders.show.placed_on", date: admin_datetime(@order.created_at)) %></span>
+    <% if @conversation %>
+      <%= link_to t("admin.orders.show.conversation"), conversation_path(@conversation),
+                  class: "text-xs font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+    <% end %>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
+    <div class="space-y-4">
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.orders.show.items") %></h2>
+        <ul class="mt-3 divide-y divide-slate-100 dark:divide-zinc-800">
+          <% @order.order_items.each do |item| %>
+            <li class="flex items-center gap-3 py-3">
+              <span class="size-12 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800">
+                <% if item.listing&.ordered_images&.first %>
+                  <%= image_tag item.listing.ordered_images.first.variant(resize_to_limit: [ 96, 96 ], format: :webp),
+                                alt: "", loading: "lazy", class: "size-12 object-cover" %>
+                <% else %>
+                  <%= image_tag "listing-placeholder.svg", alt: "", loading: "lazy", class: "size-12 object-cover" %>
+                <% end %>
+              </span>
+              <div class="min-w-0 flex-1">
+                <% if item.listing %>
+                  <%= link_to item.title_snapshot, admin_listing_path(item.listing),
+                              class: "block truncate text-sm font-medium text-slate-900 hover:text-brand-700 dark:text-zinc-100 dark:hover:text-brand-300" %>
+                <% else %>
+                  <p class="truncate text-sm font-medium text-slate-900 dark:text-zinc-100"><%= item.title_snapshot %></p>
+                <% end %>
+                <p class="text-[11px] text-slate-500 dark:text-zinc-400">
+                  <%= t("admin.orders.show.quantity", count: item.quantity) %> · <%= admin_money(item.price_cents) %>
+                </p>
+              </div>
+              <span class="text-sm font-semibold tabular-nums"><%= admin_money(item.price_cents * item.quantity) %></span>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+
+      <section class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.orders.show.shipping_address") %></h2>
+          <address class="mt-2 space-y-0.5 text-sm not-italic text-slate-600 dark:text-zinc-300">
+            <p class="font-medium text-slate-900 dark:text-zinc-100"><%= @order.ship_name.presence || "—" %></p>
+            <p><%= @order.ship_line1 %></p>
+            <% if @order.ship_line2.present? %><p><%= @order.ship_line2 %></p><% end %>
+            <p><%= [ @order.ship_postal_code, @order.ship_city ].compact_blank.join(" ") %></p>
+            <p><%= [ @order.ship_region, @order.ship_country_code ].compact_blank.join(", ") %></p>
+            <p class="text-xs text-slate-500 dark:text-zinc-400"><%= @order.ship_phone %></p>
+          </address>
+          <p class="mt-2 text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.orders.show.buyer_email") %>: <%= @order.buyer_email %></p>
+        </div>
+
+        <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.orders.show.payment") %></h2>
+          <dl class="mt-2 space-y-1.5 text-sm">
+            <div class="flex justify-between gap-2"><dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.orders.show.provider") %></dt><dd class="font-medium"><%= @order.payment_provider.presence || "—" %></dd></div>
+            <div class="flex justify-between gap-2"><dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.orders.show.reference") %></dt><dd class="font-mono text-xs"><%= @order.payment_reference.presence || "—" %></dd></div>
+            <div class="flex justify-between gap-2"><dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.orders.show.refund_reference") %></dt><dd class="font-mono text-xs"><%= @order.refund_reference.presence || "—" %></dd></div>
+            <div class="flex justify-between gap-2"><dt class="text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.orders.show.paid_at") %></dt><dd><%= admin_datetime(@order.paid_at) %></dd></div>
+          </dl>
+          <% if @order.tracking_url %>
+            <p class="mt-2 text-xs"><%= link_to t("admin.orders.show.tracking", carrier: order_carrier_label(@order.carrier), number: @order.tracking_number),
+                                              @order.tracking_url, class: "font-semibold text-brand-700 hover:underline dark:text-brand-300",
+                                              target: "_blank", rel: "noopener" %></p>
+          <% end %>
+        </div>
+      </section>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.orders.show.timeline") %></h2>
+        <% if @events.empty? %>
+          <p class="mt-2 text-sm text-slate-500 dark:text-zinc-400"><%= t("admin.orders.show.no_events") %></p>
+        <% else %>
+          <ol class="mt-3 space-y-2">
+            <% @events.each do |event| %>
+              <li class="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-100 px-3 py-2 dark:border-zinc-800">
+                <span class="text-sm font-medium text-slate-800 dark:text-zinc-200"><%= order_event_label(event) %></span>
+                <span class="text-[11px] text-slate-500 dark:text-zinc-400">
+                  <%= event.actor&.display_name || t("admin.orders.show.system") %> · <%= admin_datetime(event.created_at) %>
+                </span>
+              </li>
+            <% end %>
+          </ol>
+        <% end %>
+      </section>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.orders.show.notes") %></h2>
+        <% if @notes.empty? %>
+          <p class="mt-2 text-sm text-slate-500 dark:text-zinc-400"><%= t("admin.orders.show.no_notes") %></p>
+        <% else %>
+          <ul class="mt-2 space-y-2">
+            <% @notes.each do |note| %>
+              <li class="rounded-lg bg-slate-50 p-3 text-sm dark:bg-zinc-800/60">
+                <p class="whitespace-pre-line text-slate-700 dark:text-zinc-300"><%= note.body %></p>
+                <p class="mt-1 text-[11px] text-slate-500 dark:text-zinc-400"><%= note.author.display_name %> · <%= admin_datetime(note.created_at) %></p>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+        <%= form_with url: admin_order_notes_path(@order), method: :post, class: "mt-3 flex items-start gap-2" do %>
+          <%= text_area_tag :body, nil, rows: 2, required: true,
+                            placeholder: t("admin.orders.show.note_placeholder"),
+                            class: ui_input_classes("!text-sm") %>
+          <%= button_tag type: "submit", class: ui_button_classes(variant: :primary, size: :sm) do %>
+            <%= t("admin.orders.show.add_note") %>
+          <% end %>
+        <% end %>
+      </section>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.orders.show.history") %></h2>
+        <% if @audit_logs.empty? %>
+          <p class="mt-2 text-sm text-slate-500 dark:text-zinc-400"><%= t("admin.common.no_history") %></p>
+        <% else %>
+          <ol class="mt-2 space-y-2 text-sm">
+            <% @audit_logs.each do |log| %>
+              <li class="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-100 px-3 py-2 dark:border-zinc-800">
+                <span class="font-medium"><%= admin_audit_action_label(log.action) %></span>
+                <span class="text-[11px] text-slate-500 dark:text-zinc-400"><%= log.admin.display_name %> · <%= admin_datetime(log.created_at) %></span>
+              </li>
+            <% end %>
+          </ol>
+        <% end %>
+      </section>
+    </div>
+
+    <aside class="space-y-4">
+      <%= render "admin/shared/meta_panel", title: t("admin.orders.show.summary"), rows: [
+        [ t("admin.orders.show.subtotal"), admin_money(@order.subtotal_cents) ],
+        [ t("admin.orders.show.shipping"), admin_money(@order.shipping_cents) ],
+        [ t("admin.orders.show.commission"), admin_money(@order.commission_cents) ],
+        [ t("admin.orders.show.net"), admin_money(@order.net_to_seller_cents) ],
+        [ t("admin.orders.show.total"), admin_money(@order.total_cents) ],
+        [ t("admin.orders.show.currency"), @order.currency ]
+      ] %>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.orders.show.actions") %></h2>
+        <div class="mt-3 space-y-3">
+          <% if @order.pending_payment? %>
+            <%= form_with url: admin_order_payment_path(@order), method: :post, class: "space-y-1.5" do %>
+              <%= text_field_tag :payment_reference, nil, required: true,
+                                 placeholder: t("admin.orders.show.payment_reference"),
+                                 class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+              <%= button_tag type: "submit", class: ui_button_classes(variant: :primary, size: :sm, extra: "w-full") do %>
+                <%= t("admin.orders.actions.mark_paid") %>
+              <% end %>
+            <% end %>
+          <% end %>
+
+          <% if %w[pending_payment paid].include?(@order.status) %>
+            <%= form_with url: admin_order_cancellation_path(@order), method: :post, class: "space-y-1.5" do %>
+              <%= text_field_tag :reason, nil, placeholder: t("admin.orders.show.cancel_reason"),
+                                 class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+              <%= button_tag type: "submit",
+                             data: { turbo_confirm: t("admin.orders.confirm.cancel") },
+                             class: ui_button_classes(variant: :danger, size: :sm, extra: "w-full") do %>
+                <%= t("admin.orders.actions.cancel") %>
+              <% end %>
+            <% end %>
+          <% end %>
+
+          <% if refundable %>
+            <%= form_with url: admin_order_refund_path(@order), method: :post, class: "space-y-1.5" do %>
+              <%= text_field_tag :refund_reference, nil,
+                                 placeholder: t("admin.orders.show.refund_reference_input"),
+                                 class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+              <%= button_tag type: "submit",
+                             data: { turbo_confirm: t("admin.orders.confirm.refund") },
+                             class: ui_button_classes(variant: :danger, size: :sm, extra: "w-full") do %>
+                <%= t("admin.orders.actions.refund") %>
+              <% end %>
+            <% end %>
+          <% end %>
+
+          <div class="grid grid-cols-2 gap-2">
+            <%= button_to t("admin.orders.actions.email_buyer"), admin_order_email_path(@order),
+                          method: :post, params: { recipient: "buyer" },
+                          class: ui_button_classes(variant: :outline, size: :sm, extra: "w-full") %>
+            <%= button_to t("admin.orders.actions.email_seller"), admin_order_email_path(@order),
+                          method: :post, params: { recipient: "seller" },
+                          class: ui_button_classes(variant: :outline, size: :sm, extra: "w-full") %>
+          </div>
+        </div>
+      </section>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.orders.show.parties") %></h2>
+        <div class="mt-2 space-y-2 text-sm">
+          <div>
+            <p class="text-[11px] uppercase tracking-wide text-slate-400"><%= t("admin.orders.columns.buyer") %></p>
+            <% if @order.buyer %>
+              <%= link_to @order.buyer.display_name, admin_user_path(@order.buyer),
+                          class: "font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+            <% else %>
+              <p class="font-medium"><%= t("admin.orders.show.guest") %></p>
+            <% end %>
+            <p class="text-xs text-slate-500 dark:text-zinc-400"><%= @order.buyer_email %></p>
+          </div>
+          <div>
+            <p class="text-[11px] uppercase tracking-wide text-slate-400"><%= t("admin.orders.columns.seller") %></p>
+            <%= link_to @order.seller.display_name, admin_user_path(@order.seller),
+                        class: "font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+            <% if @order.store %>
+              <p class="text-xs text-slate-500 dark:text-zinc-400">
+                <%= link_to @order.store.name, admin_store_path(@order.store),
+                            class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+              </p>
+            <% end %>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>

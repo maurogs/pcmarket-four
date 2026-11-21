@@ -168,11 +168,11 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Project Context</h1>
     <p class="lede">Architecture, decisions and code map</p>
-    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-21 23:40</p>
+    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-21 23:50</p>
   </header>
   <main><section class="card status">
 <h2><span>Status</span><span class="badge badge-success">Complete</span></h2>
-<p>Phase 6A complete: admin panel foundation with a dedicated layout, dashboard, listing moderation queue, listing administration, user and store management, audit log and staff impersonation. Phase 5 internal chat with conversations, unread counters and real-time messages, offers with accepted-offer cart pricing, blocks and message safety warnings; follower notifications, instant and daily saved-search alerts and favourite price-drop alerts are intact. Phase 4B order lifecycle (paid, shipped, delivered, completed, cancelled, disputed, refunded), seller fulfilment screens, buyer delivery confirmation/disputes/reviews, order notifications with email fan-out and real-time badge updates remain intact. Discovery (Phase 2B), listing creation (Phase 3A) and checkout/payments (Phase 4A) are unchanged. Orders, disputes, reports, reviews, catalogue, content, marketing and settings admin screens remain for phases 6B/6C and link to translated placeholder pages.</p>
+<p>Phase 6B complete: admin operations for orders and payment reconciliation, disputes, reports and review moderation, with dashboard links and cached sidebar badges. Phase 6A admin foundation (dashboard, listing moderation, users, stores, audit log and impersonation) is intact. Phase 5 internal chat with conversations, unread counters and real-time messages, offers with accepted-offer cart pricing, blocks and message safety warnings; follower notifications, instant and daily saved-search alerts and favourite price-drop alerts are intact. Phase 4B order lifecycle (paid, shipped, delivered, completed, cancelled, disputed, refunded), seller fulfilment screens, buyer delivery confirmation/disputes/reviews, order notifications with email fan-out and real-time badge updates remain intact. Discovery (Phase 2B), listing creation (Phase 3A) and checkout/payments (Phase 4A) are unchanged. Catalogue, content, marketing and settings admin screens remain for phase 6C and link to translated placeholder pages.</p>
 </section>
 <section class="card status">
 <h2><span>Phase status</span></h2>
@@ -187,6 +187,7 @@ footer {
 <tr><td>4B</td><td>Order lifecycle and seller fulfilment</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>5</td><td>Messaging, offers, follows and saved-search alerts</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>6A</td><td>Admin foundation, dashboard, moderation, users and stores</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>6B</td><td>Admin orders, payments, disputes, reports and reviews</td><td><span class="badge badge-success">Complete</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -380,6 +381,18 @@ footer {
 <li>Store management verifies/unverifies, toggles vacation mode and edits store type, company/tax data, policies and counters, linking back to the owner.</li>
 <li>Admin strings live in <code>admin.&lt;locale&gt;.yml</code> across all six locales; Devise inactive messages are added there (<code>devise.failure.suspended/banned/deleted</code>).</li>
 </ul>
+<h3>Admin operations: orders, payments, disputes, reports and reviews (Phase 6B)</h3>
+<ul>
+<li><code>Admin::OrdersController</code> lists every order with <code>Admin::OrderQuery</code> (status, fulfilment, payment method, seller/store, buyer email, created and total ranges, late-shipment and refund-needed flags), whitelisted sorting, a totals row (count, GMV, commission) and CSV export through <code>Admin::OrderExport</code> (manual CSV because Ruby 4 removed the default <code>csv</code> gem).</li>
+<li>Order detail shows buyer, seller/store, item snapshots with listing links, shipping address, payment and refund references, commission/net, the <code>OrderEvent</code> timeline, the related <code>Conversation</code>, internal <code>OrderNote</code> records and the audit history.</li>
+<li>Nested RESTful resources: <code>payment</code> (bank-transfer reconciliation, requires a reference, audited), <code>cancellation</code> (reason, stock restored through <code>Order#cancel!</code>), <code>refund</code> (administrator only, stores <code>refund_reference</code>), <code>email</code> (buyer/seller resend) and <code>notes</code>. <code>Order#resolve_dispute!</code> accepts an optional resolution message and <code>Order#refund!</code> accepts a reference.</li>
+<li><code>Admin::PaymentsController#index</code> lists pending bank-transfer orders oldest first with the payment deadline and a quick mark-paid form. <code>Admin::BulkPaymentsController#create</code> delegates to <code>Admin::BulkPayment</code>, which parses one order number per line and renders a paid / not found / wrong-status summary.</li>
+<li><code>Admin::DisputesController</code> lists disputed orders oldest first with age and reason. Detail combines the order summary, dispute reason/details/photos, read-only conversation messages, timeline, internal notes and the resolution form. <code>Admin::DisputeResolution</code> calls <code>Order#resolve_dispute!</code>; refunds require an administrator, releases are available to moderators. <code>OrderNotifier</code> sends the resolution message to both parties as an in-app notification and locale-aware <code>OrderMailer#dispute_resolved_buyer/#_seller</code> email, respecting email preferences.</li>
+<li><code>Admin::ReportsController</code> filters by status, reason and reportable type and shows counts per status. <code>Admin::ReportResolution</code> resolves with an optional action (pause listing, suspend user through <code>Admin::UserModeration</code>, unpublish review) or dismisses, notifies the reporter through <code>Notifier</code> and writes an audit entry. Bulk dismiss goes through <code>Admin::BulkReportActionsController</code>.</li>
+<li><code>Admin::ReviewsController</code> filters rating, publication, store, reply presence and created range. Unpublish/publish and reply visibility are staff actions; deletion is administrator-only. Review callbacks recalculate the store rating after unpublish. <code>reviews.seller_reply_visible</code> hides a seller reply from public store, listing and order views while keeping it visible to the seller.</li>
+<li>Dashboard dispute, report and pending-payment stat cards link to their screens. <code>Admin::SidebarCounts</code> caches open disputes, open reports and pending payments for one minute; the dashboard reuses its own cached aggregates to avoid extra queries.</li>
+<li>New schema: <code>order_notes</code> (<code>order_id</code>, <code>author_id</code>, <code>body</code>), <code>orders .refund_reference</code> and <code>reviews.seller_reply_visible</code>.</li>
+</ul>
 <h3>Performance guardrails</h3>
 <ul>
 <li><code>ListingSearch::INCLUDES</code> preloads store, category, region, user and image attachments/blobs. Cards never call <code>category.root</code> or <code>user.store</code>; root slugs come from a cached <code>Category.root_slug_map</code> and seller names prefer the preloaded store.</li>
@@ -496,6 +509,16 @@ app/controllers/admin/{impersonations,user_exports}_controller.rb
 app/controllers/admin/stores_controller.rb      store table, detail, edit
 app/controllers/admin/{store_verifications,store_vacations}_controller.rb
 app/controllers/admin/{audit_logs,search,placeholders}_controller.rb
+app/controllers/admin/orders_controller.rb         order table, detail, timeline
+app/controllers/admin/order_{payments,cancellations,refunds,emails,notes,exports}_controller.rb
+                                                   nested order resources + CSV
+app/controllers/admin/payments_controller.rb       bank-transfer reconciliation
+app/controllers/admin/bulk_payments_controller.rb  pasted order-number summary
+app/controllers/admin/disputes_controller.rb       dispute queue and detail
+app/controllers/admin/dispute_resolutions_controller.rb
+app/controllers/admin/reports_controller.rb        report queue, detail, resolve
+app/controllers/admin/bulk_report_actions_controller.rb
+app/controllers/admin/reviews_controller.rb        review moderation
 app/controllers/concerns/admin/auditable.rb     admin mutation audit writer
 app/policies/admin/                             staff and admin-only policies
 app/services/admin/dashboard.rb                 cached dashboard aggregates
@@ -506,11 +529,18 @@ app/services/admin/listing_update.rb            admin listing form writer
 app/services/admin/bulk_listing_action.rb       whitelisted bulk mutations
 app/services/admin/{user_query,user_export,user_moderation}.rb
 app/services/admin/{store_query,global_search}.rb
+app/services/admin/order_query.rb                filtered/sorted order relation
+app/services/admin/{order_export,bulk_payment}.rb
+app/services/admin/{dispute_query,dispute_resolution}.rb
+app/services/admin/{report_query,report_resolution}.rb
+app/services/admin/{review_query,sidebar_counts}.rb
+app/models/order_note.rb                         internal staff notes
 app/mailers/listing_mailer.rb                   approved/rejected seller emails
 app/helpers/admin_helper.rb                     nav, badges, charts, audit labels
 app/views/layouts/admin.html.erb                sidebar + top bar shell
 app/views/admin/shared/                         table, filter, bulk, stats, meta kit
 app/views/admin/{dashboard,moderation_queue,listings,users,stores}/**
+app/views/admin/{orders,payments,bulk_payments,disputes,reports,reviews}/**
 app/views/admin/{audit_logs,search,placeholders}/
 app/javascript/controllers/admin_sidebar_controller.js
 app/javascript/controllers/admin_queue_controller.js
@@ -582,6 +612,8 @@ test/system/checkout_flow_test.rb
 test/system/                                responsive + auth modal
 test/i18n/locale_parity_test.rb
 test/integration/admin_{access,panel,moderation,users}_test.rb
+test/integration/admin_{orders,disputes,reports,reviews}_test.rb
+test/services/admin/sidebar_counts_test.rb
 test/system/admin_moderation_flow_test.rb
 test/seeds_test.rb
 </code></pre>
@@ -589,7 +621,8 @@ test/seeds_test.rb
 <section class="card open-items">
 <h2><span>Open items for later phases</span></h2>
 <ul>
-<li>Admin screens for orders, disputes, refunds, reports, reviews, categories, filters, legal pages, games, newsletter and settings are placeholders until phases 6B/6C.</li>
+<li>Admin screens for categories, filters, legal pages, games, newsletter and settings are placeholders until phase 6C.</li>
+<li>Refunds are recorded manually with a reference; no payment-provider refund API is called yet.</li>
 <li>Admin two-factor authentication is not implemented; Devise lockable already throttles failed sign-ins. Decide whether staff 2FA is required before phase 6C.</li>
 <li>Impersonation is session-based and audited; there is no automatic timeout.</li>
 <li>Admin dashboards and moderation flags are heuristic (price median and image checksum reuse), not fraud detection.</li>

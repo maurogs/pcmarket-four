@@ -555,3 +555,43 @@ complete audit trail. Remaining admin areas can now be added incrementally in
 `app/controllers/application_controller.rb`, `app/views/layouts/{application,seller}.html.erb`,
 `config/routes.rb`, `config/locales/admin.*.yml`, `config/locales/notifications.*.yml`,
 `test/**`, `.claude/context/{project,project.es}.md`.
+
+## 2026-11-21 — Phase 6B admin operations
+
+### What changed
+
+- Added admin order management: filtered/sortable index with totals and CSV
+  export, full order detail, bank-transfer reconciliation with deadline
+  countdown, bulk mark-paid summary, cancellation, refund with reference,
+  buyer/seller email resends and audited internal notes (`OrderNote`).
+- Added dispute operations: queue and detail with dispute photos, read-only
+  conversation, timeline, notes, and resolution by refund (administrator) or
+  release (staff). Resolution messages fan out as notifications and locale-aware
+  emails to both parties.
+- Added report operations: filters, status counts, reportable preview, related
+  reports, resolve with hide-listing / suspend-user / unpublish-review actions,
+  dismiss, bulk dismiss and reporter notifications.
+- Added review moderation: filters, detail with order link, publish/unpublish
+  with store rating recalculation, seller-reply visibility, and admin-only
+  deletion.
+- Linked dashboard dispute/report/pending-payment cards to the new screens and
+  added cached one-minute sidebar badges.
+- Added six-locale admin, notification and order-mailer strings, tests for the
+  new flows, and synchronised project context (English and Spanish).
+
+### Why
+
+Phase 6B closes the operational loop opened in 6A: staff can now reconcile
+payments, resolve disputes and moderate reports/reviews from the admin panel,
+with every destructive action authorised and audited.
+
+### Files touched
+
+`db/migrate/20261122130000_create_order_notes_and_refund_reference.rb`,
+`app/models/{order,order_note,review}.rb`, `app/services/order_notifier.rb`,
+`app/mailers/order_mailer.rb`, `app/controllers/admin/**`,
+`app/policies/admin/**`, `app/services/admin/**`, `app/views/admin/**`,
+`app/views/{listings,stores,orders,seller/orders}/**`,
+`app/helpers/admin_helper.rb`, `app/controllers/admin/base_controller.rb`,
+`config/routes.rb`, `config/locales/{admin,notifications,orders}.*.yml`,
+`test/**`, `.claude/context/{project,project.es}.md`.

@@ -3,7 +3,7 @@ module Admin
   # minutes so opening the panel stays cheap even on large datasets.
   class Dashboard
     CACHE_TTL = 2.minutes
-    CACHE_KEY = "admin/dashboard/v2"
+    CACHE_KEY = "admin/dashboard/v3"
     PAID_STATUSES = %w[paid shipped delivered completed disputed].freeze
     WINDOW = 30
     TREND_WINDOW = 7
@@ -57,6 +57,9 @@ module Admin
         commission_cents: trend(current_totals[1], previous_totals[1], money: true),
         open_disputes: trend(Order.disputed.count, nil, invert: true),
         open_reports: trend(Report.open.count, nil, invert: true),
+        pending_payments: trend(
+          Order.pending_payment.where(payment_method: "bank_transfer").count, nil, invert: true
+        ),
         newsletter_subscribers: newsletter_stats
       }
     end

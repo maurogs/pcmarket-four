@@ -1,27 +1,33 @@
+---
 it:
   notifications:
-    title: "Notifiche"
-    subtitle: "Pagamenti, spedizioni e aggiornamenti sui tuoi ordini."
-    empty: "Non hai notifiche."
-    empty_title: "Ancora niente qui"
-    empty_body: "Gli aggiornamenti su ordini e account appariranno qui."
-    view_all: "Vedi tutte le notifiche"
+    title: Notifiche
+    subtitle: Pagamenti, spedizioni e aggiornamenti sui tuoi ordini.
+    empty: Non hai notifiche.
+    empty_title: Ancora niente qui
+    empty_body: Gli aggiornamenti su ordini e account appariranno qui.
+    view_all: Vedi tutte le notifiche
     read_all:
-      label: "Segna tutto come letto"
-      done: "Tutte le notifiche sono state segnate come lette."
+      label: Segna tutto come letto
+      done: Tutte le notifiche sono state segnate come lette.
     kinds:
-      order_paid: "Pagamento ricevuto per l'ordine %{number}."
-      order_paid_seller: "L'ordine %{number} è pagato e pronto per la spedizione."
-      order_shipped: "L'ordine %{number} è stato spedito."
-      order_ready_for_pickup: "L'ordine %{number} è pronto per il ritiro."
-      order_delivered: "L'ordine %{number} è stato consegnato. Conferma la ricezione."
-      order_completed: "L'ordine %{number} è completato. Lascia una recensione."
-      order_cancelled: "L'ordine %{number} è stato annullato."
-      order_cancelled_seller: "L'ordine %{number} è stato annullato."
-      order_dispute_opened: "È stata aperta una contestazione sull'ordine %{number}."
-      order_dispute_resolved: "La contestazione dell'ordine %{number} è stata risolta."
-      order_refunded: "L'ordine %{number} è stato rimborsato."
-      order_late_shipment: "L'ordine %{number} attende la spedizione."
-      listing_approved: "Il tuo annuncio «%{title}» è stato approvato e pubblicato."
-      listing_rejected: "Il tuo annuncio «%{title}» è stato rifiutato: %{reason}"
-      default: "Hai una nuova notifica."
+      order_paid: Pagamento ricevuto per l'ordine %{number}.
+      order_paid_seller: L'ordine %{number} è pagato e pronto per la spedizione.
+      order_shipped: L'ordine %{number} è stato spedito.
+      order_ready_for_pickup: L'ordine %{number} è pronto per il ritiro.
+      order_delivered: L'ordine %{number} è stato consegnato. Conferma la ricezione.
+      order_completed: L'ordine %{number} è completato. Lascia una recensione.
+      order_cancelled: L'ordine %{number} è stato annullato.
+      order_cancelled_seller: L'ordine %{number} è stato annullato.
+      order_dispute_opened: È stata aperta una contestazione sull'ordine %{number}.
+      order_dispute_resolved: La contestazione dell'ordine %{number} è stata risolta.
+      order_refunded: L'ordine %{number} è stato rimborsato.
+      order_late_shipment: L'ordine %{number} attende la spedizione.
+      listing_approved: Il tuo annuncio «%{title}» è stato approvato e pubblicato.
+      listing_rejected: 'Il tuo annuncio «%{title}» è stato rifiutato: %{reason}'
+      default: Hai una nuova notifica.
+      order_dispute_resolution: La controversia sull’ordine %{number} è stata risolta
+        (%{outcome}). %{message}
+      report_resolved: La tua segnalazione su %{reportable} è stata gestita. Grazie
+        per aiutarci a mantenere PCMarket sicuro.
+      report_dismissed: La tua segnalazione su %{reportable} è stata esaminata e archiviata.

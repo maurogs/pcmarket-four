@@ -1,7 +1,6 @@
 module Admin
   class PlaceholdersController < BaseController
-    SECTIONS = %w[orders disputes reports reviews categories filters legal-pages games
-                  newsletter settings countries].freeze
+    SECTIONS = %w[categories filters legal-pages games newsletter settings countries].freeze
 
     def show
       authorize_admin!(:placeholder, :show?)

@@ -7,9 +7,23 @@ module Admin
     before_action :authenticate_user!
     before_action :require_staff
 
-    helper_method :pending_moderation_count
+    helper_method :pending_moderation_count, :sidebar_counts
 
     private
+
+    def sidebar_counts
+      @sidebar_counts ||= begin
+        if defined?(@dashboard) && @dashboard.present?
+          {
+            open_disputes: @dashboard[:stats][:open_disputes][:value],
+            open_reports: @dashboard[:stats][:open_reports][:value],
+            pending_payments: @dashboard[:stats][:pending_payments][:value]
+          }
+        else
+          Admin::SidebarCounts.call
+        end
+      end
+    end
 
     def require_staff
       return if current_user&.staff?

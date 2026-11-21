@@ -1,231 +1,241 @@
+---
 fr:
   orders:
     index:
-      title: "Vos commandes"
-      subtitle: "Suivez vos achats, paiements et livraisons."
-      keep_shopping: "Continuer les achats"
-      filters_label: "Filtrer les commandes"
+      title: Vos commandes
+      subtitle: Suivez vos achats, paiements et livraisons.
+      keep_shopping: Continuer les achats
+      filters_label: Filtrer les commandes
       filters:
-        all: "Toutes"
-        to_pay: "À payer"
-        in_progress: "En cours"
-        completed: "Terminées"
-        cancelled: "Annulées"
-      search_label: "Rechercher des commandes"
-      search_placeholder: "Rechercher par numéro ou article"
-      search: "Rechercher"
+        all: Toutes
+        to_pay: À payer
+        in_progress: En cours
+        completed: Terminées
+        cancelled: Annulées
+      search_label: Rechercher des commandes
+      search_placeholder: Rechercher par numéro ou article
+      search: Rechercher
       items_count:
         one: "%{count} article"
         other: "%{count} articles"
       more_items:
         one: "+%{count} autre"
         other: "+%{count} autres"
-      view: "Voir la commande"
-      empty_title: "Aucune commande pour le moment"
-      empty_body: "Lorsque vous achetez quelque chose, cela apparaîtra ici."
+      view: Voir la commande
+      empty_title: Aucune commande pour le moment
+      empty_body: Lorsque vous achetez quelque chose, cela apparaîtra ici.
     show:
-      title: "Commande %{number}"
-      placed_on: "Passée le %{date}"
-      back: "Retour aux commandes"
-      guest_notice: "Vous consultez cette commande en tant qu’invité. Conservez ce lien pour la retrouver."
-      cancelled_notice: "Cette commande a été annulée le %{date}."
-      timeline_title: "Statut de la commande"
-      items_title: "Articles"
-      quantity:
-        one: "Quantité : %{count}"
-        other: "Quantité : %{count}"
-      payment_title: "Instructions de paiement"
-      seller_title: "Vendeur"
-      view_store: "Voir la boutique"
-      message_seller: "Contacter le vendeur"
-      delivery_title: "Livraison"
-      totals_title: "Totaux"
+      tracking_title: Suivi
+      carrier: 'Transporteur : %{carrier}'
+      tracking_number: 'Numéro de suivi :'
     statuses:
-      pending_payment: "En attente de paiement"
-      paid: "Payée"
-      shipped: "Expédiée"
-      delivered: "Livrée"
-      completed: "Terminée"
-      cancelled: "Annulée"
-      refunded: "Remboursée"
-      disputed: "Litige"
+      pending_payment: En attente de paiement
+      paid: Payée
+      shipped: Expédiée
+      delivered: Livrée
+      completed: Terminée
+      cancelled: Annulée
+      refunded: Remboursée
+      disputed: Litige
     timeline:
-      placed: "Passée"
-      paid: "Payée"
-      shipped: "Expédiée"
-      delivered: "Livrée"
-      completed: "Terminée"
-      pending: "En attente"
-    cancel: "Annuler la commande"
-    cancel_confirm: "Annuler cette commande non payée ?"
-    cancelled: "Commande annulée. Les articles sont de nouveau disponibles."
-    cannot_cancel: "Cette commande ne peut plus être annulée."
+      placed: Passée
+      paid: Payée
+      shipped: Expédiée
+      delivered: Livrée
+      completed: Terminée
+      pending: En attente
+    cancel: Annuler la commande
+    cancel_confirm: Annuler cette commande non payée ?
+    cancelled: Commande annulée. Les articles sont de nouveau disponibles.
+    cannot_cancel: Cette commande ne peut plus être annulée.
     payment:
       bank_transfer:
-        title: "Virement bancaire"
-        intro: "Payez par virement avec la référence ci-dessous. Le vendeur prépare la commande dès réception."
-        iban: "IBAN"
-        beneficiary: "Bénéficiaire"
-        reference: "Référence"
-        amount: "Montant"
-        deadline: "Merci de payer sous %{days} jours. Les commandes impayées sont annulées automatiquement et les articles remis en ligne."
+        title: Virement bancaire
+        intro: Payez par virement avec la référence ci-dessous. Le vendeur prépare
+          la commande dès réception.
+        iban: IBAN
+        beneficiary: Bénéficiaire
+        reference: Référence
+        amount: Montant
+        deadline: Merci de payer sous %{days} jours. Les commandes impayées sont annulées
+          automatiquement et les articles remis en ligne.
       cash_on_pickup:
-        title: "Espèces au retrait"
-        intro: "Payez le vendeur en personne lors du retrait. La commande reste en attente d’ici là."
+        title: Espèces au retrait
+        intro: Payez le vendeur en personne lors du retrait. La commande reste en
+          attente d’ici là.
       stripe:
-        title: "Paiement par carte"
-        intro: "Votre paiement par carte est traité en toute sécurité par Stripe. Nous confirmerons la commande dès la notification."
+        title: Paiement par carte
+        intro: Votre paiement par carte est traité en toute sécurité par Stripe. Nous
+          confirmerons la commande dès la notification.
     mailer:
       events:
         paid_buyer:
-          subject: "Paiement reçu pour la commande %{number}"
-          title: "Paiement reçu"
-          intro: "Nous avons reçu le paiement de la commande %{number} de %{store}. Le vendeur va la préparer pour l'expédition."
-          cta: "Voir votre commande"
+          subject: Paiement reçu pour la commande %{number}
+          title: Paiement reçu
+          intro: Nous avons reçu le paiement de la commande %{number} de %{store}.
+            Le vendeur va la préparer pour l'expédition.
+          cta: Voir votre commande
         paid_seller:
-          subject: "La commande %{number} est payée"
-          title: "Commande payée"
-          intro: "La commande %{number} de %{store} a été payée. Préparez-la et expédiez-la avant la date limite."
-          cta: "Ouvrir vos ventes"
+          subject: La commande %{number} est payée
+          title: Commande payée
+          intro: La commande %{number} de %{store} a été payée. Préparez-la et expédiez-la
+            avant la date limite.
+          cta: Ouvrir vos ventes
         shipped_buyer:
-          subject: "Votre commande %{number} est en route"
-          title: "Votre commande a été expédiée"
-          intro: "La commande %{number} de %{store} a été expédiée avec %{carrier}."
-          cta: "Suivre votre commande"
+          subject: Votre commande %{number} est en route
+          title: Votre commande a été expédiée
+          intro: La commande %{number} de %{store} a été expédiée avec %{carrier}.
+          cta: Suivre votre commande
         delivered_buyer:
-          subject: "Votre commande %{number} a été livrée"
-          title: "Commande livrée"
-          intro: "La commande %{number} de %{store} est marquée comme livrée. Confirmez la réception après l'avoir vérifiée."
-          cta: "Confirmer la réception"
+          subject: Votre commande %{number} a été livrée
+          title: Commande livrée
+          intro: La commande %{number} de %{store} est marquée comme livrée. Confirmez
+            la réception après l'avoir vérifiée.
+          cta: Confirmer la réception
         completed_buyer:
-          subject: "Commande %{number} terminée"
-          title: "Commande terminée"
-          intro: "La commande %{number} de %{store} est terminée. Nous aimerions connaître votre avis."
-          cta: "Laisser un avis"
+          subject: Commande %{number} terminée
+          title: Commande terminée
+          intro: La commande %{number} de %{store} est terminée. Nous aimerions connaître
+            votre avis.
+          cta: Laisser un avis
         cancelled_buyer:
-          subject: "Commande %{number} annulée"
-          title: "Commande annulée"
-          intro: "La commande %{number} de %{store} a été annulée."
-          cta: "Voir votre commande"
+          subject: Commande %{number} annulée
+          title: Commande annulée
+          intro: La commande %{number} de %{store} a été annulée.
+          cta: Voir votre commande
         cancelled_seller:
-          subject: "Commande %{number} annulée"
-          title: "Commande annulée"
-          intro: "La commande %{number} de %{store} a été annulée. Tout paiement sera remboursé."
-          cta: "Ouvrir vos ventes"
+          subject: Commande %{number} annulée
+          title: Commande annulée
+          intro: La commande %{number} de %{store} a été annulée. Tout paiement sera
+            remboursé.
+          cta: Ouvrir vos ventes
         dispute_seller:
-          subject: "Litige ouvert sur la commande %{number}"
-          title: "Un acheteur a ouvert un litige"
-          intro: "L'acheteur de la commande %{number} a ouvert un litige. Motif : %{reason}. Détails : %{details}"
-          cta: "Examiner le litige"
+          subject: Litige ouvert sur la commande %{number}
+          title: Un acheteur a ouvert un litige
+          intro: 'L''acheteur de la commande %{number} a ouvert un litige. Motif :
+            %{reason}. Détails : %{details}'
+          cta: Examiner le litige
         late_shipment_seller:
-          subject: "La commande %{number} attend l'expédition"
-          title: "Expédition en retard"
-          intro: "La commande %{number} est payée mais non expédiée. Expédiez-la sous %{days} jours ou elle sera annulée automatiquement."
-          cta: "Expédier la commande"
+          subject: La commande %{number} attend l'expédition
+          title: Expédition en retard
+          intro: La commande %{number} est payée mais non expédiée. Expédiez-la sous
+            %{days} jours ou elle sera annulée automatiquement.
+          cta: Expédier la commande
         dispute_admin:
-          subject: "Nouveau litige sur la commande %{number}"
-          title: "Nouveau litige"
-          intro: "La commande %{number} de %{store} a un nouveau litige. Motif : %{reason}. Détails : %{details}"
-          cta: "Ouvrir la commande"
-      order_number: "Commande"
-      store: "Boutique"
-      tracking_label: "Suivi"
-      greeting: "Bonjour %{name},"
-      subtotal: "Sous-total"
-      shipping: "Livraison"
-      total: "Total"
-      view_order: "Voir votre commande"
-      signature: "L’équipe %{site}"
+          subject: Nouveau litige sur la commande %{number}
+          title: Nouveau litige
+          intro: 'La commande %{number} de %{store} a un nouveau litige. Motif : %{reason}.
+            Détails : %{details}'
+          cta: Ouvrir la commande
+        dispute_resolved_buyer:
+          subject: Litige de la commande %{number} résolu
+          title: Votre litige a été résolu
+          intro: 'Le litige de la commande %{number} de %{store} a été résolu : %{outcome}.
+            %{message}'
+          cta: Voir votre commande
+        dispute_resolved_seller:
+          subject: Litige de la commande %{number} résolu
+          title: Litige résolu
+          intro: 'Le litige de la commande %{number} de %{store} a été résolu : %{outcome}.
+            %{message}'
+          cta: Ouvrir vos ventes
+      order_number: Commande
+      store: Boutique
+      tracking_label: Suivi
+      greeting: Bonjour %{name},
+      subtotal: Sous-total
+      shipping: Livraison
+      total: Total
+      view_order: Voir votre commande
+      signature: L’équipe %{site}
       buyer:
-        subject: "Votre commande %{number} sur %{site}"
-        title: "Confirmation de commande"
-        intro: "Merci pour votre commande %{number} auprès de %{store}."
-        outro: "Pour toute question, répondez à cet e-mail ou contactez le vendeur depuis la page de la commande."
+        subject: Votre commande %{number} sur %{site}
+        title: Confirmation de commande
+        intro: Merci pour votre commande %{number} auprès de %{store}.
+        outro: Pour toute question, répondez à cet e-mail ou contactez le vendeur
+          depuis la page de la commande.
       seller:
-        subject: "Nouvelle commande %{number} sur %{site}"
-        title: "Vous avez une nouvelle commande"
-        intro: "La commande %{number} a été passée pour %{store}."
-        buyer: "E-mail de l’acheteur : %{email}"
+        subject: Nouvelle commande %{number} sur %{site}
+        title: Vous avez une nouvelle commande
+        intro: La commande %{number} a été passée pour %{store}.
+        buyer: 'E-mail de l’acheteur : %{email}'
         fulfilment:
-          shipping: "L’acheteur a choisi la livraison."
-          local_pickup: "L’acheteur a choisi le retrait sur place."
-        payment: "Moyen de paiement : %{method}"
-        total: "Total de la commande : %{amount}"
-        open_sales: "Ouvrir vos ventes"
+          shipping: L’acheteur a choisi la livraison.
+          local_pickup: L’acheteur a choisi le retrait sur place.
+        payment: 'Moyen de paiement : %{method}'
+        total: 'Total de la commande : %{amount}'
+        open_sales: Ouvrir vos ventes
     events:
-      placed: "Commande passée"
-      paid: "Paiement reçu"
-      shipped: "Expédiée"
-      ready_for_pickup: "Prête à retirer"
-      delivered: "Livrée"
-      completed: "Terminée"
-      cancelled: "Annulée"
-      dispute_opened: "Litige ouvert"
-      dispute_resolved: "Litige résolu"
-      refunded: "Remboursée"
-      late_shipment_reminder: "Rappel d'expédition envoyé"
-      by_actor: "par %{name}"
-      by_system: "automatiquement"
-      reason_label: "Motif : %{reason}"
+      placed: Commande passée
+      paid: Paiement reçu
+      shipped: Expédiée
+      ready_for_pickup: Prête à retirer
+      delivered: Livrée
+      completed: Terminée
+      cancelled: Annulée
+      dispute_opened: Litige ouvert
+      dispute_resolved: Litige résolu
+      refunded: Remboursée
+      late_shipment_reminder: Rappel d'expédition envoyé
+      by_actor: par %{name}
+      by_system: automatiquement
+      reason_label: 'Motif : %{reason}'
     carriers:
-      correos: "Correos"
-      correos_express: "Correos Express"
-      seur: "SEUR"
-      mrw: "MRW"
-      gls: "GLS"
-      dhl: "DHL"
-      ups: "UPS"
-      nacex: "Nacex"
-      inpost: "InPost"
-      other: "Autre"
-    show:
-      tracking_title: "Suivi"
-      carrier: "Transporteur : %{carrier}"
-      tracking_number: "Numéro de suivi :"
+      correos: Correos
+      correos_express: Correos Express
+      seur: SEUR
+      mrw: MRW
+      gls: GLS
+      dhl: DHL
+      ups: UPS
+      nacex: Nacex
+      inpost: InPost
+      other: Autre
     actions:
-      title: "Actions"
-      confirm_receipt: "Confirmer la réception"
-      confirm_receipt_confirm: "Confirmez-vous avoir reçu la commande en bon état ?"
-      open_dispute: "Ouvrir un litige"
-      leave_review: "Laisser un avis"
-      inspection_window: "Vous pouvez signaler un problème jusqu'au %{date}."
+      title: Actions
+      confirm_receipt: Confirmer la réception
+      confirm_receipt_confirm: Confirmez-vous avoir reçu la commande en bon état ?
+      open_dispute: Ouvrir un litige
+      leave_review: Laisser un avis
+      inspection_window: Vous pouvez signaler un problème jusqu'au %{date}.
     delivery:
-      confirmed: "Réception confirmée. Merci !"
-      cannot_confirm: "Cette commande ne peut pas encore être confirmée."
+      confirmed: Réception confirmée. Merci !
+      cannot_confirm: Cette commande ne peut pas encore être confirmée.
     dispute:
-      title: "Ouvrir un litige"
-      subtitle: "Expliquez ce qui s'est passé avec la commande %{number}."
-      reason_label: "Motif"
+      title: Ouvrir un litige
+      subtitle: Expliquez ce qui s'est passé avec la commande %{number}.
+      reason_label: Motif
       reasons:
-        not_received: "Je ne l'ai pas reçue"
-        not_as_described: "Elle n'est pas conforme à la description"
-        damaged: "Elle est arrivée endommagée"
-        counterfeit: "Elle semble contrefaite"
-        other: "Autre"
-      details: "Que s'est-il passé ?"
-      details_placeholder: "Décrivez le problème et ce que vous souhaitez."
-      photos: "Photos"
-      photos_hint: "Jusqu'à %{count} photos JPEG, PNG ou WebP."
-      submit: "Ouvrir le litige"
-      cancel: "Annuler"
-      back: "Retour à la commande"
-      opened: "Litige ouvert. Le vendeur et notre équipe d'assistance ont été prévenus."
+        not_received: Je ne l'ai pas reçue
+        not_as_described: Elle n'est pas conforme à la description
+        damaged: Elle est arrivée endommagée
+        counterfeit: Elle semble contrefaite
+        other: Autre
+      details: Que s'est-il passé ?
+      details_placeholder: Décrivez le problème et ce que vous souhaitez.
+      photos: Photos
+      photos_hint: Jusqu'à %{count} photos JPEG, PNG ou WebP.
+      submit: Ouvrir le litige
+      cancel: Annuler
+      back: Retour à la commande
+      opened: Litige ouvert. Le vendeur et notre équipe d'assistance ont été prévenus.
     reviews:
-      title: "Laisser un avis"
-      subtitle: "Évaluez votre expérience avec %{store}."
-      rating: "Note"
-      rating_hint: "Utilisez les flèches pour choisir entre 1 et 5 étoiles."
-      blocked: "Votre texte contient un langage non autorisé."
-      order_not_completed: "Cette commande ne peut pas encore être évaluée."
+      title: Laisser un avis
+      subtitle: Évaluez votre expérience avec %{store}.
+      rating: Note
+      rating_hint: Utilisez les flèches pour choisir entre 1 et 5 étoiles.
+      blocked: Votre texte contient un langage non autorisé.
+      order_not_completed: Cette commande ne peut pas encore être évaluée.
       stars:
         one: "%{count} étoile"
         other: "%{count} étoiles"
-      body: "Votre avis"
-      body_placeholder: "Qu'est-ce qui s'est bien passé ? Que pourrait-on améliorer ?"
-      body_hint: "Entre %{min} et %{max} caractères."
-      submit: "Publier l'avis"
-      cancel: "Annuler"
-      back: "Retour à la commande"
-      created: "Merci ! Votre avis a été publié."
-      disabled: "Les avis sont temporairement désactivés."
-      your_review: "Votre avis"
+      body: Votre avis
+      body_placeholder: Qu'est-ce qui s'est bien passé ? Que pourrait-on améliorer
+        ?
+      body_hint: Entre %{min} et %{max} caractères.
+      submit: Publier l'avis
+      cancel: Annuler
+      back: Retour à la commande
+      created: Merci ! Votre avis a été publié.
+      disabled: Les avis sont temporairement désactivés.
+      your_review: Votre avis

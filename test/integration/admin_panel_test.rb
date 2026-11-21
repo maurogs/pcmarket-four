@@ -88,7 +88,7 @@ class AdminPanelTest < ActionDispatch::IntegrationTest
   end
 
   test "placeholder pages explain the next update" do
-    get admin_placeholder_path("orders", locale: :es)
+    get admin_placeholder_path("categories", locale: :es)
 
     assert_response :success
     assert_match I18n.t("admin.placeholder.coming"), response.body

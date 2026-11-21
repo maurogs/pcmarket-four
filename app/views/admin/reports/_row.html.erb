@@ -1,0 +1,29 @@
+<tr class="align-middle hover:bg-slate-50/70 dark:hover:bg-zinc-800/40">
+  <td class="px-3 py-2.5">
+    <div class="flex items-center gap-2">
+      <input type="checkbox" name="report_ids[]" value="<%= record.id %>" form="<%= bulk_form_id %>"
+             class="size-4 rounded text-brand-700 focus:ring-brand-500"
+             aria-label="<%= t("admin.reports.select_report", id: record.id) %>">
+      <div class="min-w-0">
+        <%= link_to t("admin.reports.report_number", id: record.id), admin_report_path(record),
+                    class: "block truncate font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+        <p class="truncate text-[11px] text-slate-500 dark:text-zinc-400"><%= admin_truncate(record.details, length: 60) %></p>
+      </div>
+    </div>
+  </td>
+  <td class="px-3 py-2.5 text-xs"><%= t("admin.reports.types.#{record.reportable_type.underscore}", default: record.reportable_type) %></td>
+  <td class="px-3 py-2.5">
+    <span class="<%= ui_badge_classes(tone: :accent) %>"><%= t("admin.reports.reasons.#{record.reason}") %></span>
+  </td>
+  <td class="px-3 py-2.5 text-xs text-slate-600 dark:text-zinc-400"><%= record.reporter.display_name %></td>
+  <td class="px-3 py-2.5">
+    <%= render "admin/shared/status_badge", text: t("admin.reports.statuses.#{record.status}"),
+               tone: admin_report_status_tone(record.status) %>
+  </td>
+  <td class="whitespace-nowrap px-3 py-2.5 text-xs text-slate-500 dark:text-zinc-400"><%= admin_datetime(record.created_at) %></td>
+  <td class="px-3 py-2.5 text-right">
+    <%= link_to icon("eye", class: "size-4"), admin_report_path(record),
+                class: "inline-flex rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200",
+                aria: { label: t("admin.actions.view") } %>
+  </td>
+</tr>

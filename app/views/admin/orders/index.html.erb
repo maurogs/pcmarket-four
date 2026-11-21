@@ -1,0 +1,72 @@
+<% filter_fields = [
+  { name: "status", type: :select, value: params[:status],
+    options: Order.statuses.keys.map { |status| [ t("orders.statuses.#{status}"), status ] },
+    include_blank: t("admin.orders.filters.any_status"), label: t("admin.orders.filters.status"), width: "min-w-36" },
+  { name: "fulfilment", type: :select, value: params[:fulfilment],
+    options: Order.fulfilments.keys.map { |kind| [ t("admin.orders.fulfilment.#{kind}"), kind ] },
+    include_blank: t("admin.orders.filters.any_fulfilment"), label: t("admin.orders.filters.fulfilment"), width: "min-w-36" },
+  { name: "payment_method", type: :select, value: params[:payment_method],
+    options: %w[bank_transfer cash_on_pickup stripe].map { |method| [ t("admin.orders.payment_methods.#{method}"), method ] },
+    include_blank: t("admin.orders.filters.any_payment"), label: t("admin.orders.filters.payment_method"), width: "min-w-40" },
+  { name: "seller", type: :search, value: params[:seller], placeholder: t("admin.orders.filters.seller_placeholder"), label: t("admin.orders.filters.seller") },
+  { name: "buyer_email", type: :search, value: params[:buyer_email], placeholder: t("admin.orders.filters.buyer_placeholder"), label: t("admin.orders.filters.buyer_email") },
+  { name: "created_from", type: :date, value: params[:created_from], label: t("admin.orders.filters.created_from"), width: "w-40" },
+  { name: "created_to", type: :date, value: params[:created_to], label: t("admin.orders.filters.created_to"), width: "w-40" },
+  { name: "min_total", type: :number, value: params[:min_total], placeholder: "0", label: t("admin.orders.filters.min_total"), width: "w-28" },
+  { name: "max_total", type: :number, value: params[:max_total], placeholder: "9999", label: t("admin.orders.filters.max_total"), width: "w-28" },
+  { name: "late_shipment", type: :select, value: params[:late_shipment],
+    options: [[ t("admin.common.yes"), "yes" ]], include_blank: t("admin.orders.filters.any"),
+    label: t("admin.orders.filters.late_shipment"), width: "min-w-32" },
+  { name: "refund_needed", type: :select, value: params[:refund_needed],
+    options: [[ t("admin.common.yes"), "yes" ]], include_blank: t("admin.orders.filters.any"),
+    label: t("admin.orders.filters.refund_needed"), width: "min-w-32" }
+] %>
+
+<div class="mx-auto max-w-[90rem]">
+  <%= render "admin/shared/page_header", title: t("admin.orders.title"),
+             subtitle: t("admin.orders.subtitle"), eyebrow: t("admin.nav.sections.marketplace") %>
+
+  <div class="mt-5">
+    <%= render "admin/shared/filter_bar", url: admin_orders_path, fields: filter_fields %>
+  </div>
+
+  <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+    <div class="flex flex-wrap items-center gap-2 text-xs">
+      <span class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+        <%= t("admin.orders.totals.count") %>: <strong class="tabular-nums"><%= admin_number(@totals[:count]) %></strong>
+      </span>
+      <span class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+        <%= t("admin.orders.totals.gmv") %>: <strong class="tabular-nums"><%= admin_money(@totals[:gmv_cents]) %></strong>
+      </span>
+      <span class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+        <%= t("admin.orders.totals.commission") %>: <strong class="tabular-nums"><%= admin_money(@totals[:commission_cents]) %></strong>
+      </span>
+    </div>
+
+    <%= form_with url: admin_order_exports_path, method: :post, class: "flex items-center gap-2" do %>
+      <% %w[status fulfilment payment_method seller buyer_email created_from created_to min_total max_total late_shipment refund_needed sort direction].each do |key| %>
+        <%= hidden_field_tag key, params[key], id: nil if params[key].present? %>
+      <% end %>
+      <%= button_tag type: "submit", class: ui_button_classes(variant: :outline, size: :sm) do %>
+        <%= icon "arrow-up-right", class: "size-3.5" %><%= t("admin.orders.export") %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= render "admin/shared/data_table", records: @orders, columns: [
+               { label: t("admin.orders.columns.number"), sort_key: "number" },
+               { label: t("admin.orders.columns.created"), sort_key: "created_at" },
+               { label: t("admin.orders.columns.buyer") },
+               { label: t("admin.orders.columns.seller"), sort_key: "seller" },
+               { label: t("admin.orders.columns.status"), sort_key: "status" },
+               { label: t("admin.orders.columns.fulfilment") },
+               { label: t("admin.orders.columns.payment") },
+               { label: t("admin.orders.columns.total"), sort_key: "total_cents", align: :right },
+               { label: "", class: "w-16" }
+             ],
+             row_partial: "admin/orders/row",
+             sort: @query.sort, direction: @query.direction,
+             empty_title: t("admin.orders.empty_title"), empty_body: t("admin.orders.empty_body") %>
+
+  <%= render "admin/shared/pagination", pagy: @pagy %>
+</div>

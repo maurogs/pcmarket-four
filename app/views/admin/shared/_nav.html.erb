@@ -1,5 +1,5 @@
 <nav class="flex-1 space-y-5 overflow-y-auto px-2 pb-6" aria-label="<%= t("admin.nav.label") %>">
-  <% admin_nav_sections(pending_moderation_count).each_with_index do |section, index| %>
+  <% admin_nav_sections(pending_moderation_count, sidebar_counts).each_with_index do |section, index| %>
     <div>
       <% if section[:title].present? %>
         <p class="px-2.5 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-zinc-500"

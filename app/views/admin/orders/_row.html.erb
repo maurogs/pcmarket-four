@@ -1,0 +1,35 @@
+<tr class="align-middle hover:bg-slate-50/70 dark:hover:bg-zinc-800/40">
+  <td class="px-3 py-2.5">
+    <%= link_to record.number, admin_order_path(record),
+                class: "font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+    <p class="text-[11px] text-slate-500 dark:text-zinc-400"><%= t("admin.orders.pieces", count: record.order_items.size) %></p>
+  </td>
+  <td class="whitespace-nowrap px-3 py-2.5 text-xs text-slate-500 dark:text-zinc-400"><%= admin_datetime(record.created_at) %></td>
+  <td class="px-3 py-2.5 text-xs text-slate-600 dark:text-zinc-400">
+    <span class="block truncate"><%= record.buyer&.display_name || record.buyer_email %></span>
+    <span class="block truncate text-[11px] text-slate-400 dark:text-zinc-500"><%= record.buyer_email %></span>
+  </td>
+  <td class="px-3 py-2.5 text-xs text-slate-600 dark:text-zinc-400">
+    <%= link_to record.seller.display_name, admin_user_path(record.seller),
+                class: "font-medium hover:text-brand-700 dark:hover:text-brand-300" %>
+    <span class="block truncate text-[11px] text-slate-400 dark:text-zinc-500"><%= record.store&.name || "—" %></span>
+  </td>
+  <td class="px-3 py-2.5">
+    <%= render "admin/shared/status_badge", text: t("orders.statuses.#{record.status}"),
+               tone: admin_order_status_tone(record.status) %>
+    <% if record.refund_required? %>
+      <span class="mt-1 block text-[10px] font-semibold uppercase text-rose-600 dark:text-rose-400"><%= t("admin.orders.refund_flag") %></span>
+    <% end %>
+    <% if record.status == "paid" && record.shipped_at.nil? && record.paid_at && record.paid_at < Setting.get("seller_ship_deadline_days", 3).to_i.days.ago %>
+      <span class="mt-1 block text-[10px] font-semibold uppercase text-amber-600 dark:text-amber-400"><%= t("admin.orders.late_flag") %></span>
+    <% end %>
+  </td>
+  <td class="px-3 py-2.5 text-xs text-slate-600 dark:text-zinc-400"><%= t("admin.orders.fulfilment.#{record.fulfilment}") %></td>
+  <td class="px-3 py-2.5 text-xs text-slate-600 dark:text-zinc-400"><%= record.payment_method.present? ? t("admin.orders.payment_methods.#{record.payment_method}") : "—" %></td>
+  <td class="px-3 py-2.5 text-right font-semibold tabular-nums"><%= admin_money(record.total_cents) %></td>
+  <td class="px-3 py-2.5 text-right">
+    <%= link_to icon("eye", class: "size-4"), admin_order_path(record),
+                class: "inline-flex rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200",
+                aria: { label: t("admin.actions.view") } %>
+  </td>
+</tr>

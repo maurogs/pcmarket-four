@@ -1,0 +1,49 @@
+<% filter_fields = [
+  { name: "status", type: :select, value: params[:status],
+    options: Report.statuses.keys.map { |status| [ t("admin.reports.statuses.#{status}"), status ] },
+    include_blank: t("admin.reports.filters.any_status"), label: t("admin.reports.filters.status"), width: "min-w-36" },
+  { name: "reason", type: :select, value: params[:reason],
+    options: Report.reasons.keys.map { |reason| [ t("admin.reports.reasons.#{reason}"), reason ] },
+    include_blank: t("admin.reports.filters.any_reason"), label: t("admin.reports.filters.reason"), width: "min-w-36" },
+  { name: "reportable_type", type: :select, value: params[:reportable_type],
+    options: Admin::ReportQuery::REPORTABLE_TYPES.map { |type| [ t("admin.reports.types.#{type.underscore}"), type ] },
+    include_blank: t("admin.reports.filters.any_type"), label: t("admin.reports.filters.type"), width: "min-w-36" }
+] %>
+
+<div class="mx-auto max-w-[90rem]">
+  <%= render "admin/shared/page_header", title: t("admin.reports.title"),
+             subtitle: t("admin.reports.subtitle"), eyebrow: t("admin.nav.sections.marketplace") %>
+
+  <section class="mt-5 grid grid-cols-3 gap-3" aria-label="<%= t('admin.reports.counts_label') %>">
+    <% Report.statuses.each_key do |status| %>
+      <%= render "admin/shared/stat_card", label: t("admin.reports.statuses.#{status}"),
+                 value: admin_number(@counts.fetch(status, 0)), hint: t("admin.reports.counts_hint") %>
+    <% end %>
+  </section>
+
+  <div class="mt-4">
+    <%= render "admin/shared/filter_bar", url: admin_reports_path, fields: filter_fields %>
+  </div>
+
+  <%= form_with url: admin_bulk_report_actions_path, method: :post, id: "bulk-reports-form",
+                data: { controller: "bulk-select" }, class: "mb-3" do %>
+    <%= render "admin/shared/bulk_bar", form_id: "bulk-reports-form",
+               actions: [ { label: t("admin.reports.bulk_dismiss"), value: "dismiss", variant: :outline } ] %>
+  <% end %>
+
+  <%= render "admin/shared/data_table", records: @reports, columns: [
+               { label: t("admin.reports.columns.report") },
+               { label: t("admin.reports.columns.type") },
+               { label: t("admin.reports.columns.reason"), sort_key: "reason" },
+               { label: t("admin.reports.columns.reporter") },
+               { label: t("admin.reports.columns.status"), sort_key: "status" },
+               { label: t("admin.reports.columns.created"), sort_key: "created_at" },
+               { label: "", class: "w-10" }
+             ],
+             row_partial: "admin/reports/row",
+             sort: @query.sort, direction: @query.direction,
+             selectable: true, bulk_form_id: "bulk-reports-form",
+             empty_title: t("admin.reports.empty_title"), empty_body: t("admin.reports.empty_body") %>
+
+  <%= render "admin/shared/pagination", pagy: @pagy %>
+</div>

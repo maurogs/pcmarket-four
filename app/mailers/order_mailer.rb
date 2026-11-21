@@ -61,6 +61,18 @@ class OrderMailer < ApplicationMailer
     deliver_event(order, :dispute_admin, locale: locale, to: to, cta: nil)
   end
 
+  def dispute_resolved_buyer(order, message: nil, outcome: nil, locale: nil)
+    @resolution_message = message
+    @resolution_outcome = outcome
+    deliver_event(order, :dispute_resolved_buyer, locale: locale, to: buyer_email(order), cta: :buyer)
+  end
+
+  def dispute_resolved_seller(order, message: nil, outcome: nil, locale: nil)
+    @resolution_message = message
+    @resolution_outcome = outcome
+    deliver_event(order, :dispute_resolved_seller, locale: locale, to: order.seller.email, cta: :seller)
+  end
+
   private
 
   def deliver_event(order, event, locale:, to:, cta:)
@@ -82,7 +94,9 @@ class OrderMailer < ApplicationMailer
         tracking: order.tracking_number.to_s,
         days: Setting.get("seller_ship_deadline_days", 3).to_i,
         reason: dispute_event&.data&.dig("reason").to_s,
-        details: dispute_event&.data&.dig("details").to_s
+        details: dispute_event&.data&.dig("details").to_s,
+        message: @resolution_message.to_s,
+        outcome: @resolution_outcome.present? ? I18n.t("admin.disputes.outcomes.#{@resolution_outcome}", default: @resolution_outcome.to_s) : ""
       )
       @cta_label = cta ? t("orders.mailer.events.#{event}.cta") : nil
       @recipient_name = recipient_name(order, cta)

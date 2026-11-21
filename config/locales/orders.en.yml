@@ -1,231 +1,240 @@
+---
 en:
   orders:
     index:
-      title: "Your orders"
-      subtitle: "Track purchases, payments and deliveries."
-      keep_shopping: "Continue shopping"
-      filters_label: "Filter orders"
+      title: Your orders
+      subtitle: Track purchases, payments and deliveries.
+      keep_shopping: Continue shopping
+      filters_label: Filter orders
       filters:
-        all: "All"
-        to_pay: "To pay"
-        in_progress: "In progress"
-        completed: "Completed"
-        cancelled: "Cancelled"
-      search_label: "Search orders"
-      search_placeholder: "Search by order number or item"
-      search: "Search"
+        all: All
+        to_pay: To pay
+        in_progress: In progress
+        completed: Completed
+        cancelled: Cancelled
+      search_label: Search orders
+      search_placeholder: Search by order number or item
+      search: Search
       items_count:
         one: "%{count} item"
         other: "%{count} items"
       more_items:
         one: "+%{count} more"
         other: "+%{count} more"
-      view: "View order"
-      empty_title: "No orders here yet"
-      empty_body: "When you buy something, it will appear in this list."
+      view: View order
+      empty_title: No orders here yet
+      empty_body: When you buy something, it will appear in this list.
     show:
-      title: "Order %{number}"
-      placed_on: "Placed on %{date}"
-      back: "Back to orders"
-      guest_notice: "You are viewing this order as a guest. Keep this link to check it later."
-      cancelled_notice: "This order was cancelled on %{date}."
-      timeline_title: "Order status"
-      items_title: "Items"
-      quantity:
-        one: "Quantity: %{count}"
-        other: "Quantity: %{count}"
-      payment_title: "Payment instructions"
-      seller_title: "Seller"
-      view_store: "View store"
-      message_seller: "Message the seller"
-      delivery_title: "Delivery"
-      totals_title: "Totals"
+      tracking_title: Tracking
+      carrier: 'Carrier: %{carrier}'
+      tracking_number: 'Tracking number:'
     statuses:
-      pending_payment: "Pending payment"
-      paid: "Paid"
-      shipped: "Shipped"
-      delivered: "Delivered"
-      completed: "Completed"
-      cancelled: "Cancelled"
-      refunded: "Refunded"
-      disputed: "Disputed"
+      pending_payment: Pending payment
+      paid: Paid
+      shipped: Shipped
+      delivered: Delivered
+      completed: Completed
+      cancelled: Cancelled
+      refunded: Refunded
+      disputed: Disputed
     timeline:
-      placed: "Placed"
-      paid: "Paid"
-      shipped: "Shipped"
-      delivered: "Delivered"
-      completed: "Completed"
-      pending: "Pending"
-    cancel: "Cancel order"
-    cancel_confirm: "Cancel this unpaid order?"
-    cancelled: "Order cancelled. The items are available again."
-    cannot_cancel: "This order can no longer be cancelled."
+      placed: Placed
+      paid: Paid
+      shipped: Shipped
+      delivered: Delivered
+      completed: Completed
+      pending: Pending
+    cancel: Cancel order
+    cancel_confirm: Cancel this unpaid order?
+    cancelled: Order cancelled. The items are available again.
+    cannot_cancel: This order can no longer be cancelled.
     payment:
       bank_transfer:
-        title: "Bank transfer"
-        intro: "Pay by bank transfer using the reference below. The seller prepares the order once the payment arrives."
-        iban: "IBAN"
-        beneficiary: "Beneficiary"
-        reference: "Reference"
-        amount: "Amount"
-        deadline: "Please pay within %{days} days. Unpaid orders are cancelled automatically and the items are relisted."
+        title: Bank transfer
+        intro: Pay by bank transfer using the reference below. The seller prepares
+          the order once the payment arrives.
+        iban: IBAN
+        beneficiary: Beneficiary
+        reference: Reference
+        amount: Amount
+        deadline: Please pay within %{days} days. Unpaid orders are cancelled automatically
+          and the items are relisted.
       cash_on_pickup:
-        title: "Cash on pickup"
-        intro: "Pay the seller in person when you collect the order. The order stays pending until then."
+        title: Cash on pickup
+        intro: Pay the seller in person when you collect the order. The order stays
+          pending until then.
       stripe:
-        title: "Card payment"
-        intro: "Your card payment is processed securely by Stripe. We will confirm the order as soon as Stripe notifies us."
+        title: Card payment
+        intro: Your card payment is processed securely by Stripe. We will confirm
+          the order as soon as Stripe notifies us.
     mailer:
       events:
         paid_buyer:
-          subject: "Payment received for order %{number}"
-          title: "Payment received"
-          intro: "We have received the payment for order %{number} from %{store}. The seller will prepare it for shipping."
-          cta: "View your order"
+          subject: Payment received for order %{number}
+          title: Payment received
+          intro: We have received the payment for order %{number} from %{store}. The
+            seller will prepare it for shipping.
+          cta: View your order
         paid_seller:
-          subject: "Order %{number} is paid"
-          title: "Order paid"
-          intro: "Order %{number} from %{store} has been paid. Please prepare and ship it before the deadline."
-          cta: "Open your sales"
+          subject: Order %{number} is paid
+          title: Order paid
+          intro: Order %{number} from %{store} has been paid. Please prepare and ship
+            it before the deadline.
+          cta: Open your sales
         shipped_buyer:
-          subject: "Your order %{number} is on its way"
-          title: "Your order has shipped"
-          intro: "Order %{number} from %{store} has been shipped with %{carrier}."
-          cta: "Track your order"
+          subject: Your order %{number} is on its way
+          title: Your order has shipped
+          intro: Order %{number} from %{store} has been shipped with %{carrier}.
+          cta: Track your order
         delivered_buyer:
-          subject: "Your order %{number} was delivered"
-          title: "Order delivered"
-          intro: "Order %{number} from %{store} has been marked as delivered. Please confirm receipt after inspecting it."
-          cta: "Confirm receipt"
+          subject: Your order %{number} was delivered
+          title: Order delivered
+          intro: Order %{number} from %{store} has been marked as delivered. Please
+            confirm receipt after inspecting it.
+          cta: Confirm receipt
         completed_buyer:
-          subject: "Order %{number} completed"
-          title: "Order completed"
-          intro: "Order %{number} from %{store} is complete. We would love to hear how it went."
-          cta: "Leave a review"
+          subject: Order %{number} completed
+          title: Order completed
+          intro: Order %{number} from %{store} is complete. We would love to hear
+            how it went.
+          cta: Leave a review
         cancelled_buyer:
-          subject: "Order %{number} cancelled"
-          title: "Order cancelled"
-          intro: "Order %{number} from %{store} has been cancelled."
-          cta: "View your order"
+          subject: Order %{number} cancelled
+          title: Order cancelled
+          intro: Order %{number} from %{store} has been cancelled.
+          cta: View your order
         cancelled_seller:
-          subject: "Order %{number} cancelled"
-          title: "Order cancelled"
-          intro: "Order %{number} from %{store} has been cancelled. Any payment will be refunded."
-          cta: "Open your sales"
+          subject: Order %{number} cancelled
+          title: Order cancelled
+          intro: Order %{number} from %{store} has been cancelled. Any payment will
+            be refunded.
+          cta: Open your sales
         dispute_seller:
-          subject: "Dispute opened on order %{number}"
-          title: "A buyer opened a dispute"
-          intro: "The buyer of order %{number} opened a dispute. Reason: %{reason}. Details: %{details}"
-          cta: "Review the dispute"
+          subject: Dispute opened on order %{number}
+          title: A buyer opened a dispute
+          intro: 'The buyer of order %{number} opened a dispute. Reason: %{reason}.
+            Details: %{details}'
+          cta: Review the dispute
         late_shipment_seller:
-          subject: "Order %{number} is waiting to be shipped"
-          title: "Shipment overdue"
-          intro: "Order %{number} has been paid but not shipped. Please ship it within %{days} days or it will be cancelled automatically."
-          cta: "Ship the order"
+          subject: Order %{number} is waiting to be shipped
+          title: Shipment overdue
+          intro: Order %{number} has been paid but not shipped. Please ship it within
+            %{days} days or it will be cancelled automatically.
+          cta: Ship the order
         dispute_admin:
-          subject: "New dispute on order %{number}"
-          title: "New dispute"
-          intro: "Order %{number} at %{store} has a new dispute. Reason: %{reason}. Details: %{details}"
-          cta: "Open the order"
-      order_number: "Order"
-      store: "Store"
-      tracking_label: "Tracking"
-      greeting: "Hi %{name},"
-      subtotal: "Subtotal"
-      shipping: "Shipping"
-      total: "Total"
-      view_order: "View your order"
-      signature: "The %{site} team"
+          subject: New dispute on order %{number}
+          title: New dispute
+          intro: 'Order %{number} at %{store} has a new dispute. Reason: %{reason}.
+            Details: %{details}'
+          cta: Open the order
+        dispute_resolved_buyer:
+          subject: Dispute on order %{number} resolved
+          title: Your dispute has been resolved
+          intro: 'The dispute on order %{number} from %{store} has been resolved:
+            %{outcome}. %{message}'
+          cta: View your order
+        dispute_resolved_seller:
+          subject: Dispute on order %{number} resolved
+          title: Dispute resolved
+          intro: 'The dispute on order %{number} from %{store} has been resolved:
+            %{outcome}. %{message}'
+          cta: Open your sales
+      order_number: Order
+      store: Store
+      tracking_label: Tracking
+      greeting: Hi %{name},
+      subtotal: Subtotal
+      shipping: Shipping
+      total: Total
+      view_order: View your order
+      signature: The %{site} team
       buyer:
-        subject: "Your %{site} order %{number}"
-        title: "Order confirmation"
-        intro: "Thanks for your order %{number} from %{store}."
-        outro: "If you have any questions, reply to this email or message the seller from your order page."
+        subject: Your %{site} order %{number}
+        title: Order confirmation
+        intro: Thanks for your order %{number} from %{store}.
+        outro: If you have any questions, reply to this email or message the seller
+          from your order page.
       seller:
-        subject: "New order %{number} on %{site}"
-        title: "You have a new order"
-        intro: "Order %{number} has been placed for %{store}."
-        buyer: "Buyer email: %{email}"
+        subject: New order %{number} on %{site}
+        title: You have a new order
+        intro: Order %{number} has been placed for %{store}.
+        buyer: 'Buyer email: %{email}'
         fulfilment:
-          shipping: "The buyer chose shipping."
-          local_pickup: "The buyer chose local pickup."
-        payment: "Payment method: %{method}"
-        total: "Order total: %{amount}"
-        open_sales: "Open your sales"
+          shipping: The buyer chose shipping.
+          local_pickup: The buyer chose local pickup.
+        payment: 'Payment method: %{method}'
+        total: 'Order total: %{amount}'
+        open_sales: Open your sales
     events:
-      placed: "Order placed"
-      paid: "Payment received"
-      shipped: "Shipped"
-      ready_for_pickup: "Ready for pickup"
-      delivered: "Delivered"
-      completed: "Completed"
-      cancelled: "Cancelled"
-      dispute_opened: "Dispute opened"
-      dispute_resolved: "Dispute resolved"
-      refunded: "Refunded"
-      late_shipment_reminder: "Shipping reminder sent"
-      by_actor: "by %{name}"
-      by_system: "automatically"
-      reason_label: "Reason: %{reason}"
+      placed: Order placed
+      paid: Payment received
+      shipped: Shipped
+      ready_for_pickup: Ready for pickup
+      delivered: Delivered
+      completed: Completed
+      cancelled: Cancelled
+      dispute_opened: Dispute opened
+      dispute_resolved: Dispute resolved
+      refunded: Refunded
+      late_shipment_reminder: Shipping reminder sent
+      by_actor: by %{name}
+      by_system: automatically
+      reason_label: 'Reason: %{reason}'
     carriers:
-      correos: "Correos"
-      correos_express: "Correos Express"
-      seur: "SEUR"
-      mrw: "MRW"
-      gls: "GLS"
-      dhl: "DHL"
-      ups: "UPS"
-      nacex: "Nacex"
-      inpost: "InPost"
-      other: "Other"
-    show:
-      tracking_title: "Tracking"
-      carrier: "Carrier: %{carrier}"
-      tracking_number: "Tracking number:"
+      correos: Correos
+      correos_express: Correos Express
+      seur: SEUR
+      mrw: MRW
+      gls: GLS
+      dhl: DHL
+      ups: UPS
+      nacex: Nacex
+      inpost: InPost
+      other: Other
     actions:
-      title: "Actions"
-      confirm_receipt: "Confirm receipt"
-      confirm_receipt_confirm: "Confirm that you received the order in good condition?"
-      open_dispute: "Open a dispute"
-      leave_review: "Leave a review"
-      inspection_window: "You can report a problem until %{date}."
+      title: Actions
+      confirm_receipt: Confirm receipt
+      confirm_receipt_confirm: Confirm that you received the order in good condition?
+      open_dispute: Open a dispute
+      leave_review: Leave a review
+      inspection_window: You can report a problem until %{date}.
     delivery:
-      confirmed: "Receipt confirmed. Thanks!"
-      cannot_confirm: "This order cannot be confirmed yet."
+      confirmed: Receipt confirmed. Thanks!
+      cannot_confirm: This order cannot be confirmed yet.
     dispute:
-      title: "Open a dispute"
-      subtitle: "Tell us what went wrong with order %{number}."
-      reason_label: "Reason"
+      title: Open a dispute
+      subtitle: Tell us what went wrong with order %{number}.
+      reason_label: Reason
       reasons:
-        not_received: "I did not receive it"
-        not_as_described: "It is not as described"
-        damaged: "It arrived damaged"
-        counterfeit: "It looks counterfeit"
-        other: "Other"
-      details: "What happened?"
-      details_placeholder: "Describe the problem and what you would like to happen."
-      photos: "Photos"
-      photos_hint: "Up to %{count} photos in JPEG, PNG or WebP."
-      submit: "Open dispute"
-      cancel: "Cancel"
-      back: "Back to the order"
-      opened: "Dispute opened. The seller and our support team have been notified."
+        not_received: I did not receive it
+        not_as_described: It is not as described
+        damaged: It arrived damaged
+        counterfeit: It looks counterfeit
+        other: Other
+      details: What happened?
+      details_placeholder: Describe the problem and what you would like to happen.
+      photos: Photos
+      photos_hint: Up to %{count} photos in JPEG, PNG or WebP.
+      submit: Open dispute
+      cancel: Cancel
+      back: Back to the order
+      opened: Dispute opened. The seller and our support team have been notified.
     reviews:
-      title: "Leave a review"
-      subtitle: "Rate your experience with %{store}."
-      rating: "Rating"
-      rating_hint: "Use the arrow keys to choose between 1 and 5 stars."
-      blocked: "Your text contains language that is not allowed."
-      order_not_completed: "This order cannot be reviewed yet."
+      title: Leave a review
+      subtitle: Rate your experience with %{store}.
+      rating: Rating
+      rating_hint: Use the arrow keys to choose between 1 and 5 stars.
+      blocked: Your text contains language that is not allowed.
+      order_not_completed: This order cannot be reviewed yet.
       stars:
         one: "%{count} star"
         other: "%{count} stars"
-      body: "Your review"
-      body_placeholder: "What went well? What could be better?"
-      body_hint: "Between %{min} and %{max} characters."
-      submit: "Publish review"
-      cancel: "Cancel"
-      back: "Back to the order"
-      created: "Thanks! Your review has been published."
-      disabled: "Reviews are currently disabled."
-      your_review: "Your review"
+      body: Your review
+      body_placeholder: What went well? What could be better?
+      body_hint: Between %{min} and %{max} characters.
+      submit: Publish review
+      cancel: Cancel
+      back: Back to the order
+      created: Thanks! Your review has been published.
+      disabled: Reviews are currently disabled.
+      your_review: Your review

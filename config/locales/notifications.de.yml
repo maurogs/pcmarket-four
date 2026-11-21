@@ -1,27 +1,33 @@
+---
 de:
   notifications:
-    title: "Benachrichtigungen"
-    subtitle: "Zahlungen, Versand und Neuigkeiten zu deinen Bestellungen."
-    empty: "Du hast keine Benachrichtigungen."
-    empty_title: "Noch nichts hier"
-    empty_body: "Updates zu Bestellungen und Konto erscheinen hier."
-    view_all: "Alle Benachrichtigungen ansehen"
+    title: Benachrichtigungen
+    subtitle: Zahlungen, Versand und Neuigkeiten zu deinen Bestellungen.
+    empty: Du hast keine Benachrichtigungen.
+    empty_title: Noch nichts hier
+    empty_body: Updates zu Bestellungen und Konto erscheinen hier.
+    view_all: Alle Benachrichtigungen ansehen
     read_all:
-      label: "Alle als gelesen markieren"
-      done: "Alle Benachrichtigungen wurden als gelesen markiert."
+      label: Alle als gelesen markieren
+      done: Alle Benachrichtigungen wurden als gelesen markiert.
     kinds:
-      order_paid: "Zahlung für Bestellung %{number} erhalten."
-      order_paid_seller: "Bestellung %{number} ist bezahlt und versandbereit."
-      order_shipped: "Bestellung %{number} wurde versandt."
-      order_ready_for_pickup: "Bestellung %{number} ist abholbereit."
-      order_delivered: "Bestellung %{number} wurde geliefert. Bitte bestätige den Erhalt."
-      order_completed: "Bestellung %{number} ist abgeschlossen. Schreib eine Bewertung."
-      order_cancelled: "Bestellung %{number} wurde storniert."
-      order_cancelled_seller: "Bestellung %{number} wurde storniert."
-      order_dispute_opened: "Zu Bestellung %{number} wurde ein Streitfall eröffnet."
-      order_dispute_resolved: "Der Streitfall zu Bestellung %{number} wurde gelöst."
-      order_refunded: "Bestellung %{number} wurde erstattet."
-      order_late_shipment: "Bestellung %{number} wartet auf Versand."
-      listing_approved: "Ihre Anzeige „%{title}“ wurde freigegeben und veröffentlicht."
-      listing_rejected: "Ihre Anzeige „%{title}“ wurde abgelehnt: %{reason}"
-      default: "Du hast eine neue Benachrichtigung."
+      order_paid: Zahlung für Bestellung %{number} erhalten.
+      order_paid_seller: Bestellung %{number} ist bezahlt und versandbereit.
+      order_shipped: Bestellung %{number} wurde versandt.
+      order_ready_for_pickup: Bestellung %{number} ist abholbereit.
+      order_delivered: Bestellung %{number} wurde geliefert. Bitte bestätige den Erhalt.
+      order_completed: Bestellung %{number} ist abgeschlossen. Schreib eine Bewertung.
+      order_cancelled: Bestellung %{number} wurde storniert.
+      order_cancelled_seller: Bestellung %{number} wurde storniert.
+      order_dispute_opened: Zu Bestellung %{number} wurde ein Streitfall eröffnet.
+      order_dispute_resolved: Der Streitfall zu Bestellung %{number} wurde gelöst.
+      order_refunded: Bestellung %{number} wurde erstattet.
+      order_late_shipment: Bestellung %{number} wartet auf Versand.
+      listing_approved: Ihre Anzeige „%{title}“ wurde freigegeben und veröffentlicht.
+      listing_rejected: 'Ihre Anzeige „%{title}“ wurde abgelehnt: %{reason}'
+      default: Du hast eine neue Benachrichtigung.
+      order_dispute_resolution: Der Streitfall zur Bestellung %{number} wurde gelöst
+        (%{outcome}). %{message}
+      report_resolved: Deine Meldung zu %{reportable} wurde bearbeitet. Danke, dass
+        du PCMarket sicher hältst.
+      report_dismissed: Deine Meldung zu %{reportable} wurde geprüft und verworfen.

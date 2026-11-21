@@ -1,0 +1,172 @@
+<% target = @report.reportable %>
+<% actions = [] %>
+<% actions << [ t("admin.reports.actions.hide_listing"), "hide_listing" ] if target.is_a?(Listing) %>
+<% actions << [ t("admin.reports.actions.suspend_user"), "suspend_user" ] if target.is_a?(User) %>
+<% if target.is_a?(Review) && policy([ :admin, @report ]).delete_review? %>
+  <% actions << [ t("admin.reports.actions.delete_review"), "delete_review" ] %>
+<% end %>
+
+<div class="mx-auto max-w-[90rem] space-y-5">
+  <%= render "admin/shared/detail_header", title: t("admin.reports.show.title", id: @report.id),
+             subtitle: t("admin.reports.show.subtitle", type: t("admin.reports.types.#{@report.reportable_type.underscore}", default: @report.reportable_type),
+                           reporter: @report.reporter.display_name),
+             back_path: admin_reports_path, secondary_actions: [], actions: [] %>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <%= render "admin/shared/status_badge", text: t("admin.reports.statuses.#{@report.status}"),
+               tone: admin_report_status_tone(@report.status) %>
+    <span class="<%= ui_badge_classes(tone: :accent) %>"><%= t("admin.reports.reasons.#{@report.reason}") %></span>
+    <span class="text-xs text-slate-500 dark:text-zinc-400"><%= admin_datetime(@report.created_at) %></span>
+    <% if @report.resolved_by %>
+      <span class="text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.reports.show.resolved_by", name: @report.resolved_by.display_name) %></span>
+    <% end %>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
+    <div class="space-y-4">
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.reports.show.reported_item") %></h2>
+        <div class="mt-3 rounded-lg border border-slate-100 p-3 dark:border-zinc-800">
+          <% if target.is_a?(Listing) %>
+            <div class="flex items-center gap-3">
+              <span class="size-14 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800">
+                <% if target.ordered_images.first %>
+                  <%= image_tag target.ordered_images.first.variant(resize_to_limit: [ 112, 112 ], format: :webp),
+                                alt: "", loading: "lazy", class: "size-14 object-cover" %>
+                <% else %>
+                  <%= image_tag "listing-placeholder.svg", alt: "", loading: "lazy", class: "size-14 object-cover" %>
+                <% end %>
+              </span>
+              <div class="min-w-0 flex-1">
+                <%= link_to target.title, admin_listing_path(target),
+                            class: "block truncate font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+                <p class="text-xs text-slate-500 dark:text-zinc-400"><%= target.category&.name %> · <%= admin_money(target.price_cents) %></p>
+                <p class="mt-1"><%= render "admin/shared/status_badge", text: t("listings.statuses.#{target.status}"), tone: admin_listing_status_tone(target.status) %></p>
+              </div>
+            </div>
+          <% elsif target.is_a?(User) %>
+            <div class="flex items-center gap-3">
+              <span class="flex size-10 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700 dark:bg-zinc-800 dark:text-zinc-200"><%= target.initials %></span>
+              <div>
+                <%= link_to target.display_name, admin_user_path(target),
+                            class: "font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+                <p class="text-xs text-slate-500 dark:text-zinc-400"><%= target.email %> · <%= t("admin.user_statuses.#{target.status}") %></p>
+              </div>
+            </div>
+          <% elsif target.is_a?(Conversation) %>
+            <div>
+              <p class="text-sm font-medium"><%= t("admin.reports.show.conversation_between",
+                                                     buyer: target.buyer.display_name, seller: target.seller.display_name) %></p>
+              <% if target.listing %>
+                <p class="text-xs text-slate-500 dark:text-zinc-400"><%= target.listing.title %></p>
+              <% end %>
+              <ul class="mt-3 space-y-2">
+                <% target.messages.order(:created_at).limit(5).each do |message| %>
+                  <li class="rounded-lg bg-slate-50 p-2.5 text-sm dark:bg-zinc-800/60">
+                    <p class="text-xs font-semibold text-slate-600 dark:text-zinc-300"><%= message.sender.display_name %> · <%= admin_datetime(message.created_at) %></p>
+                    <p class="mt-0.5 whitespace-pre-line text-slate-700 dark:text-zinc-300"><%= message.body %></p>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% elsif target.is_a?(Review) %>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <%= render "shared/star_rating", rating: target.rating %>
+                <span class="text-xs text-slate-500 dark:text-zinc-400"><%= target.store.name %> · <%= target.reviewer.display_name %></span>
+                <%= render "admin/shared/status_badge", text: target.published? ? t("admin.reviews.published") : t("admin.reviews.unpublished"),
+                           tone: target.published? ? :success : :danger %>
+              </div>
+              <p class="mt-2 whitespace-pre-line text-sm text-slate-700 dark:text-zinc-300"><%= target.body %></p>
+            </div>
+          <% else %>
+            <p class="text-sm text-slate-500 dark:text-zinc-400"><%= t("admin.reports.show.unavailable") %></p>
+          <% end %>
+        </div>
+
+        <h3 class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400"><%= t("admin.reports.show.details") %></h3>
+        <p class="mt-1 whitespace-pre-line text-sm text-slate-700 dark:text-zinc-300"><%= @report.details.presence || "—" %></p>
+      </section>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.reports.show.other_reports") %></h2>
+        <% if @other_reports.empty? %>
+          <p class="mt-2 text-sm text-slate-500 dark:text-zinc-400"><%= t("admin.reports.show.no_other_reports") %></p>
+        <% else %>
+          <ul class="mt-2 divide-y divide-slate-100 text-sm dark:divide-zinc-800">
+            <% @other_reports.each do |report| %>
+              <li class="flex flex-wrap items-center justify-between gap-2 py-2">
+                <div>
+                  <%= link_to t("admin.reports.report_number", id: report.id), admin_report_path(report),
+                              class: "font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+                  <span class="text-xs text-slate-500 dark:text-zinc-400">· <%= t("admin.reports.reasons.#{report.reason}") %> · <%= report.reporter.display_name %></span>
+                </div>
+                <%= render "admin/shared/status_badge", text: t("admin.reports.statuses.#{report.status}"),
+                           tone: admin_report_status_tone(report.status) %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </section>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.orders.show.history") %></h2>
+        <% if @audit_logs.empty? %>
+          <p class="mt-2 text-sm text-slate-500 dark:text-zinc-400"><%= t("admin.common.no_history") %></p>
+        <% else %>
+          <ol class="mt-2 space-y-2 text-sm">
+            <% @audit_logs.each do |log| %>
+              <li class="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-100 px-3 py-2 dark:border-zinc-800">
+                <span class="font-medium"><%= admin_audit_action_label(log.action) %></span>
+                <span class="text-[11px] text-slate-500 dark:text-zinc-400"><%= log.admin.display_name %> · <%= admin_datetime(log.created_at) %></span>
+              </li>
+            <% end %>
+          </ol>
+        <% end %>
+      </section>
+    </div>
+
+    <aside class="space-y-4">
+      <% if @report.open? %>
+        <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.reports.show.resolve") %></h2>
+          <%= form_with url: admin_report_path(@report), method: :patch, class: "mt-3 space-y-2" do %>
+            <%= hidden_field_tag "report[decision]", "resolve" %>
+            <% if actions.any? %>
+              <div>
+                <%= label_tag "report_action", t("admin.reports.show.action"),
+                              class: "mb-1 block text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400" %>
+                <%= select_tag "report[action]",
+                               options_for_select([ [ t("admin.reports.show.no_action"), "" ] ] + actions),
+                               id: "report_action", class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+              </div>
+              <div>
+                <%= text_field_tag "report[reason]", nil, placeholder: t("admin.reports.show.action_reason"),
+                                   class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+              </div>
+            <% end %>
+            <%= button_tag type: "submit",
+                           data: { turbo_confirm: t("admin.reports.confirm.resolve") },
+                           class: ui_button_classes(variant: :primary, size: :sm, extra: "w-full") do %>
+              <%= t("admin.reports.show.resolve_submit") %>
+            <% end %>
+          <% end %>
+
+          <%= form_with url: admin_report_path(@report), method: :patch, class: "mt-2" do %>
+            <%= hidden_field_tag "report[decision]", "dismiss" %>
+            <%= button_tag type: "submit", class: ui_button_classes(variant: :outline, size: :sm, extra: "w-full") do %>
+              <%= t("admin.reports.show.dismiss") %>
+            <% end %>
+          <% end %>
+        </section>
+      <% end %>
+
+      <%= render "admin/shared/meta_panel", title: t("admin.reports.show.meta"), rows: [
+        [ t("admin.reports.columns.reporter"), link_to(@report.reporter.display_name, admin_user_path(@report.reporter), class: "text-brand-700 hover:underline dark:text-brand-300") ],
+        [ t("admin.reports.columns.type"), t("admin.reports.types.#{@report.reportable_type.underscore}", default: @report.reportable_type) ],
+        [ t("admin.reports.columns.reason"), t("admin.reports.reasons.#{@report.reason}") ],
+        [ t("admin.reports.columns.created"), admin_datetime(@report.created_at) ]
+      ] %>
+    </aside>
+  </div>
+</div>

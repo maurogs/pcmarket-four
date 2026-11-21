@@ -1,0 +1,32 @@
+<% reason = record.order_events.select { |event| event.kind == "dispute_opened" }.last&.data&.dig("reason") %>
+<tr class="align-middle hover:bg-slate-50/70 dark:hover:bg-zinc-800/40">
+  <td class="px-3 py-2.5">
+    <%= link_to record.number, admin_dispute_path(record),
+                class: "font-medium text-brand-700 hover:underline dark:text-brand-300" %>
+    <p class="text-[11px] text-slate-500 dark:text-zinc-400"><%= admin_money(record.total_cents) %></p>
+  </td>
+  <td class="px-3 py-2.5 text-xs text-slate-600 dark:text-zinc-400">
+    <span class="block truncate"><%= record.buyer&.display_name || record.buyer_email %></span>
+    <span class="block truncate text-[11px]"><%= record.buyer_email %></span>
+  </td>
+  <td class="px-3 py-2.5 text-xs text-slate-600 dark:text-zinc-400">
+    <span class="block truncate"><%= record.seller.display_name %></span>
+    <span class="block truncate text-[11px]"><%= record.store&.name || "—" %></span>
+  </td>
+  <td class="px-3 py-2.5">
+    <% if reason %>
+      <span class="<%= ui_badge_classes(tone: :accent) %>"><%= t("orders.dispute.reasons.#{reason}", default: reason) %></span>
+    <% else %>
+      <span class="text-xs text-slate-400">—</span>
+    <% end %>
+  </td>
+  <td class="whitespace-nowrap px-3 py-2.5 text-xs text-slate-500 dark:text-zinc-400">
+    <%= record.disputed_at ? time_ago_in_words(record.disputed_at) : "—" %>
+  </td>
+  <td class="whitespace-nowrap px-3 py-2.5 text-xs text-slate-500 dark:text-zinc-400"><%= admin_datetime(record.disputed_at) %></td>
+  <td class="px-3 py-2.5 text-right">
+    <%= link_to icon("eye", class: "size-4"), admin_dispute_path(record),
+                class: "inline-flex rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200",
+                aria: { label: t("admin.actions.view") } %>
+  </td>
+</tr>

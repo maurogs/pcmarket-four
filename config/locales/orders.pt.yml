@@ -1,231 +1,240 @@
+---
 pt:
   orders:
     index:
-      title: "As tuas encomendas"
-      subtitle: "Acompanha compras, pagamentos e entregas."
-      keep_shopping: "Continuar a comprar"
-      filters_label: "Filtrar encomendas"
+      title: As tuas encomendas
+      subtitle: Acompanha compras, pagamentos e entregas.
+      keep_shopping: Continuar a comprar
+      filters_label: Filtrar encomendas
       filters:
-        all: "Todas"
-        to_pay: "Por pagar"
-        in_progress: "Em curso"
-        completed: "Concluídas"
-        cancelled: "Canceladas"
-      search_label: "Pesquisar encomendas"
-      search_placeholder: "Pesquisar por número de encomenda ou artigo"
-      search: "Pesquisar"
+        all: Todas
+        to_pay: Por pagar
+        in_progress: Em curso
+        completed: Concluídas
+        cancelled: Canceladas
+      search_label: Pesquisar encomendas
+      search_placeholder: Pesquisar por número de encomenda ou artigo
+      search: Pesquisar
       items_count:
         one: "%{count} artigo"
         other: "%{count} artigos"
       more_items:
         one: "+%{count} outro"
         other: "+%{count} outros"
-      view: "Ver encomenda"
-      empty_title: "Ainda não há encomendas"
-      empty_body: "Quando comprares algo, aparecerá nesta lista."
+      view: Ver encomenda
+      empty_title: Ainda não há encomendas
+      empty_body: Quando comprares algo, aparecerá nesta lista.
     show:
-      title: "Encomenda %{number}"
-      placed_on: "Efetuada em %{date}"
-      back: "Voltar às encomendas"
-      guest_notice: "Estás a ver esta encomenda como convidado. Guarda este link para a consultares mais tarde."
-      cancelled_notice: "Esta encomenda foi cancelada em %{date}."
-      timeline_title: "Estado da encomenda"
-      items_title: "Artigos"
-      quantity:
-        one: "Quantidade: %{count}"
-        other: "Quantidade: %{count}"
-      payment_title: "Instruções de pagamento"
-      seller_title: "Vendedor"
-      view_store: "Ver loja"
-      message_seller: "Enviar mensagem ao vendedor"
-      delivery_title: "Entrega"
-      totals_title: "Totais"
+      tracking_title: Seguimento
+      carrier: 'Transportadora: %{carrier}'
+      tracking_number: 'Número de seguimento:'
     statuses:
-      pending_payment: "Aguarda pagamento"
-      paid: "Paga"
-      shipped: "Enviada"
-      delivered: "Entregue"
-      completed: "Concluída"
-      cancelled: "Cancelada"
-      refunded: "Reembolsada"
-      disputed: "Em disputa"
+      pending_payment: Aguarda pagamento
+      paid: Paga
+      shipped: Enviada
+      delivered: Entregue
+      completed: Concluída
+      cancelled: Cancelada
+      refunded: Reembolsada
+      disputed: Em disputa
     timeline:
-      placed: "Efetuada"
-      paid: "Paga"
-      shipped: "Enviada"
-      delivered: "Entregue"
-      completed: "Concluída"
-      pending: "Pendente"
-    cancel: "Cancelar encomenda"
-    cancel_confirm: "Cancelar esta encomenda por pagar?"
-    cancelled: "Encomenda cancelada. Os artigos voltam a estar disponíveis."
-    cannot_cancel: "Esta encomenda já não pode ser cancelada."
+      placed: Efetuada
+      paid: Paga
+      shipped: Enviada
+      delivered: Entregue
+      completed: Concluída
+      pending: Pendente
+    cancel: Cancelar encomenda
+    cancel_confirm: Cancelar esta encomenda por pagar?
+    cancelled: Encomenda cancelada. Os artigos voltam a estar disponíveis.
+    cannot_cancel: Esta encomenda já não pode ser cancelada.
     payment:
       bank_transfer:
-        title: "Transferência bancária"
-        intro: "Paga por transferência com a referência abaixo. O vendedor prepara a encomenda quando o pagamento chegar."
-        iban: "IBAN"
-        beneficiary: "Beneficiário"
-        reference: "Referência"
-        amount: "Valor"
-        deadline: "Paga no prazo de %{days} dias. As encomendas não pagas são canceladas automaticamente e os artigos voltam a ser publicados."
+        title: Transferência bancária
+        intro: Paga por transferência com a referência abaixo. O vendedor prepara
+          a encomenda quando o pagamento chegar.
+        iban: IBAN
+        beneficiary: Beneficiário
+        reference: Referência
+        amount: Valor
+        deadline: Paga no prazo de %{days} dias. As encomendas não pagas são canceladas
+          automaticamente e os artigos voltam a ser publicados.
       cash_on_pickup:
-        title: "Dinheiro na recolha"
-        intro: "Paga ao vendedor em pessoa quando recolheres a encomenda. Até lá, a encomenda fica pendente."
+        title: Dinheiro na recolha
+        intro: Paga ao vendedor em pessoa quando recolheres a encomenda. Até lá, a
+          encomenda fica pendente.
       stripe:
-        title: "Pagamento com cartão"
-        intro: "O pagamento com cartão é processado em segurança pela Stripe. Confirmaremos a encomenda assim que a Stripe nos avisar."
+        title: Pagamento com cartão
+        intro: O pagamento com cartão é processado em segurança pela Stripe. Confirmaremos
+          a encomenda assim que a Stripe nos avisar.
     mailer:
       events:
         paid_buyer:
-          subject: "Pagamento recebido da encomenda %{number}"
-          title: "Pagamento recebido"
-          intro: "Recebemos o pagamento da encomenda %{number} de %{store}. O vendedor vai prepará-la para o envio."
-          cta: "Ver a tua encomenda"
+          subject: Pagamento recebido da encomenda %{number}
+          title: Pagamento recebido
+          intro: Recebemos o pagamento da encomenda %{number} de %{store}. O vendedor
+            vai prepará-la para o envio.
+          cta: Ver a tua encomenda
         paid_seller:
-          subject: "A encomenda %{number} está paga"
-          title: "Encomenda paga"
-          intro: "A encomenda %{number} de %{store} foi paga. Prepara-a e envia-a antes do prazo."
-          cta: "Abrir as tuas vendas"
+          subject: A encomenda %{number} está paga
+          title: Encomenda paga
+          intro: A encomenda %{number} de %{store} foi paga. Prepara-a e envia-a antes
+            do prazo.
+          cta: Abrir as tuas vendas
         shipped_buyer:
-          subject: "A tua encomenda %{number} está a caminho"
-          title: "Encomenda enviada"
-          intro: "A encomenda %{number} de %{store} foi enviada com %{carrier}."
-          cta: "Seguir a encomenda"
+          subject: A tua encomenda %{number} está a caminho
+          title: Encomenda enviada
+          intro: A encomenda %{number} de %{store} foi enviada com %{carrier}.
+          cta: Seguir a encomenda
         delivered_buyer:
-          subject: "A tua encomenda %{number} foi entregue"
-          title: "Encomenda entregue"
-          intro: "A encomenda %{number} de %{store} está marcada como entregue. Confirma a receção depois de a inspecionares."
-          cta: "Confirmar receção"
+          subject: A tua encomenda %{number} foi entregue
+          title: Encomenda entregue
+          intro: A encomenda %{number} de %{store} está marcada como entregue. Confirma
+            a receção depois de a inspecionares.
+          cta: Confirmar receção
         completed_buyer:
-          subject: "Encomenda %{number} concluída"
-          title: "Encomenda concluída"
-          intro: "A encomenda %{number} de %{store} está concluída. Gostaríamos de saber como correu."
-          cta: "Deixar uma avaliação"
+          subject: Encomenda %{number} concluída
+          title: Encomenda concluída
+          intro: A encomenda %{number} de %{store} está concluída. Gostaríamos de
+            saber como correu.
+          cta: Deixar uma avaliação
         cancelled_buyer:
-          subject: "Encomenda %{number} cancelada"
-          title: "Encomenda cancelada"
-          intro: "A encomenda %{number} de %{store} foi cancelada."
-          cta: "Ver a tua encomenda"
+          subject: Encomenda %{number} cancelada
+          title: Encomenda cancelada
+          intro: A encomenda %{number} de %{store} foi cancelada.
+          cta: Ver a tua encomenda
         cancelled_seller:
-          subject: "Encomenda %{number} cancelada"
-          title: "Encomenda cancelada"
-          intro: "A encomenda %{number} de %{store} foi cancelada. Qualquer pagamento será reembolsado."
-          cta: "Abrir as tuas vendas"
+          subject: Encomenda %{number} cancelada
+          title: Encomenda cancelada
+          intro: A encomenda %{number} de %{store} foi cancelada. Qualquer pagamento
+            será reembolsado.
+          cta: Abrir as tuas vendas
         dispute_seller:
-          subject: "Disputa aberta na encomenda %{number}"
-          title: "Um comprador abriu uma disputa"
-          intro: "O comprador da encomenda %{number} abriu uma disputa. Motivo: %{reason}. Detalhes: %{details}"
-          cta: "Rever a disputa"
+          subject: Disputa aberta na encomenda %{number}
+          title: Um comprador abriu uma disputa
+          intro: 'O comprador da encomenda %{number} abriu uma disputa. Motivo: %{reason}.
+            Detalhes: %{details}'
+          cta: Rever a disputa
         late_shipment_seller:
-          subject: "A encomenda %{number} aguarda envio"
-          title: "Envio atrasado"
-          intro: "A encomenda %{number} está paga mas não foi enviada. Envia-a em %{days} dias ou será cancelada automaticamente."
-          cta: "Enviar a encomenda"
+          subject: A encomenda %{number} aguarda envio
+          title: Envio atrasado
+          intro: A encomenda %{number} está paga mas não foi enviada. Envia-a em %{days}
+            dias ou será cancelada automaticamente.
+          cta: Enviar a encomenda
         dispute_admin:
-          subject: "Nova disputa na encomenda %{number}"
-          title: "Nova disputa"
-          intro: "A encomenda %{number} de %{store} tem uma nova disputa. Motivo: %{reason}. Detalhes: %{details}"
-          cta: "Abrir a encomenda"
-      order_number: "Encomenda"
-      store: "Loja"
-      tracking_label: "Seguimento"
-      greeting: "Olá %{name},"
-      subtotal: "Subtotal"
-      shipping: "Envio"
-      total: "Total"
-      view_order: "Ver a tua encomenda"
-      signature: "A equipa %{site}"
+          subject: Nova disputa na encomenda %{number}
+          title: Nova disputa
+          intro: 'A encomenda %{number} de %{store} tem uma nova disputa. Motivo:
+            %{reason}. Detalhes: %{details}'
+          cta: Abrir a encomenda
+        dispute_resolved_buyer:
+          subject: Disputa da encomenda %{number} resolvida
+          title: A tua disputa foi resolvida
+          intro: 'A disputa da encomenda %{number} de %{store} foi resolvida: %{outcome}.
+            %{message}'
+          cta: Ver a tua encomenda
+        dispute_resolved_seller:
+          subject: Disputa da encomenda %{number} resolvida
+          title: Disputa resolvida
+          intro: 'A disputa da encomenda %{number} de %{store} foi resolvida: %{outcome}.
+            %{message}'
+          cta: Abrir as tuas vendas
+      order_number: Encomenda
+      store: Loja
+      tracking_label: Seguimento
+      greeting: Olá %{name},
+      subtotal: Subtotal
+      shipping: Envio
+      total: Total
+      view_order: Ver a tua encomenda
+      signature: A equipa %{site}
       buyer:
-        subject: "A tua encomenda %{number} em %{site}"
-        title: "Confirmação da encomenda"
-        intro: "Obrigado pela tua encomenda %{number} de %{store}."
-        outro: "Se tiveres alguma dúvida, responde a este email ou contacta o vendedor na página da encomenda."
+        subject: A tua encomenda %{number} em %{site}
+        title: Confirmação da encomenda
+        intro: Obrigado pela tua encomenda %{number} de %{store}.
+        outro: Se tiveres alguma dúvida, responde a este email ou contacta o vendedor
+          na página da encomenda.
       seller:
-        subject: "Nova encomenda %{number} em %{site}"
-        title: "Tens uma nova encomenda"
-        intro: "A encomenda %{number} foi efetuada para %{store}."
-        buyer: "Email do comprador: %{email}"
+        subject: Nova encomenda %{number} em %{site}
+        title: Tens uma nova encomenda
+        intro: A encomenda %{number} foi efetuada para %{store}.
+        buyer: 'Email do comprador: %{email}'
         fulfilment:
-          shipping: "O comprador escolheu envio."
-          local_pickup: "O comprador escolheu recolha local."
-        payment: "Método de pagamento: %{method}"
-        total: "Total da encomenda: %{amount}"
-        open_sales: "Abrir as tuas vendas"
+          shipping: O comprador escolheu envio.
+          local_pickup: O comprador escolheu recolha local.
+        payment: 'Método de pagamento: %{method}'
+        total: 'Total da encomenda: %{amount}'
+        open_sales: Abrir as tuas vendas
     events:
-      placed: "Encomenda efetuada"
-      paid: "Pagamento recebido"
-      shipped: "Enviada"
-      ready_for_pickup: "Pronta para recolha"
-      delivered: "Entregue"
-      completed: "Concluída"
-      cancelled: "Cancelada"
-      dispute_opened: "Disputa aberta"
-      dispute_resolved: "Disputa resolvida"
-      refunded: "Reembolsada"
-      late_shipment_reminder: "Lembrete de envio enviado"
-      by_actor: "por %{name}"
-      by_system: "automaticamente"
-      reason_label: "Motivo: %{reason}"
+      placed: Encomenda efetuada
+      paid: Pagamento recebido
+      shipped: Enviada
+      ready_for_pickup: Pronta para recolha
+      delivered: Entregue
+      completed: Concluída
+      cancelled: Cancelada
+      dispute_opened: Disputa aberta
+      dispute_resolved: Disputa resolvida
+      refunded: Reembolsada
+      late_shipment_reminder: Lembrete de envio enviado
+      by_actor: por %{name}
+      by_system: automaticamente
+      reason_label: 'Motivo: %{reason}'
     carriers:
-      correos: "Correos"
-      correos_express: "Correos Express"
-      seur: "SEUR"
-      mrw: "MRW"
-      gls: "GLS"
-      dhl: "DHL"
-      ups: "UPS"
-      nacex: "Nacex"
-      inpost: "InPost"
-      other: "Outro"
-    show:
-      tracking_title: "Seguimento"
-      carrier: "Transportadora: %{carrier}"
-      tracking_number: "Número de seguimento:"
+      correos: Correos
+      correos_express: Correos Express
+      seur: SEUR
+      mrw: MRW
+      gls: GLS
+      dhl: DHL
+      ups: UPS
+      nacex: Nacex
+      inpost: InPost
+      other: Outro
     actions:
-      title: "Ações"
-      confirm_receipt: "Confirmar receção"
-      confirm_receipt_confirm: "Confirmas que recebeste a encomenda em bom estado?"
-      open_dispute: "Abrir uma disputa"
-      leave_review: "Deixar uma avaliação"
-      inspection_window: "Podes reportar um problema até %{date}."
+      title: Ações
+      confirm_receipt: Confirmar receção
+      confirm_receipt_confirm: Confirmas que recebeste a encomenda em bom estado?
+      open_dispute: Abrir uma disputa
+      leave_review: Deixar uma avaliação
+      inspection_window: Podes reportar um problema até %{date}.
     delivery:
-      confirmed: "Receção confirmada. Obrigado!"
-      cannot_confirm: "Esta encomenda ainda não pode ser confirmada."
+      confirmed: Receção confirmada. Obrigado!
+      cannot_confirm: Esta encomenda ainda não pode ser confirmada.
     dispute:
-      title: "Abrir uma disputa"
-      subtitle: "Conta-nos o que correu mal com a encomenda %{number}."
-      reason_label: "Motivo"
+      title: Abrir uma disputa
+      subtitle: Conta-nos o que correu mal com a encomenda %{number}.
+      reason_label: Motivo
       reasons:
-        not_received: "Não a recebi"
-        not_as_described: "Não é como descrito"
-        damaged: "Chegou danificada"
-        counterfeit: "Parece falsificada"
-        other: "Outro"
-      details: "O que aconteceu?"
-      details_placeholder: "Descreve o problema e o que gostarias que acontecesse."
-      photos: "Fotos"
-      photos_hint: "Até %{count} fotos em JPEG, PNG ou WebP."
-      submit: "Abrir disputa"
-      cancel: "Cancelar"
-      back: "Voltar à encomenda"
-      opened: "Disputa aberta. O vendedor e a nossa equipa de apoio foram avisados."
+        not_received: Não a recebi
+        not_as_described: Não é como descrito
+        damaged: Chegou danificada
+        counterfeit: Parece falsificada
+        other: Outro
+      details: O que aconteceu?
+      details_placeholder: Descreve o problema e o que gostarias que acontecesse.
+      photos: Fotos
+      photos_hint: Até %{count} fotos em JPEG, PNG ou WebP.
+      submit: Abrir disputa
+      cancel: Cancelar
+      back: Voltar à encomenda
+      opened: Disputa aberta. O vendedor e a nossa equipa de apoio foram avisados.
     reviews:
-      title: "Deixar uma avaliação"
-      subtitle: "Avalia a tua experiência com %{store}."
-      rating: "Avaliação"
-      rating_hint: "Usa as setas para escolher entre 1 e 5 estrelas."
-      blocked: "O texto contém linguagem não permitida."
-      order_not_completed: "Esta encomenda ainda não pode ser avaliada."
+      title: Deixar uma avaliação
+      subtitle: Avalia a tua experiência com %{store}.
+      rating: Avaliação
+      rating_hint: Usa as setas para escolher entre 1 e 5 estrelas.
+      blocked: O texto contém linguagem não permitida.
+      order_not_completed: Esta encomenda ainda não pode ser avaliada.
       stars:
         one: "%{count} estrela"
         other: "%{count} estrelas"
-      body: "A tua avaliação"
-      body_placeholder: "O que correu bem? O que podia melhorar?"
-      body_hint: "Entre %{min} e %{max} caracteres."
-      submit: "Publicar avaliação"
-      cancel: "Cancelar"
-      back: "Voltar à encomenda"
-      created: "Obrigado! A tua avaliação foi publicada."
-      disabled: "As avaliações estão temporariamente desativadas."
-      your_review: "A tua avaliação"
+      body: A tua avaliação
+      body_placeholder: O que correu bem? O que podia melhorar?
+      body_hint: Entre %{min} e %{max} caracteres.
+      submit: Publicar avaliação
+      cancel: Cancelar
+      back: Voltar à encomenda
+      created: Obrigado! A tua avaliação foi publicada.
+      disabled: As avaliações estão temporariamente desativadas.
+      your_review: A tua avaliação

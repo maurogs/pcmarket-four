@@ -1,0 +1,45 @@
+<% filter_fields = [
+  { name: "rating", type: :select, value: params[:rating],
+    options: (1..5).map { |rating| [ t("admin.reviews.rating_option", count: rating), rating ] },
+    include_blank: t("admin.reviews.filters.any_rating"), label: t("admin.reviews.filters.rating"), width: "min-w-32" },
+  { name: "published", type: :select, value: params[:published],
+    options: [[ t("admin.common.yes"), "yes" ], [ t("admin.common.no"), "no" ]],
+    include_blank: t("admin.reviews.filters.any_visibility"), label: t("admin.reviews.filters.published"), width: "min-w-32" },
+  { name: "store", type: :search, value: params[:store], placeholder: t("admin.reviews.filters.store_placeholder"), label: t("admin.reviews.filters.store") },
+  { name: "has_reply", type: :select, value: params[:has_reply],
+    options: [[ t("admin.common.yes"), "yes" ], [ t("admin.common.no"), "no" ]],
+    include_blank: t("admin.reviews.filters.any_reply"), label: t("admin.reviews.filters.has_reply"), width: "min-w-32" },
+  { name: "created_from", type: :date, value: params[:created_from], label: t("admin.reviews.filters.created_from"), width: "w-40" },
+  { name: "created_to", type: :date, value: params[:created_to], label: t("admin.reviews.filters.created_to"), width: "w-40" }
+] %>
+
+<div class="mx-auto max-w-[90rem]">
+  <%= render "admin/shared/page_header", title: t("admin.reviews.title"),
+             subtitle: t("admin.reviews.subtitle"), eyebrow: t("admin.nav.sections.marketplace") %>
+
+  <div class="mt-5 flex flex-wrap items-center justify-between gap-2">
+    <div class="flex-1"><%= render "admin/shared/filter_bar", url: admin_reviews_path, fields: filter_fields %></div>
+  </div>
+
+  <p class="mb-3 text-xs text-slate-500 dark:text-zinc-400">
+    <%= t("admin.reviews.blocked_words_hint") %>
+    <%= link_to t("admin.reviews.blocked_words_link"), admin_placeholder_path("settings"),
+                class: "font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+  </p>
+
+  <%= render "admin/shared/data_table", records: @reviews, columns: [
+               { label: t("admin.reviews.columns.review") },
+               { label: t("admin.reviews.columns.store") },
+               { label: t("admin.reviews.columns.reviewer") },
+               { label: t("admin.reviews.columns.order") },
+               { label: t("admin.reviews.columns.rating"), sort_key: "rating", align: :right },
+               { label: t("admin.reviews.columns.status"), sort_key: "published" },
+               { label: t("admin.reviews.columns.created"), sort_key: "created_at" },
+               { label: "", class: "w-10" }
+             ],
+             row_partial: "admin/reviews/row",
+             sort: @query.sort, direction: @query.direction,
+             empty_title: t("admin.reviews.empty_title"), empty_body: t("admin.reviews.empty_body") %>
+
+  <%= render "admin/shared/pagination", pagy: @pagy %>
+</div>

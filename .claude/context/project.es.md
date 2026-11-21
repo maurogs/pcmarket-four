@@ -2,22 +2,22 @@
 
 ## Estado
 
-Fase 6A completada: base del panel de administración con un layout propio,
-panel de control, cola de moderación de anuncios, administración de anuncios,
-gestión de usuarios y tiendas, registro de auditoría y suplantación de personal.
-El chat interno de la fase 5 con conversaciones, contadores de no leídos y
-mensajes en tiempo real, ofertas con precio reservado en la cesta, bloqueos y
-avisos de seguridad en los mensajes; notificaciones a seguidores, alertas
-instantáneas y resumen diario de búsquedas guardadas y alertas de bajada de
-precio en favoritos siguen intactos. El ciclo de vida de pedidos de la fase 4B
-(pagado, enviado, entregado, completado, cancelado, en disputa y reembolsado),
-las pantallas de gestión del vendedor, la confirmación de entrega, las disputas
-y las reseñas del comprador, las notificaciones de pedido con envío de correos y
-la actualización del contador en tiempo real siguen intactos. El descubrimiento
-(fase 2B), la creación de anuncios (fase 3A) y el pago (fase 4A) no han
-cambiado. Las pantallas de pedidos, disputas, denuncias, reseñas, catálogo,
-contenido, marketing y ajustes quedan para las fases 6B/6C y enlazan a páginas
-traducidas de «próximamente».
+Fase 6B completada: operaciones de administración para pedidos y conciliación
+de pagos, disputas, denuncias y moderación de reseñas, con enlaces desde el
+panel y contadores cacheados en la barra lateral. La base del panel de la fase
+6A (panel, moderación de anuncios, usuarios, tiendas, auditoría y suplantación)
+sigue intacta. El chat interno de la fase 5 con conversaciones, contadores de no
+leídos y mensajes en tiempo real, ofertas con precio reservado en la cesta,
+bloqueos y avisos de seguridad en los mensajes; notificaciones a seguidores,
+alertas instantáneas y resumen diario de búsquedas guardadas y alertas de bajada
+de precio en favoritos siguen intactos. El ciclo de vida de pedidos de la fase
+4B (pagado, enviado, entregado, completado, cancelado, en disputa y
+reembolsado), las pantallas de gestión del vendedor, la confirmación de entrega,
+las disputas y las reseñas del comprador, las notificaciones de pedido con envío
+de correos y la actualización del contador en tiempo real siguen intactos. El
+descubrimiento (fase 2B), la creación de anuncios (fase 3A) y el pago (fase 4A)
+no han cambiado. Las pantallas de catálogo, contenido, marketing y ajustes
+quedan para la fase 6C y enlazan a páginas traducidas de «próximamente».
 
 ## Estado de las fases
 
@@ -31,6 +31,7 @@ traducidas de «próximamente».
 | 4B | Ciclo de pedidos y gestión del vendedor | Completada |
 | 5 | Mensajería, ofertas, seguidores y alertas de búsquedas | Completada |
 | 6A | Base de administración, panel, moderación, usuarios y tiendas | Completada |
+| 6B | Pedidos, pagos, disputas, denuncias y reseñas de administración | Completada |
 
 ## Stack
 
@@ -651,6 +652,58 @@ traducidas de «próximamente».
   los mensajes de cuenta inactiva de Devise se añaden allí
   (`devise.failure.suspended/banned/deleted`).
 
+### Operaciones de administración: pedidos, pagos, disputas, denuncias y reseñas (fase 6B)
+
+- `Admin::OrdersController` lista todos los pedidos con `Admin::OrderQuery`
+  (estado, entrega, método de pago, vendedor/tienda, correo del comprador,
+  rangos de creación y total, envío tardío y reembolso necesario), ordenación
+  permitida, fila de totales (recuento, GMV, comisión) y exportación CSV
+  mediante `Admin::OrderExport` (CSV manual porque Ruby 4 eliminó la gema `csv`
+  por defecto).
+- El detalle del pedido muestra comprador, vendedor/tienda, instantáneas de los
+  artículos con enlaces a los anuncios, dirección de envío, referencias de pago
+  y reembolso, comisión/neto, la cronología de `OrderEvent`, la `Conversation`
+  relacionada, las `OrderNote` internas y el historial de auditoría.
+- Recursos RESTful anidados: `payment` (conciliación de transferencias, exige
+  referencia y queda auditado), `cancellation` (motivo, restaura stock con
+  `Order#cancel!`), `refund` (solo administrador, guarda `refund_reference`),
+  `email` (reenvío al comprador/vendedor) y `notes`. `Order#resolve_dispute!`
+  acepta un mensaje de resolución opcional y `Order#refund!` acepta una
+  referencia.
+- `Admin::PaymentsController#index` lista los pedidos pendientes por
+  transferencia de más antiguo a más nuevo con el plazo de pago y un formulario
+  rápido para marcar pagado. `Admin::BulkPaymentsController#create` delega en
+  `Admin::BulkPayment`, que interpreta un número de pedido por línea y muestra
+  un resumen de pagados / no encontrados / estado incorrecto.
+- `Admin::DisputesController` lista los pedidos en disputa de más antiguo a más
+  nuevo con antigüedad y motivo. El detalle combina el resumen del pedido,
+  motivo/detalles/fotos de la disputa, mensajes de la conversación en solo
+  lectura, cronología, notas internas y el formulario de resolución.
+  `Admin::DisputeResolution` llama a `Order#resolve_dispute!`; los reembolsos
+  requieren administrador y las liberaciones están disponibles para
+  moderadores. `OrderNotifier` envía el mensaje de resolución a ambas partes como
+  notificación interna y correo `OrderMailer#dispute_resolved_buyer/#_seller`
+  en el idioma correspondiente, respetando las preferencias de correo.
+- `Admin::ReportsController` filtra por estado, motivo y tipo denunciado y
+  muestra recuentos por estado. `Admin::ReportResolution` resuelve con una acción
+  opcional (pausar anuncio, suspender usuario mediante `Admin::UserModeration`,
+  despublicar reseña) o desestima, notifica al denunciante mediante `Notifier` y
+  escribe una entrada de auditoría. La desestimación masiva pasa por
+  `Admin::BulkReportActionsController`.
+- `Admin::ReviewsController` filtra valoración, publicación, tienda, presencia
+  de respuesta y rango de creación. Despublicar/publicar y la visibilidad de la
+  respuesta son acciones de personal; eliminar es solo para administradores.
+  Los callbacks de reseña recalculan la valoración de la tienda al despublicar.
+  `reviews.seller_reply_visible` oculta la respuesta del vendedor en las vistas
+  públicas de tienda, anuncio y pedido, pero la mantiene visible para el
+  vendedor.
+- Las tarjetas de disputas, denuncias y pagos pendientes del panel enlazan a sus
+  pantallas. `Admin::SidebarCounts` cachea disputas abiertas, denuncias abiertas
+  y pagos pendientes durante un minuto; el panel reutiliza sus agregados
+  cacheados para evitar consultas extra.
+- Esquema nuevo: `order_notes` (`order_id`, `author_id`, `body`), `orders
+  .refund_reference` y `reviews.seller_reply_visible`.
+
 ## Mapa de código
 
 ```
@@ -745,6 +798,16 @@ app/controllers/admin/{impersonations,user_exports}_controller.rb
 app/controllers/admin/stores_controller.rb      tabla, detalle y edición de tiendas
 app/controllers/admin/{store_verifications,store_vacations}_controller.rb
 app/controllers/admin/{audit_logs,search,placeholders}_controller.rb
+app/controllers/admin/orders_controller.rb         tabla, detalle y cronología de pedidos
+app/controllers/admin/order_{payments,cancellations,refunds,emails,notes,exports}_controller.rb
+                                                   recursos anidados de pedido + CSV
+app/controllers/admin/payments_controller.rb       conciliación de transferencias
+app/controllers/admin/bulk_payments_controller.rb  resumen de números pegados
+app/controllers/admin/disputes_controller.rb       cola y detalle de disputas
+app/controllers/admin/dispute_resolutions_controller.rb
+app/controllers/admin/reports_controller.rb        cola, detalle y resolución de denuncias
+app/controllers/admin/bulk_report_actions_controller.rb
+app/controllers/admin/reviews_controller.rb        moderación de reseñas
 app/controllers/concerns/admin/auditable.rb     escritor de auditoría de mutaciones
 app/policies/admin/                             políticas de personal y administrador
 app/services/admin/dashboard.rb                 agregados cacheados del panel
@@ -755,11 +818,18 @@ app/services/admin/listing_update.rb            escritor del formulario de anunc
 app/services/admin/bulk_listing_action.rb       mutaciones masivas permitidas
 app/services/admin/{user_query,user_export,user_moderation}.rb
 app/services/admin/{store_query,global_search}.rb
+app/services/admin/order_query.rb                relación filtrada y ordenada de pedidos
+app/services/admin/{order_export,bulk_payment}.rb
+app/services/admin/{dispute_query,dispute_resolution}.rb
+app/services/admin/{report_query,report_resolution}.rb
+app/services/admin/{review_query,sidebar_counts}.rb
+app/models/order_note.rb                         notas internas del personal
 app/mailers/listing_mailer.rb                   correos de aprobación/rechazo
 app/helpers/admin_helper.rb                     navegación, insignias, gráficos
 app/views/layouts/admin.html.erb                barra lateral + barra superior
 app/views/admin/shared/                         kit de tabla, filtros, métricas y meta
 app/views/admin/{dashboard,moderation_queue,listings,users,stores}/**
+app/views/admin/{orders,payments,bulk_payments,disputes,reports,reviews}/**
 app/views/admin/{audit_logs,search,placeholders}/
 app/javascript/controllers/admin_sidebar_controller.js
 app/javascript/controllers/admin_queue_controller.js
@@ -832,15 +902,18 @@ test/system/checkout_flow_test.rb
 test/system/                                adaptable + modal de acceso
 test/i18n/locale_parity_test.rb
 test/integration/admin_{access,panel,moderation,users}_test.rb
+test/integration/admin_{orders,disputes,reports,reviews}_test.rb
+test/services/admin/sidebar_counts_test.rb
 test/system/admin_moderation_flow_test.rb
 test/seeds_test.rb
 ```
 
 ## Pendientes para fases posteriores
 
-- Las pantallas de administración de pedidos, disputas, reembolsos, denuncias,
-  reseñas, categorías, filtros, páginas legales, juegos, boletín y ajustes son
-  marcadores hasta las fases 6B/6C.
+- Las pantallas de administración de categorías, filtros, páginas legales,
+  juegos, boletín y ajustes son marcadores hasta la fase 6C.
+- Los reembolsos se registran manualmente con una referencia; todavía no se llama
+  a la API de reembolsos del proveedor de pago.
 - No hay autenticación en dos pasos para administración; Devise lockable ya
   limita los inicios de sesión fallidos. Decidir si el 2FA de personal es
   obligatorio antes de la fase 6C.

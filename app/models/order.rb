@@ -41,6 +41,7 @@ class Order < ApplicationRecord
   has_many :order_items, dependent: :destroy, inverse_of: :order
   has_many :listings, through: :order_items
   has_many :order_events, dependent: :destroy, inverse_of: :order
+  has_many :order_notes, dependent: :destroy, inverse_of: :order
   has_one :review, dependent: :destroy, inverse_of: :order
 
   has_many_attached :dispute_photos
@@ -341,11 +342,12 @@ class Order < ApplicationRecord
     applied
   end
 
-  def resolve_dispute!(actor, outcome:)
+  def resolve_dispute!(actor, outcome:, message: nil)
     return false unless actor.present? && actor.admin?
     return false unless disputed?
     return false unless %w[refund release].include?(outcome.to_s)
 
+    resolution_data = { outcome: outcome.to_s, message: message.to_s.presence }.compact
     applied = false
     transaction do
       lock!
@@ -357,14 +359,14 @@ class Order < ApplicationRecord
         update!(status: :completed, completed_at: Time.current)
         store&.increment!(:sales_count)
       end
-      record_event!(:dispute_resolved, actor: actor, data: { outcome: outcome.to_s })
+      record_event!(:dispute_resolved, actor: actor, data: resolution_data)
       applied = true
     end
-    notify_lifecycle(:dispute_resolved, actor) if applied
+    notify_lifecycle(:dispute_resolved, actor, data: resolution_data) if applied
     applied
   end
 
-  def refund!(actor)
+  def refund!(actor, reference: nil)
     return false unless actor.present? && actor.admin?
     return false unless %w[paid shipped delivered completed disputed].include?(status)
 
@@ -374,8 +376,13 @@ class Order < ApplicationRecord
       next unless %w[paid shipped delivered completed disputed].include?(status)
 
       restore_stock_locked! if shipped_at.blank?
-      update!(status: :refunded, refunded_at: Time.current, refund_required: false)
-      record_event!(:refunded, actor: actor)
+      update!(
+        status: :refunded,
+        refunded_at: Time.current,
+        refund_required: false,
+        refund_reference: reference.presence || refund_reference
+      )
+      record_event!(:refunded, actor: actor, data: { reference: refund_reference }.compact)
       applied = true
     end
     notify_lifecycle(:refunded, actor) if applied
@@ -452,8 +459,8 @@ class Order < ApplicationRecord
     nil
   end
 
-  def notify_lifecycle(kind, actor)
-    OrderNotifier.call(self, kind, actor: actor)
+  def notify_lifecycle(kind, actor, data: {})
+    OrderNotifier.call(self, kind, actor: actor, data: data)
   end
 
   def legacy_timeline

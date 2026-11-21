@@ -1,0 +1,28 @@
+<div class="mx-auto max-w-3xl space-y-5">
+  <%= render "admin/shared/page_header", title: t("admin.payments.bulk.result_title"),
+             subtitle: t("admin.payments.bulk.result_subtitle"),
+             back_path: admin_payments_path, back_label: t("admin.actions.back") %>
+
+  <div class="grid grid-cols-3 gap-3">
+    <%= render "admin/shared/stat_card", label: t("admin.payments.bulk.paid"), value: admin_number(@summary.paid.size), hint: t("admin.payments.bulk.result_hint") %>
+    <%= render "admin/shared/stat_card", label: t("admin.payments.bulk.not_found"), value: admin_number(@summary.not_found.size), hint: t("admin.payments.bulk.result_hint") %>
+    <%= render "admin/shared/stat_card", label: t("admin.payments.bulk.wrong_status"), value: admin_number(@summary.wrong_status.size), hint: t("admin.payments.bulk.result_hint") %>
+  </div>
+
+  <% [ [ t("admin.payments.bulk.paid"), @summary.paid, :success ],
+        [ t("admin.payments.bulk.not_found"), @summary.not_found, :danger ],
+        [ t("admin.payments.bulk.wrong_status"), @summary.wrong_status, :accent ] ].each do |label, numbers, tone| %>
+    <% next if numbers.empty? %>
+    <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= label %></h2>
+      <ul class="mt-2 flex flex-wrap gap-1.5">
+        <% numbers.each do |number| %>
+          <li><span class="<%= ui_badge_classes(tone: tone) %> font-mono"><%= number %></span></li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
+  <%= link_to t("admin.orders.actions.payments"), admin_payments_path,
+              class: ui_button_classes(variant: :primary, size: :sm) %>
+</div>

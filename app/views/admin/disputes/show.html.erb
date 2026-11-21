@@ -1,0 +1,206 @@
+<% reason = @dispute_event&.data&.dig("reason") %>
+<% details = @dispute_event&.data&.dig("details") %>
+<% can_refund = policy([ :admin, @order ]).refund? %>
+
+<div class="mx-auto max-w-[90rem] space-y-5">
+  <%= render "admin/shared/detail_header", title: t("admin.disputes.show.title", number: @order.number),
+             subtitle: t("admin.disputes.show.subtitle", reason: reason ? t("orders.dispute.reasons.#{reason}", default: reason) : t("admin.disputes.show.unknown_reason"),
+                           age: @order.disputed_at ? time_ago_in_words(@order.disputed_at) : "—"),
+             back_path: admin_disputes_path,
+             secondary_actions: [ { label: t("admin.orders.show.order"), path: admin_order_path(@order), variant: :primary } ], actions: [] %>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <%= render "admin/shared/status_badge", text: t("orders.statuses.#{@order.status}"),
+               tone: admin_order_status_tone(@order.status) %>
+    <% if reason %>
+      <span class="<%= ui_badge_classes(tone: :accent) %>"><%= t("orders.dispute.reasons.#{reason}", default: reason) %></span>
+    <% end %>
+    <span class="text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.disputes.show.opened_at", date: admin_datetime(@order.disputed_at)) %></span>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
+    <div class="space-y-4">
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.disputes.show.dispute") %></h2>
+        <dl class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div>
+            <dt class="text-[11px] uppercase tracking-wide text-slate-400"><%= t("admin.disputes.show.reason") %></dt>
+            <dd class="mt-0.5 text-sm font-medium"><%= reason ? t("orders.dispute.reasons.#{reason}", default: reason) : "—" %></dd>
+          </div>
+          <div>
+            <dt class="text-[11px] uppercase tracking-wide text-slate-400"><%= t("admin.disputes.show.amount") %></dt>
+            <dd class="mt-0.5 text-sm font-semibold"><%= admin_money(@order.total_cents) %></dd>
+          </div>
+          <div class="sm:col-span-2">
+            <dt class="text-[11px] uppercase tracking-wide text-slate-400"><%= t("admin.disputes.show.details") %></dt>
+            <dd class="mt-0.5 whitespace-pre-line text-sm text-slate-700 dark:text-zinc-300"><%= details.presence || "—" %></dd>
+          </div>
+        </dl>
+
+        <% if @order.dispute_photos.attached? %>
+          <h3 class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400"><%= t("admin.disputes.show.photos") %></h3>
+          <ul class="mt-2 flex flex-wrap gap-2">
+            <% @order.dispute_photos.each do |photo| %>
+              <li>
+                <%= link_to url_for(photo), target: "_blank", rel: "noopener",
+                            class: "block size-24 overflow-hidden rounded-lg border border-slate-200 dark:border-zinc-700" do %>
+                  <%= image_tag photo.variant(resize_to_limit: [ 200, 200 ], format: :webp),
+                                alt: "", loading: "lazy", class: "size-24 object-cover" %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </section>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <div class="flex items-center justify-between gap-2">
+          <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.disputes.show.conversation") %></h2>
+          <% if @conversation %>
+            <%= link_to t("admin.disputes.show.open_conversation"), conversation_path(@conversation),
+                        class: "text-xs font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+          <% end %>
+        </div>
+        <% if @messages.empty? %>
+          <p class="mt-2 text-sm text-slate-500 dark:text-zinc-400"><%= t("admin.disputes.show.no_messages") %></p>
+        <% else %>
+          <ul class="mt-3 space-y-2">
+            <% @messages.each do |message| %>
+              <li class="rounded-lg bg-slate-50 p-3 text-sm dark:bg-zinc-800/60">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <span class="text-xs font-semibold text-slate-700 dark:text-zinc-300">
+                    <%= message.sender.display_name %>
+                    <span class="font-normal text-slate-400">
+                      · <%= message.sender_id == @order.buyer_id ? t("admin.disputes.show.buyer") : t("admin.disputes.show.seller") %>
+                    </span>
+                  </span>
+                  <span class="text-[11px] text-slate-400"><%= admin_datetime(message.created_at) %></span>
+                </div>
+                <p class="mt-1 whitespace-pre-line text-slate-700 dark:text-zinc-300"><%= message.body %></p>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </section>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.disputes.show.timeline") %></h2>
+        <ol class="mt-3 space-y-2">
+          <% @events.each do |event| %>
+            <li class="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-100 px-3 py-2 dark:border-zinc-800">
+              <span class="text-sm font-medium text-slate-800 dark:text-zinc-200"><%= order_event_label(event) %></span>
+              <span class="text-[11px] text-slate-500 dark:text-zinc-400">
+                <%= event.actor&.display_name || t("admin.orders.show.system") %> · <%= admin_datetime(event.created_at) %>
+              </span>
+            </li>
+          <% end %>
+        </ol>
+      </section>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.orders.show.notes") %></h2>
+        <% if @notes.empty? %>
+          <p class="mt-2 text-sm text-slate-500 dark:text-zinc-400"><%= t("admin.orders.show.no_notes") %></p>
+        <% else %>
+          <ul class="mt-2 space-y-2">
+            <% @notes.each do |note| %>
+              <li class="rounded-lg bg-slate-50 p-3 text-sm dark:bg-zinc-800/60">
+                <p class="whitespace-pre-line text-slate-700 dark:text-zinc-300"><%= note.body %></p>
+                <p class="mt-1 text-[11px] text-slate-500 dark:text-zinc-400"><%= note.author.display_name %> · <%= admin_datetime(note.created_at) %></p>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+        <%= form_with url: admin_order_notes_path(@order), method: :post, class: "mt-3 flex items-start gap-2" do %>
+          <%= text_area_tag :body, nil, rows: 2, required: true,
+                            placeholder: t("admin.orders.show.note_placeholder"),
+                            class: ui_input_classes("!text-sm") %>
+          <%= button_tag type: "submit", class: ui_button_classes(variant: :primary, size: :sm) do %>
+            <%= t("admin.orders.show.add_note") %>
+          <% end %>
+        <% end %>
+      </section>
+    </div>
+
+    <aside class="space-y-4">
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.disputes.show.resolve") %></h2>
+        <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("admin.disputes.show.resolve_hint") %></p>
+        <%= form_with url: admin_dispute_resolution_path(@order), method: :post, class: "mt-3 space-y-2" do %>
+          <div>
+            <%= label_tag "dispute_outcome", t("admin.disputes.show.outcome"),
+                          class: "mb-1 block text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400" %>
+            <%= select_tag :outcome,
+                           options_for_select([
+                             [ t("admin.disputes.outcomes.refund"), "refund", { disabled: !can_refund } ],
+                             [ t("admin.disputes.outcomes.release"), "release" ]
+                           ]),
+                           id: "dispute_outcome",
+                           class: ui_input_classes("!min-h-9 !py-1.5 !text-sm") %>
+            <% unless can_refund %>
+              <p class="mt-1 text-[11px] text-slate-500 dark:text-zinc-400"><%= t("admin.disputes.show.refund_admin_only") %></p>
+            <% end %>
+          </div>
+          <%= text_area_tag :message, nil, rows: 4,
+                            placeholder: t("admin.disputes.show.message_placeholder"),
+                            class: ui_input_classes("!text-sm") %>
+          <%= button_tag type: "submit",
+                         data: { turbo_confirm: t("admin.disputes.confirm.resolve") },
+                         class: ui_button_classes(variant: :primary, size: :sm, extra: "w-full") do %>
+            <%= t("admin.disputes.show.submit") %>
+          <% end %>
+        <% end %>
+      </section>
+
+      <%= render "admin/shared/meta_panel", title: t("admin.orders.show.summary"), rows: [
+        [ t("admin.orders.show.subtotal"), admin_money(@order.subtotal_cents) ],
+        [ t("admin.orders.show.commission"), admin_money(@order.commission_cents) ],
+        [ t("admin.orders.show.total"), admin_money(@order.total_cents) ],
+        [ t("admin.orders.show.payment_reference"), @order.payment_reference.presence || "—" ]
+      ] %>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.disputes.show.parties") %></h2>
+        <ul class="mt-2 space-y-2 text-sm">
+          <li>
+            <span class="text-[11px] uppercase tracking-wide text-slate-400"><%= t("admin.disputes.show.buyer") %></span>
+            <p class="font-medium">
+              <% if @order.buyer %>
+                <%= link_to @order.buyer.display_name, admin_user_path(@order.buyer),
+                            class: "text-brand-700 hover:underline dark:text-brand-300" %>
+              <% else %>
+                <%= @order.buyer_email %>
+              <% end %>
+            </p>
+          </li>
+          <li>
+            <span class="text-[11px] uppercase tracking-wide text-slate-400"><%= t("admin.disputes.show.seller") %></span>
+            <p class="font-medium">
+              <%= link_to @order.seller.display_name, admin_user_path(@order.seller),
+                          class: "text-brand-700 hover:underline dark:text-brand-300" %>
+            </p>
+            <% if @order.store %>
+              <p class="text-xs text-slate-500 dark:text-zinc-400"><%= @order.store.name %></p>
+            <% end %>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="font-heading text-sm font-semibold text-slate-900 dark:text-white"><%= t("admin.orders.show.history") %></h2>
+        <% if @audit_logs.empty? %>
+          <p class="mt-2 text-sm text-slate-500 dark:text-zinc-400"><%= t("admin.common.no_history") %></p>
+        <% else %>
+          <ol class="mt-2 space-y-2 text-sm">
+            <% @audit_logs.each do |log| %>
+              <li class="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-100 px-3 py-2 dark:border-zinc-800">
+                <span class="font-medium"><%= admin_audit_action_label(log.action) %></span>
+                <span class="text-[11px] text-slate-500 dark:text-zinc-400"><%= log.admin.display_name %> · <%= admin_datetime(log.created_at) %></span>
+              </li>
+            <% end %>
+          </ol>
+        <% end %>
+      </section>
+    </aside>
+  </div>
+</div>

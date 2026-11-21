@@ -1,12 +1,13 @@
 class OrderNotifier
-  def self.call(order, kind, actor: nil)
-    new(order, kind, actor: actor).call
+  def self.call(order, kind, actor: nil, data: {})
+    new(order, kind, actor: actor, data: data).call
   end
 
-  def initialize(order, kind, actor: nil)
+  def initialize(order, kind, actor: nil, data: {})
     @order = order
     @kind = kind.to_s
     @actor = actor
+    @data = data.to_h.symbolize_keys
   end
 
   def call
@@ -29,8 +30,7 @@ class OrderNotifier
       notify_seller("order_dispute_opened")
       notify_support
     when "dispute_resolved"
-      notify_buyer("order_dispute_resolved")
-      notify_seller("order_dispute_resolved")
+      notify_dispute_resolution
     when "refunded"
       notify_buyer("order_refunded")
       notify_seller("order_refunded")
@@ -41,20 +41,43 @@ class OrderNotifier
 
   private
 
-  attr_reader :order, :kind, :actor
+  attr_reader :order, :kind, :actor, :data
 
-  def notify_buyer(notification_kind)
+  def notify_buyer(notification_kind, extra: {})
     if order.buyer.present?
       Notifier.call(order.buyer, notification_kind,
-                    params: notification_params, url: buyer_url)
+                    params: notification_params.merge(extra), url: buyer_url)
     else
       deliver_guest_email(notification_kind)
     end
   end
 
-  def notify_seller(notification_kind)
+  def notify_seller(notification_kind, extra: {})
     Notifier.call(order.seller, notification_kind,
-                  params: notification_params, url: seller_url)
+                  params: notification_params.merge(extra), url: seller_url)
+  end
+
+  def notify_dispute_resolution
+    resolution = {
+      outcome: I18n.t("admin.disputes.outcomes.#{data[:outcome]}", default: data[:outcome].to_s),
+      message: data[:message].to_s
+    }
+    notify_buyer("order_dispute_resolution", extra: resolution)
+    notify_seller("order_dispute_resolution", extra: resolution)
+    enqueue_resolution_emails
+  end
+
+  def enqueue_resolution_emails
+    if order.buyer.nil? || order.buyer.notify_by_email?(Notifier::PREFERENCE_KEY)
+      OrderMailer.dispute_resolved_buyer(
+        order, message: data[:message].to_s, outcome: data[:outcome].to_s, locale: order.locale
+      ).deliver_later
+    end
+    if order.seller.notify_by_email?(Notifier::PREFERENCE_KEY)
+      OrderMailer.dispute_resolved_seller(
+        order, message: data[:message].to_s, outcome: data[:outcome].to_s, locale: order.seller.locale
+      ).deliver_later
+    end
   end
 
   def notify_support

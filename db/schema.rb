@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_22_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_22_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -400,6 +400,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_120000) do
     t.index ["order_id"], name: "index_order_items_on_order_id"
   end
 
+  create_table "order_notes", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.bigint "author_id", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_order_notes_on_author_id"
+    t.index ["order_id", "created_at"], name: "index_order_notes_on_order_id_and_created_at"
+    t.index ["order_id"], name: "index_order_notes_on_order_id"
+  end
+
   create_table "orders", force: :cascade do |t|
     t.string "number", null: false
     t.bigint "buyer_id"
@@ -445,6 +456,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_120000) do
     t.datetime "refunded_at"
     t.boolean "refund_required", default: false, null: false
     t.datetime "late_shipment_notified_at"
+    t.string "refund_reference"
     t.index ["buyer_id", "created_at"], name: "index_orders_on_buyer_id_and_created_at"
     t.index ["buyer_id"], name: "index_orders_on_buyer_id"
     t.index ["checkout_token", "seller_id"], name: "index_orders_on_checkout_token_and_seller", unique: true, where: "(checkout_token IS NOT NULL)"
@@ -496,6 +508,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_120000) do
     t.boolean "published", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "seller_reply_visible", default: true, null: false
     t.index ["order_id"], name: "index_reviews_on_order_id", unique: true
     t.index ["rating"], name: "index_reviews_on_rating"
     t.index ["reviewer_id"], name: "index_reviews_on_reviewer_id"
@@ -669,6 +682,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_120000) do
   add_foreign_key "order_events", "users", column: "actor_id"
   add_foreign_key "order_items", "listings"
   add_foreign_key "order_items", "orders"
+  add_foreign_key "order_notes", "orders"
+  add_foreign_key "order_notes", "users", column: "author_id"
   add_foreign_key "orders", "stores"
   add_foreign_key "orders", "users", column: "buyer_id"
   add_foreign_key "orders", "users", column: "seller_id"

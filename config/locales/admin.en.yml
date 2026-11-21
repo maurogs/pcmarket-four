@@ -1,576 +1,883 @@
+---
 en:
   admin:
-    title: "Admin"
+    title: Admin
     roles:
-      user: "User"
-      moderator: "Moderator"
-      admin: "Administrator"
+      user: User
+      moderator: Moderator
+      admin: Administrator
     user_statuses:
-      active: "Active"
-      suspended: "Suspended"
-      banned: "Banned"
+      active: Active
+      suspended: Suspended
+      banned: Banned
     store_types:
-      individual: "Individual"
-      professional: "Professional"
+      individual: Individual
+      professional: Professional
     nav:
-      label: "Admin navigation"
-      dashboard: "Dashboard"
-      moderation: "Moderation queue"
+      label: Admin navigation
+      dashboard: Dashboard
+      moderation: Moderation queue
       sections:
-        marketplace: "Marketplace"
-        catalogue: "Catalogue"
-        content: "Content"
-        marketing: "Marketing"
-        settings: "Settings"
-      listings: "Listings"
-      users: "Users"
-      stores: "Stores"
-      orders: "Orders"
-      disputes: "Disputes"
-      reports: "Reports"
-      reviews: "Reviews"
-      categories: "Categories"
-      filters: "Filters"
-      legal_pages: "Legal pages"
-      games: "Games"
-      newsletter: "Newsletter"
-      general_settings: "General & feature flags"
-      countries: "Countries"
-      audit_log: "Audit log"
-      close: "Close navigation"
-      collapse: "Collapse navigation"
-      collapse_hint: "Collapse"
-      open: "Open navigation"
+        marketplace: Marketplace
+        catalogue: Catalogue
+        content: Content
+        marketing: Marketing
+        settings: Settings
+      listings: Listings
+      users: Users
+      stores: Stores
+      orders: Orders
+      disputes: Disputes
+      reports: Reports
+      reviews: Reviews
+      categories: Categories
+      filters: Filters
+      legal_pages: Legal pages
+      games: Games
+      newsletter: Newsletter
+      general_settings: General & feature flags
+      countries: Countries
+      audit_log: Audit log
+      close: Close navigation
+      collapse: Collapse navigation
+      collapse_hint: Collapse
+      open: Open navigation
+      payments: Payment reconciliation
     topbar:
-      view_site: "View site"
+      view_site: View site
     search:
-      placeholder: "Search users, listings, orders or stores"
-      title: "Admin search"
-      subtitle: "Search across people, listings, orders and stores."
-      results_for: "Results for “%{query}”"
-      empty_title: "Search the marketplace"
-      empty_body: "Type an email, username, listing title, order number or store name."
-      no_results_title: "No results"
-      no_results_body: "Nothing matched “%{query}”. Try a different term."
+      placeholder: Search users, listings, orders or stores
+      title: Admin search
+      subtitle: Search across people, listings, orders and stores.
+      results_for: Results for “%{query}”
+      empty_title: Search the marketplace
+      empty_body: Type an email, username, listing title, order number or store name.
+      no_results_title: No results
+      no_results_body: Nothing matched “%{query}”. Try a different term.
       groups:
-        users: "Users"
-        listings: "Listings"
-        orders: "Orders"
-        stores: "Stores"
+        users: Users
+        listings: Listings
+        orders: Orders
+        stores: Stores
     actions:
-      back: "Back"
-      back_to_listing: "Back to listing"
-      back_to_user: "Back to user"
-      back_to_store: "Back to store"
-      back_to_dashboard: "Back to dashboard"
-      view: "View"
-      edit: "Edit"
-      edit_profile: "Edit profile"
-      save: "Save changes"
-      cancel: "Cancel"
-      approve: "Approve"
-      reject: "Reject"
-      delete: "Delete"
-      feature: "Feature"
-      unfeature: "Unfeature"
-      suspend: "Suspend account"
-      unsuspend: "Unsuspend account"
-      ban: "Ban account"
-      unban: "Unban account"
-      change_role: "Change role"
-      confirm_email: "Confirm email"
-      send_password_reset: "Send password reset"
-      impersonate: "Impersonate user"
-      soft_delete: "Delete account (GDPR)"
-      verify: "Verify store"
-      unverify: "Remove verification"
-      start_vacation: "Start vacation"
-      end_vacation: "End vacation"
-      view_public: "View public page"
-      manage: "Manage"
+      back: Back
+      back_to_listing: Back to listing
+      back_to_user: Back to user
+      back_to_store: Back to store
+      back_to_dashboard: Back to dashboard
+      view: View
+      edit: Edit
+      edit_profile: Edit profile
+      save: Save changes
+      cancel: Cancel
+      approve: Approve
+      reject: Reject
+      delete: Delete
+      feature: Feature
+      unfeature: Unfeature
+      suspend: Suspend account
+      unsuspend: Unsuspend account
+      ban: Ban account
+      unban: Unban account
+      change_role: Change role
+      confirm_email: Confirm email
+      send_password_reset: Send password reset
+      impersonate: Impersonate user
+      soft_delete: Delete account (GDPR)
+      verify: Verify store
+      unverify: Remove verification
+      start_vacation: Start vacation
+      end_vacation: End vacation
+      view_public: View public page
+      manage: Manage
     common:
-      empty_title: "Nothing here yet"
-      empty_body: "Adjust the filters or come back later."
-      select_all: "Select all on this page"
-      bulk_actions: "Bulk actions"
-      label: "Label"
-      feature_days: "Feature days"
-      filter: "Filter"
-      clear: "Clear"
-      apply: "Apply"
-      per_page: "Per page"
-      showing: "Showing %{from}–%{to} of %{count}"
-      yes: "Yes"
-      no: "No"
-      no_history: "No admin activity recorded yet."
+      empty_title: Nothing here yet
+      empty_body: Adjust the filters or come back later.
+      select_all: Select all on this page
+      bulk_actions: Bulk actions
+      label: Label
+      feature_days: Feature days
+      filter: Filter
+      clear: Clear
+      apply: Apply
+      per_page: Per page
+      showing: Showing %{from}–%{to} of %{count}
+      true: 'Yes'
+      false: 'No'
+      no_history: No admin activity recorded yet.
       errors:
-        one: "1 error prevented this record from being saved"
+        one: 1 error prevented this record from being saved
         other: "%{count} errors prevented this record from being saved"
     dashboard:
-      eyebrow: "Operations overview"
-      title: "Dashboard"
-      subtitle: "Marketplace health, moderation and revenue at a glance."
-      open_queue: "Open moderation queue"
-      all_listings: "All listings"
-      kpis: "Key metrics"
-      last_7_days: "Last 7 days"
-      last_30_days: "Last 30 days"
-      vs_previous: "vs previous 7 days"
-      vs_yesterday: "vs yesterday"
-      live_now: "Live right now"
-      needs_attention: "Needs attention"
-      no_data: "No data for this period yet."
-      view_all: "View all"
-      all_caught_up: "The moderation queue is empty. Great work."
-      coming_soon: "Coming soon"
+      eyebrow: Operations overview
+      title: Dashboard
+      subtitle: Marketplace health, moderation and revenue at a glance.
+      open_queue: Open moderation queue
+      all_listings: All listings
+      kpis: Key metrics
+      last_7_days: Last 7 days
+      last_30_days: Last 30 days
+      vs_previous: vs previous 7 days
+      vs_yesterday: vs yesterday
+      live_now: Live right now
+      needs_attention: Needs attention
+      no_data: No data for this period yet.
+      view_all: View all
+      all_caught_up: The moderation queue is empty. Great work.
+      coming_soon: Coming soon
       stats:
-        new_users: "New users"
-        active_listings: "Active listings"
-        pending_review: "Pending review"
-        published_today: "Published today"
-        orders: "Orders"
-        gmv: "GMV"
-        commission: "Commission earned"
-        open_disputes: "Open disputes"
-        open_reports: "Open reports"
-        newsletter: "Newsletter subscribers"
+        new_users: New users
+        active_listings: Active listings
+        pending_review: Pending review
+        published_today: Published today
+        orders: Orders
+        gmv: GMV
+        commission: Commission earned
+        open_disputes: Open disputes
+        open_reports: Open reports
+        newsletter: Newsletter subscribers
+        pending_payments: Pending payments
       charts:
-        signups: "Sign-ups per day"
-        orders: "Orders per day"
-        categories: "Listings by category"
+        signups: Sign-ups per day
+        orders: Orders per day
+        categories: Listings by category
       health:
-        title: "System health"
-        failed_jobs: "Failed jobs"
-        pending_jobs: "Pending jobs"
-        storage: "Storage used"
-        database: "Database size"
-        cached: "Aggregates cached for two minutes."
+        title: System health
+        failed_jobs: Failed jobs
+        pending_jobs: Pending jobs
+        storage: Storage used
+        database: Database size
+        cached: Aggregates cached for two minutes.
       tables:
-        pending: "Latest pending listings"
-        orders: "Latest orders"
-        users: "Latest users"
+        pending: Latest pending listings
+        orders: Latest orders
+        users: Latest users
     moderation:
-      eyebrow: "Trust & safety"
-      title: "Moderation queue"
+      eyebrow: Trust & safety
+      title: Moderation queue
       subtitle:
         one: "%{count} listing is waiting for review."
         other: "%{count} listings are waiting for review."
-      select_all: "Select all on this page"
-      bulk_approve: "Approve selected"
-      empty_title: "Queue clear"
-      empty_body: "There are no listings waiting for review right now."
-      card_label: "Pending listing: %{title}"
-      card_index: "Item %{index}"
-      submitted: "submitted %{time}"
-      median: "Category median %{price}"
-      approve_feature: "Approve & feature"
-      reason_placeholder: "Rejection reason…"
-      other_reason: "Other reason"
+      select_all: Select all on this page
+      bulk_approve: Approve selected
+      empty_title: Queue clear
+      empty_body: There are no listings waiting for review right now.
+      card_label: 'Pending listing: %{title}'
+      card_index: Item %{index}
+      submitted: submitted %{time}
+      median: Category median %{price}
+      approve_feature: Approve & feature
+      reason_placeholder: Rejection reason…
+      other_reason: Other reason
       approved: "“%{title}” approved and published."
       rejected: "“%{title}” rejected and the seller notified."
-      reason_required: "Choose a rejection reason first."
-      cannot_approve: "This listing could not be approved."
-      no_images: "No images"
-      select_listing: "Select %{title}"
-      all_listings: "All listings"
-      duplicate_hint: "Also used by:"
+      reason_required: Choose a rejection reason first.
+      cannot_approve: This listing could not be approved.
+      no_images: No images
+      select_listing: Select %{title}
+      all_listings: All listings
+      duplicate_hint: 'Also used by:'
       shortcuts:
-        navigate: "navigate"
-        approve: "approve"
-        reject: "reject"
+        navigate: navigate
+        approve: approve
+        reject: reject
       flags:
-        suspicious_price: "Possible scam: price below 40% of median"
-        safety: "Safety scan: %{reasons}"
-        safety_short: "Safety scan warning"
+        suspicious_price: 'Possible scam: price below 40% of median'
+        safety: 'Safety scan: %{reasons}'
+        safety_short: Safety scan warning
         duplicate:
-          one: "Image reused in %{count} other listing"
-          other: "Image reused in %{count} other listings"
+          one: Image reused in %{count} other listing
+          other: Image reused in %{count} other listings
         previous_rejections:
           one: "%{count} previous rejection"
           other: "%{count} previous rejections"
       safety:
-        email: "email address"
-        phone: "phone number"
-        iban: "IBAN"
-        external_payment: "off-platform payment"
+        email: email address
+        phone: phone number
+        iban: IBAN
+        external_payment: off-platform payment
       reasons:
-        prohibited: "Prohibited item"
-        misleading: "Misleading information"
-        poor_photos: "Poor photos"
-        wrong_category: "Wrong category"
-        suspicious_price: "Suspicious price"
-        duplicate: "Duplicate listing"
-        other: "Other"
+        prohibited: Prohibited item
+        misleading: Misleading information
+        poor_photos: Poor photos
+        wrong_category: Wrong category
+        suspicious_price: Suspicious price
+        duplicate: Duplicate listing
+        other: Other
       seller:
-        account_age: "Account age"
-        listings: "Listings"
-        sales: "Completed sales"
-        rating: "Rating"
-        name: "Seller"
-        rejections: "Previous rejections"
-        verified: "Verified"
+        account_age: Account age
+        listings: Listings
+        sales: Completed sales
+        rating: Rating
+        name: Seller
+        rejections: Previous rejections
+        verified: Verified
       days:
         one: "%{count} day"
         other: "%{count} days"
     listings:
-      title: "Listings"
-      subtitle: "Search, moderate and edit every listing in the marketplace."
-      open_queue: "Moderation queue"
-      updated: "Listing updated."
-      destroyed: "Listing removed."
+      title: Listings
+      subtitle: Search, moderate and edit every listing in the marketplace.
+      open_queue: Moderation queue
+      updated: Listing updated.
+      destroyed: Listing removed.
       bulk_done: "%{count} listings updated."
-      select_listing: "Select %{title}"
+      select_listing: Select %{title}
       confirm:
-        reject: "Reject the selected listings?"
-        delete: "Delete the selected listings? This cannot be undone."
-      bulk_pause: "Pause"
-      bulk_archive: "Archive"
-      bulk_add_label: "Add label"
-      bulk_remove_label: "Remove label"
-      bulk_feature: "Feature"
-      bulk_unfeature: "Unfeature"
-      bulk_delete: "Delete"
+        reject: Reject the selected listings?
+        delete: Delete the selected listings? This cannot be undone.
+      bulk_pause: Pause
+      bulk_archive: Archive
+      bulk_add_label: Add label
+      bulk_remove_label: Remove label
+      bulk_feature: Feature
+      bulk_unfeature: Unfeature
+      bulk_delete: Delete
       columns:
-        listing: "Listing"
-        status: "Status"
-        price: "Price"
-        seller: "Seller"
-        views: "Views"
-        created: "Created"
+        listing: Listing
+        status: Status
+        price: Price
+        seller: Seller
+        views: Views
+        created: Created
       filters:
-        search_placeholder: "Title or ID"
-        status: "Status"
-        any_status: "Any status"
-        category: "Category"
-        any_category: "Any category"
-        seller: "Seller"
-        seller_placeholder: "Username, email or ID"
-        min_price: "Min €"
-        max_price: "Max €"
-        featured: "Featured"
-        any_featured: "Any"
-        created_from: "Created from"
-        created_to: "Created to"
-      empty_title: "No listings found"
-      empty_body: "Try different filters or clear the search."
+        search_placeholder: Title or ID
+        status: Status
+        any_status: Any status
+        category: Category
+        any_category: Any category
+        seller: Seller
+        seller_placeholder: Username, email or ID
+        min_price: Min €
+        max_price: Max €
+        featured: Featured
+        any_featured: Any
+        created_from: Created from
+        created_to: Created to
+      empty_title: No listings found
+      empty_body: Try different filters or clear the search.
       show:
-        subtitle: "Listing #%{id} in %{category}"
-        created: "Created %{time}"
-        updated: "Updated %{time}"
-        moderation_title: "This listing needs a decision"
-        rejection_title: "Rejected listing"
-        reviewed_by: "Reviewed by %{name} on %{time}"
-        images: "Photos"
-        description: "Description"
-        safety_warning: "The description contains contact details or off-platform payment hints:"
-        orders: "Orders"
-        no_orders: "No orders include this listing."
-        order_number: "Order"
-        order_buyer: "Buyer"
-        order_status: "Status"
-        order_total: "Total"
-        reports: "Reports"
-        no_reports: "No reports have been filed."
-        history: "Admin history"
-        pricing: "Pricing"
-        price: "Price"
-        original_price: "Original price"
-        median: "Category median"
-        currency: "Currency"
-        stats: "Engagement"
-        favourites: "Favourites"
-        performance: "Performance score"
-        featured_until: "Featured until"
-        seller: "Seller & store"
-        store: "Store"
-        meta: "Metadata"
-        id: "ID"
-        slug: "Slug"
-        country: "Country"
-        labels: "Labels"
-        reviewed_at: "Reviewed at"
-        pickup_only: "Pickup only"
+        subtitle: 'Listing #%{id} in %{category}'
+        created: Created %{time}
+        updated: Updated %{time}
+        moderation_title: This listing needs a decision
+        rejection_title: Rejected listing
+        reviewed_by: Reviewed by %{name} on %{time}
+        images: Photos
+        description: Description
+        safety_warning: 'The description contains contact details or off-platform
+          payment hints:'
+        orders: Orders
+        no_orders: No orders include this listing.
+        order_number: Order
+        order_buyer: Buyer
+        order_status: Status
+        order_total: Total
+        reports: Reports
+        no_reports: No reports have been filed.
+        history: Admin history
+        pricing: Pricing
+        price: Price
+        original_price: Original price
+        median: Category median
+        currency: Currency
+        stats: Engagement
+        favourites: Favourites
+        performance: Performance score
+        featured_until: Featured until
+        seller: Seller & store
+        store: Store
+        meta: Metadata
+        id: ID
+        slug: Slug
+        country: Country
+        labels: Labels
+        reviewed_at: Reviewed at
+        pickup_only: Pickup only
       form:
-        details: "Details"
-        pricing: "Pricing & delivery"
-        price_eur: "Price (€)"
-        original_price_eur: "Original price (€)"
-        shipping_price_eur: "Shipping price (€)"
-        location: "Location"
-        visibility: "Visibility & labels"
-        labels: "Marketplace labels"
-        tags: "Seller tags"
-        specs: "Specifications"
-        specs_hint: "Only filters that apply to %{category} are stored."
-        no_specs: "This category has no filters."
-        game_fps: "Game FPS JSON"
-        game_fps_hint: "JSON object with game names and resolutions. Validated on save."
-        condition: "Condition"
-        brand: "Brand"
-        model: "Model"
-        quantity: "Quantity"
-        shipping: "Shipping"
-        accepts_offers: "Accepts offers"
-        seller: "Seller"
+        details: Details
+        pricing: Pricing & delivery
+        price_eur: Price (€)
+        original_price_eur: Original price (€)
+        shipping_price_eur: Shipping price (€)
+        location: Location
+        visibility: Visibility & labels
+        labels: Marketplace labels
+        tags: Seller tags
+        specs: Specifications
+        specs_hint: Only filters that apply to %{category} are stored.
+        no_specs: This category has no filters.
+        game_fps: Game FPS JSON
+        game_fps_hint: JSON object with game names and resolutions. Validated on save.
+        condition: Condition
+        brand: Brand
+        model: Model
+        quantity: Quantity
+        shipping: Shipping
+        accepts_offers: Accepts offers
+        seller: Seller
       edit:
-        title: "Edit listing"
-        subtitle: "Listing #%{id}"
+        title: Edit listing
+        subtitle: 'Listing #%{id}'
     users:
-      title: "Users"
-      subtitle: "Accounts, roles, sign-in activity and moderation."
-      export: "Export CSV"
-      updated: "User updated."
-      suspended: "Account suspended."
-      unsuspended: "Account reactivated."
-      banned: "Account banned and listings archived."
-      unbanned: "Ban lifted."
-      role_changed: "Role updated."
-      confirmed: "Email confirmed."
-      password_reset_sent: "Password reset instructions sent."
-      soft_deleted: "Account anonymised and listings archived."
-      cannot_change_own_role: "You cannot change your own role."
-      cannot_demote_last_admin: "You cannot demote the last administrator."
-      invalid_role: "That role is not valid."
-      deleted_badge: "Deleted (GDPR)"
-      unconfirmed: "Unconfirmed"
+      title: Users
+      subtitle: Accounts, roles, sign-in activity and moderation.
+      export: Export CSV
+      updated: User updated.
+      suspended: Account suspended.
+      unsuspended: Account reactivated.
+      banned: Account banned and listings archived.
+      unbanned: Ban lifted.
+      role_changed: Role updated.
+      confirmed: Email confirmed.
+      password_reset_sent: Password reset instructions sent.
+      soft_deleted: Account anonymised and listings archived.
+      cannot_change_own_role: You cannot change your own role.
+      cannot_demote_last_admin: You cannot demote the last administrator.
+      invalid_role: That role is not valid.
+      deleted_badge: Deleted (GDPR)
+      unconfirmed: Unconfirmed
       filters:
-        search_placeholder: "Email, username or name"
-        role: "Role"
-        any_role: "Any role"
-        status: "Status"
-        any_status: "Any status"
-        confirmed: "Confirmed"
-        any_confirmation: "Any"
-        store: "Has store"
-        any_store: "Any"
-        country: "Country"
-        any_country: "Any country"
-        signed_up_from: "Signed up from"
-        signed_up_to: "Signed up to"
+        search_placeholder: Email, username or name
+        role: Role
+        any_role: Any role
+        status: Status
+        any_status: Any status
+        confirmed: Confirmed
+        any_confirmation: Any
+        store: Has store
+        any_store: Any
+        country: Country
+        any_country: Any country
+        signed_up_from: Signed up from
+        signed_up_to: Signed up to
       columns:
-        user: "User"
-        role: "Role"
-        status: "Status"
-        store: "Store"
-        sign_ins: "Sign-ins"
-        last_sign_in: "Last sign-in"
-        created: "Created"
-      empty_title: "No users found"
-      empty_body: "Try different filters or clear the search."
+        user: User
+        role: Role
+        status: Status
+        store: Store
+        sign_ins: Sign-ins
+        last_sign_in: Last sign-in
+        created: Created
+      empty_title: No users found
+      empty_body: Try different filters or clear the search.
       show:
         subtitle: "%{email}"
-        member_since: "Member since %{date}"
-        reason: "Reason"
-        profile: "Profile"
-        recent_listings: "Recent listings"
-        no_listings: "No listings yet."
-        activity: "Admin activity"
-        security: "Sign-in & security"
-        last_sign_in: "Last sign-in"
-        last_ip: "Last IP"
-        sign_in_count: "Sign-in count"
-        confirmed_at: "Confirmed at"
-        locked: "Locked"
-        failed_attempts: "Failed attempts"
-        moderation: "Moderation"
-        suspension_reason: "Suspension reason"
-        ban_reason: "Ban reason"
-        store: "Store"
-        store_name: "Name"
+        member_since: Member since %{date}
+        reason: Reason
+        profile: Profile
+        recent_listings: Recent listings
+        no_listings: No listings yet.
+        activity: Admin activity
+        security: Sign-in & security
+        last_sign_in: Last sign-in
+        last_ip: Last IP
+        sign_in_count: Sign-in count
+        confirmed_at: Confirmed at
+        locked: Locked
+        failed_attempts: Failed attempts
+        moderation: Moderation
+        suspension_reason: Suspension reason
+        ban_reason: Ban reason
+        store: Store
+        store_name: Name
         stats:
-          listings: "Listings"
-          buyer_orders: "Buyer orders"
-          seller_orders: "Seller orders"
-          gmv: "GMV"
-          reviews: "Reviews"
-          reports: "Reports"
-        total: "Total"
-        paid_orders: "Paid orders"
-        received: "Received"
-        against_listings: "Against listings"
+          listings: Listings
+          buyer_orders: Buyer orders
+          seller_orders: Seller orders
+          gmv: GMV
+          reviews: Reviews
+          reports: Reports
+        total: Total
+        paid_orders: Paid orders
+        received: Received
+        against_listings: Against listings
       form:
-        account: "Account details"
-        username: "Username"
-        email: "Email"
-        first_name: "First name"
-        last_name: "Last name"
-        phone: "Phone"
-        locale: "Locale"
-        country: "Country"
-        region: "Region"
+        account: Account details
+        username: Username
+        email: Email
+        first_name: First name
+        last_name: Last name
+        phone: Phone
+        locale: Locale
+        country: Country
+        region: Region
       edit:
-        title: "Edit user"
+        title: Edit user
         subtitle: "%{name}"
-        role_hint: "Roles and status are managed from the user page with dedicated actions."
+        role_hint: Roles and status are managed from the user page with dedicated
+          actions.
       confirm:
-        ban: "Ban %{name}? Their listings will be archived."
-        soft_delete: "Delete %{name}? Personal data will be anonymised."
+        ban: Ban %{name}? Their listings will be archived.
+        soft_delete: Delete %{name}? Personal data will be anonymised.
     stores:
-      title: "Stores"
-      subtitle: "Seller profiles, verification and vacation mode."
-      updated: "Store updated."
-      verified: "Store verified."
-      unverified: "Verification removed."
-      vacation_started: "Vacation mode enabled."
-      vacation_ended: "Vacation mode disabled."
-      verified_badge: "Verified"
-      unverified: "Unverified"
-      on_vacation: "On vacation"
+      title: Stores
+      subtitle: Seller profiles, verification and vacation mode.
+      updated: Store updated.
+      verified: Store verified.
+      unverified: Unverified
+      vacation_started: Vacation mode enabled.
+      vacation_ended: Vacation mode disabled.
+      verified_badge: Verified
+      on_vacation: On vacation
       filters:
-        search_placeholder: "Store name or owner email"
-        verified: "Verification"
-        any_verification: "Any"
-        type: "Type"
-        any_type: "Any type"
-        vacation: "Vacation"
-        any_vacation: "Any"
+        search_placeholder: Store name or owner email
+        verified: Verification
+        any_verification: Any
+        type: Type
+        any_type: Any type
+        vacation: Vacation
+        any_vacation: Any
       columns:
-        store: "Store"
-        owner: "Owner"
-        type: "Type"
-        verified: "Verification"
-        listings: "Listings"
-        sales: "Sales"
-        rating: "Rating"
-      empty_title: "No stores found"
-      empty_body: "Try different filters."
+        store: Store
+        owner: Owner
+        type: Type
+        verified: Verification
+        listings: Listings
+        sales: Sales
+        rating: Rating
+      empty_title: No stores found
+      empty_body: Try different filters.
       show:
-        subtitle: "Owned by %{owner}"
-        listings: "Listings"
-        sales: "Sales"
-        rating: "Rating"
+        subtitle: Owned by %{owner}
+        listings: Listings
+        sales: Sales
+        rating: Rating
         reviews_count:
           one: "%{count} review"
           other: "%{count} reviews"
-        followers: "Followers"
-        about: "About"
-        no_description: "No description."
-        company: "Company"
-        tax_id: "Tax ID"
-        location: "Location"
-        completeness: "Profile completeness"
-        listings_title: "Recent listings"
-        no_listings: "No listings yet."
-        orders: "Recent orders"
-        no_orders: "No orders yet."
-        history: "Admin history"
-        summary: "Summary"
-        slug: "Slug"
-        created: "Created"
-        vacation_message: "Vacation message"
-        policies: "Policies"
-        return_policy: "Return policy"
-        shipping_policy: "Shipping policy"
-        type: "Type"
-        verified: "Verified"
+        followers: Followers
+        about: About
+        no_description: No description.
+        company: Company
+        tax_id: Tax ID
+        location: Location
+        completeness: Profile completeness
+        listings_title: Recent listings
+        no_listings: No listings yet.
+        orders: Recent orders
+        no_orders: No orders yet.
+        history: Admin history
+        summary: Summary
+        slug: Slug
+        created: Created
+        vacation_message: Vacation message
+        policies: Policies
+        return_policy: Return policy
+        shipping_policy: Shipping policy
+        type: Type
+        verified: Verified
       edit:
-        title: "Edit store"
+        title: Edit store
         subtitle: "%{name}"
-        details: "Store details"
-        vacation: "Vacation mode"
-        policies: "Store policies"
+        details: Store details
+        vacation: Vacation mode
+        policies: Store policies
     audit:
-      title: "Audit log"
-      subtitle: "Every admin mutation, who made it and what changed."
-      action: "Action"
-      admin: "Admin"
-      resource: "Resource"
-      any_action: "Any action"
-      any_admin: "Any admin"
-      any_resource: "Any resource"
-      empty_title: "No audit entries"
-      empty_body: "Admin actions will appear here."
-      view_changes: "View changes"
+      title: Audit log
+      subtitle: Every admin mutation, who made it and what changed.
+      action: Action
+      admin: Admin
+      resource: Resource
+      any_action: Any action
+      any_admin: Any admin
+      any_resource: Any resource
+      empty_title: No audit entries
+      empty_body: Admin actions will appear here.
+      view_changes: View changes
       columns:
-        time: "Time"
-        admin: "Admin"
-        action: "Action"
-        resource: "Resource"
-        ip: "IP"
-        changeset: "Changes"
+        time: Time
+        admin: Admin
+        action: Action
+        resource: Resource
+        ip: IP
+        changeset: Changes
       actions:
-        listing_approved: "Listing approved"
-        listing_rejected: "Listing rejected"
-        listing_updated: "Listing updated"
-        listing_archived: "Listing archived"
-        listing_deleted: "Listing deleted"
-        listing_bulk_approve: "Listings bulk-approved"
-        listing_bulk_reject: "Listings bulk-rejected"
-        listing_bulk_pause: "Listings paused"
-        listing_bulk_archive: "Listings archived"
-        listing_bulk_delete: "Listings deleted"
-        listing_bulk_add_label: "Label added in bulk"
-        listing_bulk_remove_label: "Label removed in bulk"
-        listing_bulk_feature: "Listings featured"
-        listing_bulk_unfeature: "Listings unfeatured"
-        user_updated: "User updated"
-        user_suspended: "User suspended"
-        user_unsuspended: "User unsuspended"
-        user_banned: "User banned"
-        user_unbanned: "User unbanned"
-        user_role_changed: "User role changed"
-        user_confirmed: "User email confirmed"
-        user_password_reset_sent: "Password reset sent"
-        user_impersonated: "Impersonation started"
-        user_impersonation_stopped: "Impersonation stopped"
-        user_soft_deleted: "User soft-deleted"
-        store_updated: "Store updated"
-        store_verified: "Store verified"
-        store_unverified: "Store unverified"
-        store_vacation_started: "Store vacation started"
-        store_vacation_ended: "Store vacation ended"
+        listing_approved: Listing approved
+        listing_rejected: Listing rejected
+        listing_updated: Listing updated
+        listing_archived: Listing archived
+        listing_deleted: Listing deleted
+        listing_bulk_approve: Listings bulk-approved
+        listing_bulk_reject: Listings bulk-rejected
+        listing_bulk_pause: Listings paused
+        listing_bulk_archive: Listings archived
+        listing_bulk_delete: Listings deleted
+        listing_bulk_add_label: Label added in bulk
+        listing_bulk_remove_label: Label removed in bulk
+        listing_bulk_feature: Listings featured
+        listing_bulk_unfeature: Listings unfeatured
+        user_updated: User updated
+        user_suspended: User suspended
+        user_unsuspended: User unsuspended
+        user_banned: User banned
+        user_unbanned: User unbanned
+        user_role_changed: User role changed
+        user_confirmed: User email confirmed
+        user_password_reset_sent: Password reset sent
+        user_impersonated: Impersonation started
+        user_impersonation_stopped: Impersonation stopped
+        user_soft_deleted: User soft-deleted
+        store_updated: Store updated
+        store_verified: Store verified
+        store_unverified: Store unverified
+        store_vacation_started: Store vacation started
+        store_vacation_ended: Store vacation ended
+        order_paid: Order marked as paid
+        order_cancelled: Order cancelled
+        order_refunded: Order refunded
+        order_note_added: Order note added
+        order_email_resent: Order email resent
+        order_dispute_resolved: Dispute resolved
+        report_resolved: Report resolved
+        report_dismissed: Report dismissed
+        review_updated: Review updated
+        review_deleted: Review deleted
     reports:
       reasons:
-        spam: "Spam"
-        fraud: "Fraud"
-        prohibited: "Prohibited item"
-        counterfeit: "Counterfeit"
-        offensive: "Offensive"
-        other: "Other"
+        spam: Spam
+        fraud: Fraud
+        prohibited: Prohibited item
+        counterfeit: Counterfeit
+        offensive: Offensive
+        other: Other
       statuses:
-        open: "Open"
-        resolved: "Resolved"
-        dismissed: "Dismissed"
+        open: Open
+        resolved: Resolved
+        dismissed: Dismissed
+      title: Reports
+      subtitle: Reports about listings, users, conversations and reviews.
+      updated: Report resolved.
+      cannot_resolve: This report could not be processed.
+      bulk_dismissed: "%{count} reports dismissed."
+      counts_label: Reports by status
+      counts_hint: Reports
+      select_report: Select report %{id}
+      report_number: 'Report #%{id}'
+      empty_title: No reports found
+      empty_body: Adjust the filters or come back later.
+      types:
+        listing: Listing
+        user: User
+        conversation: Conversation
+        review: Review
+      filters:
+        status: Status
+        any_status: Any status
+        reason: Reason
+        any_reason: Any reason
+        type: Reportable type
+        any_type: Any type
+      columns:
+        report: Report
+        type: Type
+        reason: Reason
+        reporter: Reporter
+        status: Status
+        created: Created
+      actions:
+        hide_listing: Hide listing (pause)
+        suspend_user: Suspend user
+        delete_review: Unpublish review
+      confirm:
+        resolve: Resolve this report and apply the selected action?
+      show:
+        title: 'Report #%{id}'
+        subtitle: "%{type} reported by %{reporter}"
+        resolved_by: Resolved by %{name}
+        reported_item: Reported item
+        conversation_between: Conversation between %{buyer} and %{seller}
+        unavailable: The reported item is no longer available.
+        details: Report details
+        other_reports: Other reports on this item
+        no_other_reports: No other reports on this item.
+        resolve: Resolve report
+        action: Action
+        no_action: No extra action
+        action_reason: Reason for the action (optional)
+        resolve_submit: Resolve report
+        dismiss: Dismiss report
+        meta: Report details
     impersonation:
-      banner: "You are viewing as %{name}"
-      stop: "Stop impersonating"
-      started: "Now viewing as %{name}."
-      stopped: "Impersonation stopped."
-      not_impersonating: "No impersonation session is active."
+      banner: You are viewing as %{name}
+      stop: Stop impersonating
+      started: Now viewing as %{name}.
+      stopped: Impersonation stopped.
+      not_impersonating: No impersonation session is active.
     placeholder:
-      label: "Next update"
-      body: "This admin area is being built in phases 6B and 6C. The foundation, dashboard, listing moderation, users and stores are already available."
-      coming: "Coming in next update"
+      label: Next update
+      body: This admin area is being built in phases 6B and 6C. The foundation, dashboard,
+        listing moderation, users and stores are already available.
+      coming: Coming in next update
       titles:
-        orders: "Orders"
-        disputes: "Disputes"
-        reports: "Reports"
-        reviews: "Reviews"
-        categories: "Categories"
-        filters: "Filters"
-        legal_pages: "Legal pages"
-        games: "Games"
-        newsletter: "Newsletter"
-        settings: "General & feature flags"
-        countries: "Countries"
+        orders: Orders
+        disputes: Disputes
+        reports: Reports
+        reviews: Reviews
+        categories: Categories
+        filters: Filters
+        legal_pages: Legal pages
+        games: Games
+        newsletter: Newsletter
+        settings: General & feature flags
+        countries: Countries
     mailer:
       listing:
-        greeting: "Hi %{name},"
-        view_listing: "View your listing"
-        signature: "The %{site} team"
+        greeting: Hi %{name},
+        view_listing: View your listing
+        signature: The %{site} team
         approved:
-          subject: "Your listing “%{title}” is live"
-          title: "Listing approved"
+          subject: Your listing “%{title}” is live
+          title: Listing approved
           intro: "“%{title}” has been reviewed and is now published on the marketplace."
-          outro: "You can edit the price, description or photos at any time."
+          outro: You can edit the price, description or photos at any time.
         rejected:
-          subject: "Your listing “%{title}” needs changes"
-          title: "Listing rejected"
+          subject: Your listing “%{title}” needs changes
+          title: Listing rejected
           intro: "“%{title}” was not approved in its current form."
-          reason_label: "Reason"
-          outro: "Fix the issues and submit it again whenever you are ready."
+          reason_label: Reason
+          outro: Fix the issues and submit it again whenever you are ready.
+    orders:
+      title: Orders
+      subtitle: Every purchase, payment state and fulfilment in one place.
+      export: Export CSV
+      empty_title: No orders found
+      empty_body: Adjust the filters or clear the search.
+      pieces:
+        one: "%{count} item"
+        other: "%{count} items"
+      refund_flag: Refund needed
+      late_flag: Late shipment
+      reference_required: A payment reference is required to mark this order as paid.
+      paid: Order marked as paid.
+      cannot_pay: This order cannot be marked as paid.
+      cancelled: Order cancelled.
+      cannot_cancel: This order cannot be cancelled.
+      refunded: Order refunded.
+      cannot_refund: This order cannot be refunded.
+      note_added: Internal note added.
+      note_required: Write a note before saving.
+      email_sent: Email queued for delivery.
+      invalid_recipient: Choose a valid recipient.
+      filters:
+        status: Status
+        any_status: Any status
+        fulfilment: Fulfilment
+        any_fulfilment: Any fulfilment
+        payment_method: Payment method
+        any_payment: Any method
+        seller: Seller or store
+        seller_placeholder: Username, email, store or ID
+        buyer_email: Buyer email
+        buyer_placeholder: buyer@example.com
+        created_from: Created from
+        created_to: Created to
+        min_total: Min €
+        max_total: Max €
+        late_shipment: Late shipment
+        refund_needed: Refund needed
+        any: Any
+      columns:
+        number: Order
+        created: Created
+        buyer: Buyer
+        seller: Seller
+        status: Status
+        fulfilment: Fulfilment
+        payment: Payment
+        total: Total
+      totals:
+        count: Orders
+        gmv: GMV
+        commission: Commission
+      fulfilment:
+        shipping: Shipping
+        local_pickup: Local pickup
+      payment_methods:
+        bank_transfer: Bank transfer
+        cash_on_pickup: Cash on pickup
+        stripe: Card (Stripe)
+      actions:
+        payments: Payment reconciliation
+        disputes: Disputes
+        mark_paid: Mark as paid
+        cancel: Cancel order
+        refund: Refund order
+        email_buyer: Resend buyer email
+        email_seller: Resend seller email
+      confirm:
+        cancel: Cancel this order? Stock will be restored.
+        refund: Refund this order? This cannot be undone.
+      show:
+        title: Order %{number}
+        subtitle: "%{buyer} bought from %{seller}"
+        placed_on: Placed on %{date}
+        conversation: Open conversation
+        items: Items
+        quantity: 'Quantity: %{count}'
+        shipping_address: Shipping address
+        buyer_email: Buyer email
+        payment: Payment
+        provider: Provider
+        reference: Payment reference
+        refund_reference: Refund reference
+        paid_at: Paid at
+        tracking: "%{carrier} · %{number}"
+        timeline: Order timeline
+        no_events: No events recorded yet.
+        system: System
+        notes: Internal notes
+        no_notes: No internal notes yet.
+        note_placeholder: Internal note visible to staff only…
+        add_note: Add note
+        history: Admin history
+        summary: Totals
+        subtotal: Subtotal
+        shipping: Shipping
+        commission: Commission
+        net: Net to seller
+        total: Total
+        currency: Currency
+        actions: Admin actions
+        payment_reference: Bank transfer reference
+        cancel_reason: Cancellation reason
+        refund_reference_input: Refund reference
+        parties: Buyer & seller
+        guest: Guest buyer
+        order: Order
+    payments:
+      title: Payment reconciliation
+      subtitle: Pending bank transfers, oldest first, with their payment deadline.
+      empty_title: Nothing to reconcile
+      empty_body: There are no pending bank-transfer orders right now.
+      due_in: Due in %{time}
+      overdue: Overdue by %{time}
+      reference: Reference
+      mark_paid: Mark paid
+      columns:
+        order: Order
+        buyer: Buyer & seller
+        age: Age
+        deadline: Deadline
+        total: Total
+        mark_paid: Mark paid
+      bulk:
+        title: Bulk mark as paid
+        hint: Paste one order number per line. Each pending order is marked as paid
+          with the same reference.
+        placeholder: |-
+          PCM-2026-000001
+          PCM-2026-000002
+        submit: Mark orders as paid
+        result_title: Bulk payment summary
+        result_subtitle: What happened to each pasted order number.
+        result_hint: Orders
+        paid: Marked as paid
+        not_found: Not found
+        wrong_status: Wrong status
+    disputes:
+      title: Disputes
+      subtitle: Open buyer disputes, oldest first. Resolve with a refund or release
+        to the seller.
+      resolved: Dispute resolved and both parties notified.
+      cannot_resolve: This dispute cannot be resolved.
+      empty_title: No open disputes
+      empty_body: Every dispute has been resolved.
+      outcomes:
+        refund: Refund the buyer
+        release: Release to the seller
+      confirm:
+        resolve: Resolve this dispute? Both parties will be notified.
+      filters:
+        search_placeholder: Order number or buyer email
+        reason: Reason
+        any_reason: Any reason
+      columns:
+        order: Order
+        buyer: Buyer
+        seller: Seller
+        reason: Reason
+        age: Age
+        opened: Opened
+      show:
+        title: Dispute on %{number}
+        subtitle: "%{reason} · opened %{age} ago"
+        unknown_reason: Unknown reason
+        opened_at: Opened %{date}
+        dispute: Dispute details
+        reason: Reason
+        amount: Order amount
+        details: What the buyer reported
+        photos: Buyer photos
+        conversation: Conversation
+        open_conversation: Open in inbox
+        no_messages: There are no messages for this order.
+        buyer: Buyer
+        seller: Seller
+        timeline: Order timeline
+        resolve: Resolve dispute
+        resolve_hint: The resolution message is sent to both parties by email and
+          in-app notification.
+        outcome: Outcome
+        refund_admin_only: Only administrators can issue refunds.
+        message_placeholder: Explain the decision to both parties…
+        submit: Resolve dispute
+        parties: Parties
+    reviews:
+      title: Reviews
+      subtitle: Buyer reviews, seller replies and publication state.
+      updated: Review updated.
+      cannot_update: This review could not be updated.
+      deleted: Review deleted.
+      published: Published
+      unpublished: Unpublished
+      replied: Seller replied
+      reply_visible: Reply visible
+      reply_hidden: Reply hidden
+      rating_option: "%{count} / 5"
+      blocked_words_hint: Reviews are checked against the blocked-words list before
+        publication.
+      blocked_words_link: Manage blocked words
+      empty_title: No reviews found
+      empty_body: Adjust the filters or come back later.
+      filters:
+        rating: Rating
+        any_rating: Any rating
+        published: Published
+        any_visibility: Any visibility
+        store: Store
+        store_placeholder: Store name or ID
+        has_reply: Has reply
+        any_reply: Any
+        created_from: Created from
+        created_to: Created to
+      columns:
+        review: Review
+        store: Store
+        reviewer: Reviewer
+        order: Order
+        rating: Rating
+        status: Status
+        created: Created
+      show:
+        title: 'Review #%{id}'
+        subtitle: "%{store} · by %{reviewer}"
+        view_store: View store
+        body: Review
+        reply: Seller reply
+        no_reply: The seller has not replied.
+        context: Context
+        actions: Moderation
+        unpublish: Unpublish review
+        publish: Publish review
+        hide_reply: Hide seller reply
+        show_reply: Show seller reply
+        delete: Delete review
+        settings: Review settings
+      confirm:
+        delete: Delete this review permanently? The store rating will be recalculated.
   devise:
     failure:
-      suspended: "Your account is suspended. Contact support for more information."
-      banned: "Your account has been banned."
-      deleted: "This account has been deleted."
+      suspended: Your account is suspended. Contact support for more information.
+      banned: Your account has been banned.
+      deleted: This account has been deleted.
