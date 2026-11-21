@@ -1,7 +1,83 @@
 ---
 de:
   home:
-    title: Gebrauchte Technik kaufen und verkaufen
-    subtitle: Computer, Grafikkarten, Komponenten, Peripheriegeräte, Laptops, Smartphones,
-      Tablets und Konsolen von vertrauenswürdigen Verkäufern.
-    coming_soon: 'Demnächst verfügbar: der Tech-Marktplatz, auf den Sie gewartet haben.'
+    hero:
+      eyebrow: Angebote des Tages
+      title: Technik, die ein Upgrade wert ist
+      subtitle: Geprüfte Hardware, verifizierte Verkäufer und faire Preise. Finde dein nächstes Teil, ohne zu viel zu zahlen.
+      cta: Angebot ansehen
+      previous: Vorheriges Angebot
+      next: Nächstes Angebot
+      slide: Angebot %{number}
+      empty_title: Noch keine hervorgehobenen Angebote
+      empty_body: Schau bald wieder vorbei oder durchsuche alle verfügbaren Anzeigen.
+      empty_cta: Anzeigen entdecken
+      carousel: Karussell der Angebote
+      carousel_role: Karussell
+      slide_role: Folie
+    promos:
+      most_wanted_title: Am meisten gesucht
+      most_wanted_body: Was Käufer diese Woche am häufigsten speichern.
+      most_wanted_cta: Meistgespeicherte ansehen
+      ready_title: Versandbereit
+      ready_body: Gaming-PCs, von Technikern gebaut und getestet.
+      ready_cta: Gaming-PCs ansehen
+      deals_title: Im Angebot
+      deals_body: Gegenüber dem Originalpreis reduziert, ohne Überraschungen.
+      deals_cta: Angebote ansehen
+    pc_finder:
+      eyebrow: PC-Finder
+      title: Sag uns, wie du spielst, und wir sagen dir, welchen PC du brauchst
+      body: Budget, Auflösung und Lieblingsspiele. In unter einer Minute erhältst du eine Auswahl passender Rechner.
+      cta: Meinen PC finden
+      bullet_1: Nach deinem Budget
+      bullet_2: Nach deinem Monitor
+      bullet_3: Nach deinen Spielen
+    vibe:
+      title: Nach Stil einkaufen
+      subtitle: Setups und Zubehör für jede Art von Schreibtisch.
+      minimalist: Minimalistisch
+      anime: Anime
+      rgb: RGB
+      white: Ganz in Weiß
+    rows:
+      latest_gpus: Neueste Grafikkarten
+      most_watched: Diese Woche am häufigsten angesehen
+      on_sale: Im Angebot
+      newest: Neueste Anzeigen
+      recently_sold: Kürzlich verkauft
+      view_all: Alle ansehen
+      previous: Nach links scrollen
+      next: Nach rechts scrollen
+    trust:
+      buyer_protection_title: Käuferschutz
+      buyer_protection_body: Sichere Zahlung und Hilfe, wenn etwas nicht der Beschreibung entspricht.
+      verified_sellers_title: Verifizierte Verkäufer
+      verified_sellers_body: Identität und Angaben werden vor der Veröffentlichung geprüft.
+      secure_payments_title: Sichere Zahlungen
+      secure_payments_body: Deine Daten werden niemals an den Verkäufer weitergegeben.
+      spanish_support_title: Support in Spanien
+      spanish_support_body: Ein lokales Team, das dir in deiner Sprache hilft.
+    reviews:
+      title: Das sagen Käufer
+      subtitle: Echte Bewertungen aus abgeschlossenen Käufen auf PCMarket.
+      static_1_body: Ich habe eine Grafikkarte wie neu zu einem sehr guten Preis gefunden. Sie kam in zwei Tagen, perfekt verpackt.
+      static_1_name: Lucía M.
+      static_1_location: Valencia
+      static_2_body: Ich habe einen Laptop für die Arbeit gekauft und die Beschreibung war exakt. Ich kaufe gerne wieder.
+      static_2_name: Javier R.
+      static_2_location: Sevilla
+      static_3_body: Der Verkäufer beantwortete alle Fragen und die Verpackung war einwandfrei. Sehr empfehlenswert.
+      static_3_name: Marta G.
+      static_3_location: Bilbao
+    sell:
+      title: Ungenutzte Hardware? Verkaufe sie.
+      body: Erstelle kostenlos eine Anzeige oder verkaufe uns deinen PC, deine Konsole oder Komponenten – ohne Aufwand.
+      cta: Jetzt verkaufen
+    seo:
+      title: Gebrauchte Technik mit Sicherheit in Spanien
+      paragraph_1: PCMarket vereint neue und gebrauchte Gaming-PCs, Komponenten, Peripherie, Laptops, Smartphones, Tablets und Konsolen an einem Ort. Jede Anzeige zeigt den tatsächlichen Zustand, den Standort und die Versandbedingungen, damit du mit allen Informationen kaufst.
+      paragraph_2: 'Ob du eine Grafikkarte für dein Upgrade suchst oder verkaufen möchtest, was du nicht mehr nutzt: Unsere Suche und die Filter nach Spezifikationen helfen dir, genau das Richtige zum fairen Preis zu finden.'
+    empty:
+      title: Hier gibt es noch nichts
+      body: Schau bald wieder vorbei oder probiere eine andere Kategorie.

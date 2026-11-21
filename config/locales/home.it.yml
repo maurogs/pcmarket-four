@@ -1,7 +1,83 @@
 ---
 it:
   home:
-    title: Compra e vendi tecnologia usata
-    subtitle: Computer, schede video, componenti, periferiche, portatili, smartphone,
-      tablet e console da venditori verificati.
-    coming_soon: 'Prossimamente: il marketplace tech che stavi aspettando.'
+    hero:
+      eyebrow: Offerte del giorno
+      title: Tecnologia che vale un upgrade
+      subtitle: Hardware verificato, venditori affidabili e prezzi onesti. Trova il tuo prossimo componente senza spendere troppo.
+      cta: Vedi l'offerta
+      previous: Offerta precedente
+      next: Offerta successiva
+      slide: Offerta %{number}
+      empty_title: Nessuna offerta in evidenza
+      empty_body: Torna presto o sfoglia tutti gli annunci disponibili.
+      empty_cta: Sfoglia gli annunci
+      carousel: Carosello delle offerte
+      carousel_role: carosello
+      slide_role: diapositiva
+    promos:
+      most_wanted_title: I più desiderati
+      most_wanted_body: Ciò che gli acquirenti salvano di più questa settimana.
+      most_wanted_cta: Vedi i più salvati
+      ready_title: Pronti alla spedizione
+      ready_body: PC gaming assemblati e testati da tecnici.
+      ready_cta: Vedi i PC gaming
+      deals_title: In offerta
+      deals_body: Prezzo ridotto rispetto all'originale, senza sorprese.
+      deals_cta: Vedi le offerte
+    pc_finder:
+      eyebrow: Trova PC
+      title: Dicci come giochi e ti diremo di quale PC hai bisogno
+      body: Budget, risoluzione e giochi preferiti. In meno di un minuto avrai una selezione di macchine adatte a te.
+      cta: Trova il mio PC
+      bullet_1: In base al budget
+      bullet_2: In base al monitor
+      bullet_3: In base ai tuoi giochi
+    vibe:
+      title: Acquista per stile
+      subtitle: Configurazioni e accessori per ogni tipo di scrivania.
+      minimalist: Minimalista
+      anime: Anime
+      rgb: RGB
+      white: Tutto bianco
+    rows:
+      latest_gpus: Ultime schede video
+      most_watched: I più visti questa settimana
+      on_sale: In offerta
+      newest: Annunci recenti
+      recently_sold: Venduti di recente
+      view_all: Vedi tutto
+      previous: Scorri a sinistra
+      next: Scorri a destra
+    trust:
+      buyer_protection_title: Tutela dell'acquirente
+      buyer_protection_body: Pagamento sicuro e assistenza se qualcosa non corrisponde.
+      verified_sellers_title: Venditori verificati
+      verified_sellers_body: Identità e dati controllati prima della pubblicazione.
+      secure_payments_title: Pagamenti sicuri
+      secure_payments_body: I tuoi dati non vengono mai condivisi con il venditore.
+      spanish_support_title: Supporto in Spagna
+      spanish_support_body: Un team locale, che ti assiste nella tua lingua.
+    reviews:
+      title: Cosa dicono gli acquirenti
+      subtitle: Recensioni reali di acquisti completati su PCMarket.
+      static_1_body: Ho trovato una scheda video come nuova a un ottimo prezzo. È arrivata in due giorni, imballata perfettamente.
+      static_1_name: Lucía M.
+      static_1_location: Valencia
+      static_2_body: Ho comprato un portatile per lavoro e la descrizione era esatta. Comprerò ancora.
+      static_2_name: Javier R.
+      static_2_location: Siviglia
+      static_3_body: Il venditore ha risposto a tutte le domande e l'imballaggio era impeccabile. Consigliatissimo.
+      static_3_name: Marta G.
+      static_3_location: Bilbao
+    sell:
+      title: Hai attrezzatura ferma? Vendila.
+      body: Pubblica gratis il tuo annuncio oppure vendici PC, console o componenti e lascia a noi le pratiche.
+      cta: Inizia a vendere
+    seo:
+      title: Tecnologia usata con garanzia in Spagna
+      paragraph_1: PCMarket riunisce PC gaming, componenti, periferiche, portatili, smartphone, tablet e console nuovi e usati in un unico posto. Ogni annuncio indica le condizioni reali, la posizione e le modalità di spedizione per acquistare con tutte le informazioni.
+      paragraph_2: Che tu cerchi una scheda video per aggiornare il tuo PC o voglia vendere ciò che non usi più, la nostra ricerca e i filtri per specifiche ti aiutano a trovare esattamente ciò che ti serve, al prezzo giusto.
+    empty:
+      title: Qui non c'è ancora nulla
+      body: Torna presto o prova un'altra categoria.

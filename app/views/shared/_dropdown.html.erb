@@ -1,0 +1,11 @@
+<div class="relative" data-controller="dropdown">
+  <button type="button" data-action="dropdown#toggle" data-dropdown-trigger
+          aria-expanded="false" aria-controls="<%= id %>"
+          class="<%= ui_button_classes(variant: :ghost, size: :sm) %>">
+    <%= trigger %>
+  </button>
+  <div id="<%= id %>" data-dropdown-target="menu" hidden
+       class="absolute right-0 z-50 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-[var(--shadow-panel)] dark:border-zinc-800 dark:bg-zinc-900">
+    <%= yield %>
+  </div>
+</div>

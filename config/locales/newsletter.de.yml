@@ -1,0 +1,16 @@
+de:
+  newsletter:
+    subscribe:
+      success: "Danke. Prüfe deinen Posteingang, um das Abonnement zu bestätigen."
+      duplicate: "Du hast den PCMarket-Newsletter bereits abonniert."
+      invalid: "Bitte gib eine gültige E-Mail-Adresse ein."
+      already_confirmed: "Du hast den PCMarket-Newsletter bereits abonniert."
+    confirm:
+      success: "Dein Abonnement ist bestätigt. Willkommen bei PCMarket."
+      invalid: "Dieser Bestätigungslink ist ungültig oder abgelaufen."
+    mailer:
+      subject: "Bestätige dein PCMarket-Newsletter-Abonnement"
+      greeting: "Hallo,"
+      body: "Du möchtest den PCMarket-Newsletter erhalten. Bestätige dein Abonnement über den folgenden Link."
+      cta: "Abonnement bestätigen"
+      ignore: "Wenn du dieses Abonnement nicht angefordert hast, kannst du diese Nachricht ignorieren."

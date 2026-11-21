@@ -1,0 +1,146 @@
+---
+fr:
+  layout:
+    skip_to_content: Aller au contenu principal
+    meta:
+      title: Achetez et vendez du matériel neuf et reconditionné
+      description: 'PCMarket est la place de marché espagnole de la tech : PC gaming, composants, périphériques, ordinateurs portables, téléphones, tablettes et consoles de vendeurs vérifiés.'
+      og_image_alt: PCMarket, la place de marché de la tech d'occasion
+    announcement:
+      help: Aide
+      blog: Blog
+      pc_finder: Trouver un PC
+      dismiss: Fermer l'annonce
+    header:
+      logo_home: Accueil PCMarket
+      search_placeholder: Rechercher des produits, marques ou boutiques
+      search_label: Rechercher sur PCMarket
+      search_submit: Rechercher
+      list_item: Publier une annonce
+      sell_to_us: Vendre à PCMarket
+      favourites: Favoris
+      notifications: Notifications
+      cart: Panier
+      account: Compte
+      login: Se connecter
+      menu_open: Ouvrir le menu
+      menu_close: Fermer le menu
+      theme_light: Passer en mode clair
+      theme_dark: Passer en mode sombre
+      language: Langue
+      cart_count:
+        one: "%{count} article dans le panier"
+        other: "%{count} articles dans le panier"
+      notifications_count:
+        one: "%{count} notification non lue"
+        other: "%{count} notifications non lues"
+    account_menu:
+      my_orders: Mes commandes
+      inbox: Boîte de réception et offres
+      favourites: Favoris
+      saved_searches: Recherches enregistrées
+      settings: Paramètres du compte
+      store_group: Ma boutique
+      public_profile: Profil public
+      seller_dashboard: Tableau de bord vendeur
+      my_listings: Mes annonces
+      my_sales: Mes ventes
+      store_settings: Paramètres de la boutique
+      admin: Panneau d'administration
+      logout: Se déconnecter
+    nav:
+      new: Nouveautés
+      deals: Bons plans
+      all_category: Tout %{category}
+      view_all: Tout voir
+      quick_links: Liens rapides
+      shop_by: Acheter par
+      under_price: Moins de %{price}
+      promo:
+        pc_finder_title: Trouvez le PC idéal
+        pc_finder_body: Répondez à quelques questions et nous vous proposerons des machines adaptées.
+        pc_finder_cta: Ouvrir le guide d'achat
+        sell_title: Transformez votre matériel en argent
+        sell_body: Vendez-nous votre PC, console ou composants rapidement et en toute sécurité.
+        sell_cta: Vendre à PCMarket
+        deals_title: Bons plans de la semaine
+        deals_body: Du matériel vérifié avec de vrais rabais, tant qu'il y a du stock.
+        deals_cta: Voir les bons plans
+    drawer:
+      title: Menu
+      close: Fermer le menu
+      categories: Catégories
+      account: Compte
+      language: Langue
+      theme: Thème
+      theme_light: Clair
+      theme_dark: Sombre
+    tab_bar:
+      label: Navigation principale
+      home: Accueil
+      search: Rechercher
+      sell: Vendre
+      favourites: Favoris
+      account: Compte
+    footer:
+      newsletter_title: Des offres qui valent le coup
+      newsletter_body: Recevez chaque semaine le meilleur de la tech d'occasion. Sans spam.
+      email_label: Adresse e-mail
+      email_placeholder: vous@exemple.com
+      subscribe: S'abonner
+      privacy_note: En vous abonnant, vous acceptez notre politique de confidentialité.
+      about: À propos de PCMarket
+      about_us: Qui sommes-nous
+      trust_safety: Confiance et sécurité
+      blog: Blog
+      help: Aide
+      help_centre: Centre d'aide
+      contact: Contact
+      shipping: Livraison
+      returns: Retours
+      buyer_protection: Protection de l'acheteur
+      buying_selling: Acheter et vendre
+      how_selling_works: Comment vendre
+      seller_fees: Frais de vendeur
+      sell_to_us: Vendre à PCMarket
+      pc_finder: Trouver un PC
+      academy: Académie des vendeurs
+      academy_guide_1: Photographiez votre article
+      academy_guide_2: Fixez un prix juste
+      academy_guide_3: Expédiez en toute sécurité
+      legal: Mentions légales
+      terms: Conditions
+      privacy: Confidentialité
+      cookies: Cookies
+      legal_notice: Mentions légales
+      cookie_preferences: Préférences de cookies
+      language: Langue
+      social: Réseaux sociaux
+      instagram: Instagram
+      youtube: YouTube
+      x: X
+      copyright: "© %{year} PCMarket. Fait en Espagne."
+      back_to_top: Retour en haut
+    cookies:
+      banner_title: Votre vie privée compte
+      banner_body: Nous utilisons des cookies nécessaires au fonctionnement de PCMarket et, avec votre accord, des cookies analytiques et marketing.
+      accept_all: Tout accepter
+      reject_all: Tout refuser
+      customise: Personnaliser
+      modal_title: Préférences de cookies
+      modal_body: Choisissez les cookies que vous autorisez. Les cookies nécessaires ne peuvent pas être désactivés.
+      necessary: Nécessaires
+      necessary_body: Indispensables pour vous connecter, conserver votre panier et mémoriser vos préférences.
+      analytics: Analytiques
+      analytics_body: Ils nous aident à comprendre comment PCMarket est utilisé pour l'améliorer.
+      marketing: Marketing
+      marketing_body: Utilisés pour vous montrer des publicités pertinentes sur d'autres sites.
+      save: Enregistrer les préférences
+      close: Fermer
+      saved: Vos préférences de cookies ont été enregistrées.
+    flash:
+      close: Fermer la notification
+    search:
+      products: Produits
+      categories: Catégories
+      stores: Boutiques

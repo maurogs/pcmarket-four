@@ -13,6 +13,21 @@ class Category < ApplicationRecord
 
   scope :roots_ordered, -> { roots.order(:position, :id) }
   scope :active, -> { where(active: true) }
+  scope :menu_roots, -> { active.roots.where(show_in_menu: true).order(:position, :id) }
+
+  def self.find_by_path_slugs(slugs)
+    slugs = Array(slugs).map(&:to_s).reject(&:blank?)
+    return nil if slugs.empty?
+
+    category = find_by(slug: slugs.last)
+    return nil unless category && category.active?
+
+    category.path_slugs == slugs ? category : nil
+  end
+
+  def path_slugs
+    path.map(&:slug)
+  end
 
   def name(locale = I18n.locale)
     names[locale.to_s].presence ||

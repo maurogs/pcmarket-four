@@ -1,0 +1,67 @@
+de:
+  pages:
+    coming_soon:
+      label: "Demnächst"
+      default_title: "Diese Seite kommt bald"
+      default_body: "Wir arbeiten an diesem Bereich. In der Zwischenzeit kannst du den Rest von PCMarket erkunden."
+      cta: "Zurück zur Startseite"
+      listings_cta: "Anzeigen entdecken"
+    listings:
+      index_title: "Alle Anzeigen"
+      index_body: "Die vollständige Suche mit Filtern nach Kategorie, Zustand, Preis und Spezifikationen kommt bald. Du kannst bereits Kategorien und hervorgehobene Anzeigen durchsuchen."
+      show_title: "%{title}"
+      show_body: "Die vollständige Anzeigenseite mit Galerie, Spezifikationen und Verkäuferkontakt kommt in der nächsten Phase."
+    categories:
+      title: "%{category}"
+      body: "Die Kategorieseite mit allen Filtern kommt bald. Entdecke in der Zwischenzeit die hervorgehobenen Anzeigen auf der Startseite."
+    stores:
+      title: "%{store}"
+      body: "Die öffentliche Shop-Seite kommt bald."
+    cart:
+      title: "Dein Warenkorb"
+      body: "Warenkorb und Bezahlung sind bald verfügbar."
+    favorites:
+      title: "Deine Favoriten"
+      body: "Bald kannst du hier alle gespeicherten Anzeigen verwalten."
+    conversations:
+      index_title: "Dein Posteingang"
+      index_body: "Der Nachrichtenaustausch mit Käufern und Verkäufern kommt bald."
+      show_title: "Unterhaltung"
+      show_body: "Die Unterhaltungsdetails kommen bald."
+    orders:
+      index_title: "Deine Bestellungen"
+      index_body: "Bestellverlauf und Sendungsverfolgung kommen bald."
+      show_title: "Bestellung %{number}"
+      show_body: "Die Bestelldetails kommen bald."
+    account:
+      title: "Kontoeinstellungen"
+      body: "Bald kannst du hier Profil, Adresse und Einstellungen bearbeiten."
+    seller:
+      dashboard_title: "Verkäufer-Dashboard"
+      dashboard_body: "Shop-Kennzahlen, Verkäufe und Anzeigenverwaltung kommen bald."
+    pc_finder:
+      title: "PC-Finder"
+      body: "Beantworte ein paar Fragen zu Budget, Auflösung und Spielen und wir empfehlen dir die passenden Rechner."
+    sell:
+      title: "Verkaufe deine Hardware"
+      body: "Erstelle eine kostenlose Anzeige oder verkaufe sie uns. Du entscheidest."
+    sell_to_us:
+      title: "An PCMarket verkaufen"
+      body: "Sag uns, was du hast, und wir machen dir ein Angebot. Unkompliziert, mit Abholung oder Versand inklusive."
+    admin:
+      title: "Admin-Bereich"
+      body: "Die Moderation von Anzeigen, Nutzern und Bestellungen ist bald verfügbar."
+    trust:
+      title: "Vertrauen & Sicherheit"
+      body: "Wir setzen auf verifizierte Verkäufer, sichere Zahlungen und ein lokales Support-Team, damit Kaufen und Verkaufen entspannt sind."
+    help:
+      title: "Hilfecenter"
+      body: "Hier findest du Anleitungen zu Kauf, Versand, Rückgabe und Sicherheit. Wir bereiten die Artikel vor."
+    about:
+      title: "Über PCMarket"
+      body: "PCMarket wurde in Spanien gegründet, damit der Kauf und Verkauf von Gebrauchttechnik einfach, sicher und transparent ist."
+    legal:
+      title: "Rechtliche Informationen"
+      body: "Die angeforderte rechtliche Seite ist nicht verfügbar."
+    newsletter_confirm:
+      title: "Bestätigung des Abonnements"

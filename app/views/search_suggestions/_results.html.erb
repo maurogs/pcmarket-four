@@ -1,0 +1,59 @@
+<turbo-frame id="search-suggestions">
+  <% if results.empty? %>
+    <div class="px-4 py-6 text-center text-sm text-slate-500 dark:text-zinc-400"></div>
+  <% else %>
+    <div class="max-h-[70vh] overflow-y-auto p-2">
+      <% if results.listings.any? %>
+        <p class="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+          <%= t("layout.search.products") %>
+        </p>
+        <% results.listings.each do |listing| %>
+          <%= link_to listing_path(listing), data: { turbo_frame: "_top" },
+                      class: "flex items-center gap-3 rounded-lg px-3 py-2 transition hover:bg-slate-100 dark:hover:bg-zinc-800" do %>
+            <span class="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-100 dark:bg-zinc-800">
+              <% if listing.images.attached? %>
+                <%= image_tag listing.images.first.variant(resize_to_limit: [ 72, 72 ], format: :webp),
+                              alt: "", loading: "lazy", class: "h-full w-full object-cover" %>
+              <% else %>
+                <%= icon "package", class: "size-4 text-slate-400 dark:text-zinc-500" %>
+              <% end %>
+            </span>
+            <span class="min-w-0 flex-1">
+              <span class="block truncate text-sm font-medium text-slate-800 dark:text-zinc-100"><%= listing.title %></span>
+              <span class="block text-xs text-slate-500 dark:text-zinc-400"><%= listing.category.name %> · <%= format_price(listing.price_cents) %></span>
+            </span>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% if results.categories.any? %>
+        <p class="px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+          <%= t("layout.search.categories") %>
+        </p>
+        <% results.categories.each do |category| %>
+          <%= link_to category_path(path: category.path_slugs), data: { turbo_frame: "_top" },
+                      class: "flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+            <%= icon "layout-grid", class: "size-4 text-brand-600 dark:text-brand-400" %>
+            <%= category.name %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% if results.stores.any? %>
+        <p class="px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+          <%= t("layout.search.stores") %>
+        </p>
+        <% results.stores.each do |store| %>
+          <%= link_to store_path(store), data: { turbo_frame: "_top" },
+                      class: "flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+            <%= icon "store", class: "size-4 text-brand-600 dark:text-brand-400" %>
+            <span class="truncate"><%= store.name %></span>
+            <% if store.verified? %>
+              <%= icon "badge-check", class: "size-3.5 text-brand-600 dark:text-brand-400" %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</turbo-frame>

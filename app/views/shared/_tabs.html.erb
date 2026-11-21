@@ -1,0 +1,21 @@
+<nav data-controller="tabs" class="w-full">
+  <div role="tablist" class="flex gap-4 border-b border-slate-200 dark:border-zinc-800">
+    <% tabs.each_with_index do |tab, index| %>
+      <button type="button" role="tab" id="tab-<%= tab[:id] %>"
+              aria-controls="panel-<%= tab[:id] %>" aria-selected="<%= index.zero? %>"
+              tabindex="<%= index.zero? ? 0 : -1 %>"
+              data-tabs-target="tab" data-index="<%= index %>" data-action="tabs#select"
+              class="border-b-2 px-1 pb-3 text-sm font-medium transition <%= index.zero? ? "border-brand-600 text-brand-700 dark:text-brand-300" : "border-transparent text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white" %>">
+        <%= tab[:label] %>
+      </button>
+    <% end %>
+  </div>
+  <div class="pt-6">
+    <% tabs.each_with_index do |tab, index| %>
+      <section id="panel-<%= tab[:id] %>" role="tabpanel" aria-labelledby="tab-<%= tab[:id] %>"
+               data-tabs-target="panel" <%= "hidden" unless index.zero? %>>
+        <%= tab[:content] %>
+      </section>
+    <% end %>
+  </div>
+</nav>

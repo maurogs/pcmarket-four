@@ -1,0 +1,19 @@
+<div class="flex flex-col items-center justify-center px-6 py-14 text-center">
+  <svg viewBox="0 0 240 160" class="mb-6 h-32 w-48 text-brand-300 dark:text-brand-700" fill="none" aria-hidden="true">
+    <rect x="30" y="32" width="180" height="104" rx="18" fill="currentColor" opacity=".12"/>
+    <path d="M48 118V70l36-22 36 22v48" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
+    <rect x="66" y="88" width="36" height="30" rx="6" stroke="currentColor" stroke-width="5" opacity=".55"/>
+    <circle cx="166" cy="66" r="24" stroke="currentColor" stroke-width="5" opacity=".55"/>
+    <path d="m185 85 18 18" stroke="currentColor" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+    <path d="M160 66h12M166 60v12" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+  </svg>
+  <h3 class="font-heading text-lg font-semibold text-slate-950 dark:text-white">
+    <%= local_assigns.fetch(:title) %>
+  </h3>
+  <% if local_assigns[:body].present? %>
+    <p class="mt-2 max-w-md text-sm text-slate-600 dark:text-zinc-400"><%= body %></p>
+  <% end %>
+  <% if local_assigns[:cta_label].present? && local_assigns[:cta_path].present? %>
+    <%= link_to cta_label, cta_path, class: ui_button_classes(variant: :primary, size: :md, extra: "mt-6") %>
+  <% end %>
+</div>

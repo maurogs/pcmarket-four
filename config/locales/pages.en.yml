@@ -1,0 +1,67 @@
+en:
+  pages:
+    coming_soon:
+      label: "Coming soon"
+      default_title: "This page is on its way"
+      default_body: "We are working on this section. In the meantime, you can explore the rest of PCMarket."
+      cta: "Back to home"
+      listings_cta: "Browse listings"
+    listings:
+      index_title: "All listings"
+      index_body: "The full search experience with category, condition, price and specification filters is coming soon. You can already browse categories and featured listings."
+      show_title: "%{title}"
+      show_body: "The full listing page, with gallery, specifications and seller contact, is coming in the next phase."
+    categories:
+      title: "%{category}"
+      body: "The category page with all its filters is coming soon. In the meantime, explore the featured listings on the home page."
+    stores:
+      title: "%{store}"
+      body: "The public store page is coming soon."
+    cart:
+      title: "Your cart"
+      body: "The cart and checkout will be available soon."
+    favorites:
+      title: "Your favourites"
+      body: "You will soon be able to manage every listing you save from here."
+    conversations:
+      index_title: "Your inbox"
+      index_body: "Messaging with buyers and sellers is coming soon."
+      show_title: "Conversation"
+      show_body: "The conversation detail is coming soon."
+    orders:
+      index_title: "Your orders"
+      index_body: "Order history and tracking are coming soon."
+      show_title: "Order %{number}"
+      show_body: "The order detail is coming soon."
+    account:
+      title: "Account settings"
+      body: "You will soon be able to edit your profile, address and preferences here."
+    seller:
+      dashboard_title: "Seller dashboard"
+      dashboard_body: "Your store metrics, sales and listing management are coming soon."
+    pc_finder:
+      title: "PC Finder"
+      body: "Answer a few questions about budget, resolution and games and we will recommend the machines that fit you best."
+    sell:
+      title: "Sell your gear"
+      body: "List it for free or sell it to us. You choose how."
+    sell_to_us:
+      title: "Sell to PCMarket"
+      body: "Tell us what you have and we will make you an offer. No hassle, with collection or shipping included."
+    admin:
+      title: "Admin panel"
+      body: "Listing, user and order moderation will be available soon."
+    trust:
+      title: "Trust & safety"
+      body: "We work with verified sellers, secure payments and a local support team so buying and selling feels safe."
+    help:
+      title: "Help centre"
+      body: "You will find buying, shipping, returns and safety guides here. We are preparing the articles."
+    about:
+      title: "About PCMarket"
+      body: "PCMarket was born in Spain to make buying and selling second-hand tech simple, safe and transparent."
+    legal:
+      title: "Legal information"
+      body: "The requested legal page is not available."
+    newsletter_confirm:
+      title: "Subscription confirmation"

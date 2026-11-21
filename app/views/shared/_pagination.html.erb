@@ -1,0 +1,7 @@
+<% if pagy.present? && pagy.pages > 1 %>
+  <nav class="mt-10 flex justify-center" aria-label="<%= t("common.pagination") %>">
+    <div class="pagy-nav flex flex-wrap items-center gap-1 text-sm">
+      <%= raw pagy_nav(pagy) %>
+    </div>
+  </nav>
+<% end %>

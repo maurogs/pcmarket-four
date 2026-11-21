@@ -1,0 +1,88 @@
+<div data-cookie-consent-target="banner"
+     class="fixed inset-x-3 bottom-20 z-[60] md:inset-x-4 md:bottom-4">
+  <div class="mx-auto flex max-w-5xl flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-[var(--shadow-panel)] sm:p-5 lg:flex-row lg:items-center dark:border-zinc-700 dark:bg-zinc-900">
+    <div class="flex-1">
+      <h2 class="font-heading text-base font-semibold text-slate-950 dark:text-white">
+        <%= t("layout.cookies.banner_title") %>
+      </h2>
+      <p class="mt-1 text-xs leading-6 text-slate-600 sm:text-sm dark:text-zinc-400">
+        <%= t("layout.cookies.banner_body") %>
+      </p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2 lg:shrink-0">
+      <button type="button" data-action="cookie-consent#acceptAll"
+              class="<%= ui_button_classes(variant: :primary, size: :sm) %>">
+        <%= t("layout.cookies.accept_all") %>
+      </button>
+      <button type="button" data-action="cookie-consent#rejectAll"
+              class="<%= ui_button_classes(variant: :outline, size: :sm) %>">
+        <%= t("layout.cookies.reject_all") %>
+      </button>
+      <button type="button" data-action="cookie-consent#open"
+              class="<%= ui_button_classes(variant: :ghost, size: :sm) %>">
+        <%= t("layout.cookies.customise") %>
+      </button>
+    </div>
+  </div>
+</div>
+
+<dialog data-cookie-consent-target="dialog"
+        class="w-[min(92vw,32rem)] rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-[var(--shadow-panel)] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+        aria-labelledby="cookie-preferences-title">
+  <div class="flex items-start justify-between gap-4 border-b border-slate-200 px-6 py-4 dark:border-zinc-800">
+    <div>
+      <h2 id="cookie-preferences-title" class="font-heading text-lg font-semibold">
+        <%= t("layout.cookies.modal_title") %>
+      </h2>
+      <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("layout.cookies.modal_body") %></p>
+    </div>
+    <button type="button" data-action="cookie-consent#close"
+            class="-m-1 rounded-full p-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+            aria-label="<%= t("layout.cookies.close") %>">
+      <%= icon "x", class: "size-5" %>
+    </button>
+  </div>
+
+  <div class="space-y-4 px-6 py-5">
+    <div class="rounded-xl border border-slate-200 p-4 dark:border-zinc-800">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-sm font-semibold"><%= t("layout.cookies.necessary") %></p>
+          <p class="mt-1 text-xs text-slate-500 dark:text-zinc-400"><%= t("layout.cookies.necessary_body") %></p>
+        </div>
+        <span class="mt-1 inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-500 dark:bg-zinc-800 dark:text-zinc-400">
+          <%= icon "lock", class: "size-3" %><%= t("layout.cookies.necessary") %>
+        </span>
+      </div>
+    </div>
+
+    <label class="flex cursor-pointer items-start justify-between gap-4 rounded-xl border border-slate-200 p-4 transition hover:border-brand-300 dark:border-zinc-800 dark:hover:border-brand-600">
+      <span>
+        <span class="block text-sm font-semibold"><%= t("layout.cookies.analytics") %></span>
+        <span class="mt-1 block text-xs text-slate-500 dark:text-zinc-400"><%= t("layout.cookies.analytics_body") %></span>
+      </span>
+      <input type="checkbox" data-cookie-consent-target="analytics"
+             class="mt-1 size-5 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800">
+    </label>
+
+    <label class="flex cursor-pointer items-start justify-between gap-4 rounded-xl border border-slate-200 p-4 transition hover:border-brand-300 dark:border-zinc-800 dark:hover:border-brand-600">
+      <span>
+        <span class="block text-sm font-semibold"><%= t("layout.cookies.marketing") %></span>
+        <span class="mt-1 block text-xs text-slate-500 dark:text-zinc-400"><%= t("layout.cookies.marketing_body") %></span>
+      </span>
+      <input type="checkbox" data-cookie-consent-target="marketing"
+             class="mt-1 size-5 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800">
+    </label>
+  </div>
+
+  <div class="flex flex-wrap justify-end gap-2 border-t border-slate-200 px-6 py-4 dark:border-zinc-800">
+    <button type="button" data-action="cookie-consent#close"
+            class="<%= ui_button_classes(variant: :ghost, size: :sm) %>">
+      <%= t("layout.cookies.close") %>
+    </button>
+    <button type="button" data-action="cookie-consent#savePreferences"
+            class="<%= ui_button_classes(variant: :primary, size: :sm) %>">
+      <%= t("layout.cookies.save") %>
+    </button>
+  </div>
+</dialog>

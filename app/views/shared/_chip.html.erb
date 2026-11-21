@@ -1,0 +1,11 @@
+<% if local_assigns[:path].present? %>
+  <%= link_to path, class: ui_chip_classes(active: local_assigns.fetch(:active, false)) do %>
+    <% if local_assigns[:icon_name].present? %><%= icon icon_name, class: "size-4" %><% end %>
+    <%= local_assigns.fetch(:text) %>
+  <% end %>
+<% else %>
+  <span class="<%= ui_chip_classes(active: local_assigns.fetch(:active, false)) %>">
+    <% if local_assigns[:icon_name].present? %><%= icon icon_name, class: "size-4" %><% end %>
+    <%= local_assigns.fetch(:text) %>
+  </span>
+<% end %>

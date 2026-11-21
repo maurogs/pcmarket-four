@@ -1,0 +1,67 @@
+es:
+  pages:
+    coming_soon:
+      label: "Muy pronto"
+      default_title: "Esta página está en camino"
+      default_body: "Estamos trabajando en esta sección. Mientras tanto, puedes explorar el resto de PCMarket."
+      cta: "Volver al inicio"
+      listings_cta: "Explorar anuncios"
+    listings:
+      index_title: "Todos los anuncios"
+      index_body: "El buscador completo con filtros por categoría, estado, precio y especificaciones llegará muy pronto. Ya puedes navegar por las categorías y ver los anuncios destacados."
+      show_title: "%{title}"
+      show_body: "La ficha completa del anuncio, con galería, especificaciones y contacto con el vendedor, llegará en la siguiente fase."
+    categories:
+      title: "%{category}"
+      body: "La página de categoría con todos sus filtros llegará muy pronto. Mientras tanto, explora los anuncios destacados de la portada."
+    stores:
+      title: "%{store}"
+      body: "La página pública de la tienda llegará muy pronto."
+    cart:
+      title: "Tu carrito"
+      body: "El carrito y el proceso de pago estarán disponibles muy pronto."
+    favorites:
+      title: "Tus favoritos"
+      body: "Podrás gestionar todos los anuncios que guardes desde aquí muy pronto."
+    conversations:
+      index_title: "Tu bandeja de entrada"
+      index_body: "La mensajería con compradores y vendedores llegará muy pronto."
+      show_title: "Conversación"
+      show_body: "El detalle de la conversación llegará muy pronto."
+    orders:
+      index_title: "Tus pedidos"
+      index_body: "El historial de pedidos y su seguimiento llegará muy pronto."
+      show_title: "Pedido %{number}"
+      show_body: "El detalle del pedido llegará muy pronto."
+    account:
+      title: "Ajustes de la cuenta"
+      body: "Podrás editar tu perfil, tu dirección y tus preferencias desde aquí muy pronto."
+    seller:
+      dashboard_title: "Panel del vendedor"
+      dashboard_body: "Las métricas de tu tienda, tus ventas y la gestión de anuncios llegarán muy pronto."
+    pc_finder:
+      title: "Buscador de PC"
+      body: "Responde unas preguntas sobre presupuesto, resolución y juegos y te recomendaremos los equipos que mejor encajan contigo."
+    sell:
+      title: "Vende tu equipo"
+      body: "Publica tu anuncio gratis o véndenos tu PC, consola o componentes. Tú eliges cómo."
+    sell_to_us:
+      title: "Véndenos tu equipo"
+      body: "Cuéntanos qué tienes y te haremos una oferta. Sin complicaciones y con recogida o envío incluido."
+    admin:
+      title: "Panel de administración"
+      body: "La moderación de anuncios, usuarios y pedidos estará disponible muy pronto."
+    trust:
+      title: "Confianza y seguridad"
+      body: "Trabajamos con vendedores verificados, pagos seguros y un equipo de soporte local para que comprar y vender sea tranquilo."
+    help:
+      title: "Centro de ayuda"
+      body: "Encontrarás guías de compra, envíos, devoluciones y seguridad. Estamos preparando los artículos."
+    about:
+      title: "Sobre PCMarket"
+      body: "PCMarket nace en España para que comprar y vender tecnología de segunda mano sea sencillo, seguro y transparente."
+    legal:
+      title: "Información legal"
+      body: "La página legal solicitada no está disponible."
+    newsletter_confirm:
+      title: "Confirmación de la suscripción"

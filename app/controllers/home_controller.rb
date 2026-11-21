@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
   def index
-    @site_name = Setting.get("site_name")
+    @feed = HomeFeed.new(locale: I18n.locale)
   end
 end

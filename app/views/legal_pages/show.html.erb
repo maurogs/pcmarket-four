@@ -1,0 +1,19 @@
+<% content_for :title, @legal_page.title %>
+
+<div class="page-container py-8 sm:py-12">
+  <nav class="mb-5 text-xs text-slate-500 dark:text-zinc-400">
+    <%= link_to t("layout.tab_bar.home"), root_path, class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+    <span class="mx-1">/</span>
+    <span><%= t("layout.footer.legal") %></span>
+  </nav>
+
+  <article class="surface mx-auto max-w-3xl p-6 sm:p-10">
+    <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= @legal_page.title %></h1>
+    <p class="mt-2 text-xs text-slate-500 dark:text-zinc-500">
+      <%= @legal_page.updated_at.to_date.to_fs(:long) %>
+    </p>
+    <div class="prose-pcm mt-8">
+      <%= @legal_page.body.html_safe %>
+    </div>
+  </article>
+</div>

@@ -1,0 +1,22 @@
+<section class="<%= local_assigns[:compact] ? "py-8" : "py-14 sm:py-20" %>">
+  <div class="page-container">
+    <div class="surface flex flex-col items-center gap-6 px-6 py-12 text-center sm:px-12">
+      <span class="<%= ui_badge_classes(tone: :brand) %>">
+        <%= icon "sparkles", class: "size-3.5" %>
+        <%= t("pages.coming_soon.label") %>
+      </span>
+      <div class="mx-auto max-w-2xl">
+        <h1 class="section-heading"><%= title %></h1>
+        <p class="mt-3 text-sm leading-7 text-slate-600 sm:text-base dark:text-zinc-400"><%= body %></p>
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <%= link_to cta_label || t("pages.coming_soon.cta"), cta_path || root_path,
+                    class: ui_button_classes(variant: :primary, size: :md) %>
+        <% if local_assigns[:secondary_label].present? && local_assigns[:secondary_path].present? %>
+          <%= link_to secondary_label, secondary_path,
+                      class: ui_button_classes(variant: :outline, size: :md) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

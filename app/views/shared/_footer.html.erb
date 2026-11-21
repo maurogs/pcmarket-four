@@ -1,0 +1,119 @@
+<footer class="mt-16 border-t border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+  <div class="page-container py-12 lg:py-16">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)]">
+      <section aria-labelledby="newsletter-title">
+        <h2 id="newsletter-title" class="font-heading text-xl font-semibold tracking-tight text-slate-950 dark:text-white">
+          <%= t("layout.footer.newsletter_title") %>
+        </h2>
+        <p class="mt-2 max-w-md text-sm text-slate-600 dark:text-zinc-400"><%= t("layout.footer.newsletter_body") %></p>
+
+        <%= form_with url: newsletter_subscribers_path, method: :post, class: "mt-5 max-w-md space-y-3" do |form| %>
+          <%= hidden_field_tag :locale, I18n.locale %>
+          <div>
+            <%= form.label :email, t("layout.footer.email_label"), class: "mb-1.5 block text-xs font-medium text-slate-700 dark:text-zinc-300" %>
+            <%= form.email_field :email, required: true, autocomplete: "email",
+                                 placeholder: t("layout.footer.email_placeholder"),
+                                 class: ui_input_classes("rounded-full") %>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <%= form.submit t("layout.footer.subscribe"),
+                            class: ui_button_classes(variant: :accent, size: :md) %>
+            <p class="text-[11px] text-slate-500 dark:text-zinc-500"><%= t("layout.footer.privacy_note") %></p>
+          </div>
+        <% end %>
+        <div id="newsletter-form-status" class="mt-3 max-w-md" aria-live="polite"></div>
+      </section>
+
+      <div class="grid grid-cols-2 gap-8 sm:grid-cols-4">
+        <section>
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("layout.footer.about") %></h2>
+          <ul class="mt-3 space-y-2 text-sm">
+            <li><%= link_to t("layout.footer.about_us"), about_path, class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+            <li><%= link_to t("layout.footer.trust_safety"), trust_path, class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+            <li><%= link_to t("layout.footer.blog"), help_path, class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("layout.footer.help") %></h2>
+          <ul class="mt-3 space-y-2 text-sm">
+            <li><%= link_to t("layout.footer.help_centre"), help_path, class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+            <li><%= link_to t("layout.footer.contact"), help_path(anchor: "contact"), class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+            <li><%= link_to t("layout.footer.shipping"), help_path(anchor: "shipping"), class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+            <li><%= link_to t("layout.footer.returns"), help_path(anchor: "returns"), class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+            <li><%= link_to t("layout.footer.buyer_protection"), help_path(anchor: "buyer-protection"), class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("layout.footer.buying_selling") %></h2>
+          <ul class="mt-3 space-y-2 text-sm">
+            <li><%= link_to t("layout.footer.how_selling_works"), help_path(anchor: "selling"), class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+            <li><%= link_to t("layout.footer.seller_fees"), help_path(anchor: "fees"), class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+            <% if Setting.enabled?("sell_to_us_enabled") %>
+              <li><%= link_to t("layout.footer.sell_to_us"), sell_to_us_path, class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+            <% end %>
+            <li><%= link_to t("layout.footer.pc_finder"), pc_finder_path, class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500"><%= t("layout.footer.academy") %></h2>
+          <ul class="mt-3 space-y-2 text-sm">
+            <li><%= link_to t("layout.footer.academy_guide_1"), help_path(anchor: "guides"), class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+            <li><%= link_to t("layout.footer.academy_guide_2"), help_path(anchor: "guides"), class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+            <li><%= link_to t("layout.footer.academy_guide_3"), help_path(anchor: "guides"), class: "text-slate-600 hover:text-brand-700 dark:text-zinc-300 dark:hover:text-brand-300" %></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-slate-200 dark:border-zinc-800">
+    <div class="page-container flex flex-col gap-6 py-6">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <nav class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-zinc-400" aria-label="<%= t("layout.footer.legal") %>">
+          <%= link_to t("layout.footer.terms"), legal_page_path("terms"), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+          <%= link_to t("layout.footer.privacy"), legal_page_path("privacy"), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+          <%= link_to t("layout.footer.cookies"), legal_page_path("cookies"), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+          <%= link_to t("layout.footer.legal_notice"), legal_page_path("legal_notice"), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+          <button type="button" data-action="cookie-consent#open"
+                  class="underline decoration-dotted underline-offset-4 hover:text-brand-700 dark:hover:text-brand-300">
+            <%= t("layout.footer.cookie_preferences") %>
+          </button>
+        </nav>
+
+        <nav aria-label="<%= t("layout.footer.language") %>" class="flex flex-wrap items-center gap-2">
+          <% I18n.available_locales.each do |locale| %>
+            <%= link_to locale_display_name(locale), locale_switch_url(locale),
+                        lang: locale, hreflang: locale,
+                        class: "rounded-full px-2 py-1 text-xs font-medium transition #{locale == I18n.locale ? "bg-brand-100 text-brand-800 dark:bg-brand-900/50 dark:text-brand-200" : "text-slate-500 hover:bg-slate-100 dark:text-zinc-400 dark:hover:bg-zinc-900"}" %>
+          <% end %>
+        </nav>
+      </div>
+
+      <div class="flex flex-col gap-4 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-900">
+        <p class="text-xs text-slate-500 dark:text-zinc-500">
+          <%= t("layout.footer.copyright", year: Time.current.year) %>
+        </p>
+        <div class="flex items-center gap-1" aria-label="<%= t("layout.footer.social") %>">
+          <%= link_to "https://www.instagram.com/", target: "_blank", rel: "noopener noreferrer",
+                      class: "inline-flex size-11 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-brand-700 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-brand-300",
+                      aria: { label: t("layout.footer.instagram") } do %>
+            <%= icon "instagram", class: "size-5" %>
+          <% end %>
+          <%= link_to "https://www.youtube.com/", target: "_blank", rel: "noopener noreferrer",
+                      class: "inline-flex size-11 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-brand-700 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-brand-300",
+                      aria: { label: t("layout.footer.youtube") } do %>
+            <%= icon "youtube", class: "size-5" %>
+          <% end %>
+          <%= link_to "https://x.com/", target: "_blank", rel: "noopener noreferrer",
+                      class: "inline-flex size-11 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-brand-700 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-brand-300",
+                      aria: { label: t("layout.footer.x") } do %>
+            <%= icon "x-social", class: "size-4" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

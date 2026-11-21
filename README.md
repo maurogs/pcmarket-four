@@ -1,11 +1,13 @@
 # PCMarket
 
-PCMarket is a marketplace for new and second-hand technology: PCs, graphics
-cards, components, peripherals, laptops, phones, tablets and consoles.
+PCMarket is a marketplace for new and second-hand technology: gaming PCs,
+workstations, components, peripherals, laptops, phones, tablets, consoles and
+accessories. Spain only at launch.
 
-This repository currently contains **Phase 1**: the application foundation and
-the complete data model. The only user-facing page is a localised placeholder
-home page.
+This repository contains **Phase 2**: the complete taxonomy, design system,
+global layout, home page and SEO infrastructure. Listing search, listing
+detail, store and checkout pages are routed with translated placeholders and
+will be built in the next phase.
 
 ## Stack
 
@@ -14,7 +16,7 @@ home page.
 - PostgreSQL 16
 - Tailwind CSS 4 via `tailwindcss-rails`
 - Devise (database authentication + Google OAuth), Pundit, Pagy, pg_search,
-  FriendlyId, Ancestry, rack-attack
+  FriendlyId, Ancestry, rack-attack, meta-tags
 
 ## Requirements
 
@@ -30,15 +32,87 @@ bin/rails db:create db:migrate
 bin/rails db:seed
 ```
 
-`bin/rails db:seed` is idempotent. It creates the settings defaults, the
-enabled countries, Spanish regions, the category tree, filter definitions,
-games, legal pages and, outside production, an administrator account:
+`bin/rails db:seed` is idempotent and loads `db/seeds.rb`, which in turn loads
+the files in `db/seeds/` in dependency order:
+
+1. `settings.rb` — typed setting defaults.
+2. `countries.rb` — ES (enabled), FR, GB, DE, IT, PT.
+3. `regions.rb` — 52 Spanish provinces and autonomous cities, French regions,
+   UK nations, German Länder, Italian regions and Portuguese districts.
+4. `categories.rb` — the full two-level category tree with English slugs and
+   names in all six languages.
+5. `filters.rb` — filter definitions, translated options and category
+   assignments.
+6. `games.rb` — supported game catalogue.
+7. `legal_pages.rb` — seeded legal pages.
+8. `demo.rb` — development admin, demo seller, store and listings.
+
+Outside production the seed also creates an administrator:
 
 - Email: `admin@pcmarket.test`
 - Password: `Password123!`
 
 In development it also creates a demo seller (`seller@pcmarket.test`) with a
-store and one published listing.
+verified store and a handful of published and sold listings.
+
+`bin/rails db:reset` rebuilds the database from scratch, loads the schema and
+runs the seeds.
+
+## Localisation
+
+The app is available in Spanish, English, French, German, Italian and
+Portuguese:
+
+- Default locale: `es`
+- Fallbacks: `es`, then `en`
+- Every locale is reachable through a prefix: `/en`, `/fr`, `/de`, `/it`, `/pt`
+- Locale files live in `config/locales/<domain>.<locale>.yml`
+- Every user-facing string is translated; `test/i18n/locale_parity_test.rb`
+  fails when a Spanish key is missing from another locale
+- English uses British spelling (colour, favourite, authorised, centre)
+
+The language switcher in the footer and mobile drawer keeps the current path
+and query string when changing locale.
+
+## Design system
+
+- Brand colour: deep teal, exposed as `--color-brand-50..950` in
+  `app/assets/tailwind/application.css` (primary `brand-700` `#0F766E`).
+- Purchase calls to action use warm amber (`accent-500` `#F59E0B`).
+- Neutrals are slate in light mode and zinc in dark mode.
+- Headings use Space Grotesk (600/700), body text uses Inter (400/500/600),
+  loaded from Google Fonts with `display=swap`.
+- Cards use a 12 px radius; buttons, chips and badges are pills.
+- Dark mode uses the `.dark` class on `<html>`, persists to localStorage and a
+  cookie, follows `prefers-color-scheme` by default and is applied by an inline
+  head script to avoid a flash.
+- Icons are vendored Lucide SVGs in `app/assets/images/icons/` and rendered by
+  the `icon(name, class:)` helper. There is no icon font and no external icon
+  script.
+
+Reusable UI lives in `app/views/shared/` (cards, badges, chips, price tags,
+star ratings, empty states, toasts, modal, dropdown, tabs, accordion, skeleton
+loader and pagination) plus helper classes in `app/helpers/application_helper.rb`.
+
+## SEO and security
+
+- `display_meta_tags` sets the site title, description, canonical URL,
+  hreflang alternates for all locales plus `x-default`, Open Graph and Twitter
+  card metadata.
+- JSON-LD for `Organization` and `WebSite` (with `SearchAction`) is emitted once
+  per page.
+- `GET /robots.txt` allows crawling in production, blocks private paths and
+  filtered search URLs, and advertises the sitemap. Non-production environments
+  disallow everything.
+- `GET /sitemap.xml` lists home, static pages, categories, visible listings,
+  stores and legal pages with `xhtml:link` alternates. It is cached for one
+  hour and splits into a sitemap index after 45,000 URLs.
+- A strict nonce-based CSP allows self-hosted assets, Google Fonts, data/blob
+  images and the import map. `Permissions-Policy` and `Referrer-Policy`
+  headers are set in `config/initializers/security_headers.rb`.
+- Cookies are only used for necessary functionality. Analytics and marketing
+  consent choices are stored in `cookie_consent` for six months; no third-party
+  script is loaded by default.
 
 ## Running the app
 
@@ -49,19 +123,12 @@ bin/dev
 `bin/dev` starts the Rails server and the Tailwind watcher through
 `Procfile.dev`. The app is available at <http://localhost:3000>.
 
-## Localisation
+Development uses the in-memory cache store. To enable controller and fragment
+caching locally, run:
 
-The app is available in Spanish, English, French, German, Italian and
-Portuguese:
-
-- Default locale: `es`
-- Fallbacks: `es`, then `en`
-- Every locale is reachable through a prefix: `/en`, `/fr`, `/de`, `/it`, `/pt`
-- Locale files live in `config/locales/<domain>.<locale>.yml`; model names,
-  attribute names, enum labels and custom validation messages are kept in sync
-  across all six languages.
-
-English strings use British spelling (colour, favourite, authorised, centre).
+```bash
+bin/rails dev:cache
+```
 
 ## Google OAuth
 
@@ -82,9 +149,11 @@ bin/rails test
 bin/rubocop
 ```
 
-The test suite covers the data model, settings caching, listing workflow,
-search, categories, orders, reviews, counter caches, saved searches and locale
-routing, using Minitest with fixtures.
+The suite covers the data model, settings caching, listing workflow, search,
+categories, orders, reviews, counter caches, saved searches, seed idempotency,
+locale parity, home rendering in every locale, hreflang and JSON-LD output,
+robots.txt, sitemap.xml, search suggestions, navigation and feature flags,
+cookie consent, newsletter subscription/confirmation and admin access control.
 
 ## Useful commands
 

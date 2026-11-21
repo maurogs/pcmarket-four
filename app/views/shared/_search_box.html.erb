@@ -1,0 +1,24 @@
+<div class="relative flex-1" data-controller="autocomplete"
+     data-autocomplete-url-value="<%= search_suggestions_path %>">
+  <form action="<%= search_path %>" method="get" role="search" class="relative">
+    <label for="<%= input_id %>" class="sr-only"><%= t("layout.header.search_label") %></label>
+    <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-zinc-500">
+      <%= icon "search", class: "size-4" %>
+    </span>
+    <input id="<%= input_id %>" type="search" name="q" value="<%= params[:q] %>"
+           placeholder="<%= t("layout.header.search_placeholder") %>"
+           role="combobox" aria-expanded="false" aria-controls="search-suggestions"
+           aria-autocomplete="list" autocomplete="off"
+           data-autocomplete-target="input"
+           data-action="input->autocomplete#search keydown->autocomplete#navigate focus->autocomplete#focus"
+           class="<%= ui_input_classes("rounded-full pl-10 pr-24") %>">
+    <button type="submit" class="<%= ui_button_classes(variant: :primary, size: :sm, extra: "absolute right-1.5 top-1/2 -translate-y-1/2") %>">
+      <%= t("layout.header.search_submit") %>
+    </button>
+  </form>
+
+  <div data-autocomplete-target="panel" hidden
+       class="absolute inset-x-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[var(--shadow-panel)] dark:border-zinc-800 dark:bg-zinc-900">
+    <turbo-frame id="search-suggestions"></turbo-frame>
+  </div>
+</div>

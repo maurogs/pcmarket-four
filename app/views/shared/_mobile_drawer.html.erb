@@ -1,0 +1,118 @@
+<div data-drawer-target="overlay" hidden
+     data-action="click->drawer#close"
+     class="fixed inset-0 z-50 bg-slate-950/50 opacity-0 backdrop-blur-sm transition-opacity duration-200 lg:hidden"></div>
+
+<div data-drawer-target="panel" hidden role="dialog" aria-modal="true" aria-labelledby="mobile-drawer-title"
+     class="fixed inset-y-0 left-0 z-50 flex w-[min(90vw,22rem)] -translate-x-full flex-col bg-white shadow-[var(--shadow-panel)] transition-transform duration-200 lg:hidden dark:bg-zinc-950">
+  <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-zinc-800">
+    <%= render "shared/logo" %>
+    <button type="button" data-action="drawer#close"
+            class="inline-flex size-11 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            aria-label="<%= t("layout.drawer.close") %>">
+      <%= icon "x", class: "size-5" %>
+    </button>
+  </div>
+
+  <div class="flex-1 overflow-y-auto px-4 py-4">
+    <h2 id="mobile-drawer-title" class="sr-only"><%= t("layout.drawer.title") %></h2>
+
+    <form action="<%= search_path %>" method="get" role="search" class="relative">
+      <label for="drawer-search" class="sr-only"><%= t("layout.header.search_label") %></label>
+      <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-zinc-500">
+        <%= icon "search", class: "size-4" %>
+      </span>
+      <input id="drawer-search" type="search" name="q" value="<%= params[:q] %>"
+             placeholder="<%= t("layout.header.search_placeholder") %>"
+             class="<%= ui_input_classes("rounded-full pl-10") %>">
+    </form>
+
+    <div class="mt-6">
+      <p class="px-2 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+        <%= t("layout.drawer.categories") %>
+      </p>
+      <div class="mt-2 divide-y divide-slate-100 dark:divide-zinc-800">
+        <% menu_categories.each do |item| %>
+          <details class="group py-1">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm font-medium text-slate-800 dark:text-zinc-100">
+              <span class="flex items-center gap-2">
+                <%= icon item["icon"], class: "size-4 text-brand-600 dark:text-brand-400" %>
+                <%= item["name"] %>
+              </span>
+              <span class="text-slate-400 transition group-open:rotate-180 dark:text-zinc-500">
+                <%= icon "chevron-down", class: "size-4" %>
+              </span>
+            </summary>
+            <div class="mb-2 ml-8 space-y-1">
+              <%= link_to t("layout.nav.view_all"), item["path"],
+                          class: "block rounded-lg px-2 py-1.5 text-sm font-medium text-brand-700 hover:bg-slate-50 dark:text-brand-300 dark:hover:bg-zinc-900" %>
+              <% item["children"].each do |child| %>
+                <%= link_to child["name"], child["path"],
+                            class: "block rounded-lg px-2 py-1.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-brand-700 dark:text-zinc-300 dark:hover:bg-zinc-900 dark:hover:text-brand-300" %>
+              <% end %>
+            </div>
+          </details>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mt-6 border-t border-slate-200 pt-4 dark:border-zinc-800">
+      <p class="px-2 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+        <%= t("layout.drawer.account") %>
+      </p>
+      <div class="mt-2 space-y-1">
+        <% if user_signed_in? %>
+          <%= link_to orders_path, class: "flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+            <%= icon "package", class: "size-4" %><%= t("layout.account_menu.my_orders") %>
+          <% end %>
+          <%= link_to conversations_path, class: "flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+            <%= icon "message-circle", class: "size-4" %><%= t("layout.account_menu.inbox") %>
+          <% end %>
+          <%= link_to favorites_path, class: "flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+            <%= icon "heart", class: "size-4" %><%= t("layout.account_menu.favourites") %>
+          <% end %>
+          <%= link_to seller_root_path, class: "flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+            <%= icon "store", class: "size-4" %><%= t("layout.account_menu.seller_dashboard") %>
+          <% end %>
+          <%= link_to account_path, class: "flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800" do %>
+            <%= icon "settings", class: "size-4" %><%= t("layout.account_menu.settings") %>
+          <% end %>
+        <% else %>
+          <%= link_to new_user_session_path, class: "flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-brand-700 hover:bg-slate-100 dark:text-brand-300 dark:hover:bg-zinc-800" do %>
+            <%= icon "log-in", class: "size-4" %><%= t("layout.header.login") %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mt-6 border-t border-slate-200 pt-4 dark:border-zinc-800">
+      <p class="px-2 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500">
+        <%= t("layout.drawer.language") %>
+      </p>
+      <div class="mt-2 flex flex-wrap gap-2 px-2" lang="<%= I18n.locale %>">
+        <% I18n.available_locales.each do |locale| %>
+          <%= link_to locale_display_name(locale), locale_switch_url(locale),
+                      lang: locale, hreflang: locale,
+                      class: ui_chip_classes(active: locale == I18n.locale) %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mt-6 flex items-center justify-between border-t border-slate-200 pt-4 dark:border-zinc-800">
+      <span class="px-2 text-sm text-slate-600 dark:text-zinc-300"><%= t("layout.drawer.theme") %></span>
+      <button type="button" data-action="theme#toggle" data-theme-target="toggle"
+              data-label-light="<%= t("layout.header.theme_light") %>"
+              data-label-dark="<%= t("layout.header.theme_dark") %>"
+              aria-label="<%= t("layout.header.theme_dark") %>" aria-pressed="false"
+              class="inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-200 px-3 text-sm font-medium text-slate-700 dark:border-zinc-700 dark:text-zinc-200">
+        <span class="dark:hidden"><%= icon "moon", class: "size-4" %><%= t("layout.drawer.theme_dark") %></span>
+        <span class="hidden dark:flex dark:items-center dark:gap-2"><%= icon "sun", class: "size-4" %><%= t("layout.drawer.theme_light") %></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="border-t border-slate-200 p-4 dark:border-zinc-800">
+    <%= link_to new_listing_path, class: ui_button_classes(variant: :primary, size: :md, extra: "w-full") do %>
+      <%= icon "plus", class: "size-4" %><%= t("layout.header.list_item") %>
+    <% end %>
+  </div>
+</div>

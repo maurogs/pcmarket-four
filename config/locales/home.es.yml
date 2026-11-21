@@ -1,7 +1,83 @@
 ---
 es:
   home:
-    title: Compra y vende tecnología de segunda mano
-    subtitle: Ordenadores, tarjetas gráficas, componentes, periféricos, portátiles,
-      móviles, tablets y consolas de vendedores verificados.
-    coming_soon: 'Muy pronto: el mercado de tecnología que estabas esperando.'
+    hero:
+      eyebrow: Ofertas del día
+      title: Tecnología que merece la pena
+      subtitle: Equipos revisados, vendedores verificados y precios reales. Encuentra tu próxima pieza sin pagar de más.
+      cta: Ver la oferta
+      previous: Oferta anterior
+      next: Siguiente oferta
+      slide: Oferta %{number}
+      empty_title: Aún no hay ofertas destacadas
+      empty_body: Vuelve pronto o explora todos los anuncios disponibles.
+      empty_cta: Explorar anuncios
+      carousel: Carrusel de ofertas
+      carousel_role: carrusel
+      slide_role: diapositiva
+    promos:
+      most_wanted_title: Los más deseados
+      most_wanted_body: Lo que más guardan los compradores esta semana.
+      most_wanted_cta: Ver los más guardados
+      ready_title: Listos para enviar
+      ready_body: PC gaming montados y probados por técnicos.
+      ready_cta: Ver PCs gaming
+      deals_title: Con descuento
+      deals_body: Precio rebajado frente al original, sin sorpresas.
+      deals_cta: Ver ofertas
+    pc_finder:
+      eyebrow: Buscador de PC
+      title: Dinos cómo juegas y te decimos qué PC necesitas
+      body: Presupuesto, resolución y juegos favoritos. En menos de un minuto tendrás una selección de equipos que encajan contigo.
+      cta: Encontrar mi PC
+      bullet_1: Según tu presupuesto
+      bullet_2: Según tu monitor
+      bullet_3: Según tus juegos
+    vibe:
+      title: Compra por estilo
+      subtitle: Configuraciones y complementos para cada tipo de escritorio.
+      minimalist: Minimalista
+      anime: Anime
+      rgb: RGB
+      white: Todo blanco
+    rows:
+      latest_gpus: Últimas tarjetas gráficas
+      most_watched: Lo más visto esta semana
+      on_sale: En oferta
+      newest: Recién publicados
+      recently_sold: Vendidos recientemente
+      view_all: Ver todos
+      previous: Desplazar a la izquierda
+      next: Desplazar a la derecha
+    trust:
+      buyer_protection_title: Protección al comprador
+      buyer_protection_body: Pago seguro y ayuda si algo no llega como se describe.
+      verified_sellers_title: Vendedores verificados
+      verified_sellers_body: Identidad y datos comprobados antes de publicar.
+      secure_payments_title: Pagos seguros
+      secure_payments_body: Tus datos nunca se comparten con el vendedor.
+      spanish_support_title: Soporte en España
+      spanish_support_body: Equipo local y atención en tu idioma.
+    reviews:
+      title: Lo que dicen los compradores
+      subtitle: Valoraciones reales de operaciones completadas en PCMarket.
+      static_1_body: Encontré una tarjeta gráfica como nueva a muy buen precio. El envío llegó en dos días y perfectamente embalado.
+      static_1_name: Lucía M.
+      static_1_location: Valencia
+      static_2_body: Compré un portátil para trabajar y la descripción era exacta. Repetiré sin duda.
+      static_2_name: Javier R.
+      static_2_location: Sevilla
+      static_3_body: El vendedor respondió a todas mis dudas y el embalaje era impecable. Muy recomendable.
+      static_3_name: Marta G.
+      static_3_location: Bilbao
+    sell:
+      title: "¿Tienes equipo parado? Véndanolo."
+      body: Publica tu anuncio gratis o véndenos tu PC, consola o componentes y olvídate de las gestiones.
+      cta: Empezar a vender
+    seo:
+      title: Tecnología de segunda mano con garantías en España
+      paragraph_1: PCMarket reúne PC gaming, componentes, periféricos, portátiles, móviles, tablets y consolas nuevos y de segunda mano en un solo lugar. Cada anuncio indica el estado real del producto, su ubicación y las condiciones de envío para que compres con toda la información.
+      paragraph_2: Tanto si buscas una tarjeta gráfica para actualizar tu equipo como si quieres vender lo que ya no usas, nuestro buscador y los filtros por especificaciones te ayudan a encontrar exactamente lo que necesitas, al precio justo.
+    empty:
+      title: Todavía no hay nada aquí
+      body: Vuelve pronto o prueba con otra categoría.

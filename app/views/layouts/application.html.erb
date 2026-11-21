@@ -1,50 +1,75 @@
 <!DOCTYPE html>
-<html lang="<%= I18n.locale %>">
+<html lang="<%= I18n.locale %>" class="h-full">
   <head>
-    <title><%= content_for(:title) || t("home.title") %></title>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="<%= t("common.site_name") %>">
+    <meta name="application-name" content="<%= site_name %>">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="description" content="<%= t("home.subtitle") %>">
+
+    <%= display_meta_tags %>
+
+    <meta name="theme-color" content="#0F766E" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#09090B" media="(prefers-color-scheme: dark)">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap">
+
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="icon" href="/icon.png" sizes="512x512" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+    <link rel="manifest" href="/site.webmanifest">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= yield :head %>
+    <%= javascript_tag nonce: true do %>
+      (function () {
+        try {
+          var stored = localStorage.getItem("pcmarket-theme");
+          var match = document.cookie.match(/(?:^|; )theme=(dark|light)/);
+          var theme = stored || (match && match[1]);
+          if (!theme) {
+            theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          }
+          if (theme === "dark") document.documentElement.classList.add("dark");
+        } catch (error) {}
+      })();
+    <% end %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <script type="application/ld+json" nonce="<%= content_security_policy_nonce %>">
+      <%= raw structured_data %>
+    </script>
+
+    <%= yield :head %>
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-slate-50 text-slate-900 antialiased">
-    <header class="border-b border-slate-200 bg-white">
-      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <%= link_to root_path, class: "text-lg font-semibold tracking-tight" do %>
-          <%= t("common.site_name") %>
-        <% end %>
-        <nav aria-label="<%= t("common.language_switcher") %>" class="flex gap-2 text-sm">
-          <% I18n.available_locales.each do |locale| %>
-            <%= link_to locale.to_s.upcase, root_path(locale: locale),
-                        class: "rounded px-2 py-1 #{'bg-slate-900 text-white' if locale == I18n.locale}",
-                        lang: locale, hreflang: locale %>
-          <% end %>
-        </nav>
-      </div>
-    </header>
+  <body class="flex min-h-full flex-col bg-slate-50 pb-14 text-slate-900 antialiased md:pb-0 dark:bg-zinc-950 dark:text-zinc-100"
+        data-controller="theme cookie-consent drawer">
+    <a href="#main-content"
+       class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-brand-700 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white">
+      <%= t("layout.skip_to_content") %>
+    </a>
 
-    <main class="mx-auto max-w-6xl px-4 py-12">
-      <% if notice.present? %>
-        <p class="mb-6 rounded border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800"><%= notice %></p>
-      <% end %>
-      <% if alert.present? %>
-        <p class="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-800"><%= alert %></p>
-      <% end %>
+    <%= render "shared/announcement_bar" %>
+    <%= render "shared/header" %>
+    <%= render "shared/mobile_drawer" %>
 
+    <div class="pointer-events-none fixed inset-x-4 top-20 z-[70] mx-auto flex max-w-md flex-col gap-2">
+      <%= render "shared/flash" %>
+    </div>
+
+    <main id="main-content" tabindex="-1" class="flex-1">
       <%= yield %>
     </main>
+
+    <%= render "shared/footer" %>
+    <%= render "shared/mobile_tab_bar" %>
+    <%= render "shared/cookie_consent" %>
+    <%= render "shared/back_to_top" %>
   </body>
 </html>

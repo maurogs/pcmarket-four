@@ -1,0 +1,16 @@
+fr:
+  newsletter:
+    subscribe:
+      success: "Merci. Consultez votre boîte de réception pour confirmer votre abonnement."
+      duplicate: "Vous êtes déjà abonné à la newsletter de PCMarket."
+      invalid: "Veuillez saisir une adresse e-mail valide."
+      already_confirmed: "Vous êtes déjà abonné à la newsletter de PCMarket."
+    confirm:
+      success: "Votre abonnement est confirmé. Bienvenue chez PCMarket."
+      invalid: "Ce lien de confirmation est invalide ou a expiré."
+    mailer:
+      subject: "Confirmez votre abonnement à la newsletter PCMarket"
+      greeting: "Bonjour,"
+      body: "Vous avez demandé à recevoir la newsletter de PCMarket. Confirmez votre abonnement avec le lien ci-dessous."
+      cta: "Confirmer l'abonnement"
+      ignore: "Si vous n'avez pas demandé cet abonnement, ignorez ce message."

@@ -1,0 +1,16 @@
+pt:
+  newsletter:
+    subscribe:
+      success: "Obrigado. Verifique a sua caixa de entrada para confirmar a subscrição."
+      duplicate: "Já está subscrito à newsletter da PCMarket."
+      invalid: "Introduza um endereço de e-mail válido."
+      already_confirmed: "Já está subscrito à newsletter da PCMarket."
+    confirm:
+      success: "A sua subscrição está confirmada. Bem-vindo à PCMarket."
+      invalid: "Este link de confirmação é inválido ou expirou."
+    mailer:
+      subject: "Confirme a sua subscrição da newsletter PCMarket"
+      greeting: "Olá,"
+      body: "Pediu para receber a newsletter da PCMarket. Confirme a subscrição com o link abaixo."
+      cta: "Confirmar subscrição"
+      ignore: "Se não pediu esta subscrição, pode ignorar esta mensagem."

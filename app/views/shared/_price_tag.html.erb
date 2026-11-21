@@ -1,0 +1,16 @@
+<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+  <span class="font-heading text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
+    <%= format_price(listing.price_cents) %>
+  </span>
+  <% if listing.original_price_cents.present? && listing.original_price_cents > listing.price_cents %>
+    <span class="text-xs text-slate-500 line-through dark:text-zinc-500">
+      <%= format_price(listing.original_price_cents) %>
+    </span>
+    <% percent = discount_percent(listing) %>
+    <% if percent %>
+      <span class="<%= ui_badge_classes(tone: :danger, extra: "!px-2 !py-0.5") %>">
+        <%= t("listings.card.discount", percent: percent) %>
+      </span>
+    <% end %>
+  <% end %>
+</div>

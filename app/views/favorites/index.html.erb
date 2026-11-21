@@ -1,0 +1,18 @@
+<% content_for :title, t("pages.favorites.title") %>
+
+<div class="page-container py-8 sm:py-10">
+  <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= t("pages.favorites.title") %></h1>
+  <p class="mt-2 max-w-2xl text-sm text-slate-600 dark:text-zinc-400"><%= t("pages.favorites.body") %></p>
+
+  <% if @favorites.any? %>
+    <div class="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      <% @favorites.each do |favorite| %>
+        <% next if favorite.listing.nil? %>
+        <%= render "listings/card", listing: favorite.listing %>
+      <% end %>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", title: t("pages.favorites.title"), body: t("pages.favorites.body"),
+               cta_label: t("pages.coming_soon.listings_cta"), cta_path: listings_path %>
+  <% end %>
+</div>

@@ -1,0 +1,20 @@
+<% text = Setting.get("announcement_bar_text").to_s %>
+<% if text.present? %>
+  <% dismissal_key = "pcmarket-announcement-#{Digest::SHA256.hexdigest(text)[0, 12]}" %>
+  <div hidden data-controller="announcement" data-announcement-key-value="<%= dismissal_key %>"
+       class="bg-brand-800 text-brand-50 dark:bg-brand-900">
+    <div class="page-container flex items-center gap-4 py-2">
+      <p class="min-w-0 flex-1 truncate text-xs font-medium sm:text-sm"><%= text %></p>
+      <nav class="hidden items-center gap-4 text-xs font-medium sm:flex" aria-label="<%= t("layout.announcement.help") %>">
+        <%= link_to t("layout.announcement.help"), help_path, class: "hover:underline" %>
+        <%= link_to t("layout.announcement.blog"), help_path, class: "hover:underline" %>
+        <%= link_to t("layout.announcement.pc_finder"), pc_finder_path, class: "hover:underline" %>
+      </nav>
+      <button type="button" data-action="announcement#dismiss"
+              class="-m-1 rounded-full p-1 text-brand-100 transition hover:bg-brand-700 hover:text-white"
+              aria-label="<%= t("layout.announcement.dismiss") %>">
+        <%= icon "x", class: "size-4" %>
+      </button>
+    </div>
+  </div>
+<% end %>

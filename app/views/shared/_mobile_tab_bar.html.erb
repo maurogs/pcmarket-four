@@ -1,0 +1,22 @@
+<nav class="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur md:hidden dark:border-zinc-800 dark:bg-zinc-950/95"
+     aria-label="<%= t("layout.tab_bar.label") %>">
+  <div class="grid grid-cols-5">
+    <% tab_class = "flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium text-slate-500 transition dark:text-zinc-400" %>
+    <%= link_to root_path, class: "#{tab_class} #{'text-brand-700 dark:text-brand-300' if current_path_matches?(root_path)}" do %>
+      <%= icon "home", class: "size-5" %><%= t("layout.tab_bar.home") %>
+    <% end %>
+    <%= link_to search_path, class: tab_class do %>
+      <%= icon "search", class: "size-5" %><%= t("layout.tab_bar.search") %>
+    <% end %>
+    <%= link_to new_listing_path, class: "flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium text-brand-700 dark:text-brand-300" do %>
+      <span class="flex size-9 items-center justify-center rounded-full bg-brand-700 text-white dark:bg-brand-600"><%= icon "plus", class: "size-5" %></span>
+      <%= t("layout.tab_bar.sell") %>
+    <% end %>
+    <%= link_to favorites_path, class: tab_class do %>
+      <%= icon "heart", class: "size-5" %><%= t("layout.tab_bar.favourites") %>
+    <% end %>
+    <%= link_to(user_signed_in? ? account_path : new_user_session_path, class: tab_class) do %>
+      <%= icon "user", class: "size-5" %><%= t("layout.tab_bar.account") %>
+    <% end %>
+  </div>
+</nav>

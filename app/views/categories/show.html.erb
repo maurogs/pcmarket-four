@@ -1,0 +1,41 @@
+<% content_for :title, @category.name %>
+
+<div class="page-container py-8 sm:py-10">
+  <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-400" aria-label="<%= t("layout.nav.view_all") %>">
+    <%= link_to t("layout.tab_bar.home"), root_path, class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+    <% @category.path.each do |category| %>
+      <span>/</span>
+      <%= link_to category.name, category_path(path: category.path_slugs), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+    <% end %>
+  </nav>
+
+  <div class="flex items-center gap-3">
+    <% if icon_available?(@category.icon) %>
+      <span class="inline-flex size-12 items-center justify-center rounded-full bg-brand-100 text-brand-700 dark:bg-brand-900/50 dark:text-brand-300">
+        <%= icon @category.icon, class: "size-6" %>
+      </span>
+    <% end %>
+    <h1 class="font-heading text-3xl font-bold tracking-tight text-slate-950 dark:text-white"><%= @category.name %></h1>
+  </div>
+
+  <% if @category.children.active.any? %>
+    <div class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      <% @category.children.active.order(:position, :id).each do |child| %>
+        <%= link_to category_path(path: child.path_slugs),
+                    class: "surface card-lift flex items-center gap-3 p-4 text-sm font-medium text-slate-800 dark:text-zinc-100" do %>
+          <span class="inline-flex size-9 items-center justify-center rounded-full bg-slate-100 text-brand-700 dark:bg-zinc-800 dark:text-brand-300">
+            <%= icon "layout-grid", class: "size-4" %>
+          </span>
+          <%= child.name %>
+          <%= icon "chevron-right", class: "ml-auto size-4 text-slate-400" %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="mt-10">
+    <%= render "shared/placeholder_page", compact: true, title: t("pages.categories.title", category: @category.name),
+               body: t("pages.categories.body"), cta_path: listings_path,
+               cta_label: t("pages.coming_soon.listings_cta") %>
+  </div>
+</div>

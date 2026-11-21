@@ -1,0 +1,67 @@
+it:
+  pages:
+    coming_soon:
+      label: "Prossimamente"
+      default_title: "Questa pagina sta arrivando"
+      default_body: "Stiamo lavorando a questa sezione. Nel frattempo puoi esplorare il resto di PCMarket."
+      cta: "Torna alla home"
+      listings_cta: "Sfoglia gli annunci"
+    listings:
+      index_title: "Tutti gli annunci"
+      index_body: "La ricerca completa con filtri per categoria, condizioni, prezzo e specifiche arriverà presto. Puoi già navigare le categorie e gli annunci in evidenza."
+      show_title: "%{title}"
+      show_body: "La pagina completa dell'annuncio, con galleria, specifiche e contatto del venditore, arriverà nella prossima fase."
+    categories:
+      title: "%{category}"
+      body: "La pagina di categoria con tutti i filtri arriverà presto. Nel frattempo esplora gli annunci in evidenza della home."
+    stores:
+      title: "%{store}"
+      body: "La pagina pubblica del negozio arriverà presto."
+    cart:
+      title: "Il tuo carrello"
+      body: "Carrello e pagamento saranno disponibili presto."
+    favorites:
+      title: "I tuoi preferiti"
+      body: "Presto potrai gestire da qui tutti gli annunci che salvi."
+    conversations:
+      index_title: "La tua casella di posta"
+      index_body: "La messaggistica con acquirenti e venditori arriverà presto."
+      show_title: "Conversazione"
+      show_body: "Il dettaglio della conversazione arriverà presto."
+    orders:
+      index_title: "I tuoi ordini"
+      index_body: "Cronologia e tracciamento degli ordini arriveranno presto."
+      show_title: "Ordine %{number}"
+      show_body: "Il dettaglio dell'ordine arriverà presto."
+    account:
+      title: "Impostazioni account"
+      body: "Presto potrai modificare qui profilo, indirizzo e preferenze."
+    seller:
+      dashboard_title: "Dashboard venditore"
+      dashboard_body: "Metriche del negozio, vendite e gestione annunci arriveranno presto."
+    pc_finder:
+      title: "Trova PC"
+      body: "Rispondi a qualche domanda su budget, risoluzione e giochi e ti consiglieremo le macchine più adatte."
+    sell:
+      title: "Vendi la tua attrezzatura"
+      body: "Pubblica gratis il tuo annuncio oppure vendila a noi. Scegli tu."
+    sell_to_us:
+      title: "Vendi a PCMarket"
+      body: "Dicci cosa hai e ti faremo un'offerta. Senza complicazioni, con ritiro o spedizione inclusi."
+    admin:
+      title: "Pannello di amministrazione"
+      body: "La moderazione di annunci, utenti e ordini sarà disponibile presto."
+    trust:
+      title: "Fiducia e sicurezza"
+      body: "Lavoriamo con venditori verificati, pagamenti sicuri e un team di supporto locale per comprare e vendere serenamente."
+    help:
+      title: "Centro assistenza"
+      body: "Troverai guide su acquisti, spedizioni, resi e sicurezza. Stiamo preparando gli articoli."
+    about:
+      title: "Informazioni su PCMarket"
+      body: "PCMarket nasce in Spagna per rendere l'acquisto e la vendita di tecnologia usata semplici, sicuri e trasparenti."
+    legal:
+      title: "Informazioni legali"
+      body: "La pagina legale richiesta non è disponibile."
+    newsletter_confirm:
+      title: "Conferma dell'iscrizione"

@@ -1,0 +1,8 @@
+<% rating = local_assigns.fetch(:rating, 0).to_i %>
+<div class="flex items-center gap-0.5" role="img" aria-label="<%= local_assigns[:label] || rating %>">
+  <% 5.times do |index| %>
+    <span class="<%= index < rating ? "text-accent-500" : "text-slate-300 dark:text-zinc-700" %>">
+      <%= icon "star", class: "size-4 #{'fill-current' if index < rating}" %>
+    </span>
+  <% end %>
+</div>

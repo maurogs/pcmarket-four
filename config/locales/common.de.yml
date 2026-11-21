@@ -3,3 +3,11 @@ de:
   common:
     site_name: PCMarket
     language_switcher: Sprache
+    locales:
+      es: Español
+      en: English
+      fr: Français
+      de: Deutsch
+      it: Italiano
+      pt: Português
+    pagination: Seitennavigation

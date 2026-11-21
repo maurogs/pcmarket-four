@@ -8,6 +8,10 @@ class Listing < ApplicationRecord
   MIN_DESCRIPTION_LENGTH = 30
   MAX_PRICE_CENTS = 100_000_000
 
+  LABELS = %w[value mid_range pro_gamer rare featured deal free_shipping].freeze
+  TAGS = %w[minimalist rgb white black anime retro compact cozy glass luxe noctua
+            sci_fi space steampunk wood whiteout blackout sakura superhero rainbow].freeze
+
   friendly_id :slug_candidates, use: [ :slugged, :history ]
 
   belongs_to :user, inverse_of: :listings
@@ -78,6 +82,14 @@ class Listing < ApplicationRecord
   scope :featured, -> { where("listings.featured_until > ?", Time.current) }
   scope :recent, -> { order(published_at: :desc, created_at: :desc) }
   scope :in_category, ->(category) { where(category_id: category.subtree_ids) }
+  scope :on_sale, -> { where.not(original_price_cents: nil) }
+  scope :recently_sold, lambda {
+    sold
+      .joins(:user, :country)
+      .where(users: { status: User.statuses[:active], deleted_at: nil })
+      .where(countries: { enabled: true })
+      .order(published_at: :desc, updated_at: :desc)
+  }
 
   def submit_for_review!
     return false unless draft? || rejected?

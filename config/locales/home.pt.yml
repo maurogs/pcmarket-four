@@ -1,7 +1,83 @@
 ---
 pt:
   home:
-    title: Compre e venda tecnologia em segunda mão
-    subtitle: Computadores, placas gráficas, componentes, periféricos, portáteis,
-      telemóveis, tablets e consolas de vendedores verificados.
-    coming_soon: 'Brevemente: o marketplace de tecnologia que estava à espera.'
+    hero:
+      eyebrow: Ofertas do dia
+      title: Tecnologia que vale a pena
+      subtitle: Equipamento verificado, vendedores de confiança e preços honestos. Encontre a sua próxima peça sem pagar a mais.
+      cta: Ver a oferta
+      previous: Oferta anterior
+      next: Oferta seguinte
+      slide: Oferta %{number}
+      empty_title: Ainda não há ofertas em destaque
+      empty_body: Volte em breve ou explore todos os anúncios disponíveis.
+      empty_cta: Explorar anúncios
+      carousel: Carrossel de ofertas
+      carousel_role: carrossel
+      slide_role: diapositivo
+    promos:
+      most_wanted_title: Os mais desejados
+      most_wanted_body: O que os compradores mais guardam esta semana.
+      most_wanted_cta: Ver os mais guardados
+      ready_title: Prontos a enviar
+      ready_body: PC gaming montados e testados por técnicos.
+      ready_cta: Ver PCs gaming
+      deals_title: Com desconto
+      deals_body: Preço reduzido face ao original, sem surpresas.
+      deals_cta: Ver ofertas
+    pc_finder:
+      eyebrow: Encontrar PC
+      title: Diga-nos como joga e dizemos-lhe de que PC precisa
+      body: Orçamento, resolução e jogos favoritos. Em menos de um minuto terá uma seleção de máquinas à sua medida.
+      cta: Encontrar o meu PC
+      bullet_1: Conforme o orçamento
+      bullet_2: Conforme o monitor
+      bullet_3: Conforme os jogos
+    vibe:
+      title: Comprar por estilo
+      subtitle: Configurações e acessórios para cada tipo de secretária.
+      minimalist: Minimalista
+      anime: Anime
+      rgb: RGB
+      white: Tudo branco
+    rows:
+      latest_gpus: Últimas placas gráficas
+      most_watched: Mais vistos esta semana
+      on_sale: Em promoção
+      newest: Anúncios recentes
+      recently_sold: Vendidos recentemente
+      view_all: Ver tudo
+      previous: Deslocar para a esquerda
+      next: Deslocar para a direita
+    trust:
+      buyer_protection_title: Proteção do comprador
+      buyer_protection_body: Pagamento seguro e ajuda se algo não corresponder à descrição.
+      verified_sellers_title: Vendedores verificados
+      verified_sellers_body: Identidade e dados confirmados antes da publicação.
+      secure_payments_title: Pagamentos seguros
+      secure_payments_body: Os seus dados nunca são partilhados com o vendedor.
+      spanish_support_title: Apoio em Espanha
+      spanish_support_body: Uma equipa local, a ajudar na sua língua.
+    reviews:
+      title: O que dizem os compradores
+      subtitle: Avaliações reais de compras concluídas na PCMarket.
+      static_1_body: Encontrei uma placa gráfica como nova a um ótimo preço. Chegou em dois dias, perfeitamente embalada.
+      static_1_name: Lucía M.
+      static_1_location: Valência
+      static_2_body: Comprei um portátil para trabalhar e a descrição era exata. Voltarei a comprar.
+      static_2_name: Javier R.
+      static_2_location: Sevilha
+      static_3_body: O vendedor respondeu a todas as dúvidas e a embalagem estava impecável. Recomendo.
+      static_3_name: Marta G.
+      static_3_location: Bilbau
+    sell:
+      title: Tem equipamento parado? Venda-o.
+      body: Publique o seu anúncio gratuitamente ou venda-nos o seu PC, consola ou componentes e esqueça a burocracia.
+      cta: Começar a vender
+    seo:
+      title: Tecnologia em segunda mão com garantias em Espanha
+      paragraph_1: A PCMarket reúne PC gaming, componentes, periféricos, portáteis, telemóveis, tablets e consolas novos e usados num só lugar. Cada anúncio indica o estado real, a localização e as condições de envio para comprar com toda a informação.
+      paragraph_2: Quer procure uma placa gráfica para atualizar o seu equipamento, quer queira vender o que já não usa, a nossa pesquisa e os filtros por especificações ajudam-no a encontrar exatamente o que precisa, ao preço justo.
+    empty:
+      title: Ainda não há nada aqui
+      body: Volte em breve ou experimente outra categoria.

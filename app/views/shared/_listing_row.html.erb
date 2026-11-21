@@ -1,0 +1,43 @@
+<% title = local_assigns.fetch(:title) %>
+<% listings = local_assigns.fetch(:listings) %>
+<% view_all_path = local_assigns[:view_all_path] %>
+<section class="space-y-5" data-controller="scroll_row">
+  <div class="flex items-end justify-between gap-4">
+    <div>
+      <h2 class="font-heading text-xl font-semibold tracking-tight text-slate-950 sm:text-2xl dark:text-white"><%= title %></h2>
+      <% if local_assigns[:subtitle].present? %>
+        <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400"><%= subtitle %></p>
+      <% end %>
+    </div>
+    <div class="flex items-center gap-2">
+      <% if view_all_path.present? %>
+        <%= link_to t("home.rows.view_all"), view_all_path,
+                    class: "hidden text-sm font-medium text-brand-700 hover:text-brand-800 sm:inline-flex dark:text-brand-300 dark:hover:text-brand-200" %>
+      <% end %>
+      <button type="button" data-action="scroll_row#scroll" data-direction="-1"
+              class="hidden size-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-brand-400 hover:text-brand-700 sm:inline-flex dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-brand-500 dark:hover:text-brand-300"
+              aria-label="<%= t("home.rows.previous") %>">
+        <%= icon "chevron-left", class: "size-5" %>
+      </button>
+      <button type="button" data-action="scroll_row#scroll" data-direction="1"
+              class="hidden size-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-brand-400 hover:text-brand-700 sm:inline-flex dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-brand-500 dark:hover:text-brand-300"
+              aria-label="<%= t("home.rows.next") %>">
+        <%= icon "chevron-right", class: "size-5" %>
+      </button>
+    </div>
+  </div>
+
+  <% if listings.any? %>
+    <div class="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-3 scrollbar-hide sm:mx-0 sm:px-0"
+         data-scroll-row-target="container">
+      <% listings.each do |listing| %>
+        <div class="w-[264px] shrink-0 snap-start sm:w-[288px]">
+          <%= render "listings/card", listing: listing %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", title: t("home.empty.title"), body: t("home.empty.body"),
+               compact: true %>
+  <% end %>
+</section>

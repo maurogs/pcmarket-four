@@ -1,0 +1,94 @@
+<article class="surface card-lift group relative flex h-full flex-col overflow-hidden">
+  <% cache [ listing, I18n.locale ] do %>
+    <div class="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-zinc-800">
+      <%= link_to listing_path(listing), tabindex: -1,
+                  aria: { label: t("listings.card.image_alt", title: listing.title) } do %>
+        <% if listing.images.attached? %>
+          <%= image_tag listing.images.first.variant(resize_to_limit: [ 640, 480 ], format: :webp),
+                        alt: t("listings.card.image_alt", title: listing.title),
+                        width: 640, height: 480, loading: "lazy", decoding: "async",
+                        class: "h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" %>
+        <% else %>
+          <%= image_tag "listing-placeholder.svg", alt: "", width: 640, height: 480,
+                        loading: "lazy", decoding: "async",
+                        class: "h-full w-full object-cover" %>
+        <% end %>
+      <% end %>
+
+      <div class="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1.5">
+        <% label = listing.labels.first %>
+        <% if label.present? && I18n.exists?("listings.labels.#{label}") %>
+          <span class="<%= ui_badge_classes(tone: :dark, extra: "shadow-sm") %>">
+            <%= t("listings.labels.#{label}") %>
+          </span>
+        <% end %>
+      </div>
+
+      <% if listing.sold? %>
+        <div class="absolute inset-0 flex items-center justify-center bg-slate-950/55">
+          <span class="rounded-full bg-white px-4 py-2 font-heading text-sm font-bold uppercase tracking-wide text-slate-950">
+            <%= t("listings.card.sold") %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="flex flex-1 flex-col gap-2.5 p-4">
+      <div class="flex items-start justify-between gap-3">
+        <h3 class="line-clamp-2 text-sm font-semibold leading-5 text-slate-950 dark:text-white">
+          <%= link_to listing.title, listing_path(listing), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+        </h3>
+      </div>
+
+      <%= render "shared/price_tag", listing: listing %>
+
+      <% chips = spec_chips(listing) %>
+      <% if chips.any? %>
+        <ul class="flex flex-wrap gap-1.5">
+          <% chips.each do |_key, value| %>
+            <li class="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">
+              <%= value %>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+
+      <div class="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-1 text-xs text-slate-500 dark:text-zinc-400">
+        <span class="<%= ui_badge_classes(tone: listing_condition_tone(listing), extra: "!px-2 !py-0.5") %>">
+          <%= listing_condition_label(listing) %>
+        </span>
+        <span class="inline-flex items-center gap-1">
+          <%= icon "map-pin", class: "size-3.5" %>
+          <%= listing_location(listing) %>
+        </span>
+      </div>
+
+      <div class="flex items-center gap-1.5 border-t border-slate-100 pt-2 text-xs text-slate-600 dark:border-zinc-800 dark:text-zinc-400">
+        <span class="truncate"><%= listing_seller_name(listing) %></span>
+        <% if listing.store&.verified? %>
+          <span class="text-brand-600 dark:text-brand-400" title="<%= t("listings.card.verified_seller") %>">
+            <%= icon "badge-check", class: "size-3.5" %>
+          </span>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="absolute right-2 top-2 z-10">
+    <% if user_signed_in? %>
+      <%= button_to favorites_path(listing_id: listing.id), method: :post,
+                    form: { class: "block" },
+                    class: "inline-flex size-11 items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-sm backdrop-blur transition hover:text-rose-600 dark:bg-zinc-900/90 dark:text-zinc-300 dark:hover:text-rose-400",
+                    aria: { label: t("listings.card.favourite") } do %>
+        <%= icon "heart", class: "size-5" %>
+      <% end %>
+    <% else %>
+      <%= link_to new_user_session_path,
+                  class: "inline-flex size-11 items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-sm backdrop-blur transition hover:text-rose-600 dark:bg-zinc-900/90 dark:text-zinc-300 dark:hover:text-rose-400",
+                  aria: { label: t("listings.card.login_to_favourite") },
+                  title: t("listings.card.login_to_favourite") do %>
+        <%= icon "heart", class: "size-5" %>
+      <% end %>
+    <% end %>
+  </div>
+</article>

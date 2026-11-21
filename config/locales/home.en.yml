@@ -1,7 +1,83 @@
 ---
 en:
   home:
-    title: Buy and sell second-hand tech
-    subtitle: Computers, graphics cards, components, peripherals, laptops, phones,
-      tablets and consoles from trusted sellers.
-    coming_soon: 'Coming soon: the tech marketplace you have been waiting for.'
+    hero:
+      eyebrow: Deals of the day
+      title: Tech worth upgrading to
+      subtitle: Checked gear, verified sellers and honest prices. Find your next part without paying over the odds.
+      cta: Shop the deal
+      previous: Previous deal
+      next: Next deal
+      slide: Deal %{number}
+      empty_title: No featured deals yet
+      empty_body: Check back soon or browse every listing available.
+      empty_cta: Browse listings
+      carousel: Featured listings carousel
+      carousel_role: carousel
+      slide_role: slide
+    promos:
+      most_wanted_title: Most wanted
+      most_wanted_body: What buyers are saving most this week.
+      most_wanted_cta: See most saved
+      ready_title: Ready to ship
+      ready_body: Gaming PCs built and tested by technicians.
+      ready_cta: Shop gaming PCs
+      deals_title: On sale
+      deals_body: Reduced from the original price, with no surprises.
+      deals_cta: Shop deals
+    pc_finder:
+      eyebrow: PC Finder
+      title: Tell us how you play and we will tell you which PC you need
+      body: Budget, resolution and favourite games. In under a minute you will get a shortlist of machines that fit you.
+      cta: Find my PC
+      bullet_1: Based on your budget
+      bullet_2: Based on your monitor
+      bullet_3: Based on your games
+    vibe:
+      title: Shop by vibe
+      subtitle: Setups and accessories for every kind of desk.
+      minimalist: Minimalist
+      anime: Anime
+      rgb: RGB
+      white: All white
+    rows:
+      latest_gpus: Latest GPUs
+      most_watched: Most watched this week
+      on_sale: On sale
+      newest: Newest listings
+      recently_sold: Recently sold
+      view_all: View all
+      previous: Scroll left
+      next: Scroll right
+    trust:
+      buyer_protection_title: Buyer protection
+      buyer_protection_body: Secure payment and help if something is not as described.
+      verified_sellers_title: Verified sellers
+      verified_sellers_body: Identity and details checked before they can list.
+      secure_payments_title: Secure payments
+      secure_payments_body: Your details are never shared with the seller.
+      spanish_support_title: Spanish support
+      spanish_support_body: A local team, helping you in your language.
+    reviews:
+      title: What buyers say
+      subtitle: Real reviews from completed purchases on PCMarket.
+      static_1_body: I found a graphics card that was as good as new at a great price. It arrived in two days, perfectly packed.
+      static_1_name: Lucía M.
+      static_1_location: Valencia
+      static_2_body: I bought a laptop for work and the description was spot on. I will definitely buy again.
+      static_2_name: Javier R.
+      static_2_location: Seville
+      static_3_body: The seller answered every question and the packaging was immaculate. Highly recommended.
+      static_3_name: Marta G.
+      static_3_location: Bilbao
+    sell:
+      title: Got spare gear? Sell it.
+      body: List it for free, or sell us your PC, console or components and skip the admin.
+      cta: Start selling
+    seo:
+      title: Second-hand tech you can trust in Spain
+      paragraph_1: PCMarket brings new and second-hand gaming PCs, components, peripherals, laptops, phones, tablets and consoles together in one place. Every listing shows the real condition, location and shipping terms so you can buy with the full picture.
+      paragraph_2: Whether you are after a graphics card to upgrade your build or want to sell what you no longer use, our search and specification filters help you find exactly what you need at a fair price.
+    empty:
+      title: Nothing here yet
+      body: Check back soon or try another category.

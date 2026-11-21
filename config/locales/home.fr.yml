@@ -1,7 +1,83 @@
 ---
 fr:
   home:
-    title: Achetez et vendez de la technologie d'occasion
-    subtitle: Ordinateurs, cartes graphiques, composants, périphériques, ordinateurs
-      portables, téléphones, tablettes et consoles de vendeurs vérifiés.
-    coming_soon: 'Bientôt disponible : la place de marché tech que vous attendiez.'
+    hero:
+      eyebrow: Bons plans du jour
+      title: Du matériel qui mérite une mise à niveau
+      subtitle: Matériel vérifié, vendeurs de confiance et prix honnêtes. Trouvez votre prochaine pièce sans payer trop cher.
+      cta: Voir le bon plan
+      previous: Bon plan précédent
+      next: Bon plan suivant
+      slide: Bon plan %{number}
+      empty_title: Pas encore de bons plans à la une
+      empty_body: Revenez bientôt ou parcourez toutes les annonces disponibles.
+      empty_cta: Parcourir les annonces
+      carousel: Carrousel des offres
+      carousel_role: carrousel
+      slide_role: diapositive
+    promos:
+      most_wanted_title: Les plus recherchés
+      most_wanted_body: Ce que les acheteurs enregistrent le plus cette semaine.
+      most_wanted_cta: Voir les plus enregistrés
+      ready_title: Prêts à expédier
+      ready_body: PC gaming assemblés et testés par des techniciens.
+      ready_cta: Voir les PC gaming
+      deals_title: En promotion
+      deals_body: Prix réduit par rapport à l'original, sans surprise.
+      deals_cta: Voir les bons plans
+    pc_finder:
+      eyebrow: Trouver un PC
+      title: Dites-nous comment vous jouez, nous vous dirons quel PC il vous faut
+      body: Budget, résolution et jeux préférés. En moins d'une minute, vous obtiendrez une sélection de machines adaptées.
+      cta: Trouver mon PC
+      bullet_1: Selon votre budget
+      bullet_2: Selon votre écran
+      bullet_3: Selon vos jeux
+    vibe:
+      title: Acheter par style
+      subtitle: Configurations et accessoires pour chaque type de bureau.
+      minimalist: Minimaliste
+      anime: Anime
+      rgb: RGB
+      white: Tout blanc
+    rows:
+      latest_gpus: Dernières cartes graphiques
+      most_watched: Les plus vues cette semaine
+      on_sale: En promotion
+      newest: Annonces récentes
+      recently_sold: Vendus récemment
+      view_all: Tout voir
+      previous: Faire défiler à gauche
+      next: Faire défiler à droite
+    trust:
+      buyer_protection_title: Protection de l'acheteur
+      buyer_protection_body: Paiement sécurisé et assistance si un article n'est pas conforme.
+      verified_sellers_title: Vendeurs vérifiés
+      verified_sellers_body: Identité et informations contrôlées avant publication.
+      secure_payments_title: Paiements sécurisés
+      secure_payments_body: Vos données ne sont jamais partagées avec le vendeur.
+      spanish_support_title: Assistance en Espagne
+      spanish_support_body: Une équipe locale, disponible dans votre langue.
+    reviews:
+      title: Ce que disent les acheteurs
+      subtitle: Avis réels issus d'achats finalisés sur PCMarket.
+      static_1_body: J'ai trouvé une carte graphique comme neuve à très bon prix. Livrée en deux jours, parfaitement emballée.
+      static_1_name: Lucía M.
+      static_1_location: Valence
+      static_2_body: J'ai acheté un ordinateur portable pour travailler et la description était exacte. Je recommande.
+      static_2_name: Javier R.
+      static_2_location: Séville
+      static_3_body: Le vendeur a répondu à toutes mes questions et l'emballage était impeccable. Très recommandable.
+      static_3_name: Marta G.
+      static_3_location: Bilbao
+    sell:
+      title: Du matériel inutilisé ? Vendez-le.
+      body: Publiez gratuitement votre annonce, ou vendez-nous votre PC, console ou composants sans vous soucier de la logistique.
+      cta: Commencer à vendre
+    seo:
+      title: La tech d'occasion en toute confiance en Espagne
+      paragraph_1: PCMarket réunit PC gaming, composants, périphériques, ordinateurs portables, téléphones, tablettes et consoles neufs et d'occasion au même endroit. Chaque annonce indique l'état réel, la localisation et les conditions d'expédition pour acheter en connaissance de cause.
+      paragraph_2: Que vous cherchiez une carte graphique pour améliorer votre configuration ou que vous vouliez vendre ce que vous n'utilisez plus, notre recherche et nos filtres par caractéristiques vous aident à trouver exactement ce qu'il vous faut, au juste prix.
+    empty:
+      title: Rien ici pour le moment
+      body: Revenez bientôt ou essayez une autre catégorie.
