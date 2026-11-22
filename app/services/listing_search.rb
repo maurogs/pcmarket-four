@@ -14,7 +14,8 @@ class ListingSearch
   SearchFilter = Struct.new(:key, :value, :label, :remove_params, keyword_init: false)
 
   INCLUDES = [
-    :store, :category, :region, :user, { images_attachments: :blob }
+    :store, :category, :region, :user,
+    { images_attachments: { blob: { variant_records: { image_attachment: :blob } } } }
   ].freeze
 
   attr_reader :category, :base

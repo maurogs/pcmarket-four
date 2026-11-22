@@ -412,7 +412,7 @@ es:
         listing:
           attributes:
             base:
-              quota_exceeded: "has alcanzado el límite de %{max} anuncios activos"
+              quota_exceeded: has alcanzado el límite de %{max} anuncios activos
             original_price_cents:
               greater_than_price: debe ser mayor que el precio de venta
             country_code:
@@ -420,7 +420,7 @@ es:
             category:
               not_a_leaf: debe ser una categoría final
             images:
-              required: "debe incluir al menos una imagen"
+              required: debe incluir al menos una imagen
               invalid_format: debe ser JPEG, PNG o WebP
               too_large: no puede superar los 10 MB
               too_many: no puede tener más de %{count} imágenes
@@ -440,3 +440,13 @@ es:
           attributes:
             base:
               single_owner_required: debe pertenecer a un usuario o a un carrito
+        store:
+          attributes:
+            logo:
+              too_large: debe ocupar 5 MB o menos
+              invalid_format: debe ser una imagen JPEG, PNG o WebP
+            banner:
+              too_large: debe ocupar 8 MB o menos
+              invalid_format: debe ser una imagen JPEG, PNG o WebP
+            tax_id:
+              invalid: no es un NIF, NIE o CIF español válido

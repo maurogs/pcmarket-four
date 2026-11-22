@@ -42,7 +42,8 @@ en:
     form:
       sell_label: Sell on PCMarket
       new_title: Create your listing
-      new_subtitle: Five quick steps. Save a draft and finish it later if you need to.
+      new_subtitle: Five quick steps. Save a draft and finish it later if you need
+        to.
       edit_title: Edit listing
       edit_subtitle: Update your listing details and save your changes.
       view_listing: View listing
@@ -59,8 +60,8 @@ en:
       error_summary:
         one: Check %{count} field
         other: Check %{count} fields
-      re_review_warning: Changing the title, category or photos of a published listing sends it back to review before it goes
-        live again.
+      re_review_warning: Changing the title, category or photos of a published listing
+        sends it back to review before it goes live again.
       save_draft: Save draft
       save_changes: Save changes
       submit_review: Submit for review
@@ -68,7 +69,8 @@ en:
       cancel: Cancel
       category:
         title: Category
-        hint: Pick a family first, then the exact category. The technical fields adapt to your category.
+        hint: Pick a family first, then the exact category. The technical fields adapt
+          to your category.
       photos:
         title: Photos
         hint: Upload up to %{max} photos. Drag to reorder; the first one is the cover.
@@ -99,9 +101,8 @@ en:
         single_quantity: Private sellers list one unit per listing.
         tags: Tags
         tags_hint: Choose up to 5 tags to help buyers find it.
-        description_placeholder: >-
-          Describe the condition, use and what is included. Tip for %{category}: mention compatible models and any relevant
-          detail.
+        description_placeholder: 'Describe the condition, use and what is included.
+          Tip for %{category}: mention compatible models and any relevant detail.'
         description_hint: At least %{min} characters. Be clear and honest.
         specs: Specifications
         select_category: Choose a category to see the technical fields.
@@ -112,7 +113,8 @@ en:
       price:
         title: Price
         price_hint: Accepts formats such as 1,299.50 or 1299.50.
-        original_hint: Optional. It must be higher than the selling price to show the discount.
+        original_hint: Optional. It must be higher than the selling price to show
+          the discount.
         accepts_offers: Accept offers
         accepts_offers_hint: Buyers will be able to propose a price.
       delivery:
@@ -171,7 +173,8 @@ en:
       submitted: Listing submitted. We usually review it within 24 hours.
       draft_saved: Draft saved.
       updated: Listing updated.
-      sent_back: The listing is back in review because you changed the title, category or photos.
+      sent_back: The listing is back in review because you changed the title, category
+        or photos.
       archived: The listing was archived because it has related orders.
       destroyed: Listing deleted.
       image_required: Add at least one photo before submitting the listing for review.
@@ -183,3 +186,101 @@ en:
       marked_sold: Listing marked as sold.
       cannot_mark_sold: Only published or paused listings can be marked as sold.
       duplicated: Copy created as a draft.
+    statuses:
+      draft: Draft
+      pending_review: Pending review
+      published: Published
+      rejected: Rejected
+      paused: Paused
+      sold: Sold
+      archived: Archived
+    conditions:
+      new_sealed: New sealed
+      new_open_box: New – open box
+      used_like_new: Like new
+      used_good: Good
+      used_fair: Fair
+      for_parts: For parts
+    show:
+      meta_title: "%{title} – %{price}"
+      breadcrumb_label: Listing breadcrumb
+      status_banner: 'You are viewing this listing as its owner or a moderator. Current
+        status: %{status}.'
+      gallery:
+        role: Image gallery
+        label: Listing images
+        open: Enlarge image
+        previous: Previous image
+        next: Next image
+        thumb: View image %{number}
+        close: Close gallery
+      views:
+        one: "%{formatted} view"
+        other: "%{formatted} views"
+      saved_count:
+        one: "%{formatted} person saved this"
+        other: "%{formatted} people saved this"
+      published_on: Published on %{date}
+      unpublished: Not published
+      photo_prefix: 'Photo:'
+      photo_license_unknown: licence not stated
+      condition: Condition
+      overview_title: Overview and specs
+      description_title: Description
+      performance_title: Gaming performance
+      fps_value: "%{fps} fps"
+      performance_hint: Approximate frames per second measured by the seller.
+      shipping_title: Shipping and returns
+      shipping_method: Delivery method
+      free_shipping: Free shipping
+      shipping_cost: Shipping for %{price}
+      local_pickup: Local pickup in %{city}
+      pickup_only: Local pickup only
+      returns_title: Returns
+      default_return_policy: Check the return terms with the seller before buying.
+      you_save: You save %{amount}
+      sold_notice: This item has already sold.
+      in_stock: In stock (%{count} available)
+      out_of_stock: Out of stock
+      ships_within: Ships within %{days} days
+      estimated_delivery: 'Estimated delivery: %{start} – %{finish}'
+      buy_now: Buy now
+      add_to_cart: Add to cart
+      make_offer: Make an offer
+      message_seller: Message seller
+      share: Share
+      share_text: 'Take a look at this listing on PCMarket: %{title}'
+      copy_link: Copy this link
+      link_copied: Link copied!
+      add_favourite: Save to favourites
+      remove_favourite: Remove from favourites
+      seller: Seller
+      verified: Verified seller
+      rating_label: 'Rating: %{rating} out of 5'
+      review_count:
+        one: "%{count} review"
+        other: "%{count} reviews"
+      member_since: Member since %{date}
+      sales_count:
+        one: "%{count} sale"
+        other: "%{count} sales"
+      visit_store: Visit store
+      trust_link: How buyer protection works
+      report: Report listing
+      similar_title: Similar listings
+      similar_subtitle: Other close options by category and price.
+      more_from_seller: More from %{store}
+      reviews_title: Store reviews
+      see_all_reviews: See all
+      recently_viewed: Recently viewed
+      sell_similar_title: Got something similar?
+      sell_similar_body: List it for free and reach thousands of buyers.
+      sell_similar_cta: Sell mine
+      condition_tooltips:
+        new_sealed: Factory sealed and unopened.
+        new_open_box: New, but the box has been opened.
+        used_like_new: Barely used, with no noticeable signs of wear.
+        used_good: Used with light marks that do not affect how it works.
+        used_fair: Used with visible marks, fully functional.
+        for_parts: Not working or missing parts; sold for repair.
+      vacation_unavailable: This seller is on holiday. Buying is temporarily unavailable.

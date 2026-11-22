@@ -32,7 +32,8 @@
          data-scroll-row-target="container">
       <% listings.each do |listing| %>
         <div class="w-[264px] shrink-0 snap-start sm:w-[288px]">
-          <%= render "listings/card", listing: listing %>
+          <%= render "listings/card", listing: listing,
+                     favorited: local_assigns[:favorited_ids]&.include?(listing.id) %>
         </div>
       <% end %>
     </div>

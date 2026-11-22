@@ -1,0 +1,24 @@
+---
+fr:
+  saved_searches:
+    title: Recherches enregistrées
+    body: Nous vous préviendrons lorsque des annonces correspondront à vos recherches.
+    browse: Parcourir les annonces
+    manage: Gérer
+    all_categories: Toutes les catégories
+    price_range: "%{min} – %{max}"
+    any: indifférent
+    created_on: Enregistrée le %{date}
+    view: Voir les résultats
+    delete: Supprimer la recherche
+    confirm_delete: Supprimer cette recherche enregistrée ?
+    created: Recherche enregistrée. Nous vous préviendrons dès qu'il y aura du nouveau.
+    destroyed: Recherche supprimée.
+    invalid: La recherche n'a pas pu être enregistrée.
+    empty_title: Vous n'avez aucune recherche enregistrée
+    empty_body: Filtrez les annonces et appuyez sur « Enregistrer la recherche » pour
+      recevoir des alertes.
+    empty_cta: Commencer à chercher
+    notify_on: Alertes activées
+    notify_off: Alertes désactivées
+    default_name: Ma recherche

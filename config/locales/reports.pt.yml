@@ -1,0 +1,19 @@
+---
+pt:
+  reports:
+    modal_title: Denunciar este anúncio
+    reason: Motivo
+    details: Detalhes (opcional)
+    details_placeholder: Diga-nos o que se passa com este anúncio.
+    submit: Enviar denúncia
+    cancel: Cancelar
+    created: Obrigado. Recebemos a sua denúncia e vamos analisá-la.
+    already_reported: Já denunciou este anúncio. Estamos a analisá-lo.
+    invalid: Não foi possível enviar a denúncia.
+    reasons:
+      spam: Spam ou duplicado
+      fraud: Possível fraude
+      prohibited: Produto proibido
+      counterfeit: Contrafação
+      offensive: Conteúdo ofensivo
+      other: Outro motivo

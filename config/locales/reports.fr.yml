@@ -1,0 +1,19 @@
+---
+fr:
+  reports:
+    modal_title: Signaler cette annonce
+    reason: Motif
+    details: Détails (facultatif)
+    details_placeholder: Dites-nous ce qui ne va pas avec cette annonce.
+    submit: Envoyer le signalement
+    cancel: Annuler
+    created: Merci. Nous avons reçu votre signalement et allons l'examiner.
+    already_reported: Vous avez déjà signalé cette annonce. Nous l'examinons.
+    invalid: Le signalement n'a pas pu être envoyé.
+    reasons:
+      spam: Spam ou doublon
+      fraud: Fraude possible
+      prohibited: Produit interdit
+      counterfeit: Contrefaçon
+      offensive: Contenu offensant
+      other: Autre motif

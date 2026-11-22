@@ -39,6 +39,8 @@ class Demo::ImageLibraryTest < ActiveSupport::TestCase
     assert_equal %w[Ada Grace], entries.map { |entry| entry["creator"] }.sort
     assert_equal "CC BY-SA", entries.find { |entry| entry["creator"] == "Grace" }["license"]
     assert_not entries.any? { |entry| entry["source_url"] == "https://example.test/nc" }
+    assert @root.join("contact/contact_gaming-pc-rgb.jpg").file?,
+           "expected a labelled contact sheet for the query"
   end
 
   test "ignores Openverse results narrower than 800 pixels" do
@@ -101,6 +103,52 @@ class Demo::ImageLibraryTest < ActiveSupport::TestCase
     assert_equal 1, library(target: 2).call.size
   end
 
+  test "rejects results whose titles and tags do not match the query" do
+    payload = {
+      "results" => [
+        openverse_result(url: "https://images.example.test/mountain.jpg", license: "cc0",
+                         width: 1200, title: "Mountain landscape at sunset",
+                         tags: %w[landscape mountain forest]),
+        openverse_result(url: "https://images.example.test/pc.jpg", license: "cc0",
+                         width: 1200, title: "Gaming PC with RGB fans", tags: %w[gaming pc rgb])
+      ]
+    }
+    stub_request(:get, /api\.openverse\.org\/v1\/images/).to_return(
+      body: payload.to_json, headers: { "Content-Type" => "application/json" }
+    )
+    stub_request(:get, "https://images.example.test/pc.jpg")
+      .to_return(body: @jpeg, headers: { "Content-Type" => "image/jpeg" })
+
+    entries = library(target: 2).call
+
+    assert_equal [ "https://example.test/photo" ], entries.map { |entry| entry["source_url"] }
+    assert_not_requested :get, "https://images.example.test/mountain.jpg"
+  end
+
+  test "honours the committed image denylist by source url or file name" do
+    denylist = @root.join("image_denylist.txt")
+    denylist.write("# reviewed photos\nhttps://example.test/blocked\n")
+    payload = {
+      "results" => [
+        openverse_result(url: "https://images.example.test/blocked.jpg", license: "cc0",
+                         width: 1200, source: "https://example.test/blocked"),
+        openverse_result(url: "https://images.example.test/allowed.jpg", license: "cc0",
+                         width: 1200, source: "https://example.test/allowed")
+      ]
+    }
+    stub_request(:get, /api\.openverse\.org\/v1\/images/).to_return(
+      body: payload.to_json, headers: { "Content-Type" => "application/json" }
+    )
+    stub_request(:get, "https://images.example.test/allowed.jpg")
+      .to_return(body: @jpeg, headers: { "Content-Type" => "image/jpeg" })
+
+    entries = library(target: 2).call
+
+    assert_equal 1, entries.size
+    assert_equal "https://example.test/allowed", entries.first["source_url"]
+    assert_not_requested :get, "https://images.example.test/blocked.jpg"
+  end
+
   test "used entries intersect the manifest with blob metadata" do
     blob = ActiveStorage::Blob.create_and_upload!(
       io: StringIO.new(@jpeg), filename: "used.jpg", content_type: "image/jpeg",
@@ -123,15 +171,20 @@ class Demo::ImageLibraryTest < ActiveSupport::TestCase
   def library(target:)
     Demo::ImageLibrary.new(
       queries: [ "gaming pc rgb" ], target: target,
-      manifest_path: @manifest, storage_root: @storage, logger: ->(_message) { }
+      manifest_path: @manifest, storage_root: @storage,
+      denylist_path: @root.join("image_denylist.txt"),
+      contact_root: @root.join("contact"),
+      logger: ->(_message) { }
     )
   end
 
   def openverse_result(url:, license:, width:, creator: "Photographer",
-                       source: "https://example.test/photo")
+                       source: "https://example.test/photo", title: "Gaming PC RGB build",
+                       tags: %w[gaming pc rgb])
     {
       "url" => url, "thumbnail" => url, "license" => license, "width" => width,
       "height" => 800, "creator" => creator, "foreign_landing_url" => source,
+      "title" => title, "tags" => tags.map { |name| { "name" => name } },
       "license_url" => "https://creativecommons.org/licenses/#{license}/4.0/"
     }
   end

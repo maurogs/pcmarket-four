@@ -1,0 +1,19 @@
+---
+en:
+  reports:
+    modal_title: Report this listing
+    reason: Reason
+    details: Details (optional)
+    details_placeholder: Tell us what is wrong with this listing.
+    submit: Send report
+    cancel: Cancel
+    created: Thank you. We have received your report and will review it.
+    already_reported: You have already reported this listing. We are reviewing it.
+    invalid: The report could not be sent.
+    reasons:
+      spam: Spam or duplicate
+      fraud: Possible fraud
+      prohibited: Prohibited product
+      counterfeit: Counterfeit
+      offensive: Offensive content
+      other: Other reason

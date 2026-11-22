@@ -1,0 +1,73 @@
+---
+pt:
+  stores:
+    meta:
+      title: "%{store} na PCMarket"
+      description: Descubra os anúncios, avaliações e políticas de %{store} na PCMarket.
+    header:
+      verified: Verificada
+      professional: Vendedor profissional
+      private: Vendedor particular
+      rating_label: 'Avaliação média: %{rating} de 5'
+      followers_count:
+        one: "%{formatted} seguidor"
+        other: "%{formatted} seguidores"
+      for_sale:
+        one: "%{count} à venda"
+        other: "%{count} à venda"
+      sold_count:
+        one: "%{count} vendido"
+        other: "%{count} vendidos"
+      member_since: Desde %{date}
+      follow: Seguir
+      following: A seguir
+      message: Mensagem
+      share: Partilhar
+      share_text: Descubra a loja %{store} na PCMarket
+      vacation_title: A loja está de férias
+      vacation_body: Pode continuar a ver os anúncios, mas as entregas podem demorar
+        mais.
+    tabs:
+      listings: Anúncios
+      about: Informação
+      reviews: Avaliações
+    listings:
+      category: Categoria
+      all_categories: Todas as categorias
+      include_sold: Incluir vendidos
+      empty_title: Esta loja não tem anúncios com esses filtros
+      empty_body: Tente remover filtros ou volte mais tarde.
+    about:
+      title: Sobre a loja
+      description_empty: Esta loja ainda não adicionou uma descrição.
+      policies_title: Políticas de envio e devolução
+      shipping_policy: Política de envio
+      return_policy: Política de devolução
+      no_policy: O vendedor não indicou uma política. Pergunte antes de comprar.
+      business_title: Informação do vendedor
+      company_name: Nome da empresa
+      tax_id: NIF/NIPC
+      location: Localização
+      not_provided: Não fornecido
+      private_note: Este vendedor atua como particular. As compras entre particulares
+        não incluem as mesmas garantias das compras a um profissional.
+      member_since: Membro desde
+      buyer_protection: Proteção do comprador
+    reviews:
+      disabled_title: Avaliações em pausa
+      disabled_body: As avaliações dos compradores estão temporariamente ocultas.
+        Volta em breve.
+      title: Avaliações dos compradores
+      based_on:
+        one: Com base em %{formatted} avaliação
+        other: Com base em %{formatted} avaliações
+      sort: Ordenar
+      newest: Mais recentes
+      highest: Melhor avaliadas
+      lowest: Pior avaliadas
+      apply: Aplicar
+      seller_reply: Resposta do vendedor
+      empty_title: Ainda não há avaliações
+      empty_body: As avaliações aparecerão aqui quando esta loja receber algumas.
+    followed: Agora segue esta loja.
+    unfollowed: Deixou de seguir esta loja.

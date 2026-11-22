@@ -203,7 +203,12 @@ class Listing < ApplicationRecord
   end
 
   def ordered_images
-    images.includes(:blob).to_a.sort_by { |image| [ image.blob.metadata["position"].to_i, image.id.to_i ] }
+    records = if images.loaded?
+      images.to_a
+    else
+      images.includes(:blob).to_a
+    end
+    records.sort_by { |image| [ image.blob.metadata["position"].to_i, image.id.to_i ] }
   end
 
   def featured?

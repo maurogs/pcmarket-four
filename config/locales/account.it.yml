@@ -1,0 +1,115 @@
+---
+it:
+  account:
+    title: Il tuo account
+    edit_profile: Modifica profilo
+    favourites: Preferiti
+    saved_searches: Ricerche salvate
+    orders: Ordini
+    area:
+      label: Impostazioni account
+      nav_label: Navigazione account
+      security: Account e sicurezza
+      addresses: Indirizzi
+      notifications: Notifiche
+      privacy: Privacy e dati
+    profile:
+      title: Account e sicurezza
+      subtitle: Gestisci i tuoi dati personali, il nome pubblico e la lingua.
+      errors:
+        one: Controlla %{count} campo
+        other: Controlla %{count} campi
+      avatar: Foto profilo
+      avatar_hint: JPEG, PNG o WebP. Meglio un'immagine quadrata.
+      first_name: Nome
+      last_name: Cognome
+      username: Nome utente
+      username_hint: 'Pubblico e univoco. Da 3 a 30 lettere, numeri, trattini, underscore
+        o #.'
+      phone: Telefono
+      phone_hint: Includi il prefisso internazionale, ad esempio +393000000000.
+      email: Indirizzo email
+      email_hint: Se lo cambi, riceverai un link di conferma prima che diventi attivo.
+      pending_email: In attesa di conferma di %{email}.
+      language: Lingua preferita
+      google_note: Accedi con Google. La tua email è gestita da Google, ma puoi impostare
+        una password qui sotto.
+      change_password: Cambia password
+      save: Salva modifiche
+      saved: Il tuo account è stato aggiornato.
+      email_confirmation_sent: Controlla la posta per confermare il nuovo indirizzo.
+    password:
+      title: Password
+      subtitle: Usa una password forte che non usi altrove.
+      current: Password attuale
+      google_note: Il tuo account usa l'accesso Google. Imposta qui una password per
+        accedere anche con l'email.
+      new: Nuova password
+      confirmation: Conferma nuova password
+      hint: Almeno 8 caratteri. Usa maiuscole, numeri e simboli.
+      save: Aggiorna password
+      saved: La tua password è stata aggiornata.
+      wrong_current: La password attuale non è corretta.
+    addresses:
+      title: Indirizzi
+      subtitle: Salva gli indirizzi che usi per le consegne.
+      new: Aggiungi indirizzo
+      new_title: Nuovo indirizzo
+      edit_title: Modifica indirizzo
+      default: Predefinito
+      make_default: Imposta come predefinito
+      edit: Modifica
+      destroy: Elimina
+      destroy_confirm: Eliminare questo indirizzo?
+      empty_title: Nessun indirizzo salvato
+      empty_body: Aggiungi un indirizzo per velocizzare i prossimi ordini.
+      full_name: Nome completo
+      line1: Indirizzo
+      line2: Indirizzo (riga 2)
+      postal_code: CAP
+      city: Città
+      region: Provincia
+      country: Paese
+      phone: Telefono
+      set_default: Usa come indirizzo predefinito
+      back: Torna agli indirizzi
+      save: Salva indirizzo
+      created: Indirizzo aggiunto.
+      updated: Indirizzo aggiornato.
+      destroyed: Indirizzo eliminato.
+    notifications:
+      title: Notifiche
+      subtitle: Scegli quali email ricevere.
+      keys:
+        email_messages: Messaggi
+        email_offers: Offerte
+        email_order_updates: Aggiornamenti ordini
+        email_saved_search_alerts: Avvisi ricerche salvate
+        email_price_drops_favourites: Calo prezzi sui preferiti
+        email_newsletter: Newsletter
+      hints:
+        email_messages: Quando un acquirente o venditore ti invia un messaggio.
+        email_offers: Nuove offerte e risposte alle tue offerte.
+        email_order_updates: Aggiornamenti su pagamento, spedizione e consegna.
+        email_saved_search_alerts: Nuovi annunci corrispondenti alle tue ricerche.
+        email_price_drops_favourites: Quando un annuncio salvato scende di prezzo.
+        email_newsletter: Novità, offerte e aggiornamenti della piattaforma.
+      save: Salva preferenze
+      saved: Preferenze di notifica aggiornate.
+    privacy:
+      title: Privacy e dati
+      subtitle: Scarica i tuoi dati o chiudi il tuo account.
+      export_title: Scarica i tuoi dati
+      export_body: Ottieni un file JSON con profilo, indirizzi, annunci, ordini, preferiti
+        e recensioni (articoli 15 e 20 del GDPR).
+      export_button: Scarica i miei dati
+    deletion:
+      title: Elimina account
+      body: Il tuo profilo sarà anonimizzato, gli annunci archiviati e i dati personali
+        rimossi. Gli ordini vengono conservati per obblighi legali. L'azione è irreversibile.
+      type_delete: Scrivi DELETE per confermare
+      password: Conferma con la password
+      submit: Elimina il mio account
+      confirm: Eliminare definitivamente il tuo account?
+      done: Il tuo account è stato eliminato.
+      confirmation_error: Non abbiamo potuto confermare la tua identità. Riprova.

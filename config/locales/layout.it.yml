@@ -4,7 +4,9 @@ it:
     skip_to_content: Vai al contenuto principale
     meta:
       title: Compra e vendi tecnologia nuova e usata
-      description: 'PCMarket è il marketplace spagnolo della tecnologia: PC gaming, componenti, periferiche, portatili, smartphone, tablet e console di venditori verificati.'
+      description: 'PCMarket è il marketplace spagnolo della tecnologia: PC gaming,
+        componenti, periferiche, portatili, smartphone, tablet e console di venditori
+        verificati.'
       og_image_alt: PCMarket, il marketplace della tecnologia usata
     announcement:
       help: Aiuto
@@ -48,6 +50,12 @@ it:
       store_settings: Impostazioni negozio
       admin: Pannello di amministrazione
       logout: Esci
+      addresses: Indirizzi
+      notifications: Preferenze di notifica
+      privacy: Privacy e dati
+      store_policies: Politiche del negozio
+      vacation_mode: Modalità vacanza
+      payouts: Pagamenti
     nav:
       new: Novità
       deals: Offerte
@@ -66,6 +74,7 @@ it:
         deals_title: Offerte della settimana
         deals_body: Tecnologia verificata con sconti reali, finché dura lo stock.
         deals_cta: Vedi le offerte
+      more: Altro
     drawer:
       title: Menu
       close: Chiudi il menu
@@ -84,7 +93,8 @@ it:
       account: Account
     footer:
       newsletter_title: Offerte che valgono la pena
-      newsletter_body: Ricevi ogni settimana il meglio della tecnologia usata. Niente spam.
+      newsletter_body: Ricevi ogni settimana il meglio della tecnologia usata. Niente
+        spam.
       email_label: Indirizzo e-mail
       email_placeholder: tu@esempio.it
       subscribe: Iscriviti
@@ -113,7 +123,7 @@ it:
       privacy: Privacy
       cookies: Cookie
       legal_notice: Note legali
-      image_credits: "Crediti immagini"
+      image_credits: Crediti immagini
       cookie_preferences: Preferenze cookie
       language: Lingua
       social: Social network
@@ -124,14 +134,17 @@ it:
       back_to_top: Torna su
     cookies:
       banner_title: La tua privacy è importante
-      banner_body: Usiamo cookie necessari per il funzionamento di PCMarket e, con il tuo consenso, cookie analitici e di marketing.
+      banner_body: Usiamo cookie necessari per il funzionamento di PCMarket e, con
+        il tuo consenso, cookie analitici e di marketing.
       accept_all: Accetta tutti
       reject_all: Rifiuta tutti
       customise: Personalizza
       modal_title: Preferenze cookie
-      modal_body: Scegli quali cookie consentire. I cookie necessari non possono essere disattivati.
+      modal_body: Scegli quali cookie consentire. I cookie necessari non possono essere
+        disattivati.
       necessary: Necessari
-      necessary_body: Indispensabili per accedere, conservare il carrello e ricordare le preferenze.
+      necessary_body: Indispensabili per accedere, conservare il carrello e ricordare
+        le preferenze.
       analytics: Analitici
       analytics_body: Ci aiutano a capire come viene usato PCMarket per migliorarlo.
       marketing: Marketing

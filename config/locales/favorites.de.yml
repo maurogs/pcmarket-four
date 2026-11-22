@@ -1,0 +1,16 @@
+---
+de:
+  favorites:
+    title: Deine Favoriten
+    body: Speichere Anzeigen zum späteren Vergleichen und erhalte Hinweise bei Preissenkungen.
+    filters_label: Favoriten filtern
+    filters:
+      available: Verfügbar
+      sold: Verkauft
+    unavailable: Nicht verfügbar
+    empty_title: Du hast noch keine Favoriten
+    empty_body: Tippe bei einer Anzeige auf das Herz, um sie hier zu speichern.
+    empty_cta: Anzeigen entdecken
+    added: Zu Favoriten hinzugefügt.
+    removed: Aus Favoriten entfernt.
+    login_required: Melde dich an, um deine Lieblingsanzeigen zu speichern.

@@ -1,0 +1,86 @@
+---
+pt:
+  auth:
+    registrations_disabled: O registo está temporariamente desativado.
+    fields:
+      email: Endereço de e-mail
+      email_placeholder: voce@exemplo.com
+      password: Palavra-passe
+      password_placeholder: A sua palavra-passe
+      password_confirmation: Confirme a palavra-passe
+      new_password: Nova palavra-passe
+      first_name: Nome
+      last_name: Apelido
+      username: Nome de utilizador (opcional)
+      username_placeholder: É gerado um se deixar em branco
+      username_hint: É assim que os outros utilizadores o veem. Pode alterá-lo mais
+        tarde.
+    sign_in:
+      title: Iniciar sessão
+      subtitle: Aceda aos seus favoritos, pedidos e mensagens.
+      submit: Iniciar sessão
+      forgot: Esqueceu-se da palavra-passe?
+      remember: Manter sessão neste dispositivo
+      no_account: Ainda não tem conta?
+      sign_up: Criar uma conta
+    sign_up:
+      title: Crie a sua conta
+      subtitle: Compre e venda tecnologia com toda a tranquilidade.
+      submit: Criar conta
+      password_hint: Pelo menos 8 caracteres. Use maiúsculas, números e símbolos.
+      terms: Aceito os
+      terms_link: termos de utilização
+      and: e a
+      privacy_link: política de privacidade
+      marketing: Quero receber ofertas e novidades
+      marketing_hint: Pode cancelar a subscrição a qualquer momento.
+      have_account: Já tem conta?
+      sign_in: Iniciar sessão
+    terms_acceptance:
+      title: Aceita os termos para continuar
+      subtitle: Antes de usar a PCMarket, revê e aceita os nossos termos e a política
+        de privacidade.
+      marketing: Receber ofertas e novidades
+      marketing_hint: Podes cancelar a subscrição a qualquer momento.
+      submit: Aceitar e continuar
+      required: Tens de aceitar os termos e a política de privacidade para continuar.
+      accepted: Obrigado. A tua conta está pronta.
+    forgot:
+      title: Repor a palavra-passe
+      subtitle: Enviaremos um link para criar uma nova.
+      submit: Enviar link
+      back: Voltar ao início de sessão
+    reset:
+      title: Criar uma nova palavra-passe
+      subtitle: Escolha uma palavra-passe que não use noutro sítio.
+      submit: Guardar palavra-passe
+      back: Voltar ao início de sessão
+    confirmation:
+      title: Reenviar confirmação
+      subtitle: Enviaremos novamente o e-mail para ativar a sua conta.
+      submit: Reenviar e-mail
+      back: Voltar ao início de sessão
+    unlock:
+      title: Desbloquear a sua conta
+      subtitle: Enviaremos instruções para a desbloquear.
+      submit: Enviar instruções
+      back: Voltar ao início de sessão
+    shared:
+      brand_body: O mercado de tecnologia em segunda mão, com vendedores verificados
+        e proteção do comprador.
+      testimonials:
+        1:
+          quote: Vendi a minha placa gráfica em dois dias, sem complicações.
+          author: Lucía, Madrid
+        2:
+          quote: Encontrei o portátil que queria a metade do preço.
+          author: Marc, Barcelona
+        3:
+          quote: O processo de envio foi claríssimo do início ao fim.
+          author: Ane, Bilbau
+      testimonial: Testemunho %{number}
+      point_1: Pagamentos e vendedores verificados
+      point_2: Envios com seguimento
+      point_3: Apoio no seu idioma
+      or: ou
+      google: Continuar com o Google

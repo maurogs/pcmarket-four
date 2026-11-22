@@ -4,7 +4,9 @@ pt:
     skip_to_content: Saltar para o conteúdo principal
     meta:
       title: Compre e venda tecnologia nova e em segunda mão
-      description: 'A PCMarket é o marketplace espanhol de tecnologia: PCs gaming, componentes, periféricos, portáteis, telemóveis, tablets e consolas de vendedores verificados.'
+      description: 'A PCMarket é o marketplace espanhol de tecnologia: PCs gaming,
+        componentes, periféricos, portáteis, telemóveis, tablets e consolas de vendedores
+        verificados.'
       og_image_alt: PCMarket, o marketplace de tecnologia em segunda mão
     announcement:
       help: Ajuda
@@ -48,6 +50,12 @@ pt:
       store_settings: Definições da loja
       admin: Painel de administração
       logout: Terminar sessão
+      addresses: Endereços
+      notifications: Preferências de notificação
+      privacy: Privacidade e dados
+      store_policies: Políticas da loja
+      vacation_mode: Modo de férias
+      payouts: Pagamentos
     nav:
       new: Novidades
       deals: Ofertas
@@ -66,6 +74,7 @@ pt:
         deals_title: Ofertas da semana
         deals_body: Tecnologia verificada com descontos reais, enquanto houver stock.
         deals_cta: Ver ofertas
+      more: Mais
     drawer:
       title: Menu
       close: Fechar menu
@@ -84,7 +93,8 @@ pt:
       account: Conta
     footer:
       newsletter_title: Ofertas que valem a pena
-      newsletter_body: Receba semanalmente o melhor da tecnologia em segunda mão. Sem spam.
+      newsletter_body: Receba semanalmente o melhor da tecnologia em segunda mão.
+        Sem spam.
       email_label: Endereço de e-mail
       email_placeholder: voce@exemplo.pt
       subscribe: Subscrever
@@ -113,7 +123,7 @@ pt:
       privacy: Privacidade
       cookies: Cookies
       legal_notice: Informação legal
-      image_credits: "Créditos das imagens"
+      image_credits: Créditos das imagens
       cookie_preferences: Preferências de cookies
       language: Idioma
       social: Redes sociais
@@ -124,16 +134,20 @@ pt:
       back_to_top: Voltar ao topo
     cookies:
       banner_title: A sua privacidade é importante
-      banner_body: Usamos cookies necessários para o funcionamento da PCMarket e, com a sua autorização, cookies analíticos e de marketing.
+      banner_body: Usamos cookies necessários para o funcionamento da PCMarket e,
+        com a sua autorização, cookies analíticos e de marketing.
       accept_all: Aceitar todos
       reject_all: Rejeitar todos
       customise: Personalizar
       modal_title: Preferências de cookies
-      modal_body: Escolha os cookies que autoriza. Os cookies necessários não podem ser desativados.
+      modal_body: Escolha os cookies que autoriza. Os cookies necessários não podem
+        ser desativados.
       necessary: Necessários
-      necessary_body: Indispensáveis para iniciar sessão, guardar o carrinho e memorizar as preferências.
+      necessary_body: Indispensáveis para iniciar sessão, guardar o carrinho e memorizar
+        as preferências.
       analytics: Analíticos
-      analytics_body: Ajudam-nos a compreender como a PCMarket é utilizada para a melhorar.
+      analytics_body: Ajudam-nos a compreender como a PCMarket é utilizada para a
+        melhorar.
       marketing: Marketing
       marketing_body: Usados para lhe mostrar anúncios relevantes noutros sites.
       save: Guardar preferências

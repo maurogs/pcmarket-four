@@ -226,7 +226,7 @@ module Demo
         form: "ATX", colour: "Black", rgb: "Addressable", price: 14_900 },
       { title: "Fractal Design North", brand: "Fractal Design", size: "Mid Tower",
         form: "ATX", colour: "White", rgb: "None", price: 13_900 },
-      { title: "Hyte Y60", brand: "Hyte", size: "Mid Tower",
+      { title: "Hyte Y60 Mid Tower", brand: "Hyte", size: "Mid Tower",
         form: "ATX", colour: "White", rgb: "Addressable", price: 18_900 },
       { title: "be quiet! Pure Base 500DX", brand: "be quiet!", size: "Mid Tower",
         form: "ATX", colour: "Black", rgb: "Addressable", price: 9_900 },
@@ -236,7 +236,7 @@ module Demo
         form: "E-ATX", colour: "Black", rgb: "Addressable", price: 7_900 },
       { title: "Phanteks Eclipse G360A", brand: "Phanteks", size: "Mid Tower",
         form: "ATX", colour: "Black", rgb: "Addressable", price: 8_900 },
-      { title: "Antec C8", brand: "Antec", size: "Full Tower",
+      { title: "Antec C8 Full Tower", brand: "Antec", size: "Full Tower",
         form: "E-ATX", colour: "White", rgb: "None", price: 10_900 },
       { title: "Lian Li A4-H2O", brand: "Lian Li", size: "Small Form Factor",
         form: "Mini-ITX", colour: "Black", rgb: "None", price: 14_900 }
@@ -396,7 +396,7 @@ module Demo
       "other-laptops" => [
         laptop("Lenovo IdeaPad Slim 3", "Lenovo", "AMD", "Integrated", "Other",
                "8GB", "DDR4", "512GB", "15\"", "Grey", 29_900),
-        laptop("HP 250 G9", "HP", "Intel", "Integrated", "Other", "8GB", "DDR4",
+        laptop("HP 250 G9 Laptop", "HP", "Intel", "Integrated", "Other", "8GB", "DDR4",
                "256GB", "15\"", "Black", 24_900),
         laptop("Acer Aspire 5", "Acer", "Intel", "Integrated", "Other", "16GB",
                "DDR4", "512GB", "15\"", "Silver", 34_900)
@@ -491,7 +491,7 @@ module Demo
       "retro-handhelds" => [
         console("Game Boy Advance SP", "Retro", "Other", 9_900, "Nintendo"),
         console("Nintendo DS Lite", "Retro", "Other", 5_900, "Nintendo"),
-        console("PSP 3000", "Retro", "Other", 8_900, "Sony"),
+        console("Sony PSP 3000", "Retro", "Other", 8_900, "Sony"),
         console("Nintendo 3DS XL", "Retro", "Other", 12_900, "Nintendo"),
         console("Game Boy Color", "Retro", "Other", 7_900, "Nintendo")
       ],
@@ -659,6 +659,27 @@ module Demo
         simple("Norton 360 Deluxe 1 año", "Norton", 2_900)
       ]
       }.freeze
+    end
+
+    # Every static catalogue entry plus one sample of each generated PC
+    # template. Used by tests to audit title output without running a seed.
+    def self.catalogue_products
+      entries = products.flat_map do |category_slug, list|
+        list.map do |product|
+          product = product.dup
+          product[:title] ||= case category_slug
+          when "cpus" then "#{product[:brand]} #{product[:name]}"
+          when "gpus" then product[:label]
+          end
+          [ category_slug, product ]
+        end
+      end
+
+      %w[gaming-pcs creator-rigs streaming-rigs local-ai-rigs].each do |category_slug|
+        entries << [ category_slug, pc(category_slug, Random.new(1)) ]
+      end
+
+      entries
     end
 
     class << self

@@ -97,9 +97,13 @@ class Setting < ApplicationRecord
     # is tiny and read on every request, so per-key lookups would multiply
     # queries unnecessarily.
     def cached_values
-      Rails.cache.fetch("#{CACHE_PREFIX}/all") do
+      return Current.settings_values unless Current.settings_values.nil?
+
+      values = Rails.cache.fetch("#{CACHE_PREFIX}/all") do
         all.to_h { |record| [ record.key, record.typed_value ] }
       end
+      Current.settings_values = values
+      values
     end
 
     def enabled?(key)
@@ -187,5 +191,6 @@ class Setting < ApplicationRecord
   def expire_cache
     Rails.cache.delete(self.class.cache_key(key))
     Rails.cache.delete("#{CACHE_PREFIX}/all")
+    Current.settings_values = nil
   end
 end

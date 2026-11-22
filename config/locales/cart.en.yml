@@ -1,57 +1,60 @@
+---
 en:
   cart:
-    title: "Your cart"
-    subtitle: "Review your items and choose how you want to receive them."
-    summary: "Order summary"
-    subtotal: "Subtotal"
-    shipping: "Shipping"
-    checkout: "Checkout"
-    checkout_guest: "Checkout as guest"
-    checkout_disabled: "Online checkout is temporarily disabled — contact the seller via chat."
-    have_account: "Already have an account?"
-    log_in: "Log in"
-    checkout_hint: "You can review everything before paying."
-    keep_shopping: "Continue shopping"
-    quantity: "Quantity"
+    title: Your cart
+    subtitle: Review your items and choose how you want to receive them.
+    summary: Order summary
+    subtotal: Subtotal
+    shipping: Shipping
+    checkout: Checkout
+    checkout_guest: Checkout as guest
+    checkout_disabled: Online checkout is temporarily disabled — contact the seller
+      via chat.
+    have_account: Already have an account?
+    log_in: Log in
+    checkout_hint: You can review everything before paying.
+    keep_shopping: Continue shopping
+    quantity: Quantity
     quantity_value:
-      one: "Quantity: %{count}"
-      other: "Quantity: %{count}"
-    remove: "Remove"
-    update: "Update"
-    save_to_favourites: "Save to favourites"
-    saved_to_favourites: "Item moved to your favourites."
-    decrease: "Decrease quantity"
-    increase: "Increase quantity"
-    free_shipping: "Free"
-    local_pickup_only: "Local pickup only"
-    group_shipping: "Shipping"
-    group_subtotal: "Seller subtotal"
+      one: 'Quantity: %{count}'
+      other: 'Quantity: %{count}'
+    remove: Remove
+    update: Update
+    save_to_favourites: Save to favourites
+    saved_to_favourites: Item moved to your favourites.
+    decrease: Decrease quantity
+    increase: Increase quantity
+    free_shipping: Free
+    local_pickup_only: Local pickup only
+    group_shipping: Shipping
+    group_subtotal: Seller subtotal
     group_items:
       one: "%{count} item"
       other: "%{count} items"
     item_count:
       one: "%{count} item"
       other: "%{count} items"
-    platform_fee: "Platform fee"
-    platform_fee_included: "Included (paid by the seller)"
-    estimated_total: "Estimated total"
+    platform_fee: Platform fee
+    platform_fee_included: Included (paid by the seller)
+    estimated_total: Estimated total
     buyer_protection:
-      title: "Buyer protection"
-      body: "Secure payment and buyer protection. If something goes wrong, we help you sort it out."
+      title: Buyer protection
+      body: Secure payment and buyer protection. If something goes wrong, we help
+        you sort it out.
     warnings:
-      sold: "This item has been sold and is not included in the total."
-      unavailable: "This item is no longer available and is not included in the total."
-      vacation: "The seller is on holiday. This item is not included in the total."
-      quantity_reduced: "Fewer units are available now, so the quantity has been adjusted."
+      sold: This item has been sold and is not included in the total.
+      unavailable: This item is no longer available and is not included in the total.
+      vacation: The seller is on holiday. This item is not included in the total.
+      quantity_reduced: Fewer units are available now, so the quantity has been adjusted.
     recommended:
-      title: "Recommended for you"
-      view_all: "View all"
-    empty_title: "Your cart is empty"
-    empty_body: "Add listings to your cart to buy them together."
-    empty_cta: "View listings"
+      title: Recommended for you
+      view_all: View all
+    empty_title: Your cart is empty
+    empty_body: Add listings to your cart to buy them together.
+    empty_cta: View listings
     added: "“%{title}” was added to your cart."
-    removed: "Item removed from your cart."
+    removed: Item removed from your cart.
     errors:
-      own_listing: "You cannot buy your own listing."
-      unavailable: "This listing is no longer available."
-      vacation: "This seller is on holiday and cannot take new orders right now."
+      own_listing: You cannot buy your own listing.
+      unavailable: This listing is no longer available.
+      vacation: This seller is on holiday and cannot take new orders right now.

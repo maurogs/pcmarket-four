@@ -1,0 +1,81 @@
+---
+en:
+  search:
+    save_search: Save search
+    breadcrumb_label: Breadcrumb
+    meta:
+      title: Search technology
+      description: Search gaming PCs, components, laptops, phones, consoles and accessories
+        on PCMarket.
+      query_title: Results for “%{query}”
+      category_title: "%{category}: %{count} listings"
+      category_description: Buy and sell second-hand %{category} with verified sellers
+        and safe delivery.
+    results:
+      title: All listings
+      title_query: Results for “%{query}”
+      subtitle: Filter by price, condition and specs to find exactly what you need.
+      count:
+        one: "%{formatted} listing"
+        other: "%{formatted} listings"
+      empty_title: No listings found
+      empty_body: Try removing a filter or widening the price range.
+      clear_filters: Clear filters
+      try_title: Explore popular categories
+    labels_tabs: Filter by badge
+    category:
+      all_listings: All listings
+      badge: Category
+      browse_children: Subcategories
+    filters:
+      title: Filter listings
+      filter_listings: Search within results
+      mobile_button: Filters (%{count})
+      close: Close filters
+      clear_all: Clear all
+      categories: Categories
+      all_categories: All categories
+      price: Price
+      min_price: Min
+      max_price: Max
+      condition: Condition
+      labels: Badges
+      tags: Style
+      location: Location
+      all_regions: All of Spain
+      shipping: Delivery and pickup
+      ship: Shipping available
+      pickup: Local pickup
+      free_shipping: Free shipping
+      on_sale: On sale only
+      search_options: Search options
+      show_all: Show all (%{count})
+      show_less: Show less
+      show_results: Show %{count} results
+    sort:
+      label: Sort
+      best_match: Best match
+      newest: Newest
+      price_asc: 'Price: low to high'
+      price_desc: 'Price: high to low'
+      popular: Most saved
+    view:
+      grid: Grid view
+      list: List view
+    chips:
+      query: 'Search: %{query}'
+      price_range: "%{min} – %{max}"
+      price_min: From %{min}
+      price_max: Up to %{max}
+      ship: Shipping available
+      pickup: Local pickup
+      on_sale: On sale
+    pagination:
+      previous: Previous page
+      next: Next page
+      load_more: Load more results
+    seo:
+      footer_title: Buy second-hand %{category}
+      footer_body: On PCMarket you will find %{category} from private sellers and
+        professional stores. Compare prices, check each item's condition and buy with
+        buyer protection.

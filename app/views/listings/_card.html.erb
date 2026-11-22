@@ -1,4 +1,4 @@
-<article class="surface card-lift group relative flex h-full flex-col overflow-hidden">
+<article class="surface card-lift group relative flex h-full min-w-0 flex-col overflow-hidden">
   <% cache [ listing, listing.store, I18n.locale ] do %>
     <div class="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-zinc-800">
       <%= link_to listing_path(listing), tabindex: -1,
@@ -34,8 +34,8 @@
     </div>
 
     <div class="flex flex-1 flex-col gap-2.5 p-4">
-      <div class="flex items-start justify-between gap-3">
-        <h3 class="line-clamp-2 text-sm font-semibold leading-5 text-slate-950 dark:text-white">
+      <div class="flex min-w-0 items-start justify-between gap-3">
+        <h3 class="line-clamp-2 min-w-0 break-words text-sm font-semibold leading-5 text-slate-950 dark:text-white">
           <%= link_to listing.title, listing_path(listing), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
         </h3>
       </div>
@@ -44,9 +44,9 @@
 
       <% chips = spec_chips(listing) %>
       <% if chips.any? %>
-        <ul class="flex flex-wrap gap-1.5">
+        <ul class="flex min-w-0 flex-wrap gap-1.5">
           <% chips.each do |_key, value| %>
-            <li class="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">
+            <li class="max-w-full break-words rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">
               <%= value %>
             </li>
           <% end %>
@@ -63,8 +63,8 @@
         </span>
       </div>
 
-      <div class="flex items-center gap-1.5 border-t border-slate-100 pt-2 text-xs text-slate-600 dark:border-zinc-800 dark:text-zinc-400">
-        <span class="truncate"><%= listing_seller_name(listing) %></span>
+      <div class="flex min-w-0 items-center gap-1.5 border-t border-slate-100 pt-2 text-xs text-slate-600 dark:border-zinc-800 dark:text-zinc-400">
+        <span class="min-w-0 truncate"><%= listing_seller_name(listing) %></span>
         <% if listing.store&.verified? %>
           <span class="text-brand-600 dark:text-brand-400" title="<%= t("listings.card.verified_seller") %>">
             <%= icon "badge-check", class: "size-3.5" %>

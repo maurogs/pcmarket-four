@@ -1,0 +1,16 @@
+---
+en:
+  favorites:
+    title: Your favourites
+    body: Save listings to compare them later and get notified if the price drops.
+    filters_label: Filter favourites
+    filters:
+      available: Available
+      sold: Sold
+    unavailable: Unavailable
+    empty_title: You have no favourites yet
+    empty_body: Tap the heart on any listing to save it here.
+    empty_cta: Browse listings
+    added: Added to favourites.
+    removed: Removed from favourites.
+    login_required: Sign in to save your favourite listings.

@@ -1,0 +1,5 @@
+---
+en:
+  conversations:
+    own_listing: You cannot start a conversation about your own listing.
+    started: We have opened the conversation. Full messaging is coming soon.

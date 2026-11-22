@@ -22,6 +22,7 @@ class Category < ApplicationRecord
   def bust_caches
     MenuBuilder.bust!
     ListingSearch.bust_caches!
+    Current.category_root_slugs = nil
   end
   scope :active, -> { where(active: true) }
   scope :menu_roots, -> { active.roots.where(show_in_menu: true).order(:position, :id) }
@@ -29,9 +30,13 @@ class Category < ApplicationRecord
   # Root id => slug, cached alongside the taxonomy timestamp. Used by listing
   # cards to decide whether spec chips apply without loading the whole path.
   def self.root_slug_map
-    Rails.cache.fetch("category-root-slugs/v1", expires_in: 1.hour) do
+    return Current.category_root_slugs unless Current.category_root_slugs.nil?
+
+    map = Rails.cache.fetch("category-root-slugs/v1", expires_in: 1.hour) do
       roots.pluck(:id, :slug).to_h
     end
+    Current.category_root_slugs = map
+    map
   end
 
   def self.find_by_path_slugs(slugs)

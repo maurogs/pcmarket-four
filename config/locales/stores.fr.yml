@@ -1,0 +1,72 @@
+---
+fr:
+  stores:
+    meta:
+      title: "%{store} sur PCMarket"
+      description: Découvrez les annonces, avis et politiques de %{store} sur PCMarket.
+    header:
+      verified: Vérifiée
+      professional: Vendeur professionnel
+      private: Vendeur particulier
+      rating_label: 'Note moyenne : %{rating} sur 5'
+      followers_count:
+        one: "%{formatted} abonné"
+        other: "%{formatted} abonnés"
+      for_sale:
+        one: "%{count} en vente"
+        other: "%{count} en vente"
+      sold_count:
+        one: "%{count} vendu"
+        other: "%{count} vendus"
+      member_since: Depuis %{date}
+      follow: Suivre
+      following: Abonné
+      message: Message
+      share: Partager
+      share_text: Découvrez la boutique %{store} sur PCMarket
+      vacation_title: La boutique est en congés
+      vacation_body: Vous pouvez toujours consulter ses annonces, mais les livraisons
+        peuvent prendre plus de temps.
+    tabs:
+      listings: Annonces
+      about: Informations
+      reviews: Avis
+    listings:
+      category: Catégorie
+      all_categories: Toutes les catégories
+      include_sold: Inclure les vendues
+      empty_title: Cette boutique n'a aucune annonce avec ces filtres
+      empty_body: Essayez de retirer des filtres ou revenez plus tard.
+    about:
+      title: À propos de la boutique
+      description_empty: Cette boutique n'a pas encore ajouté de description.
+      policies_title: Politiques de livraison et de retour
+      shipping_policy: Politique de livraison
+      return_policy: Politique de retour
+      no_policy: Le vendeur n'a pas précisé de politique. Renseignez-vous avant d'acheter.
+      business_title: Informations sur le vendeur
+      company_name: Raison sociale
+      tax_id: Numéro fiscal
+      location: Localisation
+      not_provided: Non communiqué
+      private_note: Ce vendeur agit en tant que particulier. Les achats entre particuliers
+        n'offrent pas les mêmes garanties que ceux réalisés auprès d'un professionnel.
+      member_since: Membre depuis
+      buyer_protection: Protection de l'acheteur
+    reviews:
+      disabled_title: Avis suspendus
+      disabled_body: Les avis des acheteurs sont temporairement masqués. Revenez bientôt.
+      title: Avis des acheteurs
+      based_on:
+        one: Basé sur %{formatted} avis
+        other: Basé sur %{formatted} avis
+      sort: Trier
+      newest: Plus récents
+      highest: Mieux notés
+      lowest: Moins bien notés
+      apply: Appliquer
+      seller_reply: Réponse du vendeur
+      empty_title: Aucun avis pour le moment
+      empty_body: Les avis apparaîtront ici dès que cette boutique en recevra.
+    followed: Vous suivez maintenant cette boutique.
+    unfollowed: Vous ne suivez plus cette boutique.

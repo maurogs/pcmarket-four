@@ -1,0 +1,118 @@
+---
+fr:
+  account:
+    title: Votre compte
+    edit_profile: Modifier le profil
+    favourites: Favoris
+    saved_searches: Recherches enregistrées
+    orders: Commandes
+    area:
+      label: Paramètres du compte
+      nav_label: Navigation du compte
+      security: Compte et sécurité
+      addresses: Adresses
+      notifications: Notifications
+      privacy: Confidentialité et données
+    profile:
+      title: Compte et sécurité
+      subtitle: Gérez vos informations personnelles, votre nom public et votre langue.
+      errors:
+        one: Vérifiez %{count} champ
+        other: Vérifiez %{count} champs
+      avatar: Photo de profil
+      avatar_hint: JPEG, PNG ou WebP. Une image carrée est préférable.
+      first_name: Prénom
+      last_name: Nom
+      username: Nom d'utilisateur
+      username_hint: 'Public et unique. 3 à 30 lettres, chiffres, tirets, underscores
+        ou #.'
+      phone: Téléphone
+      phone_hint: Indiquez l'indicatif pays, par exemple +33600000000.
+      email: Adresse e-mail
+      email_hint: En cas de changement, vous recevrez un lien de confirmation avant
+        activation.
+      pending_email: En attente de confirmation de %{email}.
+      language: Langue préférée
+      google_note: Vous vous connectez avec Google. Votre e-mail est géré par Google,
+        mais vous pouvez définir un mot de passe ci-dessous.
+      change_password: Changer le mot de passe
+      save: Enregistrer
+      saved: Votre compte a été mis à jour.
+      email_confirmation_sent: Consultez votre boîte de réception pour confirmer la
+        nouvelle adresse.
+    password:
+      title: Mot de passe
+      subtitle: Utilisez un mot de passe fort que vous n'utilisez nulle part ailleurs.
+      current: Mot de passe actuel
+      google_note: Votre compte utilise Google. Définissez un mot de passe ici pour
+        vous connecter aussi avec votre e-mail.
+      new: Nouveau mot de passe
+      confirmation: Confirmer le nouveau mot de passe
+      hint: Au moins 8 caractères. Utilisez majuscules, chiffres et symboles.
+      save: Mettre à jour
+      saved: Votre mot de passe a été mis à jour.
+      wrong_current: Le mot de passe actuel est incorrect.
+    addresses:
+      title: Adresses
+      subtitle: Enregistrez les adresses utilisées pour vos livraisons.
+      new: Ajouter une adresse
+      new_title: Nouvelle adresse
+      edit_title: Modifier l'adresse
+      default: Par défaut
+      make_default: Définir par défaut
+      edit: Modifier
+      destroy: Supprimer
+      destroy_confirm: Supprimer cette adresse ?
+      empty_title: Aucune adresse enregistrée
+      empty_body: Ajoutez une adresse pour accélérer vos prochaines commandes.
+      full_name: Nom complet
+      line1: Adresse
+      line2: Complément d'adresse
+      postal_code: Code postal
+      city: Ville
+      region: Province
+      country: Pays
+      phone: Téléphone
+      set_default: Utiliser comme adresse par défaut
+      back: Retour aux adresses
+      save: Enregistrer l'adresse
+      created: Adresse ajoutée.
+      updated: Adresse mise à jour.
+      destroyed: Adresse supprimée.
+    notifications:
+      title: Notifications
+      subtitle: Choisissez les e-mails que vous souhaitez recevoir.
+      keys:
+        email_messages: Messages
+        email_offers: Offres
+        email_order_updates: Mises à jour des commandes
+        email_saved_search_alerts: Alertes de recherches enregistrées
+        email_price_drops_favourites: Baisses de prix sur vos favoris
+        email_newsletter: Newsletter
+      hints:
+        email_messages: Lorsqu'un acheteur ou vendeur vous envoie un message.
+        email_offers: Nouvelles offres et réponses à vos offres.
+        email_order_updates: Paiement, expédition et livraison.
+        email_saved_search_alerts: Nouvelles annonces correspondant à vos recherches.
+        email_price_drops_favourites: Lorsqu'une annonce enregistrée baisse de prix.
+        email_newsletter: Nouveautés, offres et actualités de la plateforme.
+      save: Enregistrer
+      saved: Préférences de notification mises à jour.
+    privacy:
+      title: Confidentialité et données
+      subtitle: Téléchargez vos données ou fermez votre compte.
+      export_title: Télécharger vos données
+      export_body: Obtenez un fichier JSON avec votre profil, vos adresses, annonces,
+        commandes, favoris et avis (articles 15 et 20 du RGPD).
+      export_button: Télécharger mes données
+    deletion:
+      title: Supprimer le compte
+      body: Votre profil sera anonymisé, vos annonces archivées et vos données personnelles
+        supprimées. Les commandes sont conservées pour obligations légales. Cette
+        action est irréversible.
+      type_delete: Saisissez DELETE pour confirmer
+      password: Confirmez avec votre mot de passe
+      submit: Supprimer mon compte
+      confirm: Supprimer définitivement votre compte ?
+      done: Votre compte a été supprimé.
+      confirmation_error: Nous n'avons pas pu confirmer votre identité. Réessayez.

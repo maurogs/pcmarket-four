@@ -12,7 +12,7 @@
 
     <section class="min-w-0" data-controller="modal view_toggle">
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <div class="flex min-w-0 items-center gap-2">
+        <div class="flex min-w-0 flex-wrap items-center gap-2">
           <button type="button" data-action="modal#open"
                   class="<%= ui_button_classes(variant: :outline, size: :sm, extra: "lg:hidden") %>">
             <%= icon "sliders-horizontal", class: "size-4" %>
@@ -23,10 +23,10 @@
           </p>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center justify-end gap-2">
           <%= form_with url: request.path, method: :get,
                         data: { turbo_frame: frame_id, turbo_action: "advance" },
-                        class: "flex items-center gap-2" do %>
+                        class: "flex min-w-0 items-center gap-2" do %>
             <%= hidden_search_fields(@search.query_params, except: :sort) %>
             <label for="<%= frame_id %>-sort" class="hidden text-xs font-medium text-slate-500 sm:inline dark:text-zinc-400">
               <%= t("search.sort.label") %>
@@ -82,7 +82,7 @@
       <% end %>
 
       <div class="mt-4 hidden" data-filters-target="skeleton" aria-hidden="true">
-        <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
+        <div class="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
           <% 8.times do %>
             <div class="surface overflow-hidden">
               <div class="skeleton aspect-[4/3] rounded-none"></div>
@@ -98,7 +98,7 @@
 
       <% if @listings.any? %>
         <div id="listing-grid" data-view-toggle-target="container"
-             class="mt-4 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
+             class="mt-4 grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
           <% @listings.each do |listing| %>
             <%= render "listings/card", listing: listing,
                        favorited: @favorited_listing_ids.include?(listing.id),

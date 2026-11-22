@@ -168,10 +168,11 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Contexto del proyecto</h1>
     <p class="lede">Arquitectura, decisiones y mapa de código</p>
-    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-22 01:40</p>
+    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-22 10:43</p>
   </header>
   <main><section class="card status">
 <h2><span>Estado</span><span class="badge badge-success">Complete</span></h2>
+<p>Fase 9A completada: calidad del contenido demo y estabilidad de las pruebas. Los archivos de idioma están organizados por dominio, las fotos demo se filtran por relevancia y atribución, los títulos cortos del catálogo reciben un calificador sin añadir el estado del artículo, las páginas de anuncios cumplen presupuestos explícitos de consultas SQL y el ejecutor de pruebas de macOS ya no hace fork después de que ruby-vips inicialice Objective-C. La prueba de sistema responsive cubre ahora pantallas públicas y autenticadas en anchos de móvil y tableta.</p>
 <p>Fase 8 completada: datos de demostración realistas e idempotentes con fotografía de producto bajo licencias abiertas y almacenada en caché. <code>bin/rails demo:images</code> descarga y valida las fotos y escribe el manifiesto versionado <code>db/seeds/demo/image_manifest.json</code>; <code>Demo::Seed</code> crea tiendas, vendedores, compradores, anuncios en todas las categorías hoja, conversaciones, ofertas, pedidos, reseñas, notificaciones, denuncias y registros de marketing; <code>/:locale/credits</code> atribuye cada foto. La semilla se ejecuta en desarrollo (o con <code>DEMO_SEED=1</code>), admite <code>DEMO_SCALE</code> y se omite si ya existen usuarios demo.</p>
 <p>Fase 7C completada: API JSON versionada bajo <code>/api/v1</code> para las futuras apps iOS y Android, con tokens Bearer guardados como digest, endpoints de cuenta, catálogo, cesta, pago, pedidos, mensajería, notificaciones, dispositivos, contenido y descubrimiento que reutilizan los servicios existentes. La aplicación sirve un documento OpenAPI 3.1 y una página humana de documentación. La aplicación web no cambia y toda la suite, las pruebas de sistema y RuboCop están en verde.</p>
 <p>Fase 7B completada: cuestionario del buscador de PC con resultados recomendados, página pública «Cómo vender» y flujo de Véndenos tu equipo protegido por un flag, con precios de compra, pagos con IBAN cifrado y operaciones de administración.</p>
@@ -196,6 +197,7 @@ footer {
 <tr><td>7B</td><td>Buscador de PC, página de venta y Véndenos tu equipo</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>7C</td><td>API JSON versionada para apps móviles</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>8</td><td>Datos demo realistas, fotos de stock y créditos de imágenes</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>9A</td><td>Relevancia demo, calidad del contenido, presupuestos de consultas y estabilidad de pruebas</td><td><span class="badge badge-success">Completada</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -219,7 +221,7 @@ footer {
 <li>Todas las rutas excepto <code>/up</code>, <code>/robots.txt</code> y <code>/sitemap.xml</code> están dentro de <code>scope &quot;(:locale)&quot;, locale: /es|en|fr|de|it|pt/</code>.</li>
 <li><code>ApplicationController#switch_locale</code> valida <code>params[:locale]</code> y envuelve cada petición en <code>I18n.with_locale</code>.</li>
 <li>Los callbacks OmniAuth de Devise viven fuera del ámbito de idioma porque Devise no admite callbacks OmniAuth bajo un segmento dinámico.</li>
-<li>Los archivos de idioma se dividen por dominio (<code>models</code>, <code>home</code>, <code>layout</code>, <code>listings</code>, <code>pages</code>, <code>newsletter</code>, <code>errors</code>, <code>common</code>, <code>countries</code>, <code>cart</code>, <code>checkout</code>, <code>orders</code>, <code>notifications</code>, <code>messaging</code>, <code>admin</code>); cada clave existe en los seis idiomas. <code>test/i18n/locale_parity_test.rb</code> exige paridad.</li>
+<li>Los archivos de idioma se dividen por dominio: <code>account</code>, <code>admin</code>, <code>api</code>, <code>auth</code>, <code>cart</code>, <code>checkout</code>, <code>common</code>, <code>content</code>, <code>conversations</code>, <code>countries</code>, <code>errors</code>, <code>favorites</code>, <code>home</code>, <code>layout</code>, <code>listings</code>, <code>maintenance</code>, <code>messaging</code>, <code>models</code>, <code>newsletter</code>, <code>notifications</code>, <code>orders</code>, <code>pages</code>, <code>reports</code>, <code>saved_searches</code>, <code>search</code>, <code>seller</code> y <code>stores</code>. Los antiguos archivos <code>phase2</code> y <code>phase3b</code> se eliminaron en la fase 9A. Cada clave existe en los seis idiomas; <code>test/i18n/locale_parity_test.rb</code> exige paridad.</li>
 <li>El inglés es inglés británico (favourite, colour, authorised).</li>
 <li>Los selectores de idioma del pie y del cajón conservan la ruta y la consulta actuales.</li>
 </ul>
@@ -432,11 +434,19 @@ footer {
 </ul>
 <h3>Límites de rendimiento</h3>
 <ul>
-<li><code>ListingSearch::INCLUDES</code> precarga tienda, categoría, región, usuario y adjuntos/blobs de imágenes. Las tarjetas nunca llaman a <code>category.root</code> ni a <code>user.store</code>; los slugs raíz vienen de un <code>Category.root_slug_map</code> cacheado y los nombres de vendedor prefieren la tienda precargada.</li>
+<li><code>ListingSearch::INCLUDES</code> precarga tienda, categoría, región, usuario y adjuntos de imágenes con sus blobs y registros de variantes. Las tarjetas nunca llaman a <code>category.root</code> ni a <code>user.store</code>; los slugs raíz vienen de un <code>Category.root_slug_map</code> cacheado y los nombres de vendedor prefieren la tienda precargada.</li>
 <li><code>MenuBuilder</code> obtiene raíces e hijos directos en dos consultas y construye rutas desde slugs sin recorrer la ascendencia.</li>
-<li><code>Setting</code> cachea toda la pequeña tabla de ajustes bajo una clave.</li>
+<li><code>Setting</code> cachea toda la pequeña tabla de ajustes bajo una clave. Durante una petición, <code>Current.settings_values</code> y <code>Current.category_root_slugs</code> mantienen los valores en memoria y se limpian cuando cambian las filas subyacentes.</li>
 <li>Las páginas de búsqueda anónimas envían <code>Cache-Control: public, max-age=60</code> y <code>fresh_when</code> sobre <code>[locale, params digest, Listing.maximum(:updated_at)]</code>; las páginas de anuncio usan <code>fresh_when</code> sobre <code>[listing, locale, store.updated_at]</code>.</li>
 <li>Protección contra N+1: <code>test/integration/search_performance_test.rb</code> renderiza una página de categoría con 24 anuncios y exige menos de 25 consultas SQL mediante <code>ActiveSupport::Notifications</code>.</li>
+<li>La fase 9A añade presupuestos por página en <code>test/integration/query_performance_test.rb</code>: la portada con 50 anuncios debe quedar por debajo de 40 consultas SQL, una página de categoría por debajo de 30 y una página de anuncio por debajo de 35. Las mediciones actuales son portada 29, categoría 21 y anuncio 34.</li>
+</ul>
+<h3>Infraestructura de pruebas (fase 9A)</h3>
+<ul>
+<li>Las pruebas en macOS usan un solo trabajador por defecto. Hacer fork después de que ruby-vips inicialice Objective-C aborta el trabajador y deja al padre esperando para siempre. <code>PARALLEL_WORKERS</code> permite cambiar el número de trabajadores; en macOS se usan hilos y en otras plataformas se mantiene el paralelismo por procesos.</li>
+<li><code>test/integration/query_performance_test.rb</code> exige los presupuestos SQL de portada, categoría y anuncio descritos arriba.</li>
+<li><code>test/system/responsive_test.rb</code> comprueba desbordamiento horizontal en pantallas públicas y autenticadas a 390 px y 768 px, incluidas portada, categoría, búsqueda, anuncio, tienda, cesta, pago, conversaciones, panel del vendedor y administración. También mantiene una comprobación de navegación de escritorio a 1440 px.</li>
+<li>Las pruebas de sistema borran las cookies de Devise mediante Chrome DevTools y WebDriver para que una sesión iniciada no se filtre a la prueba siguiente.</li>
 </ul>
 <h3>SEO y seguridad</h3>
 <ul>
@@ -481,17 +491,19 @@ footer {
 <li>Las tarjetas de disputas, denuncias y pagos pendientes del panel enlazan a sus pantallas. <code>Admin::SidebarCounts</code> cachea disputas abiertas, denuncias abiertas y pagos pendientes durante un minuto; el panel reutiliza sus agregados cacheados para evitar consultas extra.</li>
 <li>Esquema nuevo: <code>order_notes</code> (<code>order_id</code>, <code>author_id</code>, <code>body</code>), <code>orders .refund_reference</code> y <code>reviews.seller_reply_visible</code>.</li>
 </ul>
-<h3>Datos demo y créditos de imágenes (Fase 8)</h3>
+<h3>Datos demo y créditos de imágenes (fases 8 y 9A)</h3>
 <ul>
 <li><code>Demo::ImageLibrary</code> descarga fotos de stock por consulta. Openverse no necesita clave; Unsplash, Pexels y Pixabay solo se usan si están configuradas <code>UNSPLASH_ACCESS_KEY</code>, <code>PEXELS_API_KEY</code> o <code>PIXABAY_API_KEY</code>. Las peticiones usan el agente genérico <code>PCMarketDemoSeeder/1.0</code>, timeouts, como máximo dos trabajadores y una pausa cortés de 300 ms.</li>
-<li>Los resultados se filtran a CC0, Public Domain Mark, CC BY y CC BY-SA, JPEG, PNG o WebP y al menos 800 px de ancho. Cada descarga se valida con Vips, se redimensiona a 1600 px de lado mayor como JPEG q82, se deduplica por SHA256 y se guarda en <code>storage/demo_images/&lt;query_slug&gt;/</code>. El manifiesto versionado guarda consulta, archivo, fuente, URL de origen, autor, licencia, URL de licencia, dimensiones, checksum y categorías.</li>
+<li>La fase 9A filtra la relevancia antes de descargar. Las consultas son nombres literales de producto con alternativas más amplias, las filas de Openverse deben coincidir con palabras clave positivas del título o las etiquetas y no deben coincidir con las negativas, y se prefieren resultados de fotografía con proporción ancha o cuadrada. La lista de bloqueo revisada vive en <code>db/seeds/demo/image_denylist.txt</code> y coincide con la URL de origen o con el nombre del archivo guardado. Se generan hojas de contacto etiquetadas en <code>tmp/qa/</code> para la revisión manual.</li>
+<li>Los resultados se filtran a CC0, Public Domain Mark, CC BY y CC BY-SA, JPEG, PNG o WebP y al menos 800 px de ancho. Cada descarga se valida con Vips, se redimensiona a 1600 px de lado mayor como JPEG q82, se deduplica por SHA256 y se guarda en <code>storage/demo_images/&lt;query_slug&gt;/</code>. El manifiesto versionado guarda consulta, archivo, fuente, URL de origen, autor, licencia, URL de licencia, dimensiones, checksum y categorías; las entradas bloqueadas se eliminan tanto de las descargas como del manifiesto.</li>
 <li><code>Demo::ImageLibrary.used_entries</code> cruza las entradas del manifiesto con los metadatos de los blobs para la página de créditos. Cada blob demo lleva <code>source</code>, <code>source_url</code>, <code>creator</code>, <code>license</code> y <code>license_url</code>; las galerías de anuncios muestran una leyenda pequeña «Foto: autor / licencia» cuando existe.</li>
 <li><code>bin/rails demo:images</code> refresca la caché y el manifiesto. Si falla la red, la tarea termina sin error y la semilla recurre a la imagen de marcador de posición.</li>
 <li><code>Demo::Seed</code> es idempotente y etiqueta los registros mediante correos en <code>@demo.pcmarket.test</code>. Usa <code>Faker::Config.random = Random.new(42)</code> con idioma español y crea 12 tiendas profesionales con CIF español válido y logotipos SVG convertidos a PNG, 40 vendedores particulares, 60 compradores, ~600 anuncios en todas las categorías hoja, ~1.500 favoritos, ~300 seguidores, ~80 búsquedas guardadas, ~120 conversaciones con mensajes y ofertas, ~250 pedidos con eventos y disputas, ~180 reseñas, notificaciones, denuncias abiertas, suscriptores de newsletter, solicitudes de destacado y ofertas de venta.</li>
 <li>Los anuncios se generan desde catálogos reales de componentes (<code>Demo::Catalog</code>), rellenan todos los <code>FilterDefinition</code> efectivos de su categoría, usan precios plausibles en euros y multiplicadores por estado, calculan <code>game_fps</code> de los PCs gaming con la tabla del buscador de PC y reutilizan blobs existentes entre anuncios (sin subidas duplicadas) con metadatos de posición ordenados.</li>
+<li>La fase 9A deja de añadir el estado del artículo al título y usa <code>Demo::Seed.title_for</code>. Los nombres cortos del catálogo reciben un calificador natural en español de categoría, marca, modelo o capacidad hasta cumplir <code>Listing::MIN_TITLE_LENGTH</code>; el estado nunca se usa. Los precios se redondean a terminaciones comerciales, los precios originales siguen la misma regla y las descripciones usan etiquetas traducidas de filtros y frases completas de FPS.</li>
 <li><code>Current.seeding</code> desactiva <code>Notifier</code>, las difusiones de mensajes y notificaciones, los jobs de seguidores y búsquedas y el envío de correo durante la semilla. Las cachés de contadores se recalculan con SQL al final. <code>DEMO_SCALE=0.05</code> permite la prueba de humo; <code>DEMO_IMAGES=0</code> fuerza los marcadores sin red.</li>
-<li><code>bin/rails demo:reset</code> elimina solo usuarios, tiendas, anuncios, pedidos, conversaciones, filas sociales y de marketing demo y sus blobs de Active Storage, y vuelve a sembrar.</li>
-<li>Pruebas nuevas: <code>test/services/demo/image_library_test.rb</code> (WebMock de parseo, filtrado de licencia y tamaño, claves ausentes, caída de red y deduplicación por checksum), <code>test/seeds/demo_seed_test.rb</code> (semilla reducida e idempotencia sin imágenes) y <code>test/integration/credits_page_test.rb</code>.</li>
+<li><code>bin/rails demo:reset</code> elimina solo usuarios, tiendas, anuncios, pedidos, conversaciones, filas sociales y de marketing demo y sus blobs de Active Storage, y vuelve a sembrar. Una ejecución completa en desarrollo con imágenes crea 600 anuncios y 2.367 adjuntos; todos los títulos generados son válidos.</li>
+<li>Pruebas nuevas: <code>test/services/demo/image_library_test.rb</code> (WebMock de parseo, rechazo por relevancia, lista de bloqueo, hojas de contacto, filtrado de licencia y tamaño, claves ausentes, caída de red y deduplicación por checksum), <code>test/services/demo/catalog_test.rb</code> (las 304 plantillas de título estáticas y de PC generado frente a las validaciones de <code>Listing</code>), <code>test/seeds/demo_seed_test.rb</code> (semilla reducida, calidad del contenido e idempotencia sin imágenes) y <code>test/integration/credits_page_test.rb</code>.</li>
 </ul>
 </section>
 <section class="card code-map">
@@ -682,16 +694,21 @@ db/seeds.rb                                 cargador
 db/seeds/*.rb                               taxonomía y datos de referencia
 db/seeds/demo.rb                            punto de entrada de la semilla demo
 db/seeds/demo/image_manifest.json           manifiesto versionado de atribución de fotos
+db/seeds/demo/image_denylist.txt            lista de bloqueo revisada de fotos irrelevantes
 lib/tasks/demo.rake                         demo:images, demo:seed, demo:reset
-app/services/demo/image_library.rb          descarga, redimensionado vips y deduplicación SHA256
+app/services/demo/image_library.rb          relevancia, denylist, descarga, vips y SHA256
 app/services/demo/catalog.rb                catálogo español de productos, tiendas y ubicaciones
-app/services/demo/seed.rb                   semilla idempotente del mercado demo
+app/services/demo/seed.rb                   semilla idempotente + títulos válidos
 app/services/demo/reset.rb                  limpieza selectiva de datos demo y blobs
-app/models/current.rb                       protección Current.seeding para efectos secundarios
+app/models/current.rb                       caché por petición de ajustes/categorías + seeding
 app/views/pages/credits.html.erb            página de atribución de fotos
-test/services/demo/image_library_test.rb    parseo y fallbacks del importador
-test/seeds/demo_seed_test.rb                prueba de humo de la semilla reducida
+test/services/demo/image_library_test.rb    relevancia, denylist, parseo y fallbacks
+test/services/demo/catalog_test.rb          validación de todas las plantillas de título
+test/seeds/demo_seed_test.rb                semilla reducida, calidad e idempotencia
 test/integration/credits_page_test.rb       renderizado de créditos
+test/integration/query_performance_test.rb  presupuestos SQL de portada/categoría/anuncio
+test/system/responsive_test.rb              desbordamiento público/autenticado a 390/768 px
+test/test_helper.rb                         selección de trabajadores y entorno de pruebas
 db/seeds/legal/*.rb                         textos legales por país
 db/seeds/help_articles.rb                   18 artículos de ayuda
 app/services/trust_stats.rb                 agregados cacheados de confianza
@@ -765,10 +782,12 @@ test/integration/{legal_pages,trust_and_about,help_centre}_test.rb
 <li>La detección de seguridad de mensajes es heurística; la revisión de moderación sigue siendo manual.</li>
 <li>Las etiquetas de Véndenos tu equipo son informativas: todavía no hay API de transportista que emita etiquetas prepagadas y los pagos se registran a mano desde administración.</li>
 <li>Los FPS estimados del buscador de PC usan la tabla de gamas cuando el anuncio no tiene <code>game_fps</code>; la tabla necesita actualizaciones periódicas con cada nueva GPU.</li>
-<li>El manifiesto de imágenes demo es una selección, no exhaustiva: hay que ejecutar <code>bin/rails demo:images</code> para refrescarlo y revisar las licencias antes de reutilizar las fotos fuera del mercado demo.</li>
+<li>El manifiesto de imágenes demo es una selección, no exhaustiva: hay que ejecutar <code>bin/rails demo:images</code>, revisar las hojas de contacto de <code>tmp/qa/</code>, ampliar <code>db/seeds/demo/image_denylist.txt</code> cuando haga falta y revisar las licencias antes de reutilizar las fotos fuera del mercado demo.</li>
 <li>Los proveedores de stock opcionales solo se prueban cuando hay claves; con Openverse basta para el manifiesto versionado.</li>
-<li>La semilla demo se omite si ya existen usuarios demo. Usa <code>bin/rails demo:reset</code> para reconstruirla tras cambiar el generador.</li>
+<li>La semilla demo se omite si ya existen usuarios demo. Usa <code>bin/rails demo:reset</code> para reconstruirla tras cambiar el generador; la ejecución completa con imágenes está verificada.</li>
 <li>Las fotos demo viven en disco bajo <code>storage/demo_images</code>; esta fase no tiene una ruta de subida a S3 para la caché.</li>
+<li>macOS usa un solo trabajador de pruebas por estabilidad. <code>PARALLEL_WORKERS</code> puede acelerar ejecuciones locales, pero las pruebas paralelas con hilos comparten fixtures y PostgreSQL, así que valores altos pueden bloquear la base de datos.</li>
+<li>El presupuesto de consultas de la página de anuncio tiene poco margen (34 frente al límite de 35); cualquier precarga o consulta nueva en la vista debe revisar el presupuesto de forma explícita.</li>
 </ul>
 </section>
 </main>

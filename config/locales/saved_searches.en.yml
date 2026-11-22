@@ -1,0 +1,23 @@
+---
+en:
+  saved_searches:
+    title: Saved searches
+    body: We will let you know when listings match your searches.
+    browse: Browse listings
+    manage: Manage
+    all_categories: All categories
+    price_range: "%{min} – %{max}"
+    any: any
+    created_on: Saved on %{date}
+    view: View results
+    delete: Delete search
+    confirm_delete: Delete this saved search?
+    created: Search saved. We will let you know when something new appears.
+    destroyed: Search deleted.
+    invalid: The search could not be saved.
+    empty_title: You have no saved searches
+    empty_body: Filter listings and press “Save search” to receive alerts.
+    empty_cta: Start searching
+    notify_on: Alerts on
+    notify_off: Alerts off
+    default_name: My search

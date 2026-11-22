@@ -4,7 +4,8 @@ de:
     skip_to_content: Zum Hauptinhalt springen
     meta:
       title: Neu- und Gebrauchttechnik kaufen und verkaufen
-      description: 'PCMarket ist Spaniens Marktplatz für Technik: Gaming-PCs, Komponenten, Peripherie, Laptops, Smartphones, Tablets und Konsolen von verifizierten Verkäufern.'
+      description: 'PCMarket ist Spaniens Marktplatz für Technik: Gaming-PCs, Komponenten,
+        Peripherie, Laptops, Smartphones, Tablets und Konsolen von verifizierten Verkäufern.'
       og_image_alt: PCMarket, der Marktplatz für Gebrauchttechnik
     announcement:
       help: Hilfe
@@ -48,6 +49,12 @@ de:
       store_settings: Shop-Einstellungen
       admin: Admin-Bereich
       logout: Abmelden
+      addresses: Adressen
+      notifications: Benachrichtigungseinstellungen
+      privacy: Datenschutz und Daten
+      store_policies: Shop-Richtlinien
+      vacation_mode: Urlaubsmodus
+      payouts: Auszahlungen
     nav:
       new: Neu
       deals: Angebote
@@ -58,14 +65,17 @@ de:
       under_price: Unter %{price}
       promo:
         pc_finder_title: Finde den perfekten PC
-        pc_finder_body: Beantworte ein paar Fragen und wir schlagen passende Rechner vor.
+        pc_finder_body: Beantworte ein paar Fragen und wir schlagen passende Rechner
+          vor.
         pc_finder_cta: PC-Finder öffnen
         sell_title: Mach aus deiner Hardware Bargeld
-        sell_body: Verkaufe uns deinen PC, deine Konsole oder Komponenten schnell und sicher.
+        sell_body: Verkaufe uns deinen PC, deine Konsole oder Komponenten schnell
+          und sicher.
         sell_cta: An PCMarket verkaufen
         deals_title: Angebote der Woche
         deals_body: Geprüfte Technik mit echten Rabatten, solange der Vorrat reicht.
         deals_cta: Angebote ansehen
+      more: Mehr
     drawer:
       title: Menü
       close: Menü schließen
@@ -113,7 +123,7 @@ de:
       privacy: Datenschutz
       cookies: Cookies
       legal_notice: Impressum
-      image_credits: "Bildnachweise"
+      image_credits: Bildnachweise
       cookie_preferences: Cookie-Einstellungen
       language: Sprache
       social: Soziale Netzwerke
@@ -124,18 +134,22 @@ de:
       back_to_top: Nach oben
     cookies:
       banner_title: Deine Privatsphäre ist uns wichtig
-      banner_body: Wir verwenden notwendige Cookies für PCMarket und mit deiner Erlaubnis Analyse- und Marketing-Cookies.
+      banner_body: Wir verwenden notwendige Cookies für PCMarket und mit deiner Erlaubnis
+        Analyse- und Marketing-Cookies.
       accept_all: Alle akzeptieren
       reject_all: Alle ablehnen
       customise: Anpassen
       modal_title: Cookie-Einstellungen
-      modal_body: Wähle, welche Cookies du erlaubst. Notwendige Cookies können nicht deaktiviert werden.
+      modal_body: Wähle, welche Cookies du erlaubst. Notwendige Cookies können nicht
+        deaktiviert werden.
       necessary: Notwendig
       necessary_body: Erforderlich für Anmeldung, Warenkorb und deine Einstellungen.
       analytics: Analyse
-      analytics_body: Sie helfen uns zu verstehen, wie PCMarket genutzt wird, damit wir es verbessern können.
+      analytics_body: Sie helfen uns zu verstehen, wie PCMarket genutzt wird, damit
+        wir es verbessern können.
       marketing: Marketing
-      marketing_body: Werden verwendet, um dir relevante Anzeigen auf anderen Websites zu zeigen.
+      marketing_body: Werden verwendet, um dir relevante Anzeigen auf anderen Websites
+        zu zeigen.
       save: Einstellungen speichern
       close: Schließen
       saved: Deine Cookie-Einstellungen wurden gespeichert.

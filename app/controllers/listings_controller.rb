@@ -165,7 +165,8 @@ class ListingsController < ApplicationController
 
   def find_listing!
     Listing
-      .includes(:store, :user, :category, :region, { images_attachments: :blob })
+      .includes({ store: :user }, :user, :category, :region,
+                { images_attachments: { blob: { variant_records: { image_attachment: :blob } } } })
       .find_by(slug: params[:id])
   end
 
@@ -198,13 +199,14 @@ class ListingsController < ApplicationController
 
   def load_listing_details
     @store = @listing.store
-    @spec_labels = FilterDefinition.where(key: @listing.specs.keys).index_by(&:key)
-    @option_labels = FilterOption
-                     .where(filter_definition_id: @spec_labels.values.map(&:id))
-                     .index_by { |option| [ option.filter_definition_id, option.value ] }
+    @spec_labels = FilterDefinition.where(key: @listing.specs.keys)
+                                  .includes(:filter_options)
+                                  .index_by(&:key)
+    @option_labels = @spec_labels.values.flat_map(&:filter_options)
+                              .index_by { |option| [ option.filter_definition_id, option.value ] }
     @effective_filters = @listing.category.effective_filters
     @favorite = current_user&.favorites&.find_by(listing_id: @listing.id)
-    @reviews = @store ? @store.reviews.where(published: true).includes(:reviewer)
+    @reviews = @store ? @store.reviews.where(published: true).includes(reviewer: :store)
                              .order(created_at: :desc).limit(5).to_a : []
     @similar_listings = similar_listings
     @more_from_seller = more_from_seller
@@ -227,7 +229,8 @@ class ListingsController < ApplicationController
     Rails.cache.fetch([ "similar", @listing.id, @listing.category_id, @listing.price_cents ],
                       expires_in: 10.minutes) do
       Listing.similar_to(@listing)
-             .includes(:store, :category, :region, :user, { images_attachments: :blob })
+             .includes(:store, :category, :region, :user,
+                       { images_attachments: { blob: { variant_records: { image_attachment: :blob } } } })
              .to_a
     end
   end
@@ -236,7 +239,8 @@ class ListingsController < ApplicationController
     return [] if @store.nil?
 
     @store.listings.visible
-          .includes(:store, :category, :region, :user, { images_attachments: :blob })
+          .includes(:store, :category, :region, :user,
+                    { images_attachments: { blob: { variant_records: { image_attachment: :blob } } } })
           .where.not(id: @listing.id)
           .recent.limit(8).to_a
   end
@@ -246,7 +250,7 @@ class ListingsController < ApplicationController
     return [] if ids.empty?
 
     found = Listing.visible.includes(:store, :category, :region, :user,
-                                     { images_attachments: :blob })
+                                     { images_attachments: { blob: { variant_records: { image_attachment: :blob } } } })
                     .where(id: ids).index_by(&:id)
     ids.filter_map { |id| found[id] }.first(12)
   end

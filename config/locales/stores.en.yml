@@ -1,0 +1,71 @@
+---
+en:
+  stores:
+    meta:
+      title: "%{store} on PCMarket"
+      description: Discover %{store}'s listings, reviews and policies on PCMarket.
+    header:
+      verified: Verified
+      professional: Professional seller
+      private: Private seller
+      rating_label: 'Average rating: %{rating} out of 5'
+      followers_count:
+        one: "%{formatted} follower"
+        other: "%{formatted} followers"
+      for_sale:
+        one: "%{count} for sale"
+        other: "%{count} for sale"
+      sold_count:
+        one: "%{count} sold"
+        other: "%{count} sold"
+      member_since: Since %{date}
+      follow: Follow
+      following: Following
+      message: Message
+      share: Share
+      share_text: Discover the %{store} store on PCMarket
+      vacation_title: This store is on holiday
+      vacation_body: You can still browse its listings, but deliveries may take longer.
+    tabs:
+      listings: Listings
+      about: About
+      reviews: Reviews
+    listings:
+      category: Category
+      all_categories: All categories
+      include_sold: Include sold
+      empty_title: This store has no listings with those filters
+      empty_body: Try removing filters or check back later.
+    about:
+      title: About this store
+      description_empty: This store has not added a description yet.
+      policies_title: Shipping and returns policies
+      shipping_policy: Shipping policy
+      return_policy: Returns policy
+      no_policy: The seller has not specified a policy. Ask before buying.
+      business_title: Seller information
+      company_name: Company name
+      tax_id: Tax ID
+      location: Location
+      not_provided: Not provided
+      private_note: This seller is a private individual. Purchases between private
+        individuals do not carry the same guarantees as purchases from a professional.
+      member_since: Member since
+      buyer_protection: Buyer protection
+    reviews:
+      disabled_title: Reviews are paused
+      disabled_body: Buyer reviews are temporarily hidden. Please check back soon.
+      title: Buyer reviews
+      based_on:
+        one: Based on %{formatted} review
+        other: Based on %{formatted} reviews
+      sort: Sort
+      newest: Newest
+      highest: Highest rated
+      lowest: Lowest rated
+      apply: Apply
+      seller_reply: Seller reply
+      empty_title: No reviews yet
+      empty_body: Reviews will appear here once this store receives them.
+    followed: You are now following this store.
+    unfollowed: You have unfollowed this store.

@@ -1,0 +1,75 @@
+---
+de:
+  stores:
+    meta:
+      title: "%{store} auf PCMarket"
+      description: Entdecke Anzeigen, Bewertungen und Richtlinien von %{store} auf
+        PCMarket.
+    header:
+      verified: Verifiziert
+      professional: Gewerblicher Verkäufer
+      private: Privatverkäufer
+      rating_label: 'Durchschnittsbewertung: %{rating} von 5'
+      followers_count:
+        one: "%{formatted} Follower"
+        other: "%{formatted} Follower"
+      for_sale:
+        one: "%{count} im Verkauf"
+        other: "%{count} im Verkauf"
+      sold_count:
+        one: "%{count} verkauft"
+        other: "%{count} verkauft"
+      member_since: Seit %{date}
+      follow: Folgen
+      following: Gefolgt
+      message: Nachricht
+      share: Teilen
+      share_text: Entdecke den Shop %{store} auf PCMarket
+      vacation_title: Der Shop ist im Urlaub
+      vacation_body: Du kannst die Anzeigen weiter ansehen, Lieferungen können aber
+        länger dauern.
+    tabs:
+      listings: Anzeigen
+      about: Info
+      reviews: Bewertungen
+    listings:
+      category: Kategorie
+      all_categories: Alle Kategorien
+      include_sold: Verkaufte einschließen
+      empty_title: Dieser Shop hat keine Anzeigen mit diesen Filtern
+      empty_body: Entferne Filter oder schau später wieder vorbei.
+    about:
+      title: Über diesen Shop
+      description_empty: Dieser Shop hat noch keine Beschreibung hinzugefügt.
+      policies_title: Versand- und Rückgaberichtlinien
+      shipping_policy: Versandrichtlinie
+      return_policy: Rückgaberichtlinie
+      no_policy: Der Verkäufer hat keine Richtlinie angegeben. Frage vor dem Kauf
+        nach.
+      business_title: Verkäuferinformationen
+      company_name: Firmenname
+      tax_id: Steuernummer
+      location: Standort
+      not_provided: Nicht angegeben
+      private_note: Dieser Verkäufer handelt als Privatperson. Käufe zwischen Privatpersonen
+        bieten nicht dieselben Garantien wie Käufe bei einem Gewerbetreibenden.
+      member_since: Mitglied seit
+      buyer_protection: Käuferschutz
+    reviews:
+      disabled_title: Bewertungen pausiert
+      disabled_body: Käuferbewertungen sind vorübergehend ausgeblendet. Schau bald
+        wieder vorbei.
+      title: Käuferbewertungen
+      based_on:
+        one: Basierend auf %{formatted} Bewertung
+        other: Basierend auf %{formatted} Bewertungen
+      sort: Sortieren
+      newest: Neueste
+      highest: Beste Bewertung
+      lowest: Schlechteste Bewertung
+      apply: Anwenden
+      seller_reply: Antwort des Verkäufers
+      empty_title: Noch keine Bewertungen
+      empty_body: Bewertungen erscheinen hier, sobald dieser Shop welche erhält.
+    followed: Du folgst diesem Shop jetzt.
+    unfollowed: Du folgst diesem Shop nicht mehr.

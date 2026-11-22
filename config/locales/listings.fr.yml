@@ -42,7 +42,8 @@ fr:
     form:
       sell_label: Vendre sur PCMarket
       new_title: Créer votre annonce
-      new_subtitle: Cinq étapes rapides. Enregistrez un brouillon et terminez plus tard.
+      new_subtitle: Cinq étapes rapides. Enregistrez un brouillon et terminez plus
+        tard.
       edit_title: Modifier l'annonce
       edit_subtitle: Mettez à jour votre annonce et enregistrez les modifications.
       view_listing: Voir l'annonce
@@ -59,8 +60,8 @@ fr:
       error_summary:
         one: Vérifiez %{count} champ
         other: Vérifiez %{count} champs
-      re_review_warning: Modifier le titre, la catégorie ou les photos d'une annonce publiée la renvoie en modération avant
-        sa remise en ligne.
+      re_review_warning: Modifier le titre, la catégorie ou les photos d'une annonce
+        publiée la renvoie en modération avant sa remise en ligne.
       save_draft: Enregistrer le brouillon
       save_changes: Enregistrer
       submit_review: Envoyer en modération
@@ -68,10 +69,12 @@ fr:
       cancel: Annuler
       category:
         title: Catégorie
-        hint: Choisissez d'abord une famille, puis la catégorie exacte. Les champs techniques s'adaptent.
+        hint: Choisissez d'abord une famille, puis la catégorie exacte. Les champs
+          techniques s'adaptent.
       photos:
         title: Photos
-        hint: Ajoutez jusqu'à %{max} photos. Glissez pour les ordonner ; la première sert de couverture.
+        hint: Ajoutez jusqu'à %{max} photos. Glissez pour les ordonner ; la première
+          sert de couverture.
         add: Ajouter des photos
         formats: JPG, PNG ou WebP, %{size} Mo maximum chacune
         remove: Retirer
@@ -99,9 +102,8 @@ fr:
         single_quantity: Les particuliers publient une unité par annonce.
         tags: Étiquettes
         tags_hint: Choisissez jusqu'à 5 étiquettes pour aider les acheteurs.
-        description_placeholder: >-
-          Décrivez l'état, l'usage et le contenu. Conseil pour %{category} : mentionnez les modèles compatibles et tout détail
-          utile.
+        description_placeholder: 'Décrivez l''état, l''usage et le contenu. Conseil
+          pour %{category} : mentionnez les modèles compatibles et tout détail utile.'
         description_hint: Au moins %{min} caractères. Soyez clair et honnête.
         specs: Caractéristiques
         select_category: Choisissez une catégorie pour voir les champs techniques.
@@ -112,7 +114,8 @@ fr:
       price:
         title: Prix
         price_hint: Accepte les formats 1 299,50 ou 1299.50.
-        original_hint: Facultatif. Doit être supérieur au prix de vente pour afficher la remise.
+        original_hint: Facultatif. Doit être supérieur au prix de vente pour afficher
+          la remise.
         accepts_offers: Accepter les offres
         accepts_offers_hint: Les acheteurs pourront proposer un prix.
       delivery:
@@ -171,15 +174,118 @@ fr:
       submitted: Annonce envoyée. Nous la vérifions généralement sous 24 heures.
       draft_saved: Brouillon enregistré.
       updated: Annonce mise à jour.
-      sent_back: L'annonce repasse en modération car vous avez modifié le titre, la catégorie ou les photos.
+      sent_back: L'annonce repasse en modération car vous avez modifié le titre, la
+        catégorie ou les photos.
       archived: L'annonce a été archivée car elle a des commandes associées.
       destroyed: Annonce supprimée.
       image_required: Ajoutez au moins une photo avant d'envoyer l'annonce en modération.
-      cannot_submit: Cette annonce ne peut pas être envoyée en modération dans son état actuel.
+      cannot_submit: Cette annonce ne peut pas être envoyée en modération dans son
+        état actuel.
       paused: Annonce mise en pause.
       cannot_pause: Seules les annonces publiées peuvent être mises en pause.
       resumed: Annonce réactivée.
       cannot_resume: Seules les annonces en pause peuvent être réactivées.
       marked_sold: Annonce marquée comme vendue.
-      cannot_mark_sold: Seules les annonces publiées ou en pause peuvent être marquées comme vendues.
+      cannot_mark_sold: Seules les annonces publiées ou en pause peuvent être marquées
+        comme vendues.
       duplicated: Copie créée comme brouillon.
+    statuses:
+      draft: Brouillon
+      pending_review: En attente de validation
+      published: Publiée
+      rejected: Refusée
+      paused: En pause
+      sold: Vendue
+      archived: Archivée
+    conditions:
+      new_sealed: Neuf scellé
+      new_open_box: Neuf – boîte ouverte
+      used_like_new: Comme neuf
+      used_good: Bon état
+      used_fair: État correct
+      for_parts: Pour pièces
+    show:
+      meta_title: "%{title} – %{price}"
+      breadcrumb_label: Fil d'Ariane de l'annonce
+      status_banner: 'Vous consultez cette annonce en tant que propriétaire ou modérateur.
+        Statut actuel : %{status}.'
+      gallery:
+        role: Galerie d'images
+        label: Images de l'annonce
+        open: Agrandir l'image
+        previous: Image précédente
+        next: Image suivante
+        thumb: Voir l'image %{number}
+        close: Fermer la galerie
+      views:
+        one: "%{formatted} vue"
+        other: "%{formatted} vues"
+      saved_count:
+        one: "%{formatted} personne l'a enregistrée"
+        other: "%{formatted} personnes l'ont enregistrée"
+      published_on: Publiée le %{date}
+      unpublished: Non publiée
+      photo_prefix: 'Photo :'
+      photo_license_unknown: licence non indiquée
+      condition: État
+      overview_title: Aperçu et caractéristiques
+      description_title: Description
+      performance_title: Performances en jeu
+      fps_value: "%{fps} i/s"
+      performance_hint: Images par seconde approximatives mesurées par le vendeur.
+      shipping_title: Livraison et retours
+      shipping_method: Mode de livraison
+      free_shipping: Livraison gratuite
+      shipping_cost: Livraison pour %{price}
+      local_pickup: Retrait sur place à %{city}
+      pickup_only: Retrait sur place uniquement
+      returns_title: Retours
+      default_return_policy: Vérifiez les conditions de retour avec le vendeur avant
+        d'acheter.
+      you_save: Vous économisez %{amount}
+      sold_notice: Cet article a déjà été vendu.
+      in_stock: Disponible (%{count} en stock)
+      out_of_stock: Épuisé
+      ships_within: Expédié sous %{days} jours
+      estimated_delivery: 'Livraison estimée : %{start} – %{finish}'
+      buy_now: Acheter maintenant
+      add_to_cart: Ajouter au panier
+      make_offer: Faire une offre
+      message_seller: Contacter le vendeur
+      share: Partager
+      share_text: 'Découvrez cette annonce sur PCMarket : %{title}'
+      copy_link: Copiez ce lien
+      link_copied: Lien copié !
+      add_favourite: Ajouter aux favoris
+      remove_favourite: Retirer des favoris
+      seller: Vendeur
+      verified: Vendeur vérifié
+      rating_label: 'Note : %{rating} sur 5'
+      review_count:
+        one: "%{count} avis"
+        other: "%{count} avis"
+      member_since: Membre depuis %{date}
+      sales_count:
+        one: "%{count} vente"
+        other: "%{count} ventes"
+      visit_store: Voir la boutique
+      trust_link: Comment fonctionne la protection de l'acheteur
+      report: Signaler l'annonce
+      similar_title: Annonces similaires
+      similar_subtitle: D'autres options proches par catégorie et prix.
+      more_from_seller: Plus de %{store}
+      reviews_title: Avis sur la boutique
+      see_all_reviews: Tout voir
+      recently_viewed: Consultées récemment
+      sell_similar_title: Vous avez un article similaire ?
+      sell_similar_body: Publiez-le gratuitement et touchez des milliers d'acheteurs.
+      sell_similar_cta: Vendre le mien
+      condition_tooltips:
+        new_sealed: Scellé d'usine, jamais ouvert.
+        new_open_box: Neuf, mais la boîte a été ouverte.
+        used_like_new: Très peu utilisé, sans traces d'usure visibles.
+        used_good: Utilisé avec de légères marques sans incidence sur le fonctionnement.
+        used_fair: Utilisé avec des marques visibles, entièrement fonctionnel.
+        for_parts: Ne fonctionne pas ou pièces manquantes ; vendu pour réparation.
+      vacation_unavailable: Ce vendeur est en vacances. L'achat est temporairement
+        indisponible.

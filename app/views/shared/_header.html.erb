@@ -14,7 +14,7 @@
         <%= render "shared/search_box", input_id: "site-search" %>
       </div>
 
-      <div class="ml-auto flex items-center gap-1 sm:gap-2">
+      <div class="ml-auto flex min-w-0 shrink-0 items-center gap-0.5 sm:gap-2">
         <%= link_to new_listing_path,
                     class: ui_button_classes(variant: :primary, size: :sm, extra: "!hidden xl:!inline-flex") do %>
           <%= icon "plus", class: "size-4" %>
@@ -33,7 +33,7 @@
                 data-label-dark="<%= t("layout.header.theme_dark") %>"
                 aria-label="<%= t("layout.header.theme_dark") %>"
                 aria-pressed="false"
-                class="inline-flex size-11 items-center justify-center rounded-full text-slate-700 transition hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800">
+                class="hidden size-11 items-center justify-center rounded-full text-slate-700 transition hover:bg-slate-100 sm:inline-flex dark:text-zinc-200 dark:hover:bg-zinc-800">
           <span class="dark:hidden"><%= icon "moon", class: "size-5" %></span>
           <span class="hidden dark:block"><%= icon "sun", class: "size-5" %></span>
         </button>

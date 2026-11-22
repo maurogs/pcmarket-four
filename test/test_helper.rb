@@ -1,4 +1,7 @@
 ENV["RAILS_ENV"] ||= "test"
+# Threaded parallel tests need one connection per worker. Set this before the
+# environment loads so database.yml picks it up, unless the user chose a value.
+ENV["RAILS_MAX_THREADS"] ||= "16"
 require_relative "../config/environment"
 require "rails/test_help"
 require "bcrypt"
@@ -8,8 +11,19 @@ require_relative "support/api_test_helper"
 
 module ActiveSupport
   class TestCase
-    # Run tests in parallel with specified workers
-    parallelize(workers: :number_of_processors)
+    # Forking on macOS while ruby-vips/Objective-C is initialised aborts the
+    # worker and leaves the parent waiting forever. Threads avoid the fork
+    # crash, but concurrent fixture loading deadlocks PostgreSQL, so macOS
+    # defaults to a single worker. Undo with PARALLEL_WORKERS when needed.
+    workers = ENV["PARALLEL_WORKERS"].presence&.to_i
+    if workers&.positive?
+      parallelize(workers: workers,
+                  with: RUBY_PLATFORM.match?(/darwin/) ? :threads : :processes)
+    elsif RUBY_PLATFORM.match?(/darwin/)
+      parallelize(workers: 1)
+    else
+      parallelize(workers: :number_of_processors)
+    end
 
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all

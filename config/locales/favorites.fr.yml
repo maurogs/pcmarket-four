@@ -1,0 +1,17 @@
+---
+fr:
+  favorites:
+    title: Vos favoris
+    body: Enregistrez des annonces pour les comparer plus tard et soyez averti si
+      le prix baisse.
+    filters_label: Filtrer les favoris
+    filters:
+      available: Disponibles
+      sold: Vendues
+    unavailable: Indisponible
+    empty_title: Vous n'avez pas encore de favoris
+    empty_body: Touchez le cœur d'une annonce pour l'enregistrer ici.
+    empty_cta: Parcourir les annonces
+    added: Ajouté aux favoris.
+    removed: Retiré des favoris.
+    login_required: Connectez-vous pour enregistrer vos annonces favorites.

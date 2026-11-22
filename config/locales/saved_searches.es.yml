@@ -1,0 +1,23 @@
+---
+es:
+  saved_searches:
+    title: Búsquedas guardadas
+    body: Te avisaremos cuando aparezcan anuncios que encajen con tus búsquedas.
+    browse: Buscar anuncios
+    manage: Gestionar
+    all_categories: Todas las categorías
+    price_range: "%{min} – %{max}"
+    any: cualquiera
+    created_on: Guardada el %{date}
+    view: Ver resultados
+    delete: Eliminar búsqueda
+    confirm_delete: "¿Eliminar esta búsqueda guardada?"
+    created: Búsqueda guardada. Te avisaremos cuando haya novedades.
+    destroyed: Búsqueda eliminada.
+    invalid: No se pudo guardar la búsqueda.
+    empty_title: No tienes búsquedas guardadas
+    empty_body: Filtra los anuncios y pulsa «Guardar búsqueda» para recibir avisos.
+    empty_cta: Empezar a buscar
+    notify_on: Avisos activados
+    notify_off: Avisos desactivados
+    default_name: Mi búsqueda

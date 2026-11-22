@@ -1,0 +1,23 @@
+---
+it:
+  saved_searches:
+    title: Ricerche salvate
+    body: Ti avviseremo quando compariranno annunci che corrispondono alle tue ricerche.
+    browse: Sfoglia gli annunci
+    manage: Gestisci
+    all_categories: Tutte le categorie
+    price_range: "%{min} – %{max}"
+    any: qualsiasi
+    created_on: Salvata il %{date}
+    view: Vedi risultati
+    delete: Elimina ricerca
+    confirm_delete: Eliminare questa ricerca salvata?
+    created: Ricerca salvata. Ti avviseremo quando ci saranno novità.
+    destroyed: Ricerca eliminata.
+    invalid: Non è stato possibile salvare la ricerca.
+    empty_title: Non hai ricerche salvate
+    empty_body: Filtra gli annunci e premi «Salva ricerca» per ricevere avvisi.
+    empty_cta: Inizia a cercare
+    notify_on: Avvisi attivi
+    notify_off: Avvisi disattivati
+    default_name: La mia ricerca

@@ -49,6 +49,34 @@ module Demo
       new(scale: scale, images: images, force: force).call
     end
 
+    # Catalogue names are usually descriptive enough on their own. For short
+    # model names (for example "Antec C8"), add the category, brand or model
+    # until the title satisfies Listing's minimum length. Never use condition.
+    def self.title_for(product, category)
+      title = product[:title].to_s.squish
+      qualifiers = [
+        category.name("es"),
+        product[:brand],
+        product[:model],
+        product[:capacity]
+      ].compact_blank.map { |value| value.to_s.squish }.uniq
+
+      qualifiers.each do |qualifier|
+        break if title.length >= Listing::MIN_TITLE_LENGTH
+        next if qualifier.blank? || title.downcase.include?(qualifier.downcase)
+
+        title = "#{title} #{qualifier}".squish
+      end
+
+      if title.length < Listing::MIN_TITLE_LENGTH
+        fallback = [ product[:brand], product[:model], product[:capacity], category.name("es") ]
+                   .compact_blank.map { |value| value.to_s.squish }
+        title = "#{title} #{fallback.join(' ')}".squish
+      end
+
+      title.truncate(Listing::MAX_TITLE_LENGTH)
+    end
+
     attr_reader :scale, :images, :force
 
     def initialize(scale: nil, images: nil, force: false)
@@ -291,7 +319,7 @@ module Demo
 
     def build_listing(category, seller, product, index, total)
       condition = CONDITION_POOL.sample(random: @rng)
-      price = (product[:price_cents] * Catalog.condition_multiplier(condition)).round
+      price = rounded_demo_price(product[:price_cents] * Catalog.condition_multiplier(condition))
       price = [ price, 100 ].max
       discounted = chance(0.3)
       status = status_for(index, total)
@@ -305,10 +333,10 @@ module Demo
       listing = seller.listings.new(
         category: category,
         store: seller.store,
-        title: listing_title(product, condition),
+        title: listing_title(product, category),
         description: listing_description(product, category, condition, specs, game_fps),
         price_cents: price,
-        original_price_cents: discounted ? (price * (1.15 + (@rng.rand * 0.15))).round : nil,
+        original_price_cents: discounted ? original_price_for(price) : nil,
         brand: product[:brand],
         condition: condition,
         status: status == :published ? :published : status,
@@ -367,9 +395,32 @@ module Demo
       labels.uniq
     end
 
-    def listing_title(product, condition)
-      suffix = CONDITION_LABELS.fetch(condition.to_s, condition.to_s).capitalize
-      "#{product[:title]} · #{suffix}".truncate(Listing::MAX_TITLE_LENGTH)
+    def listing_title(product, category)
+      self.class.title_for(product, category)
+    end
+
+    def rounded_demo_price(cents)
+      euros = (cents.to_f / 100).round
+      euros = 1 if euros < 1
+
+      case @rng.rand
+      when 0.0...0.45
+        euros = (euros - (euros % 10)) + 9
+        euros = 9 if euros < 5
+        euros * 100
+      when 0.45...0.65
+        [ ((euros / 5.0).round * 5), 5 ].max * 100
+      when 0.65...0.82
+        [ ((euros / 10.0).round * 10), 10 ].max * 100
+      else
+        (euros * 100) + 99
+      end
+    end
+
+    def original_price_for(price_cents)
+      original = rounded_demo_price(price_cents * (1.15 + (@rng.rand * 0.15)))
+      original += 100 while original <= price_cents
+      original
     end
 
     def listing_description(product, category, condition, specs, game_fps)
@@ -381,17 +432,17 @@ module Demo
 
       if specs.any?
         paragraphs << "Especificaciones principales:\n" +
-                      specs.first(8).map { |key, value| "- #{human_spec(key)}: #{Array(value).join(', ')}" }.join("\n")
+                      specs.first(8).map { |key, value| spec_line(category, key, value) }.join("\n")
       end
 
       if game_fps.present?
-        sample_games = Game.active.limit(4).pluck(:slug)
-        lines = sample_games.filter_map do |slug|
-          values = game_fps[slug]
+        game_names = Game.active.pluck(:slug, :name).to_h
+        lines = game_fps.filter_map do |slug, values|
           next if values.blank?
 
-          "- #{slug.tr('-', ' ').capitalize}: #{values['1080p']} FPS en 1080p, " \
-          "#{values['1440p']} FPS en 1440p y #{values['4k']} FPS en 4K"
+          name = game_names[slug] || slug.tr("-", " ").capitalize
+          "En #{name} alcanza aproximadamente #{values['1080p']} FPS a 1080p, " \
+            "#{values['1440p']} FPS a 1440p y #{values['4k']} FPS a 4K."
         end
         paragraphs << "Rendimiento estimado con la configuración indicada:\n#{lines.join("\n")}"
       end
@@ -403,8 +454,12 @@ module Demo
       paragraphs.join("\n\n")
     end
 
-    def human_spec(key)
-      key.to_s.tr("_", " ").capitalize
+    def spec_line(category, key, value)
+      definition = effective_filters(category)[key]
+      label = definition&.name("es") || key.to_s.tr("_", " ").capitalize
+      options = definition ? definition.filter_options.index_by { |option| option.value.to_s } : {}
+      values = Array(value).map { |item| options[item.to_s]&.label("es") || item.to_s }
+      "- #{label}: #{values.join(', ')}"
     end
 
     def specs_for(category, product_specs)

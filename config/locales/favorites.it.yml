@@ -1,0 +1,17 @@
+---
+it:
+  favorites:
+    title: I tuoi preferiti
+    body: Salva gli annunci per confrontarli più tardi e ricevi avvisi se il prezzo
+      scende.
+    filters_label: Filtra i preferiti
+    filters:
+      available: Disponibili
+      sold: Venduti
+    unavailable: Non disponibile
+    empty_title: Non hai ancora preferiti
+    empty_body: Tocca il cuore di un annuncio per salvarlo qui.
+    empty_cta: Esplora gli annunci
+    added: Aggiunto ai preferiti.
+    removed: Rimosso dai preferiti.
+    login_required: Accedi per salvare i tuoi annunci preferiti.

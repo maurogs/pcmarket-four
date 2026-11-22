@@ -1,0 +1,19 @@
+---
+it:
+  reports:
+    modal_title: Segnala questo annuncio
+    reason: Motivo
+    details: Dettagli (facoltativo)
+    details_placeholder: Dicci cosa non va in questo annuncio.
+    submit: Invia segnalazione
+    cancel: Annulla
+    created: Grazie. Abbiamo ricevuto la tua segnalazione e la esamineremo.
+    already_reported: Hai già segnalato questo annuncio. Lo stiamo esaminando.
+    invalid: Non è stato possibile inviare la segnalazione.
+    reasons:
+      spam: Spam o duplicato
+      fraud: Possibile frode
+      prohibited: Prodotto vietato
+      counterfeit: Contraffazione
+      offensive: Contenuto offensivo
+      other: Altro motivo

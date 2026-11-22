@@ -1,0 +1,73 @@
+---
+it:
+  stores:
+    meta:
+      title: "%{store} su PCMarket"
+      description: Scopri annunci, recensioni e politiche di %{store} su PCMarket.
+    header:
+      verified: Verificato
+      professional: Venditore professionale
+      private: Venditore privato
+      rating_label: 'Valutazione media: %{rating} su 5'
+      followers_count:
+        one: "%{formatted} follower"
+        other: "%{formatted} follower"
+      for_sale:
+        one: "%{count} in vendita"
+        other: "%{count} in vendita"
+      sold_count:
+        one: "%{count} venduto"
+        other: "%{count} venduti"
+      member_since: Dal %{date}
+      follow: Segui
+      following: Segui già
+      message: Messaggio
+      share: Condividi
+      share_text: Scopri il negozio %{store} su PCMarket
+      vacation_title: Il negozio è in vacanza
+      vacation_body: Puoi continuare a vedere gli annunci, ma le spedizioni potrebbero
+        richiedere più tempo.
+    tabs:
+      listings: Annunci
+      about: Informazioni
+      reviews: Recensioni
+    listings:
+      category: Categoria
+      all_categories: Tutte le categorie
+      include_sold: Includi venduti
+      empty_title: Questo negozio non ha annunci con questi filtri
+      empty_body: Prova a rimuovere i filtri o torna più tardi.
+    about:
+      title: Informazioni sul negozio
+      description_empty: Questo negozio non ha ancora aggiunto una descrizione.
+      policies_title: Politiche di spedizione e reso
+      shipping_policy: Politica di spedizione
+      return_policy: Politica di reso
+      no_policy: Il venditore non ha indicato una politica. Chiedi prima di acquistare.
+      business_title: Informazioni sul venditore
+      company_name: Ragione sociale
+      tax_id: Codice fiscale / P. IVA
+      location: Località
+      not_provided: Non fornito
+      private_note: Questo venditore agisce come privato. Gli acquisti tra privati
+        non offrono le stesse garanzie di quelli effettuati presso un professionista.
+      member_since: Membro dal
+      buyer_protection: Protezione dell'acquirente
+    reviews:
+      disabled_title: Recensioni sospese
+      disabled_body: Le recensioni degli acquirenti sono temporaneamente nascoste.
+        Torna presto.
+      title: Recensioni degli acquirenti
+      based_on:
+        one: Basato su %{formatted} recensione
+        other: Basato su %{formatted} recensioni
+      sort: Ordina
+      newest: Più recenti
+      highest: Voto più alto
+      lowest: Voto più basso
+      apply: Applica
+      seller_reply: Risposta del venditore
+      empty_title: Ancora nessuna recensione
+      empty_body: Le recensioni appariranno qui quando questo negozio ne riceverà.
+    followed: Ora segui questo negozio.
+    unfollowed: Non segui più questo negozio.

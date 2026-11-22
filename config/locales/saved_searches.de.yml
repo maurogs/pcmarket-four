@@ -1,0 +1,23 @@
+---
+de:
+  saved_searches:
+    title: Gespeicherte Suchen
+    body: Wir benachrichtigen dich, wenn Anzeigen zu deinen Suchen passen.
+    browse: Anzeigen durchsuchen
+    manage: Verwalten
+    all_categories: Alle Kategorien
+    price_range: "%{min} – %{max}"
+    any: beliebig
+    created_on: Gespeichert am %{date}
+    view: Ergebnisse ansehen
+    delete: Suche löschen
+    confirm_delete: Diese gespeicherte Suche löschen?
+    created: Suche gespeichert. Wir melden uns, wenn es Neues gibt.
+    destroyed: Suche gelöscht.
+    invalid: Die Suche konnte nicht gespeichert werden.
+    empty_title: Du hast keine gespeicherten Suchen
+    empty_body: Filtere Anzeigen und tippe auf „Suche speichern“, um Hinweise zu erhalten.
+    empty_cta: Suche starten
+    notify_on: Hinweise aktiviert
+    notify_off: Hinweise deaktiviert
+    default_name: Meine Suche

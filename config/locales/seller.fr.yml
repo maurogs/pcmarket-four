@@ -4,18 +4,248 @@ fr:
     feature_requests:
       eyebrow: Annonce mise en avant
       title: Mettre cette annonce en avant
-      intro: Affichez cette annonce en tête de la catégorie et des résultats pendant %{days} jours.
+      intro: Affichez cette annonce en tête de la catégorie et des résultats pendant
+        %{days} jours.
       price: Prix
       duration: Durée
       days:
         one: 1 jour
         other: "%{count} jours"
-      payment_note: >-
-        Nous confirmerons votre demande et enverrons les instructions de paiement par virement ou Stripe. L’annonce est mise
-        en avant dès validation par un administrateur.
+      payment_note: Nous confirmerons votre demande et enverrons les instructions
+        de paiement par virement ou Stripe. L’annonce est mise en avant dès validation
+        par un administrateur.
       pending: Une demande est déjà en attente pour cette annonce.
       submit: Demander la mise en avant
       back: Retour à mes annonces
       disabled: La mise en avant est désactivée.
       created: Demande envoyée. Nous vous contacterons pour le paiement.
       invalid: La demande n’a pas pu être créée.
+    area:
+      nav_label: Navigation vendeur
+      dashboard: Tableau de bord
+      listings: Mes annonces
+      sales: Mes ventes
+      store_profile: Profil de la boutique
+      policies: Politiques de la boutique
+      vacation: Mode vacances
+      discount_codes: Codes de réduction
+      coming_soon: Bientôt disponible
+      payouts: Paiements
+      view_store: Voir la boutique publique
+    dashboard:
+      title: Tableau de bord
+      subtitle: Les performances de votre boutique sur les 30 derniers jours.
+      previous_period: par rapport aux 30 jours précédents
+      last_30_days: 30 derniers jours
+      metrics:
+        views: Vues des annonces
+        favourites: Favoris reçus
+        active_listings: Annonces actives
+        pending_review: En attente de validation
+        sales: Ventes
+        revenue: Revenus
+        rating: Note moyenne
+      chart_title: Commandes par jour
+      chart_desc: Commandes reçues sur les 30 derniers jours.
+      chart_total: "%{count} commandes sur la période"
+      chart_day: "%{date} : %{count} commandes"
+      chart_table_day: Jour
+      chart_table_orders: Commandes
+      action_needed: Action requise
+      actions:
+        rejected: "%{count} annonces refusées à corriger"
+        orders_to_ship: "%{count} commandes payées à expédier"
+        unanswered: "%{count} conversations sans réponse"
+      no_actions: Rien ne requiert votre attention.
+      profile_completeness: Profil de la boutique
+      completeness: "%{percent} % complété"
+      checklist:
+        logo: Ajoutez un logo de boutique
+        description: Ajoutez une description
+        policies: Ajoutez les politiques de retour et d'expédition
+        location: Ajoutez votre localisation
+      edit_profile: Compléter le profil
+      recent_listings: Annonces récentes
+      view_all: Tout voir
+      columns:
+        listing: Annonce
+        status: Statut
+        views: Vues
+        price: Prix
+      empty_recent: Vous n'avez pas encore d'annonces.
+    store_profile:
+      title: Profil de la boutique
+      subtitle: Voici ce que les acheteurs voient sur votre boutique publique.
+      errors:
+        one: Vérifiez %{count} champ
+        other: Vérifiez %{count} champs
+      general_section: Informations de la boutique
+      name: Nom de la boutique
+      name_hint: Entre 3 et 50 caractères. Le modifier met à jour votre URL publique
+        et les anciens liens redirigent automatiquement.
+      description: Description
+      description_hint: Jusqu'à 2 000 caractères. Expliquez ce que vous vendez et
+        comment vous travaillez.
+      store_type: Type de boutique
+      store_type_hint: Les vendeurs professionnels doivent fournir leurs informations
+        d'entreprise et fiscales.
+      types:
+        individual: Particulier
+        professional: Professionnel
+      company_name: Raison sociale
+      tax_id: Numéro fiscal (NIF/CIF/NIE)
+      tax_id_hint: Les identifiants fiscaux espagnols sont vérifiés avec leur clé
+        de contrôle.
+      media_section: Image de marque
+      logo: Logo
+      logo_hint: JPEG, PNG ou WebP jusqu'à 5 Mo. Utilisez une image carrée.
+      banner: Bannière
+      banner_hint: JPEG, PNG ou WebP jusqu'à 8 Mo. Une image panoramique est préférable.
+      location_section: Localisation
+      country: Pays
+      region: Province
+      city: Ville
+      save: Enregistrer le profil
+      saved: Profil de la boutique mis à jour.
+    policies:
+      title: Politiques de la boutique
+      subtitle: Fixez les attentes avant qu'un acheteur ne commande.
+      return_policy: Politique de retour
+      shipping_policy: Politique d'expédition
+      allow_offers: Accepter les offres par défaut
+      allow_offers_hint: Les nouvelles annonces accepteront les offres sauf si vous
+        désactivez cette option.
+      buyer_protection_title: Protection des acheteurs PCMarket
+      buyer_protection_body: Chaque commande est couverte par la politique de protection
+        des acheteurs de la plateforme. Elle s'applique à tous et ne peut pas être
+        modifiée.
+      locked: Verrouillé
+      save: Enregistrer les politiques
+      saved: Politiques de la boutique mises à jour.
+    vacation:
+      title: Mode vacances
+      subtitle: Suspendez les nouvelles commandes tout en gardant vos annonces visibles.
+      toggle: Activer le mode vacances
+      toggle_hint: Les acheteurs peuvent consulter vos annonces, mais l'achat et l'ajout
+        au panier sont désactivés.
+      message: Message de vacances
+      message_hint: Facultatif. Affiché sur votre boutique et vos annonces.
+      active_notice: Le mode vacances est actif. Vos annonces affichent un avis et
+        ne peuvent pas être achetées.
+      save: Enregistrer
+      saved: Paramètres de vacances mis à jour.
+    payouts:
+      title: Paiements
+      subtitle: Comment vous recevrez l'argent de vos ventes.
+      status: Compte de paiement
+      not_connected: Non connecté
+      connect: Connecter Stripe
+      connect_hint: Les paiements en ligne via Stripe Connect seront activés dans
+        une future mise à jour.
+      how_title: Comment fonctionnent les paiements aujourd'hui
+      body: Le paiement se fait par commande et est actuellement géré directement
+        entre la plateforme et chaque vendeur. Aucun prestataire de paiement en ligne
+        n'est encore connecté.
+      step_one: L'acheteur finalise la commande et paie via le checkout de la plateforme.
+      step_two: La plateforme enregistre la commande et calcule la commission, le
+        cas échéant.
+      step_three: Lorsque Stripe Connect sera activé, les paiements seront envoyés
+        automatiquement à votre compte.
+    orders:
+      title: Mes ventes
+      subtitle: Commandes passées dans votre boutique.
+      number: Commande
+      buyer: Acheteur
+      status: Statut
+      date: Date
+      total: Total
+      empty_title: Aucune vente pour le moment
+      empty_body: Lorsqu'un acheteur finalise une commande, elle apparaîtra ici.
+      statuses:
+        pending_payment: Paiement en attente
+        paid: Payée
+        shipped: Expédiée
+        delivered: Livrée
+        completed: Terminée
+        cancelled: Annulée
+        refunded: Remboursée
+        disputed: Litige
+      tabs_label: Statut des commandes
+      search_label: Rechercher des ventes
+      search_placeholder: Rechercher par numéro de commande ou article
+      search: Rechercher
+      open: Ouvrir
+      actions_label: Actions
+      export_csv: Exporter CSV
+      not_found: Commande introuvable.
+      tabs:
+        to_ship: À expédier
+        awaiting_payment: En attente de paiement
+        shipped: Expédiées
+        delivered: Livrées
+        completed: Terminées
+        cancelled: Annulées
+        disputes: Litiges
+      shipment:
+        title: Marquer comme expédiée
+        carrier: Transporteur
+        carrier_prompt: Choisissez un transporteur
+        tracking: Numéro de suivi
+        tracking_hint: Obligatoire sauf si vous choisissez Autre.
+        submit: Marquer comme expédiée
+        created: Commande marquée comme expédiée.
+        invalid: Ajoutez un transporteur et un numéro de suivi pour expédier cette
+          commande.
+      pickup:
+        created: Commande marquée comme prête à retirer.
+        invalid: Cette commande ne peut pas être marquée comme prête à retirer.
+      payment:
+        created: Commande marquée comme payée.
+        invalid: Cette commande ne peut pas être marquée comme payée.
+      cancellation:
+        title: Annuler la commande
+        reason: Motif
+        refund_note: Si la commande était payée, elle sera signalée pour remboursement
+          et le stock restauré.
+        submit: Annuler la commande
+        created: Commande annulée.
+        invalid: Cette commande ne peut pas être annulée.
+      packing_slip:
+        title: Bon de livraison %{number}
+        print: Imprimer
+        packing_slip: Bon de livraison
+        ship_to: Livrer à
+        from: Expéditeur
+        fulfilment: 'Mode : %{method}'
+        item: Article
+        quantity_short: Qté
+        price: Prix
+        footer: Merci d'avoir acheté sur %{site}.
+      show:
+        title: Commande %{number}
+        back: Retour aux ventes
+        placed_on: Passée le %{date}
+        packing_slip: Bon de livraison
+        message_buyer: Contacter l'acheteur
+        items_title: Articles
+        quantity: 'Quantité : %{count}'
+        commission: Commission de la plateforme
+        net_payout: Revenu net
+        timeline_title: Historique
+        actions_title: Actions
+        mark_paid: Marquer comme payée
+        mark_shipped: Marquer comme expédiée
+        mark_ready: Prête à retirer
+        cancel_order: Annuler la commande
+        buyer_title: Acheteur
+        address_hidden: L'adresse de livraison apparaît une fois la commande payée.
+        delivery_title: Livraison
+    reviews:
+      title: Avis de l'acheteur
+      your_reply: Votre réponse
+      reply: Répondre à l'avis
+      update_reply: Modifier la réponse
+      reply_placeholder: Remerciez l'acheteur ou expliquez comment vous avez résolu
+        le problème.
+      reply_saved: Votre réponse a été enregistrée.
+      already_replied: Vous avez déjà répondu à cet avis.

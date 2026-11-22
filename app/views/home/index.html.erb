@@ -176,15 +176,18 @@
   </section>
 
   <% cache "home/#{I18n.locale}/rows", expires_in: 5.minutes do %>
-    <%= render "shared/listing_row", title: t("home.rows.latest_gpus"), listings: @feed.latest_gpus,
-               view_all_path: category_path(path: "components/gpus") %>
-    <%= render "shared/listing_row", title: t("home.rows.most_watched"), listings: @feed.most_watched,
-               view_all_path: listings_path(sort: "popular") %>
-    <%= render "shared/listing_row", title: t("home.rows.on_sale"), listings: @feed.on_sale,
-               view_all_path: listings_path(deals: 1) %>
-    <%= render "shared/listing_row", title: t("home.rows.newest"), listings: @feed.newest,
-               view_all_path: listings_path %>
-    <%= render "shared/listing_row", title: t("home.rows.recently_sold"), listings: @feed.recently_sold %>
+    <% home_rows = [
+      [ t("home.rows.latest_gpus"), @feed.latest_gpus, category_path(path: "components/gpus") ],
+      [ t("home.rows.most_watched"), @feed.most_watched, listings_path(sort: "popular") ],
+      [ t("home.rows.on_sale"), @feed.on_sale, listings_path(deals: 1) ],
+      [ t("home.rows.newest"), @feed.newest, listings_path ],
+      [ t("home.rows.recently_sold"), @feed.recently_sold, nil ]
+    ] %>
+    <% row_favorited_ids = listing_favorite_ids(home_rows.flat_map { |_title, listings, _path| listings }) %>
+    <% home_rows.each do |row_title, row_listings, row_path| %>
+      <%= render "shared/listing_row", title: row_title, listings: row_listings,
+                 view_all_path: row_path, favorited_ids: row_favorited_ids %>
+    <% end %>
   <% end %>
 
   <section class="surface overflow-hidden">
@@ -277,7 +280,8 @@
   <% if @recently_viewed.present? %>
     <section>
       <%= render "shared/listing_row", title: t("listings.show.recently_viewed"),
-                 listings: @recently_viewed, view_all_path: listings_path %>
+                 listings: @recently_viewed, view_all_path: listings_path,
+                 favorited_ids: listing_favorite_ids(@recently_viewed) %>
     </section>
   <% end %>
 

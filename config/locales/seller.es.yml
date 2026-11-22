@@ -4,18 +4,246 @@ es:
     feature_requests:
       eyebrow: Anuncio destacado
       title: Destacar este anuncio
-      intro: Muestra este anuncio en lo más alto de la categoría y de los resultados durante %{days} días.
+      intro: Muestra este anuncio en lo más alto de la categoría y de los resultados
+        durante %{days} días.
       price: Precio
       duration: Duración
       days:
         one: 1 día
         other: "%{count} días"
-      payment_note: >-
-        Confirmaremos tu solicitud y te enviaremos las instrucciones de pago por transferencia o Stripe. El anuncio se destaca
-        en cuanto lo apruebe un administrador.
+      payment_note: Confirmaremos tu solicitud y te enviaremos las instrucciones de
+        pago por transferencia o Stripe. El anuncio se destaca en cuanto lo apruebe
+        un administrador.
       pending: Ya tienes una solicitud pendiente de aprobación para este anuncio.
       submit: Solicitar destacado
       back: Volver a mis anuncios
       disabled: Los destacados están desactivados.
       created: Solicitud enviada. Te contactaremos con las instrucciones de pago.
       invalid: No se pudo crear la solicitud.
+    area:
+      nav_label: Navegación del vendedor
+      dashboard: Panel
+      listings: Mis anuncios
+      sales: Mis ventas
+      store_profile: Perfil de la tienda
+      policies: Políticas de la tienda
+      vacation: Modo vacaciones
+      discount_codes: Códigos de descuento
+      coming_soon: Próximamente
+      payouts: Cobros
+      view_store: Ver tienda pública
+    dashboard:
+      title: Panel
+      subtitle: El rendimiento de tu tienda durante los últimos 30 días.
+      previous_period: frente a los 30 días anteriores
+      last_30_days: Últimos 30 días
+      metrics:
+        views: Visitas a anuncios
+        favourites: Favoritos recibidos
+        active_listings: Anuncios activos
+        pending_review: Pendientes de revisión
+        sales: Ventas
+        revenue: Ingresos
+        rating: Valoración media
+      chart_title: Pedidos por día
+      chart_desc: Pedidos recibidos en los últimos 30 días.
+      chart_total: "%{count} pedidos en el periodo"
+      chart_day: "%{date}: %{count} pedidos"
+      chart_table_day: Día
+      chart_table_orders: Pedidos
+      action_needed: Requiere tu atención
+      actions:
+        rejected: "%{count} anuncios rechazados por corregir"
+        orders_to_ship: "%{count} pedidos pagados por enviar"
+        unanswered: "%{count} conversaciones sin responder"
+      no_actions: No hay nada pendiente.
+      profile_completeness: Perfil de la tienda
+      completeness: "%{percent}% completado"
+      checklist:
+        logo: Añade un logo de tienda
+        description: Añade una descripción
+        policies: Añade políticas de devolución y envío
+        location: Añade tu ubicación
+      edit_profile: Completar perfil de la tienda
+      recent_listings: Anuncios recientes
+      view_all: Ver todos
+      columns:
+        listing: Anuncio
+        status: Estado
+        views: Visitas
+        price: Precio
+      empty_recent: Todavía no tienes anuncios.
+    store_profile:
+      title: Perfil de la tienda
+      subtitle: Esto es lo que ven los compradores en tu tienda pública.
+      errors:
+        one: Revisa %{count} campo
+        other: Revisa %{count} campos
+      general_section: Datos de la tienda
+      name: Nombre de la tienda
+      name_hint: Entre 3 y 50 caracteres. Al cambiarlo se actualiza tu URL pública
+        y los enlaces antiguos redirigen automáticamente.
+      description: Descripción
+      description_hint: Hasta 2.000 caracteres. Explica qué vendes y cómo trabajas.
+      store_type: Tipo de tienda
+      store_type_hint: Los vendedores profesionales deben indicar datos fiscales y
+        de empresa.
+      types:
+        individual: Particular
+        professional: Profesional
+      company_name: Razón social
+      tax_id: NIF/CIF/NIE
+      tax_id_hint: Los identificadores fiscales españoles se validan con su dígito
+        de control.
+      media_section: Imagen de marca
+      logo: Logo
+      logo_hint: JPEG, PNG o WebP de hasta 5 MB. Usa una imagen cuadrada.
+      banner: Portada
+      banner_hint: JPEG, PNG o WebP de hasta 8 MB. Mejor una imagen panorámica.
+      location_section: Ubicación
+      country: País
+      region: Provincia
+      city: Ciudad
+      save: Guardar perfil
+      saved: Perfil de la tienda actualizado.
+    policies:
+      title: Políticas de la tienda
+      subtitle: Define las condiciones antes de que un comprador haga un pedido.
+      return_policy: Política de devoluciones
+      shipping_policy: Política de envíos
+      allow_offers: Aceptar ofertas por defecto
+      allow_offers_hint: Los anuncios nuevos aceptarán ofertas salvo que lo desactives
+        en el anuncio.
+      buyer_protection_title: Protección al comprador de PCMarket
+      buyer_protection_body: Todos los pedidos están cubiertos por la política de
+        protección al comprador de la plataforma. Se aplica a compradores y vendedores
+        y no se puede editar.
+      locked: Bloqueado
+      save: Guardar políticas
+      saved: Políticas de la tienda actualizadas.
+    vacation:
+      title: Modo vacaciones
+      subtitle: Pausa los pedidos nuevos manteniendo tus anuncios visibles.
+      toggle: Activar modo vacaciones
+      toggle_hint: Los compradores pueden seguir viendo tus anuncios, pero no comprar
+        ni añadir al carrito.
+      message: Mensaje de vacaciones
+      message_hint: Opcional. Se muestra en tu tienda y en tus anuncios.
+      active_notice: El modo vacaciones está activo. Tus anuncios muestran un aviso
+        y no se pueden comprar.
+      save: Guardar ajustes
+      saved: Ajustes de vacaciones actualizados.
+    payouts:
+      title: Cobros
+      subtitle: Cómo recibirás el dinero de tus ventas.
+      status: Cuenta de cobro
+      not_connected: Sin conectar
+      connect: Conectar Stripe
+      connect_hint: Los cobros online mediante Stripe Connect se activarán en una
+        futura actualización de la plataforma.
+      how_title: Cómo funcionan los pagos ahora
+      body: El pago es por pedido y actualmente se gestiona directamente entre la
+        plataforma y cada vendedor. Todavía no hay ningún proveedor de cobros online
+        conectado a esta tienda.
+      step_one: El comprador completa el pedido y paga a través del checkout de la
+        plataforma.
+      step_two: La plataforma registra el pedido y calcula la comisión, si existe.
+      step_three: Cuando Stripe Connect esté disponible, los cobros se enviarán automáticamente
+        a tu cuenta conectada.
+    orders:
+      title: Mis ventas
+      subtitle: Pedidos realizados en tu tienda.
+      number: Pedido
+      buyer: Comprador
+      status: Estado
+      date: Fecha
+      total: Total
+      empty_title: Todavía no hay ventas
+      empty_body: Cuando un comprador complete un pedido en tu tienda, aparecerá aquí.
+      statuses:
+        pending_payment: Pago pendiente
+        paid: Pagado
+        shipped: Enviado
+        delivered: Entregado
+        completed: Completado
+        cancelled: Cancelado
+        refunded: Reembolsado
+        disputed: En disputa
+      tabs_label: Estado de los pedidos
+      search_label: Buscar ventas
+      search_placeholder: Buscar por número de pedido o artículo
+      search: Buscar
+      open: Abrir
+      actions_label: Acciones
+      export_csv: Exportar CSV
+      not_found: Pedido no encontrado.
+      tabs:
+        to_ship: Por enviar
+        awaiting_payment: Pendiente de pago
+        shipped: Enviados
+        delivered: Entregados
+        completed: Completados
+        cancelled: Cancelados
+        disputes: Disputas
+      shipment:
+        title: Marcar como enviado
+        carrier: Transportista
+        carrier_prompt: Elige un transportista
+        tracking: Número de seguimiento
+        tracking_hint: Obligatorio salvo que elijas Otro.
+        submit: Marcar como enviado
+        created: Pedido marcado como enviado.
+        invalid: Añade un transportista y un número de seguimiento para enviar este
+          pedido.
+      pickup:
+        created: Pedido marcado como listo para recoger.
+        invalid: Este pedido no se puede marcar como listo para recoger.
+      payment:
+        created: Pedido marcado como pagado.
+        invalid: Este pedido no se puede marcar como pagado.
+      cancellation:
+        title: Cancelar pedido
+        reason: Motivo
+        refund_note: Si el pedido estaba pagado, se marcará para reembolso y se repondrá
+          el stock.
+        submit: Cancelar pedido
+        created: Pedido cancelado.
+        invalid: Este pedido no se puede cancelar.
+      packing_slip:
+        title: Albarán %{number}
+        print: Imprimir
+        packing_slip: Albarán de envío
+        ship_to: Enviar a
+        from: Remitente
+        fulfilment: 'Entrega: %{method}'
+        item: Artículo
+        quantity_short: Cant.
+        price: Precio
+        footer: Gracias por comprar en %{site}.
+      show:
+        title: Pedido %{number}
+        back: Volver a ventas
+        placed_on: Realizado el %{date}
+        packing_slip: Albarán
+        message_buyer: Escribir al comprador
+        items_title: Artículos
+        quantity: 'Cantidad: %{count}'
+        commission: Comisión de la plataforma
+        net_payout: Cobro neto
+        timeline_title: Cronología
+        actions_title: Acciones
+        mark_paid: Marcar como pagado
+        mark_shipped: Marcar como enviado
+        mark_ready: Marcar listo para recoger
+        cancel_order: Cancelar pedido
+        buyer_title: Comprador
+        address_hidden: La dirección de envío se muestra cuando el pedido está pagado.
+        delivery_title: Entrega
+    reviews:
+      title: Reseña del comprador
+      your_reply: Tu respuesta
+      reply: Responder a la reseña
+      update_reply: Actualizar respuesta
+      reply_placeholder: Agradece la compra o explica cómo resolviste el problema.
+      reply_saved: Tu respuesta se ha guardado.
+      already_replied: Ya has respondido a esta reseña.

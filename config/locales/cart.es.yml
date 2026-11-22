@@ -1,57 +1,62 @@
+---
 es:
   cart:
-    title: "Tu carrito"
-    subtitle: "Revisa tus artículos y elige cómo quieres recibirlos."
-    summary: "Resumen del pedido"
-    subtotal: "Subtotal"
-    shipping: "Envío"
-    checkout: "Tramitar pedido"
-    checkout_guest: "Tramitar como invitado"
-    checkout_disabled: "El pago online está temporalmente desactivado. Contacta con el vendedor por chat."
+    title: Tu carrito
+    subtitle: Revisa tus artículos y elige cómo quieres recibirlos.
+    summary: Resumen del pedido
+    subtotal: Subtotal
+    shipping: Envío
+    checkout: Tramitar pedido
+    checkout_guest: Tramitar como invitado
+    checkout_disabled: El pago online está temporalmente desactivado. Contacta con
+      el vendedor por chat.
     have_account: "¿Ya tienes cuenta?"
-    log_in: "Inicia sesión"
-    checkout_hint: "Podrás revisarlo todo antes de pagar."
-    keep_shopping: "Seguir comprando"
-    quantity: "Cantidad"
+    log_in: Inicia sesión
+    checkout_hint: Podrás revisarlo todo antes de pagar.
+    keep_shopping: Seguir comprando
+    quantity: Cantidad
     quantity_value:
-      one: "Cantidad: %{count}"
-      other: "Cantidad: %{count}"
-    remove: "Quitar"
-    update: "Actualizar"
-    save_to_favourites: "Guardar en favoritos"
-    saved_to_favourites: "Artículo guardado en favoritos."
-    decrease: "Reducir cantidad"
-    increase: "Aumentar cantidad"
-    free_shipping: "Gratis"
-    local_pickup_only: "Solo recogida local"
-    group_shipping: "Envío"
-    group_subtotal: "Subtotal del vendedor"
+      one: 'Cantidad: %{count}'
+      other: 'Cantidad: %{count}'
+    remove: Quitar
+    update: Actualizar
+    save_to_favourites: Guardar en favoritos
+    saved_to_favourites: Artículo guardado en favoritos.
+    decrease: Reducir cantidad
+    increase: Aumentar cantidad
+    free_shipping: Gratis
+    local_pickup_only: Solo recogida local
+    group_shipping: Envío
+    group_subtotal: Subtotal del vendedor
     group_items:
       one: "%{count} artículo"
       other: "%{count} artículos"
     item_count:
       one: "%{count} artículo"
       other: "%{count} artículos"
-    platform_fee: "Comisión de plataforma"
-    platform_fee_included: "Incluida (la paga el vendedor)"
-    estimated_total: "Total estimado"
+    platform_fee: Comisión de plataforma
+    platform_fee_included: Incluida (la paga el vendedor)
+    estimated_total: Total estimado
     buyer_protection:
-      title: "Compra protegida"
-      body: "Pago seguro y protección al comprador. Si algo no sale bien, te ayudamos a resolverlo."
+      title: Compra protegida
+      body: Pago seguro y protección al comprador. Si algo no sale bien, te ayudamos
+        a resolverlo.
     warnings:
-      sold: "Este artículo ya se ha vendido y no se incluye en el total."
-      unavailable: "Este artículo ya no está disponible y no se incluye en el total."
-      vacation: "El vendedor está de vacaciones. Este artículo no se incluye en el total."
-      quantity_reduced: "Ya quedan menos unidades, así que se ha ajustado la cantidad."
+      sold: Este artículo ya se ha vendido y no se incluye en el total.
+      unavailable: Este artículo ya no está disponible y no se incluye en el total.
+      vacation: El vendedor está de vacaciones. Este artículo no se incluye en el
+        total.
+      quantity_reduced: Ya quedan menos unidades, así que se ha ajustado la cantidad.
     recommended:
-      title: "Recomendado para ti"
-      view_all: "Ver todo"
-    empty_title: "Tu carrito está vacío"
-    empty_body: "Añade anuncios para comprarlos juntos."
-    empty_cta: "Ver anuncios"
+      title: Recomendado para ti
+      view_all: Ver todo
+    empty_title: Tu carrito está vacío
+    empty_body: Añade anuncios para comprarlos juntos.
+    empty_cta: Ver anuncios
     added: "«%{title}» se ha añadido a tu carrito."
-    removed: "Artículo eliminado del carrito."
+    removed: Artículo eliminado del carrito.
     errors:
-      own_listing: "No puedes comprar tu propio anuncio."
-      unavailable: "Este anuncio ya no está disponible."
-      vacation: "Este vendedor está de vacaciones y no puede aceptar pedidos ahora mismo."
+      own_listing: No puedes comprar tu propio anuncio.
+      unavailable: Este anuncio ya no está disponible.
+      vacation: Este vendedor está de vacaciones y no puede aceptar pedidos ahora
+        mismo.

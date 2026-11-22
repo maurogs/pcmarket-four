@@ -1,0 +1,86 @@
+---
+de:
+  auth:
+    registrations_disabled: Die Registrierung ist vorübergehend deaktiviert.
+    fields:
+      email: E-Mail-Adresse
+      email_placeholder: du@beispiel.de
+      password: Passwort
+      password_placeholder: Dein Passwort
+      password_confirmation: Passwort bestätigen
+      new_password: Neues Passwort
+      first_name: Vorname
+      last_name: Nachname
+      username: Benutzername (optional)
+      username_placeholder: Wird generiert, wenn leer
+      username_hint: So sehen dich andere Nutzer. Du kannst ihn später ändern.
+    sign_in:
+      title: Anmelden
+      subtitle: Greife auf deine Favoriten, Bestellungen und Nachrichten zu.
+      submit: Anmelden
+      forgot: Passwort vergessen?
+      remember: Auf diesem Gerät angemeldet bleiben
+      no_account: Noch kein Konto?
+      sign_up: Konto erstellen
+    sign_up:
+      title: Konto erstellen
+      subtitle: Kaufe und verkaufe Technik ganz entspannt.
+      submit: Konto erstellen
+      password_hint: Mindestens 8 Zeichen. Verwende Großbuchstaben, Zahlen und Sonderzeichen.
+      terms: Ich akzeptiere die
+      terms_link: Nutzungsbedingungen
+      and: und die
+      privacy_link: Datenschutzerklärung
+      marketing: Ich möchte Angebote und Neuigkeiten erhalten
+      marketing_hint: Du kannst dich jederzeit abmelden.
+      have_account: Du hast bereits ein Konto?
+      sign_in: Anmelden
+    terms_acceptance:
+      title: Bedingungen akzeptieren, um fortzufahren
+      subtitle: Bevor Sie PCMarket nutzen, lesen und akzeptieren Sie unsere Bedingungen
+        und Datenschutzerklärung.
+      marketing: Angebote und Neuigkeiten erhalten
+      marketing_hint: Sie können sich jederzeit abmelden.
+      submit: Akzeptieren und fortfahren
+      required: Sie müssen die Bedingungen und die Datenschutzerklärung akzeptieren,
+        um fortzufahren.
+      accepted: Danke. Ihr Konto ist bereit.
+    forgot:
+      title: Passwort zurücksetzen
+      subtitle: Wir senden dir einen Link, um ein neues zu erstellen.
+      submit: Link senden
+      back: Zurück zur Anmeldung
+    reset:
+      title: Neues Passwort erstellen
+      subtitle: Wähle ein Passwort, das du nirgendwo sonst verwendest.
+      submit: Passwort speichern
+      back: Zurück zur Anmeldung
+    confirmation:
+      title: Bestätigung erneut senden
+      subtitle: Wir senden dir erneut die E-Mail zur Aktivierung deines Kontos.
+      submit: E-Mail erneut senden
+      back: Zurück zur Anmeldung
+    unlock:
+      title: Konto entsperren
+      subtitle: Wir senden dir Anweisungen zum Entsperren.
+      submit: Anweisungen senden
+      back: Zurück zur Anmeldung
+    shared:
+      brand_body: Der Marktplatz für Technik aus zweiter Hand, mit verifizierten Verkäufern
+        und Käuferschutz.
+      testimonials:
+        1:
+          quote: Ich habe meine Grafikkarte in zwei Tagen problemlos verkauft.
+          author: Lucía, Madrid
+        2:
+          quote: Ich habe den Laptop, den ich wollte, zum halben Preis gefunden.
+          author: Marc, Barcelona
+        3:
+          quote: Der Versand war von Anfang bis Ende völlig klar.
+          author: Ane, Bilbao
+      testimonial: Erfahrungsbericht %{number}
+      point_1: Verifizierte Zahlungen und Verkäufer
+      point_2: Sendungen mit Sendungsverfolgung
+      point_3: Support in deiner Sprache
+      or: oder
+      google: Mit Google fortfahren

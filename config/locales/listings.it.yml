@@ -59,8 +59,8 @@ it:
       error_summary:
         one: Controlla %{count} campo
         other: Controlla %{count} campi
-      re_review_warning: Se modifichi titolo, categoria o foto di un annuncio pubblicato, tornerà in revisione prima di essere
-        ripubblicato.
+      re_review_warning: Se modifichi titolo, categoria o foto di un annuncio pubblicato,
+        tornerà in revisione prima di essere ripubblicato.
       save_draft: Salva bozza
       save_changes: Salva modifiche
       submit_review: Invia in revisione
@@ -68,7 +68,8 @@ it:
       cancel: Annulla
       category:
         title: Categoria
-        hint: Scegli prima una famiglia e poi la categoria esatta. I campi tecnici si adattano.
+        hint: Scegli prima una famiglia e poi la categoria esatta. I campi tecnici
+          si adattano.
       photos:
         title: Foto
         hint: Carica fino a %{max} foto. Trascina per ordinarle; la prima è la copertina.
@@ -99,8 +100,8 @@ it:
         single_quantity: I privati pubblicano un'unità per annuncio.
         tags: Etichette
         tags_hint: Scegli fino a 5 etichette per aiutare gli acquirenti.
-        description_placeholder: 'Descrivi condizione, uso e cosa è incluso. Consiglio per %{category}: cita modelli compatibili
-          e dettagli utili.'
+        description_placeholder: 'Descrivi condizione, uso e cosa è incluso. Consiglio
+          per %{category}: cita modelli compatibili e dettagli utili.'
         description_hint: Almeno %{min} caratteri. Sii chiaro e onesto.
         specs: Specifiche
         select_category: Scegli una categoria per vedere i campi tecnici.
@@ -111,7 +112,8 @@ it:
       price:
         title: Prezzo
         price_hint: Accetta formati come 1.299,50 o 1299.50.
-        original_hint: Opzionale. Deve essere maggiore del prezzo di vendita per mostrare lo sconto.
+        original_hint: Opzionale. Deve essere maggiore del prezzo di vendita per mostrare
+          lo sconto.
         accepts_offers: Accetta offerte
         accepts_offers_hint: Gli acquirenti potranno proporti un prezzo.
       delivery:
@@ -170,15 +172,118 @@ it:
       submitted: Annuncio inviato. Di solito lo revisioniamo entro 24 ore.
       draft_saved: Bozza salvata.
       updated: Annuncio aggiornato.
-      sent_back: L'annuncio torna in revisione perché hai cambiato titolo, categoria o foto.
+      sent_back: L'annuncio torna in revisione perché hai cambiato titolo, categoria
+        o foto.
       archived: L'annuncio è stato archiviato perché ha ordini associati.
       destroyed: Annuncio eliminato.
       image_required: Aggiungi almeno una foto prima di inviare l'annuncio in revisione.
-      cannot_submit: Questo annuncio non può essere inviato in revisione nello stato attuale.
+      cannot_submit: Questo annuncio non può essere inviato in revisione nello stato
+        attuale.
       paused: Annuncio messo in pausa.
       cannot_pause: Solo gli annunci pubblicati possono essere messi in pausa.
       resumed: Annuncio riattivato.
       cannot_resume: Solo gli annunci in pausa possono essere riattivati.
       marked_sold: Annuncio segnato come venduto.
-      cannot_mark_sold: Solo gli annunci pubblicati o in pausa possono essere segnati come venduti.
+      cannot_mark_sold: Solo gli annunci pubblicati o in pausa possono essere segnati
+        come venduti.
       duplicated: Copia creata come bozza.
+    statuses:
+      draft: Bozza
+      pending_review: In attesa di revisione
+      published: Pubblicato
+      rejected: Rifiutato
+      paused: In pausa
+      sold: Venduto
+      archived: Archiviato
+    conditions:
+      new_sealed: Nuovo sigillato
+      new_open_box: Nuovo – confezione aperta
+      used_like_new: Come nuovo
+      used_good: Buone condizioni
+      used_fair: Condizioni discrete
+      for_parts: Per ricambi
+    show:
+      meta_title: "%{title} – %{price}"
+      breadcrumb_label: Percorso dell'annuncio
+      status_banner: 'Stai visualizzando questo annuncio come proprietario o moderatore.
+        Stato attuale: %{status}.'
+      gallery:
+        role: Galleria immagini
+        label: Immagini dell'annuncio
+        open: Ingrandisci immagine
+        previous: Immagine precedente
+        next: Immagine successiva
+        thumb: Vedi immagine %{number}
+        close: Chiudi galleria
+      views:
+        one: "%{formatted} visualizzazione"
+        other: "%{formatted} visualizzazioni"
+      saved_count:
+        one: "%{formatted} persona l'ha salvato"
+        other: "%{formatted} persone l'hanno salvato"
+      published_on: Pubblicato il %{date}
+      unpublished: Non pubblicato
+      photo_prefix: 'Foto:'
+      photo_license_unknown: licenza non indicata
+      condition: Condizioni
+      overview_title: Panoramica e specifiche
+      description_title: Descrizione
+      performance_title: Prestazioni nei giochi
+      fps_value: "%{fps} fps"
+      performance_hint: Fotogrammi al secondo approssimativi misurati dal venditore.
+      shipping_title: Spedizione e resi
+      shipping_method: Metodo di spedizione
+      free_shipping: Spedizione gratuita
+      shipping_cost: Spedizione a %{price}
+      local_pickup: Ritiro a mano a %{city}
+      pickup_only: Solo ritiro a mano
+      returns_title: Resi
+      default_return_policy: Verifica le condizioni di reso con il venditore prima
+        di acquistare.
+      you_save: Risparmi %{amount}
+      sold_notice: Questo articolo è già stato venduto.
+      in_stock: Disponibile (%{count} pezzi)
+      out_of_stock: Esaurito
+      ships_within: Spedito entro %{days} giorni
+      estimated_delivery: 'Consegna stimata: %{start} – %{finish}'
+      buy_now: Acquista ora
+      add_to_cart: Aggiungi al carrello
+      make_offer: Fai un'offerta
+      message_seller: Scrivi al venditore
+      share: Condividi
+      share_text: 'Dai un''occhiata a questo annuncio su PCMarket: %{title}'
+      copy_link: Copia questo link
+      link_copied: Link copiato!
+      add_favourite: Salva nei preferiti
+      remove_favourite: Rimuovi dai preferiti
+      seller: Venditore
+      verified: Venditore verificato
+      rating_label: 'Valutazione: %{rating} su 5'
+      review_count:
+        one: "%{count} recensione"
+        other: "%{count} recensioni"
+      member_since: Membro dal %{date}
+      sales_count:
+        one: "%{count} vendita"
+        other: "%{count} vendite"
+      visit_store: Vedi il negozio
+      trust_link: Come funziona la protezione dell'acquirente
+      report: Segnala annuncio
+      similar_title: Annunci simili
+      similar_subtitle: Altre opzioni vicine per categoria e prezzo.
+      more_from_seller: Altro da %{store}
+      reviews_title: Recensioni del negozio
+      see_all_reviews: Vedi tutte
+      recently_viewed: Visti di recente
+      sell_similar_title: Ne hai uno simile?
+      sell_similar_body: Pubblicalo gratis e raggiungi migliaia di acquirenti.
+      sell_similar_cta: Vendi il mio
+      condition_tooltips:
+        new_sealed: Sigillato di fabbrica e mai aperto.
+        new_open_box: Nuovo, ma la confezione è stata aperta.
+        used_like_new: Usato pochissimo, senza segni evidenti di utilizzo.
+        used_good: Usato con lievi segni che non ne compromettono il funzionamento.
+        used_fair: Usato con segni visibili, pienamente funzionante.
+        for_parts: Non funzionante o con parti mancanti; venduto per ricambi.
+      vacation_unavailable: Questo venditore è in vacanza. L'acquisto non è disponibile
+        temporaneamente.

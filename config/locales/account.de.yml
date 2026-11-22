@@ -1,0 +1,119 @@
+---
+de:
+  account:
+    title: Dein Konto
+    edit_profile: Profil bearbeiten
+    favourites: Favoriten
+    saved_searches: Gespeicherte Suchen
+    orders: Bestellungen
+    area:
+      label: Kontoeinstellungen
+      nav_label: Kontonavigation
+      security: Konto und Sicherheit
+      addresses: Adressen
+      notifications: Benachrichtigungen
+      privacy: Datenschutz und Daten
+    profile:
+      title: Konto und Sicherheit
+      subtitle: Verwalte deine persönlichen Daten, deinen öffentlichen Namen und deine
+        Sprache.
+      errors:
+        one: Prüfe %{count} Feld
+        other: Prüfe %{count} Felder
+      avatar: Profilbild
+      avatar_hint: JPEG, PNG oder WebP. Ein quadratisches Bild eignet sich am besten.
+      first_name: Vorname
+      last_name: Nachname
+      username: Benutzername
+      username_hint: 'Öffentlich und eindeutig. 3 bis 30 Buchstaben, Zahlen, Bindestriche,
+        Unterstriche oder #.'
+      phone: Telefon
+      phone_hint: Mit Ländervorwahl, zum Beispiel +34600000000.
+      email: E-Mail-Adresse
+      email_hint: Bei einer Änderung erhältst du einen Bestätigungslink, bevor sie
+        aktiv wird.
+      pending_email: Warte auf Bestätigung von %{email}.
+      language: Bevorzugte Sprache
+      google_note: Du meldest dich mit Google an. Deine E-Mail wird von Google verwaltet,
+        du kannst aber unten ein Passwort festlegen.
+      change_password: Passwort ändern
+      save: Änderungen speichern
+      saved: Dein Konto wurde aktualisiert.
+      email_confirmation_sent: Prüfe dein Postfach, um die neue Adresse zu bestätigen.
+    password:
+      title: Passwort
+      subtitle: Verwende ein starkes Passwort, das du nirgendwo sonst nutzt.
+      current: Aktuelles Passwort
+      google_note: Dein Konto nutzt Google-Anmeldung. Lege hier ein Passwort fest,
+        um dich auch per E-Mail anzumelden.
+      new: Neues Passwort
+      confirmation: Neues Passwort bestätigen
+      hint: Mindestens 8 Zeichen. Verwende Großbuchstaben, Zahlen und Symbole.
+      save: Passwort aktualisieren
+      saved: Dein Passwort wurde aktualisiert.
+      wrong_current: Das aktuelle Passwort ist nicht korrekt.
+    addresses:
+      title: Adressen
+      subtitle: Speichere die Adressen, die du für Lieferungen nutzt.
+      new: Adresse hinzufügen
+      new_title: Neue Adresse
+      edit_title: Adresse bearbeiten
+      default: Standard
+      make_default: Als Standard festlegen
+      edit: Bearbeiten
+      destroy: Löschen
+      destroy_confirm: Diese Adresse löschen?
+      empty_title: Keine gespeicherten Adressen
+      empty_body: Füge eine Adresse hinzu, um künftige Bestellungen zu beschleunigen.
+      full_name: Vollständiger Name
+      line1: Adresse
+      line2: Adresszusatz
+      postal_code: Postleitzahl
+      city: Stadt
+      region: Provinz
+      country: Land
+      phone: Telefon
+      set_default: Als Standardadresse verwenden
+      back: Zurück zu den Adressen
+      save: Adresse speichern
+      created: Adresse hinzugefügt.
+      updated: Adresse aktualisiert.
+      destroyed: Adresse gelöscht.
+    notifications:
+      title: Benachrichtigungen
+      subtitle: Wähle, welche E-Mails du erhalten möchtest.
+      keys:
+        email_messages: Nachrichten
+        email_offers: Angebote
+        email_order_updates: Bestellupdates
+        email_saved_search_alerts: Alerts gespeicherter Suchen
+        email_price_drops_favourites: Preissenkungen bei Favoriten
+        email_newsletter: Newsletter
+      hints:
+        email_messages: Wenn dir ein Käufer oder Verkäufer schreibt.
+        email_offers: Neue Angebote und Antworten auf deine Angebote.
+        email_order_updates: Zahlungs-, Versand- und Lieferupdates.
+        email_saved_search_alerts: Neue Anzeigen, die zu deinen Suchen passen.
+        email_price_drops_favourites: Wenn eine gespeicherte Anzeige günstiger wird.
+        email_newsletter: Produktneuheiten, Angebote und Plattform-Updates.
+      save: Einstellungen speichern
+      saved: Benachrichtigungseinstellungen aktualisiert.
+    privacy:
+      title: Datenschutz und Daten
+      subtitle: Lade deine Daten herunter oder schließe dein Konto.
+      export_title: Daten herunterladen
+      export_body: Erhalte eine JSON-Datei mit Profil, Adressen, Anzeigen, Bestellungen,
+        Favoriten und Bewertungen (DSGVO Artikel 15 und 20).
+      export_button: Meine Daten herunterladen
+    deletion:
+      title: Konto löschen
+      body: Dein Profil wird anonymisiert, deine Anzeigen archiviert und deine persönlichen
+        Daten entfernt. Bestellungen bleiben aus rechtlichen Gründen erhalten. Dies
+        kann nicht rückgängig gemacht werden.
+      type_delete: Gib DELETE zur Bestätigung ein
+      password: Mit deinem Passwort bestätigen
+      submit: Mein Konto löschen
+      confirm: Dein Konto dauerhaft löschen?
+      done: Dein Konto wurde gelöscht.
+      confirmation_error: Wir konnten deine Identität nicht bestätigen. Versuche es
+        erneut.

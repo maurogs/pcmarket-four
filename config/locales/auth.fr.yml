@@ -1,0 +1,88 @@
+---
+fr:
+  auth:
+    registrations_disabled: L'inscription est temporairement désactivée.
+    fields:
+      email: Adresse e-mail
+      email_placeholder: vous@exemple.com
+      password: Mot de passe
+      password_placeholder: Votre mot de passe
+      password_confirmation: Confirmez le mot de passe
+      new_password: Nouveau mot de passe
+      first_name: Prénom
+      last_name: Nom
+      username: Nom d'utilisateur (facultatif)
+      username_placeholder: Un nom est généré si vous le laissez vide
+      username_hint: C'est le nom que les autres utilisateurs verront. Vous pourrez
+        le modifier plus tard.
+    sign_in:
+      title: Connexion
+      subtitle: Accédez à vos favoris, commandes et messages.
+      submit: Se connecter
+      forgot: Mot de passe oublié ?
+      remember: Se souvenir de moi sur cet appareil
+      no_account: Vous n'avez pas encore de compte ?
+      sign_up: Créer un compte
+    sign_up:
+      title: Créez votre compte
+      subtitle: Achetez et vendez du matériel en toute tranquillité.
+      submit: Créer un compte
+      password_hint: Au moins 8 caractères. Utilisez des majuscules, des chiffres
+        et des symboles.
+      terms: J'accepte les
+      terms_link: conditions d'utilisation
+      and: et la
+      privacy_link: politique de confidentialité
+      marketing: Je souhaite recevoir des offres et des nouveautés
+      marketing_hint: Vous pouvez vous désinscrire à tout moment.
+      have_account: Vous avez déjà un compte ?
+      sign_in: Se connecter
+    terms_acceptance:
+      title: Acceptez les conditions pour continuer
+      subtitle: Avant d'utiliser PCMarket, consultez et acceptez nos conditions et
+        notre politique de confidentialité.
+      marketing: Recevoir des offres et des actualités
+      marketing_hint: Vous pouvez vous désabonner à tout moment.
+      submit: Accepter et continuer
+      required: Vous devez accepter les conditions et la politique de confidentialité
+        pour continuer.
+      accepted: Merci. Votre compte est prêt.
+    forgot:
+      title: Réinitialisez votre mot de passe
+      subtitle: Nous vous enverrons un lien pour en créer un nouveau.
+      submit: Envoyer le lien
+      back: Retour à la connexion
+    reset:
+      title: Créez un nouveau mot de passe
+      subtitle: Choisissez un mot de passe que vous n'utilisez nulle part ailleurs.
+      submit: Enregistrer le mot de passe
+      back: Retour à la connexion
+    confirmation:
+      title: Renvoyer la confirmation
+      subtitle: Nous vous renverrons l'e-mail pour activer votre compte.
+      submit: Renvoyer l'e-mail
+      back: Retour à la connexion
+    unlock:
+      title: Débloquez votre compte
+      subtitle: Nous vous enverrons les instructions pour le débloquer.
+      submit: Envoyer les instructions
+      back: Retour à la connexion
+    shared:
+      brand_body: Le marché du matériel d'occasion, avec des vendeurs vérifiés et
+        la protection de l'acheteur.
+      testimonials:
+        1:
+          quote: J'ai vendu ma carte graphique en deux jours, sans souci.
+          author: Lucía, Madrid
+        2:
+          quote: J'ai trouvé l'ordinateur portable que je voulais à moitié prix.
+          author: Marc, Barcelone
+        3:
+          quote: Le processus de livraison était très clair du début à la fin.
+          author: Ane, Bilbao
+      testimonial: Témoignage %{number}
+      point_1: Paiements et vendeurs vérifiés
+      point_2: Livraisons suivies
+      point_3: Assistance dans votre langue
+      or: ou
+      google: Continuer avec Google

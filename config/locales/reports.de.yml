@@ -1,0 +1,19 @@
+---
+de:
+  reports:
+    modal_title: Diese Anzeige melden
+    reason: Grund
+    details: Details (optional)
+    details_placeholder: Sag uns, was mit dieser Anzeige nicht stimmt.
+    submit: Meldung senden
+    cancel: Abbrechen
+    created: Danke. Wir haben deine Meldung erhalten und prüfen sie.
+    already_reported: Du hast diese Anzeige bereits gemeldet. Wir prüfen sie.
+    invalid: Die Meldung konnte nicht gesendet werden.
+    reasons:
+      spam: Spam oder Duplikat
+      fraud: Möglicher Betrug
+      prohibited: Verbotenes Produkt
+      counterfeit: Fälschung
+      offensive: Anstößiger Inhalt
+      other: Anderer Grund

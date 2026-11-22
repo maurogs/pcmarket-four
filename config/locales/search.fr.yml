@@ -1,0 +1,82 @@
+---
+fr:
+  search:
+    save_search: Enregistrer la recherche
+    breadcrumb_label: Fil d'Ariane
+    meta:
+      title: Rechercher du matériel
+      description: Recherchez des PC gaming, composants, ordinateurs portables, téléphones,
+        consoles et accessoires d'occasion sur PCMarket.
+      query_title: Résultats pour « %{query} »
+      category_title: "%{category} : %{count} annonces"
+      category_description: Achetez et vendez du %{category} d'occasion avec des vendeurs
+        vérifiés et une livraison sécurisée.
+    results:
+      title: Toutes les annonces
+      title_query: Résultats pour « %{query} »
+      subtitle: Filtrez par prix, état et caractéristiques pour trouver exactement
+        ce qu'il vous faut.
+      count:
+        one: "%{formatted} annonce"
+        other: "%{formatted} annonces"
+      empty_title: Aucune annonce trouvée
+      empty_body: Essayez de retirer un filtre ou d'élargir la fourchette de prix.
+      clear_filters: Effacer les filtres
+      try_title: Explorer les catégories populaires
+    labels_tabs: Filtrer par badge
+    category:
+      all_listings: Toutes les annonces
+      badge: Catégorie
+      browse_children: Sous-catégories
+    filters:
+      title: Filtrer les annonces
+      filter_listings: Rechercher dans les résultats
+      mobile_button: Filtres (%{count})
+      close: Fermer les filtres
+      clear_all: Tout effacer
+      categories: Catégories
+      all_categories: Toutes les catégories
+      price: Prix
+      min_price: Min.
+      max_price: Max.
+      condition: État
+      labels: Badges
+      tags: Style
+      location: Localisation
+      all_regions: Toute l'Espagne
+      shipping: Livraison et retrait
+      ship: Livraison disponible
+      pickup: Retrait sur place
+      free_shipping: Livraison gratuite
+      on_sale: En promotion uniquement
+      search_options: Rechercher des options
+      show_all: Tout afficher (%{count})
+      show_less: Afficher moins
+      show_results: Afficher %{count} résultats
+    sort:
+      label: Trier
+      best_match: Meilleure correspondance
+      newest: Plus récentes
+      price_asc: Prix croissant
+      price_desc: Prix décroissant
+      popular: Les plus enregistrées
+    view:
+      grid: Vue en grille
+      list: Vue en liste
+    chips:
+      query: 'Recherche : %{query}'
+      price_range: "%{min} – %{max}"
+      price_min: À partir de %{min}
+      price_max: Jusqu'à %{max}
+      ship: Livraison disponible
+      pickup: Retrait sur place
+      on_sale: En promotion
+    pagination:
+      previous: Page précédente
+      next: Page suivante
+      load_more: Charger plus de résultats
+    seo:
+      footer_title: Acheter du %{category} d'occasion
+      footer_body: Sur PCMarket, vous trouverez du %{category} proposé par des particuliers
+        et des boutiques professionnelles. Comparez les prix, vérifiez l'état de chaque
+        article et achetez avec la protection de l'acheteur.

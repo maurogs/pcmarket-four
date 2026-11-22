@@ -1,0 +1,5 @@
+---
+fr:
+  conversations:
+    own_listing: Vous ne pouvez pas ouvrir une conversation sur votre propre annonce.
+    started: Nous avons ouvert la conversation. La messagerie complète arrive bientôt.

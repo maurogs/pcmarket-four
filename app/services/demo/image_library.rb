@@ -21,6 +21,7 @@ module Demo
     TARGET_MIN = 8
     TARGET_MAX = 15
     DEFAULT_TARGET = 10
+    CANDIDATE_BUFFER = 2
 
     OPENVERSE_URL = "https://api.openverse.org/v1/images/".freeze
     UNSPLASH_URL = "https://api.unsplash.com/search/photos".freeze
@@ -29,6 +30,83 @@ module Demo
 
     OPENVERSE_LICENSES = %w[cc0 pdm by by-sa].freeze
     IMAGE_EXTENSIONS = %w[.jpg .jpeg .png .webp].freeze
+    PREFERRED_ASPECT_RATIOS = "wide,square".freeze
+    CONTACT_THUMBNAIL = 200
+    CONTACT_COLUMNS = 4
+
+    NEGATIVE_KEYWORDS = %w[
+      screenshot landscape mountain forest lake beach portrait wedding car flower map
+      poster advertisement ad ads logo illustration drawing painting minecraft far cry
+      gta cosplay people person girl boy man woman
+    ].freeze
+
+    # Literal queries are preferred; Openverse treats multi-word queries as an
+    # AND, so a broader but still relevant query is used when a literal query
+    # cannot produce five usable photos.
+    QUERY_FALLBACKS = {
+      "computer tower rgb fans" => [ "gaming pc", "computer case" ],
+      "pc build inside case" => [ "pc build", "gaming pc" ],
+      "geforce graphics card" => [ "graphics card", "nvidia graphics card" ],
+      "amd ryzen processor chip" => [ "computer processor", "cpu" ],
+      "computer motherboard close up" => [ "motherboard", "computer motherboard" ],
+      "ddr4 ram stick" => [ "ram memory", "computer memory" ],
+      "nvme ssd m.2" => [ "nvme ssd", "ssd" ],
+      "computer case glass" => [ "computer case", "pc case" ],
+      "atx power supply" => [ "power supply", "computer power supply" ],
+      "cpu fan heatsink" => [ "heatsink", "cpu cooler" ],
+      "lcd monitor desk" => [ "computer monitor", "monitor" ],
+      "mechanical keyboard keycaps" => [ "mechanical keyboard", "keyboard" ],
+      "computer mouse" => [ "mouse", "computer mouse" ],
+      "headphones headset" => [ "headphones", "headset" ],
+      "laptop computer" => [ "laptop", "notebook computer" ],
+      "macbook laptop" => [ "macbook", "apple laptop" ],
+      "smartphone" => [ "smartphone", "mobile phone" ],
+      "iphone" => [ "iphone", "apple iphone" ],
+      "samsung galaxy phone" => [ "android smartphone", "smartphone" ],
+      "ipad tablet" => [ "ipad", "tablet" ],
+      "playstation 5" => [ "game console", "sony playstation" ],
+      "xbox controller" => [ "xbox", "game controller" ],
+      "nintendo switch console" => [ "nintendo switch", "handheld console" ],
+      "retro game console" => [ "retro console", "game console" ],
+      "webcam" => [ "webcam", "camera" ],
+      "usb microphone" => [ "microphone", "usb mic" ],
+      "vr headset" => [ "vr headset", "virtual reality headset" ],
+      "gaming desk setup" => [ "desk setup", "gaming desk" ]
+    }.freeze
+
+    POSITIVE_KEYWORDS = {
+      "computer tower rgb fans" => [ "gaming pc", "pc tower", "computer tower", "pc case",
+                                    "computer case", "rgb", "case fan", "computer fan" ],
+      "pc build inside case" => [ "pc build", "custom pc", "gaming pc", "pc case", "computer build" ],
+      "geforce graphics card" => [ "geforce", "graphics card", "nvidia", "gpu" ],
+      "amd ryzen processor chip" => [ "ryzen", "amd cpu", "processor", "cpu" ],
+      "computer motherboard close up" => [ "motherboard", "mainboard" ],
+      "ddr4 ram stick" => [ "ddr4", "ddr", "ram", "memory module", "memory stick" ],
+      "nvme ssd m.2" => [ "nvme", "ssd", "m.2", "m2" ],
+      "computer case glass" => [ "pc case", "computer case", "glass case", "tower" ],
+      "atx power supply" => [ "atx", "power supply", "psu" ],
+      "cpu fan heatsink" => [ "cpu fan", "cpu cooler", "heatsink", "cpu" ],
+      "lcd monitor desk" => [ "monitor", "display", "screen" ],
+      "mechanical keyboard keycaps" => [ "keyboard", "keycap", "keycaps", "mechanical" ],
+      "computer mouse" => [ "mouse", "mice" ],
+      "headphones headset" => [ "headphone", "headphones", "headset" ],
+      "laptop computer" => [ "laptop", "notebook" ],
+      "macbook laptop" => [ "macbook", "apple laptop", "apple" ],
+      "smartphone" => [ "smartphone", "mobile phone", "phone" ],
+      "iphone" => [ "iphone", "apple phone" ],
+      "samsung galaxy phone" => [ "samsung galaxy", "galaxy phone", "samsung", "android",
+                                  "smartphone", "phone" ],
+      "ipad tablet" => [ "ipad", "tablet" ],
+      "playstation 5" => [ "playstation", "ps5", "sony playstation" ],
+      "xbox controller" => [ "xbox controller", "xbox", "gamepad", "controller" ],
+      "nintendo switch console" => [ "nintendo switch", "switch console", "nintendo" ],
+      "retro game console" => [ "retro console", "game console", "atari", "sega", "nintendo",
+                                "retro game" ],
+      "webcam" => [ "webcam", "web cam" ],
+      "usb microphone" => [ "microphone", "usb mic", "mic" ],
+      "vr headset" => [ "vr headset", "virtual reality", "oculus", "quest" ],
+      "gaming desk setup" => [ "gaming desk", "desk setup", "battlestation", "desk" ]
+    }.freeze
     SOURCE_LICENSES = {
       "Openverse" => "https://creativecommons.org/licenses/",
       "Unsplash" => "https://unsplash.com/license",
@@ -36,41 +114,40 @@ module Demo
       "Pixabay" => "https://pixabay.com/service/license-summary/"
     }.freeze
 
-    # Every query maps to one or more leaf category slugs.
+    # Every query maps to one or more leaf category slugs. The queries are
+    # deliberately literal so the photos resemble the product being sold.
     QUERY_CATEGORIES = {
-      "gaming pc rgb" => %w[gaming-pcs streaming-rigs],
-      "custom pc build" => %w[gaming-pcs creator-rigs local-ai-rigs],
-      "white gaming pc" => %w[gaming-pcs],
-      "graphics card" => %w[gpus],
-      "nvidia graphics card" => %w[gpus],
-      "computer processor cpu" => %w[cpus],
-      "motherboard" => %w[motherboards motherboard-bundles],
-      "ram memory module" => %w[memory],
-      "ssd drive" => %w[storage],
-      "pc case" => %w[cases],
-      "power supply unit computer" => %w[power-supplies],
-      "cpu cooler" => %w[cpu-coolers],
-      "computer monitor" => %w[monitors],
-      "mechanical keyboard" => %w[keyboards],
-      "gaming mouse" => %w[mice],
-      "gaming headset" => %w[headphones],
-      "gaming laptop" => %w[gaming-laptops],
-      "macbook" => %w[macbooks ultrabooks],
+      "computer tower rgb fans" => %w[gaming-pcs streaming-rigs creator-rigs local-ai-rigs],
+      "pc build inside case" => %w[gaming-pcs creator-rigs local-ai-rigs],
+      "geforce graphics card" => %w[gpus],
+      "amd ryzen processor chip" => %w[cpus],
+      "computer motherboard close up" => %w[motherboards motherboard-bundles],
+      "ddr4 ram stick" => %w[memory],
+      "nvme ssd m.2" => %w[storage external-storage],
+      "computer case glass" => %w[cases],
+      "atx power supply" => %w[power-supplies],
+      "cpu fan heatsink" => %w[cpu-coolers case-fans],
+      "lcd monitor desk" => %w[monitors],
+      "mechanical keyboard keycaps" => %w[keyboards],
+      "computer mouse" => %w[mice],
+      "headphones headset" => %w[headphones],
+      "laptop computer" => %w[laptops ultrabooks other-laptops],
+      "macbook laptop" => %w[macbooks],
       "smartphone" => %w[android-phones other-phones],
       "iphone" => %w[iphone],
-      "android phone" => %w[android-phones],
-      "tablet ipad" => %w[ipad android-tablets other-tablets],
-      "playstation console" => %w[consoles],
+      "samsung galaxy phone" => %w[android-phones],
+      "ipad tablet" => %w[ipad android-tablets other-tablets],
+      "playstation 5" => %w[consoles],
       "xbox controller" => %w[controllers],
-      "nintendo switch" => %w[handhelds consoles],
+      "nintendo switch console" => %w[handhelds],
       "retro game console" => %w[retro-consoles retro-handhelds retro-controllers],
       "webcam" => %w[webcams],
-      "microphone podcast" => %w[microphones],
+      "usb microphone" => %w[microphones],
       "vr headset" => %w[vr-headsets],
-      "desk setup gaming" => %w[desk-accessories art-decor collectibles clothing-gear
+      "gaming desk setup" => %w[desk-accessories art-decor collectibles clothing-gear
                                other-accessories speakers sim-racing expansion-cards
-                               network-adapters other-components case-fans external-storage
-                               other-peripherals games software ultrabooks other-laptops]
+                               network-adapters other-components games software
+                               other-peripherals]
     }.freeze
 
     Candidate = Struct.new(
@@ -96,11 +173,43 @@ module Demo
         Rails.root.join("storage/demo_images")
       end
 
+      def denylist_path
+        Rails.root.join("db/seeds/demo/image_denylist.txt")
+      end
+
+      def denylist(path = denylist_path)
+        return [] unless path.exist?
+
+        path.readlines.filter_map do |line|
+          value = line.strip
+          next if value.blank? || value.start_with?("#")
+
+          value
+        end
+      end
+
+      def denylisted?(entry, path = denylist_path)
+        blocked = denylist(path)
+        return false if blocked.empty?
+
+        values = [ entry["file"], entry["source_url"] ].compact.map { |value| value.to_s.strip }
+        values.any? do |value|
+          blocked.any? { |rule| rule == value || rule == File.basename(value) }
+        end
+      rescue StandardError
+        false
+      end
+
+      def reject_denylisted(entries, path = denylist_path)
+        entries.reject { |entry| denylisted?(entry, path) }
+      end
+
       def manifest(path = manifest_path)
         return [] unless path.exist?
 
         parsed = JSON.parse(path.read)
-        parsed.is_a?(Array) ? parsed : []
+        entries = parsed.is_a?(Array) ? parsed : []
+        reject_denylisted(entries)
       rescue JSON::ParserError, Errno::ENOENT
         []
       end
@@ -145,12 +254,16 @@ module Demo
 
     def initialize(queries: QUERY_CATEGORIES.keys, target: DEFAULT_TARGET,
                    manifest_path: self.class.manifest_path,
-                   storage_root: self.class.storage_root, logger: nil)
+                   storage_root: self.class.storage_root,
+                   denylist_path: self.class.denylist_path,
+                   contact_root: Rails.root.join("tmp/qa"), logger: nil)
       @queries = Array(queries)
       @target = target.to_i.clamp(1, TARGET_MAX)
       @manifest_file = Pathname.new(manifest_path)
       @image_root = Pathname.new(storage_root)
-      @entries = self.class.manifest(@manifest_file).dup
+      @denylist_path = Pathname.new(denylist_path)
+      @contact_root = Pathname.new(contact_root)
+      @entries = self.class.reject_denylisted(self.class.manifest(@manifest_file), @denylist_path).dup
       @logger = logger || ->(message) { puts message }
       @known_urls = @entries.map { |entry| entry["source_url"] }.compact.to_set
       @known_checksums = @entries.map { |entry| entry["sha256"] }.compact.to_set
@@ -159,14 +272,16 @@ module Demo
     def call
       FileUtils.mkdir_p(image_root)
       queries.each do |query|
-        next if existing_for(query).size >= target
-
-        @logger.call("Demo images: #{query}")
-        candidates = candidates_for(query)
-        downloaded = download_batch(candidates, query)
-        @entries.concat(downloaded)
-        write_manifest
+        if existing_for(query).size < target
+          @logger.call("Demo images: #{query}")
+          candidates = candidates_for(query)
+          downloaded = download_batch(candidates, query)
+          @entries.concat(downloaded)
+          write_manifest
+        end
+        write_contact_sheet(query)
       end
+      @entries = self.class.reject_denylisted(@entries, @denylist_path)
       write_manifest
       entries
     rescue StandardError => e
@@ -185,27 +300,96 @@ module Demo
     end
 
     def candidates_for(query)
-      candidates = fetch_openverse(query)
+      candidates = []
+      seen = Set.new
+      needed = [ target * CANDIDATE_BUFFER, target + 1 ].max
+
+      variants_for(query).each do |term|
+        [ true, false ].each do |preferred|
+          pages = preferred ? [ 1 ] : [ 1, 2 ]
+          pages.each do |page|
+            openverse_rows(term, preferred: preferred, page: page).each do |row|
+              next unless relevant_row?(query, row)
+
+              candidate = build_openverse_candidate(query, row)
+              next if candidate.nil?
+              next if denylisted_candidate?(candidate)
+
+              key = candidate.source_url.presence || candidate.image_url
+              next if key.blank? || seen.include?(key)
+
+              seen << key
+              candidates << candidate
+            end
+            break if candidates.size >= needed
+          end
+          break if candidates.size >= needed
+        end
+        break if candidates.size >= needed
+      end
+
       candidates += fetch_unsplash(query) if ENV["UNSPLASH_ACCESS_KEY"].present? && candidates.size < target
       candidates += fetch_pexels(query) if ENV["PEXELS_API_KEY"].present? && candidates.size < target
       candidates += fetch_pixabay(query) if ENV["PIXABAY_API_KEY"].present? && candidates.size < target
+
       candidates.uniq { |candidate| candidate.source_url.presence || candidate.image_url }
+                .reject { |candidate| denylisted_candidate?(candidate) }
+    end
+
+    def variants_for(query)
+      ([ query ] + Array(QUERY_FALLBACKS[query])).uniq
     end
 
     def fetch_openverse(query)
+      candidates_for(query)
+    end
+
+    def openverse_rows(query, preferred:, page:)
       params = {
         "q" => query,
         "license" => OPENVERSE_LICENSES.join(","),
         "page_size" => 20,
+        "page" => page,
         "mature" => "false"
       }
-      payload = fetch_json("#{OPENVERSE_URL}?#{URI.encode_www_form(params)}")
-      Array(payload["results"]).filter_map do |row|
-        build_openverse_candidate(query, row)
+      if preferred
+        params["category"] = "photograph"
+        params["aspect_ratio"] = PREFERRED_ASPECT_RATIOS
       end
+
+      payload = fetch_json("#{OPENVERSE_URL}?#{URI.encode_www_form(params)}")
+      Array(payload["results"])
     rescue StandardError => e
       @logger.call("  Openverse failed: #{e.class}")
       []
+    end
+
+    def relevant_row?(query, row)
+      text = normalise_text([ row["title"], Array(row["tags"]).map { |tag| tag["name"] } ].flatten.join(" "))
+      return false if text.blank?
+
+      return false if NEGATIVE_KEYWORDS.any? { |word| word_match?(text, word) }
+
+      positives_for(query).any? { |word| word.include?(" ") ? text.include?(word) : word_match?(text, word) }
+    end
+
+    def positives_for(query)
+      POSITIVE_KEYWORDS[query] ||
+        query.to_s.downcase.split(/[^a-z0-9]+/).reject { |word| word.length < 3 }
+    end
+
+    def normalise_text(value)
+      value.to_s.downcase.gsub(/\s+/, " ").strip
+    end
+
+    def word_match?(text, word)
+      text.match?(/\b#{Regexp.escape(word)}\b/)
+    end
+
+    def denylisted_candidate?(candidate)
+      self.class.denylisted?(
+        { "file" => nil, "source_url" => candidate.source_url }, @denylist_path
+      )
     end
 
     def build_openverse_candidate(query, row)
@@ -376,6 +560,10 @@ module Demo
 
       trigger_unsplash_download(candidate.download_location)
       entry = store(candidate, query, bytes, checksum)
+      if entry && self.class.denylisted?(entry, @denylist_path)
+        FileUtils.rm_f(image_root.join(entry["query_slug"], entry["file"]))
+        entry = nil
+      end
       if entry
         @known_urls << entry["source_url"] if entry["source_url"].present?
         @known_checksums << checksum
@@ -438,10 +626,42 @@ module Demo
       }
     end
 
+    def write_contact_sheet(query)
+      entries = existing_for(query)
+      return if entries.empty?
+
+      FileUtils.mkdir_p(@contact_root)
+      tiles = entries.filter_map { |entry| contact_tile(entry) }
+      return if tiles.empty?
+
+      sheet = Vips::Image.arrayjoin(tiles, across: CONTACT_COLUMNS, shim: 8,
+                                          background: [ 245, 245, 245 ])
+      path = @contact_root.join("contact_#{self.class.query_slug(query)}.jpg")
+      sheet.write_to_file(path.to_s, Q: 80, strip: true)
+      @logger.call("  Contact sheet: #{path}")
+    rescue StandardError => e
+      @logger.call("  Contact sheet failed for #{query}: #{e.class}: #{e.message}")
+    end
+
+    def contact_tile(entry)
+      path = image_root.join(entry["query_slug"], entry["file"])
+      return nil unless path.file?
+
+      image = Vips::Image.thumbnail(path.to_s, CONTACT_THUMBNAIL)
+      image = image.flatten(background: 255) if image.bands > 3
+      image = image.colourspace("srgb")
+      image = image.bandjoin([ image ] * (3 - image.bands)) if image.bands < 3
+
+      label = Vips::Image.text(entry["file"].to_s, width: CONTACT_THUMBNAIL - 4, height: 30, dpi: 96)
+      label = label.bandjoin([ label, label ])
+      image.join(label, :vertical)
+    end
+
     def write_manifest
       FileUtils.mkdir_p(manifest_file.dirname)
+      filtered = self.class.reject_denylisted(entries, @denylist_path)
       tmp = Pathname.new(manifest_file.to_s.sub(/\.json\z/, ".json.tmp"))
-      tmp.write("#{JSON.pretty_generate(entries.sort_by { |entry| [ entry['query'], entry['file'] ] })}\n")
+      tmp.write("#{JSON.pretty_generate(filtered.sort_by { |entry| [ entry['query'], entry['file'] ] })}\n")
       FileUtils.mv(tmp.to_s, manifest_file.to_s)
     end
 

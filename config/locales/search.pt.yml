@@ -1,0 +1,82 @@
+---
+pt:
+  search:
+    save_search: Guardar pesquisa
+    breadcrumb_label: Navegação estrutural
+    meta:
+      title: Pesquisar tecnologia
+      description: Pesquise PC gaming, componentes, portáteis, telemóveis, consolas
+        e acessórios em segunda mão na PCMarket.
+      query_title: Resultados para «%{query}»
+      category_title: "%{category}: %{count} anúncios"
+      category_description: Compre e venda %{category} em segunda mão com vendedores
+        verificados e entrega segura.
+    results:
+      title: Todos os anúncios
+      title_query: Resultados para «%{query}»
+      subtitle: Filtre por preço, estado e características para encontrar exatamente
+        o que procura.
+      count:
+        one: "%{formatted} anúncio"
+        other: "%{formatted} anúncios"
+      empty_title: Não encontrámos anúncios
+      empty_body: Tente remover um filtro ou alargar o intervalo de preço.
+      clear_filters: Limpar filtros
+      try_title: Explorar categorias populares
+    labels_tabs: Filtrar por etiqueta
+    category:
+      all_listings: Todos os anúncios
+      badge: Categoria
+      browse_children: Subcategorias
+    filters:
+      title: Filtrar anúncios
+      filter_listings: Pesquisar nos resultados
+      mobile_button: Filtros (%{count})
+      close: Fechar filtros
+      clear_all: Limpar tudo
+      categories: Categorias
+      all_categories: Todas as categorias
+      price: Preço
+      min_price: Mín.
+      max_price: Máx.
+      condition: Estado
+      labels: Etiquetas
+      tags: Estilo
+      location: Localização
+      all_regions: Toda a Espanha
+      shipping: Envio e recolha
+      ship: Com envio
+      pickup: Recolha em mão
+      free_shipping: Envio gratuito
+      on_sale: Apenas com desconto
+      search_options: Pesquisar opções
+      show_all: Mostrar tudo (%{count})
+      show_less: Mostrar menos
+      show_results: Mostrar %{count} resultados
+    sort:
+      label: Ordenar
+      best_match: Melhor correspondência
+      newest: Mais recentes
+      price_asc: 'Preço: crescente'
+      price_desc: 'Preço: decrescente'
+      popular: Mais guardados
+    view:
+      grid: Vista de grelha
+      list: Vista de lista
+    chips:
+      query: 'Pesquisa: %{query}'
+      price_range: "%{min} – %{max}"
+      price_min: A partir de %{min}
+      price_max: Até %{max}
+      ship: Com envio
+      pickup: Recolha em mão
+      on_sale: Com desconto
+    pagination:
+      previous: Página anterior
+      next: Página seguinte
+      load_more: Carregar mais resultados
+    seo:
+      footer_title: Comprar %{category} em segunda mão
+      footer_body: Na PCMarket encontra %{category} de particulares e lojas profissionais.
+        Compare preços, verifique o estado de cada artigo e compre com proteção do
+        comprador.

@@ -4,7 +4,9 @@ fr:
     skip_to_content: Aller au contenu principal
     meta:
       title: Achetez et vendez du matériel neuf et reconditionné
-      description: 'PCMarket est la place de marché espagnole de la tech : PC gaming, composants, périphériques, ordinateurs portables, téléphones, tablettes et consoles de vendeurs vérifiés.'
+      description: 'PCMarket est la place de marché espagnole de la tech : PC gaming,
+        composants, périphériques, ordinateurs portables, téléphones, tablettes et
+        consoles de vendeurs vérifiés.'
       og_image_alt: PCMarket, la place de marché de la tech d'occasion
     announcement:
       help: Aide
@@ -48,6 +50,12 @@ fr:
       store_settings: Paramètres de la boutique
       admin: Panneau d'administration
       logout: Se déconnecter
+      addresses: Adresses
+      notifications: Préférences de notification
+      privacy: Confidentialité et données
+      store_policies: Politiques de la boutique
+      vacation_mode: Mode vacances
+      payouts: Paiements
     nav:
       new: Nouveautés
       deals: Bons plans
@@ -58,14 +66,17 @@ fr:
       under_price: Moins de %{price}
       promo:
         pc_finder_title: Trouvez le PC idéal
-        pc_finder_body: Répondez à quelques questions et nous vous proposerons des machines adaptées.
+        pc_finder_body: Répondez à quelques questions et nous vous proposerons des
+          machines adaptées.
         pc_finder_cta: Ouvrir le guide d'achat
         sell_title: Transformez votre matériel en argent
-        sell_body: Vendez-nous votre PC, console ou composants rapidement et en toute sécurité.
+        sell_body: Vendez-nous votre PC, console ou composants rapidement et en toute
+          sécurité.
         sell_cta: Vendre à PCMarket
         deals_title: Bons plans de la semaine
         deals_body: Du matériel vérifié avec de vrais rabais, tant qu'il y a du stock.
         deals_cta: Voir les bons plans
+      more: Plus
     drawer:
       title: Menu
       close: Fermer le menu
@@ -84,7 +95,8 @@ fr:
       account: Compte
     footer:
       newsletter_title: Des offres qui valent le coup
-      newsletter_body: Recevez chaque semaine le meilleur de la tech d'occasion. Sans spam.
+      newsletter_body: Recevez chaque semaine le meilleur de la tech d'occasion. Sans
+        spam.
       email_label: Adresse e-mail
       email_placeholder: vous@exemple.com
       subscribe: S'abonner
@@ -113,7 +125,7 @@ fr:
       privacy: Confidentialité
       cookies: Cookies
       legal_notice: Mentions légales
-      image_credits: "Crédits photos"
+      image_credits: Crédits photos
       cookie_preferences: Préférences de cookies
       language: Langue
       social: Réseaux sociaux
@@ -124,18 +136,23 @@ fr:
       back_to_top: Retour en haut
     cookies:
       banner_title: Votre vie privée compte
-      banner_body: Nous utilisons des cookies nécessaires au fonctionnement de PCMarket et, avec votre accord, des cookies analytiques et marketing.
+      banner_body: Nous utilisons des cookies nécessaires au fonctionnement de PCMarket
+        et, avec votre accord, des cookies analytiques et marketing.
       accept_all: Tout accepter
       reject_all: Tout refuser
       customise: Personnaliser
       modal_title: Préférences de cookies
-      modal_body: Choisissez les cookies que vous autorisez. Les cookies nécessaires ne peuvent pas être désactivés.
+      modal_body: Choisissez les cookies que vous autorisez. Les cookies nécessaires
+        ne peuvent pas être désactivés.
       necessary: Nécessaires
-      necessary_body: Indispensables pour vous connecter, conserver votre panier et mémoriser vos préférences.
+      necessary_body: Indispensables pour vous connecter, conserver votre panier et
+        mémoriser vos préférences.
       analytics: Analytiques
-      analytics_body: Ils nous aident à comprendre comment PCMarket est utilisé pour l'améliorer.
+      analytics_body: Ils nous aident à comprendre comment PCMarket est utilisé pour
+        l'améliorer.
       marketing: Marketing
-      marketing_body: Utilisés pour vous montrer des publicités pertinentes sur d'autres sites.
+      marketing_body: Utilisés pour vous montrer des publicités pertinentes sur d'autres
+        sites.
       save: Enregistrer les préférences
       close: Fermer
       saved: Vos préférences de cookies ont été enregistrées.

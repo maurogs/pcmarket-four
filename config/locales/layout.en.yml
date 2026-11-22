@@ -4,7 +4,8 @@ en:
     skip_to_content: Skip to main content
     meta:
       title: Buy and sell new and second-hand tech
-      description: 'PCMarket is Spain''s marketplace for tech: gaming PCs, components, peripherals, laptops, phones, tablets and consoles from verified sellers.'
+      description: 'PCMarket is Spain''s marketplace for tech: gaming PCs, components,
+        peripherals, laptops, phones, tablets and consoles from verified sellers.'
       og_image_alt: PCMarket, the second-hand tech marketplace
     announcement:
       help: Help
@@ -48,6 +49,12 @@ en:
       store_settings: Store settings
       admin: Admin panel
       logout: Log out
+      addresses: Addresses
+      notifications: Notification preferences
+      privacy: Privacy & data
+      store_policies: Store policies
+      vacation_mode: Vacation mode
+      payouts: Payouts
     nav:
       new: New
       deals: Deals
@@ -58,7 +65,8 @@ en:
       under_price: Under %{price}
       promo:
         pc_finder_title: Find the perfect PC
-        pc_finder_body: Answer a few questions and we will suggest machines that fit you.
+        pc_finder_body: Answer a few questions and we will suggest machines that fit
+          you.
         pc_finder_cta: Open PC Finder
         sell_title: Turn your gear into cash
         sell_body: Sell us your PC, console or components quickly and safely.
@@ -66,6 +74,7 @@ en:
         deals_title: Deals of the week
         deals_body: Checked tech with real discounts, only while stock lasts.
         deals_cta: Shop deals
+      more: More
     drawer:
       title: Menu
       close: Close menu
@@ -113,7 +122,7 @@ en:
       privacy: Privacy
       cookies: Cookies
       legal_notice: Legal notice
-      image_credits: "Image credits"
+      image_credits: Image credits
       cookie_preferences: Cookie preferences
       language: Language
       social: Social media
@@ -124,16 +133,20 @@ en:
       back_to_top: Back to top
     cookies:
       banner_title: Your privacy matters
-      banner_body: We use necessary cookies to make PCMarket work and, with your permission, analytics and marketing cookies.
+      banner_body: We use necessary cookies to make PCMarket work and, with your permission,
+        analytics and marketing cookies.
       accept_all: Accept all
       reject_all: Reject all
       customise: Customise
       modal_title: Cookie preferences
-      modal_body: Choose which cookies you allow. Necessary cookies cannot be turned off.
+      modal_body: Choose which cookies you allow. Necessary cookies cannot be turned
+        off.
       necessary: Necessary
-      necessary_body: Essential for signing in, keeping your cart and remembering your preferences.
+      necessary_body: Essential for signing in, keeping your cart and remembering
+        your preferences.
       analytics: Analytics
-      analytics_body: They help us understand how PCMarket is used so we can improve it.
+      analytics_body: They help us understand how PCMarket is used so we can improve
+        it.
       marketing: Marketing
       marketing_body: Used to show you relevant ads on other sites.
       save: Save preferences

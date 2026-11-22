@@ -446,7 +446,7 @@
         <div class="prose-pcm mt-3"><%= formatted_description(@listing.description) %></div>
       </section>
 
-      <% if @listing.category.root.slug.in?(%w[gaming-pcs workstations]) && @listing.game_fps.any? %>
+      <% if Category.root_slug_map[@listing.category.root_id].in?(%w[gaming-pcs workstations]) && @listing.game_fps.any? %>
         <section class="mt-8" aria-labelledby="listing-performance-title">
           <h2 id="listing-performance-title" class="font-heading text-xl font-semibold text-slate-950 dark:text-white">
             <%= t("listings.show.performance_title") %>

@@ -2,6 +2,15 @@
 
 ## Estado
 
+Fase 9A completada: calidad del contenido demo y estabilidad de las pruebas.
+Los archivos de idioma están organizados por dominio, las fotos demo se filtran
+por relevancia y atribución, los títulos cortos del catálogo reciben un
+calificador sin añadir el estado del artículo, las páginas de anuncios cumplen
+presupuestos explícitos de consultas SQL y el ejecutor de pruebas de macOS ya no
+hace fork después de que ruby-vips inicialice Objective-C. La prueba de sistema
+responsive cubre ahora pantallas públicas y autenticadas en anchos de móvil y
+tableta.
+
 Fase 8 completada: datos de demostración realistas e idempotentes con
 fotografía de producto bajo licencias abiertas y almacenada en caché.
 `bin/rails demo:images` descarga y valida las fotos y escribe el manifiesto
@@ -48,6 +57,7 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
 | 7B | Buscador de PC, página de venta y Véndenos tu equipo | Completada |
 | 7C | API JSON versionada para apps móviles | Completada |
 | 8 | Datos demo realistas, fotos de stock y créditos de imágenes | Completada |
+| 9A | Relevancia demo, calidad del contenido, presupuestos de consultas y estabilidad de pruebas | Completada |
 
 ## Stack
 
@@ -73,10 +83,13 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
   cada petición en `I18n.with_locale`.
 - Los callbacks OmniAuth de Devise viven fuera del ámbito de idioma porque
   Devise no admite callbacks OmniAuth bajo un segmento dinámico.
-- Los archivos de idioma se dividen por dominio (`models`, `home`, `layout`,
-  `listings`, `pages`, `newsletter`, `errors`, `common`, `countries`, `cart`,
-  `checkout`, `orders`, `notifications`, `messaging`, `admin`); cada clave existe en los
-  seis idiomas. `test/i18n/locale_parity_test.rb` exige paridad.
+- Los archivos de idioma se dividen por dominio: `account`, `admin`, `api`,
+  `auth`, `cart`, `checkout`, `common`, `content`, `conversations`, `countries`,
+  `errors`, `favorites`, `home`, `layout`, `listings`, `maintenance`,
+  `messaging`, `models`, `newsletter`, `notifications`, `orders`, `pages`,
+  `reports`, `saved_searches`, `search`, `seller` y `stores`. Los antiguos
+  archivos `phase2` y `phase3b` se eliminaron en la fase 9A. Cada clave existe
+  en los seis idiomas; `test/i18n/locale_parity_test.rb` exige paridad.
 - El inglés es inglés británico (favourite, colour, authorised).
 - Los selectores de idioma del pie y del cajón conservan la ruta y la consulta
   actuales.
@@ -800,12 +813,15 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
 ### Límites de rendimiento
 
 - `ListingSearch::INCLUDES` precarga tienda, categoría, región, usuario y
-  adjuntos/blobs de imágenes. Las tarjetas nunca llaman a `category.root` ni a
-  `user.store`; los slugs raíz vienen de un `Category.root_slug_map` cacheado y
-  los nombres de vendedor prefieren la tienda precargada.
+  adjuntos de imágenes con sus blobs y registros de variantes. Las tarjetas
+  nunca llaman a `category.root` ni a `user.store`; los slugs raíz vienen de un
+  `Category.root_slug_map` cacheado y los nombres de vendedor prefieren la
+  tienda precargada.
 - `MenuBuilder` obtiene raíces e hijos directos en dos consultas y construye
   rutas desde slugs sin recorrer la ascendencia.
-- `Setting` cachea toda la pequeña tabla de ajustes bajo una clave.
+- `Setting` cachea toda la pequeña tabla de ajustes bajo una clave. Durante una
+  petición, `Current.settings_values` y `Current.category_root_slugs` mantienen
+  los valores en memoria y se limpian cuando cambian las filas subyacentes.
 - Las páginas de búsqueda anónimas envían `Cache-Control: public, max-age=60` y
   `fresh_when` sobre `[locale, params digest, Listing.maximum(:updated_at)]`; las
   páginas de anuncio usan `fresh_when` sobre
@@ -813,6 +829,28 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
 - Protección contra N+1: `test/integration/search_performance_test.rb` renderiza
   una página de categoría con 24 anuncios y exige menos de 25 consultas SQL
   mediante `ActiveSupport::Notifications`.
+- La fase 9A añade presupuestos por página en
+  `test/integration/query_performance_test.rb`: la portada con 50 anuncios debe
+  quedar por debajo de 40 consultas SQL, una página de categoría por debajo de
+  30 y una página de anuncio por debajo de 35. Las mediciones actuales son
+  portada 29, categoría 21 y anuncio 34.
+
+### Infraestructura de pruebas (fase 9A)
+
+- Las pruebas en macOS usan un solo trabajador por defecto. Hacer fork después
+  de que ruby-vips inicialice Objective-C aborta el trabajador y deja al padre
+  esperando para siempre. `PARALLEL_WORKERS` permite cambiar el número de
+  trabajadores; en macOS se usan hilos y en otras plataformas se mantiene el
+  paralelismo por procesos.
+- `test/integration/query_performance_test.rb` exige los presupuestos SQL de
+  portada, categoría y anuncio descritos arriba.
+- `test/system/responsive_test.rb` comprueba desbordamiento horizontal en
+  pantallas públicas y autenticadas a 390 px y 768 px, incluidas portada,
+  categoría, búsqueda, anuncio, tienda, cesta, pago, conversaciones, panel del
+  vendedor y administración. También mantiene una comprobación de navegación de
+  escritorio a 1440 px.
+- Las pruebas de sistema borran las cookies de Devise mediante Chrome DevTools y
+  WebDriver para que una sesión iniciada no se filtre a la prueba siguiente.
 
 ### SEO y seguridad
 
@@ -963,19 +1001,28 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
 - Esquema nuevo: `order_notes` (`order_id`, `author_id`, `body`), `orders
   .refund_reference` y `reviews.seller_reply_visible`.
 
-### Datos demo y créditos de imágenes (Fase 8)
+### Datos demo y créditos de imágenes (fases 8 y 9A)
 
 - `Demo::ImageLibrary` descarga fotos de stock por consulta. Openverse no
   necesita clave; Unsplash, Pexels y Pixabay solo se usan si están configuradas
   `UNSPLASH_ACCESS_KEY`, `PEXELS_API_KEY` o `PIXABAY_API_KEY`. Las peticiones
   usan el agente genérico `PCMarketDemoSeeder/1.0`, timeouts, como máximo dos
   trabajadores y una pausa cortés de 300 ms.
+- La fase 9A filtra la relevancia antes de descargar. Las consultas son nombres
+  literales de producto con alternativas más amplias, las filas de Openverse
+  deben coincidir con palabras clave positivas del título o las etiquetas y no
+  deben coincidir con las negativas, y se prefieren resultados de fotografía con
+  proporción ancha o cuadrada. La lista de bloqueo revisada vive en
+  `db/seeds/demo/image_denylist.txt` y coincide con la URL de origen o con el
+  nombre del archivo guardado. Se generan hojas de contacto etiquetadas en
+  `tmp/qa/` para la revisión manual.
 - Los resultados se filtran a CC0, Public Domain Mark, CC BY y CC BY-SA, JPEG,
   PNG o WebP y al menos 800 px de ancho. Cada descarga se valida con Vips, se
   redimensiona a 1600 px de lado mayor como JPEG q82, se deduplica por SHA256 y
   se guarda en `storage/demo_images/<query_slug>/`. El manifiesto versionado
   guarda consulta, archivo, fuente, URL de origen, autor, licencia, URL de
-  licencia, dimensiones, checksum y categorías.
+  licencia, dimensiones, checksum y categorías; las entradas bloqueadas se
+  eliminan tanto de las descargas como del manifiesto.
 - `Demo::ImageLibrary.used_entries` cruza las entradas del manifiesto con los
   metadatos de los blobs para la página de créditos. Cada blob demo lleva
   `source`, `source_url`, `creator`, `license` y `license_url`; las galerías de
@@ -998,6 +1045,13 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
   calculan `game_fps` de los PCs gaming con la tabla del buscador de PC y
   reutilizan blobs existentes entre anuncios (sin subidas duplicadas) con
   metadatos de posición ordenados.
+- La fase 9A deja de añadir el estado del artículo al título y usa
+  `Demo::Seed.title_for`. Los nombres cortos del catálogo reciben un calificador
+  natural en español de categoría, marca, modelo o capacidad hasta cumplir
+  `Listing::MIN_TITLE_LENGTH`; el estado nunca se usa. Los precios se redondean
+  a terminaciones comerciales, los precios originales siguen la misma regla y
+  las descripciones usan etiquetas traducidas de filtros y frases completas de
+  FPS.
 - `Current.seeding` desactiva `Notifier`, las difusiones de mensajes y
   notificaciones, los jobs de seguidores y búsquedas y el envío de correo
   durante la semilla. Las cachés de contadores se recalculan con SQL al final.
@@ -1005,11 +1059,16 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
   marcadores sin red.
 - `bin/rails demo:reset` elimina solo usuarios, tiendas, anuncios, pedidos,
   conversaciones, filas sociales y de marketing demo y sus blobs de Active
-  Storage, y vuelve a sembrar.
+  Storage, y vuelve a sembrar. Una ejecución completa en desarrollo con
+  imágenes crea 600 anuncios y 2.367 adjuntos; todos los títulos generados son
+  válidos.
 - Pruebas nuevas: `test/services/demo/image_library_test.rb` (WebMock de
-  parseo, filtrado de licencia y tamaño, claves ausentes, caída de red y
-  deduplicación por checksum), `test/seeds/demo_seed_test.rb` (semilla reducida
-  e idempotencia sin imágenes) y `test/integration/credits_page_test.rb`.
+  parseo, rechazo por relevancia, lista de bloqueo, hojas de contacto, filtrado
+  de licencia y tamaño, claves ausentes, caída de red y deduplicación por
+  checksum), `test/services/demo/catalog_test.rb` (las 304 plantillas de título
+  estáticas y de PC generado frente a las validaciones de `Listing`),
+  `test/seeds/demo_seed_test.rb` (semilla reducida, calidad del contenido e
+  idempotencia sin imágenes) y `test/integration/credits_page_test.rb`.
 
 ## Mapa de código
 
@@ -1200,16 +1259,21 @@ db/seeds.rb                                 cargador
 db/seeds/*.rb                               taxonomía y datos de referencia
 db/seeds/demo.rb                            punto de entrada de la semilla demo
 db/seeds/demo/image_manifest.json           manifiesto versionado de atribución de fotos
+db/seeds/demo/image_denylist.txt            lista de bloqueo revisada de fotos irrelevantes
 lib/tasks/demo.rake                         demo:images, demo:seed, demo:reset
-app/services/demo/image_library.rb          descarga, redimensionado vips y deduplicación SHA256
+app/services/demo/image_library.rb          relevancia, denylist, descarga, vips y SHA256
 app/services/demo/catalog.rb                catálogo español de productos, tiendas y ubicaciones
-app/services/demo/seed.rb                   semilla idempotente del mercado demo
+app/services/demo/seed.rb                   semilla idempotente + títulos válidos
 app/services/demo/reset.rb                  limpieza selectiva de datos demo y blobs
-app/models/current.rb                       protección Current.seeding para efectos secundarios
+app/models/current.rb                       caché por petición de ajustes/categorías + seeding
 app/views/pages/credits.html.erb            página de atribución de fotos
-test/services/demo/image_library_test.rb    parseo y fallbacks del importador
-test/seeds/demo_seed_test.rb                prueba de humo de la semilla reducida
+test/services/demo/image_library_test.rb    relevancia, denylist, parseo y fallbacks
+test/services/demo/catalog_test.rb          validación de todas las plantillas de título
+test/seeds/demo_seed_test.rb                semilla reducida, calidad e idempotencia
 test/integration/credits_page_test.rb       renderizado de créditos
+test/integration/query_performance_test.rb  presupuestos SQL de portada/categoría/anuncio
+test/system/responsive_test.rb              desbordamiento público/autenticado a 390/768 px
+test/test_helper.rb                         selección de trabajadores y entorno de pruebas
 db/seeds/legal/*.rb                         textos legales por país
 db/seeds/help_articles.rb                   18 artículos de ayuda
 app/services/trust_stats.rb                 agregados cacheados de confianza
@@ -1309,11 +1373,20 @@ test/integration/{legal_pages,trust_and_about,help_centre}_test.rb
   no tiene `game_fps`; la tabla necesita actualizaciones periódicas con cada
   nueva GPU.
 - El manifiesto de imágenes demo es una selección, no exhaustiva: hay que
-  ejecutar `bin/rails demo:images` para refrescarlo y revisar las licencias
-  antes de reutilizar las fotos fuera del mercado demo.
+  ejecutar `bin/rails demo:images`, revisar las hojas de contacto de `tmp/qa/`,
+  ampliar `db/seeds/demo/image_denylist.txt` cuando haga falta y revisar las
+  licencias antes de reutilizar las fotos fuera del mercado demo.
 - Los proveedores de stock opcionales solo se prueban cuando hay claves; con
   Openverse basta para el manifiesto versionado.
 - La semilla demo se omite si ya existen usuarios demo. Usa
-  `bin/rails demo:reset` para reconstruirla tras cambiar el generador.
+  `bin/rails demo:reset` para reconstruirla tras cambiar el generador; la
+  ejecución completa con imágenes está verificada.
 - Las fotos demo viven en disco bajo `storage/demo_images`; esta fase no tiene
   una ruta de subida a S3 para la caché.
+- macOS usa un solo trabajador de pruebas por estabilidad. `PARALLEL_WORKERS`
+  puede acelerar ejecuciones locales, pero las pruebas paralelas con hilos
+  comparten fixtures y PostgreSQL, así que valores altos pueden bloquear la
+  base de datos.
+- El presupuesto de consultas de la página de anuncio tiene poco margen (34
+  frente al límite de 35); cualquier precarga o consulta nueva en la vista debe
+  revisar el presupuesto de forma explícita.

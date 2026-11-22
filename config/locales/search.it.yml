@@ -1,0 +1,82 @@
+---
+it:
+  search:
+    save_search: Salva ricerca
+    breadcrumb_label: Percorso di navigazione
+    meta:
+      title: Cerca tecnologia
+      description: Cerca PC gaming, componenti, portatili, smartphone, console e accessori
+        usati su PCMarket.
+      query_title: Risultati per «%{query}»
+      category_title: "%{category}: %{count} annunci"
+      category_description: Compra e vendi %{category} usati con venditori verificati
+        e spedizione sicura.
+    results:
+      title: Tutti gli annunci
+      title_query: Risultati per «%{query}»
+      subtitle: Filtra per prezzo, condizioni e caratteristiche per trovare esattamente
+        ciò che cerchi.
+      count:
+        one: "%{formatted} annuncio"
+        other: "%{formatted} annunci"
+      empty_title: Nessun annuncio trovato
+      empty_body: Prova a rimuovere un filtro o ad ampliare la fascia di prezzo.
+      clear_filters: Cancella filtri
+      try_title: Esplora le categorie più popolari
+    labels_tabs: Filtra per badge
+    category:
+      all_listings: Tutti gli annunci
+      badge: Categoria
+      browse_children: Sottocategorie
+    filters:
+      title: Filtra gli annunci
+      filter_listings: Cerca nei risultati
+      mobile_button: Filtri (%{count})
+      close: Chiudi filtri
+      clear_all: Cancella tutto
+      categories: Categorie
+      all_categories: Tutte le categorie
+      price: Prezzo
+      min_price: Min.
+      max_price: Max.
+      condition: Condizioni
+      labels: Badge
+      tags: Stile
+      location: Località
+      all_regions: Tutta la Spagna
+      shipping: Spedizione e ritiro
+      ship: Spedizione disponibile
+      pickup: Ritiro a mano
+      free_shipping: Spedizione gratuita
+      on_sale: Solo in offerta
+      search_options: Cerca opzioni
+      show_all: Mostra tutto (%{count})
+      show_less: Mostra meno
+      show_results: Mostra %{count} risultati
+    sort:
+      label: Ordina
+      best_match: Migliore corrispondenza
+      newest: Più recenti
+      price_asc: Prezzo crescente
+      price_desc: Prezzo decrescente
+      popular: Più salvati
+    view:
+      grid: Vista a griglia
+      list: Vista a elenco
+    chips:
+      query: 'Ricerca: %{query}'
+      price_range: "%{min} – %{max}"
+      price_min: Da %{min}
+      price_max: Fino a %{max}
+      ship: Spedizione disponibile
+      pickup: Ritiro a mano
+      on_sale: In offerta
+    pagination:
+      previous: Pagina precedente
+      next: Pagina successiva
+      load_more: Carica altri risultati
+    seo:
+      footer_title: Comprare %{category} usati
+      footer_body: Su PCMarket trovi %{category} proposti da privati e negozi professionali.
+        Confronta i prezzi, controlla le condizioni di ogni articolo e acquista con
+        la protezione dell'acquirente.

@@ -1,0 +1,16 @@
+---
+pt:
+  favorites:
+    title: Os seus favoritos
+    body: Guarde anúncios para comparar mais tarde e receba avisos se o preço baixar.
+    filters_label: Filtrar favoritos
+    filters:
+      available: Disponíveis
+      sold: Vendidos
+    unavailable: Indisponível
+    empty_title: Ainda não tem favoritos
+    empty_body: Toque no coração de qualquer anúncio para o guardar aqui.
+    empty_cta: Explorar anúncios
+    added: Adicionado aos favoritos.
+    removed: Removido dos favoritos.
+    login_required: Inicie sessão para guardar os seus anúncios favoritos.

@@ -1,0 +1,116 @@
+---
+en:
+  account:
+    title: Your account
+    edit_profile: Edit profile
+    favourites: Favourites
+    saved_searches: Saved searches
+    orders: Orders
+    area:
+      label: Account settings
+      nav_label: Account navigation
+      security: Account & security
+      addresses: Addresses
+      notifications: Notifications
+      privacy: Privacy & data
+    profile:
+      title: Account & security
+      subtitle: Manage your personal details, public username and language.
+      errors:
+        one: Check %{count} field
+        other: Check %{count} fields
+      avatar: Profile photo
+      avatar_hint: JPEG, PNG or WebP. A square image works best.
+      first_name: First name
+      last_name: Last name
+      username: Username
+      username_hint: 'Public and unique. 3 to 30 letters, numbers, hyphens, underscores
+        or #.'
+      phone: Phone
+      phone_hint: Include the country code, for example +34600000000.
+      email: Email address
+      email_hint: If you change it, you will receive a confirmation link before it
+        becomes active.
+      pending_email: Waiting for confirmation of %{email}.
+      language: Preferred language
+      google_note: You sign in with Google. Your email is managed by your Google account,
+        but you can still add a password below.
+      change_password: Change password
+      save: Save changes
+      saved: Your account has been updated.
+      email_confirmation_sent: Check your inbox to confirm your new email address.
+    password:
+      title: Password
+      subtitle: Use a strong password you do not use anywhere else.
+      current: Current password
+      google_note: Your account uses Google sign-in. Set a password here to also sign
+        in with your email.
+      new: New password
+      confirmation: Confirm new password
+      hint: At least 8 characters. Use capitals, numbers and symbols.
+      save: Update password
+      saved: Your password has been updated.
+      wrong_current: Your current password is not correct.
+    addresses:
+      title: Addresses
+      subtitle: Save the addresses you use for deliveries.
+      new: Add address
+      new_title: New address
+      edit_title: Edit address
+      default: Default
+      make_default: Set as default
+      edit: Edit
+      destroy: Delete
+      destroy_confirm: Delete this address?
+      empty_title: No saved addresses
+      empty_body: Add an address to speed up future orders.
+      full_name: Full name
+      line1: Address
+      line2: Address line 2
+      postal_code: Postcode
+      city: City
+      region: Province
+      country: Country
+      phone: Phone
+      set_default: Use as my default address
+      back: Back to addresses
+      save: Save address
+      created: Address added.
+      updated: Address updated.
+      destroyed: Address deleted.
+    notifications:
+      title: Notifications
+      subtitle: Choose which emails you want to receive.
+      keys:
+        email_messages: Messages
+        email_offers: Offers
+        email_order_updates: Order updates
+        email_saved_search_alerts: Saved search alerts
+        email_price_drops_favourites: Price drops on favourites
+        email_newsletter: Newsletter
+      hints:
+        email_messages: When a buyer or seller sends you a message.
+        email_offers: New offers and replies to your offers.
+        email_order_updates: Payment, shipping and delivery updates.
+        email_saved_search_alerts: New listings that match your saved searches.
+        email_price_drops_favourites: When a listing you saved gets cheaper.
+        email_newsletter: Product news, offers and platform updates.
+      save: Save preferences
+      saved: Notification preferences updated.
+    privacy:
+      title: Privacy & data
+      subtitle: Download your data or close your account.
+      export_title: Download your data
+      export_body: Get a JSON file with your profile, addresses, listings, orders,
+        favourites and reviews (GDPR articles 15 and 20).
+      export_button: Download my data
+    deletion:
+      title: Delete account
+      body: Your profile will be anonymised, your listings archived and your personal
+        details removed. Orders are kept for legal retention. This cannot be undone.
+      type_delete: Type DELETE to confirm
+      password: Confirm with your password
+      submit: Delete my account
+      confirm: Permanently delete your account?
+      done: Your account has been deleted.
+      confirmation_error: We could not confirm it was you. Try again.

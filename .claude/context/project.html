@@ -168,10 +168,11 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Project Context</h1>
     <p class="lede">Architecture, decisions and code map</p>
-    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-22 01:40</p>
+    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-22 10:43</p>
   </header>
   <main><section class="card status">
 <h2><span>Status</span><span class="badge badge-success">Complete</span></h2>
+<p>Phase 9A complete: demo content quality and test stability. Locale files are organised by domain, demo photos are screened for relevance and attribution, short catalogue titles are qualified without appending the condition, listing pages meet explicit SQL-query budgets, and the macOS test runner no longer forks after ruby-vips initialises Objective-C. The responsive system test now covers public and authenticated screens at mobile and tablet widths.</p>
 <p>Phase 8 complete: a realistic, idempotent demo marketplace powered by cached, openly licensed product photography. <code>bin/rails demo:images</code> downloads and validates photos and writes the committed <code>db/seeds/demo/image_manifest.json</code>; <code>Demo::Seed</code> creates stores, sellers, buyers, listings across every leaf category, conversations, offers, orders, reviews, notifications, reports and marketing records; <code>/:locale/credits</code> attributes every photo. The demo seed runs in development (or with <code>DEMO_SEED=1</code>), supports <code>DEMO_SCALE</code>, and is skipped when demo users already exist.</p>
 <p>Phase 7C complete: a versioned JSON API under <code>/api/v1</code> for the future iOS and Android apps, with digest-backed bearer tokens, account, catalogue, cart, checkout, orders, messaging, notifications, devices, content and discovery endpoints that reuse the existing services. An OpenAPI 3.1 document is served by the app and documented with a human page. The web application is unchanged and the full suite, system tests and RuboCop are green.</p>
 <p>Phase 7B complete: the PC Finder quiz and recommendation results, the public &quot;How selling works&quot; page and the feature-flagged Sell to PCMarket trade-in flow with buyback prices, IBAN-encrypted payouts and admin operations.</p>
@@ -197,6 +198,7 @@ footer {
 <tr><td>7B</td><td>PC Finder, selling page and Sell to PCMarket</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>7C</td><td>Versioned JSON API for mobile apps</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>8</td><td>Realistic demo data, stock photos and image credits</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>9A</td><td>Demo relevance, content quality, query budgets and test stability</td><td><span class="badge badge-success">Complete</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -220,7 +222,7 @@ footer {
 <li>All routes except <code>/up</code>, <code>/robots.txt</code> and <code>/sitemap.xml</code> are wrapped in <code>scope &quot;(:locale)&quot;, locale: /es|en|fr|de|it|pt/</code>.</li>
 <li><code>ApplicationController#switch_locale</code> validates <code>params[:locale]</code> and wraps each request in <code>I18n.with_locale</code>.</li>
 <li>Devise OmniAuth callbacks live outside the locale scope because Devise does not support OmniAuth callbacks under a dynamic segment.</li>
-<li>Locale files are split by domain (<code>models</code>, <code>home</code>, <code>layout</code>, <code>listings</code>, <code>pages</code>, <code>newsletter</code>, <code>errors</code>, <code>common</code>, <code>countries</code>, <code>cart</code>, <code>checkout</code>, <code>orders</code>, <code>notifications</code>, <code>messaging</code>, <code>admin</code>); every key exists in all six languages. <code>test/i18n/locale_parity_test.rb</code> enforces parity.</li>
+<li>Locale files are split by domain: <code>account</code>, <code>admin</code>, <code>api</code>, <code>auth</code>, <code>cart</code>, <code>checkout</code>, <code>common</code>, <code>content</code>, <code>conversations</code>, <code>countries</code>, <code>errors</code>, <code>favorites</code>, <code>home</code>, <code>layout</code>, <code>listings</code>, <code>maintenance</code>, <code>messaging</code>, <code>models</code>, <code>newsletter</code>, <code>notifications</code>, <code>orders</code>, <code>pages</code>, <code>reports</code>, <code>saved_searches</code>, <code>search</code>, <code>seller</code> and <code>stores</code>. The old <code>phase2</code> and <code>phase3b</code> files were removed during Phase 9A. Every key exists in all six languages; <code>test/i18n/locale_parity_test.rb</code> enforces parity.</li>
 <li>English is British English (favourite, colour, authorised).</li>
 <li>Footer and drawer language switchers preserve the current path and query.</li>
 </ul>
@@ -462,11 +464,19 @@ footer {
 </ul>
 <h3>Performance guardrails</h3>
 <ul>
-<li><code>ListingSearch::INCLUDES</code> preloads store, category, region, user and image attachments/blobs. Cards never call <code>category.root</code> or <code>user.store</code>; root slugs come from a cached <code>Category.root_slug_map</code> and seller names prefer the preloaded store.</li>
+<li><code>ListingSearch::INCLUDES</code> preloads store, category, region, user and image attachments with their blobs and variant records. Cards never call <code>category.root</code> or <code>user.store</code>; root slugs come from a cached <code>Category.root_slug_map</code> and seller names prefer the preloaded store.</li>
 <li><code>MenuBuilder</code> fetches roots and direct children in two queries and builds paths from slugs without walking ancestry.</li>
-<li><code>Setting</code> caches the whole small settings table under one key.</li>
+<li><code>Setting</code> caches the whole small settings table under one key. During a request, <code>Current.settings_values</code> and <code>Current.category_root_slugs</code> keep the values in memory and are cleared when the underlying rows change.</li>
 <li>Anonymous search pages send <code>Cache-Control: public, max-age=60</code> and <code>fresh_when</code> on <code>[locale, params digest, Listing.maximum(:updated_at)]</code>; listing pages use <code>fresh_when</code> on <code>[listing, locale, store.updated_at]</code>.</li>
 <li>N+1 guard: <code>test/integration/search_performance_test.rb</code> renders a category page with 24 listings and asserts fewer than 25 SQL queries via <code>ActiveSupport::Notifications</code>.</li>
+<li>Phase 9A adds page-level budgets in <code>test/integration/query_performance_test.rb</code>: the home page with 50 listings must stay under 40 SQL queries, a category page under 30 and a listing page under 35. Current measurements are home 29, category 21 and listing 34.</li>
+</ul>
+<h3>Test infrastructure (Phase 9A)</h3>
+<ul>
+<li>macOS test runs default to one worker. Forking after ruby-vips has initialised Objective-C aborts the worker and leaves the parent waiting forever. Set <code>PARALLEL_WORKERS</code> to override the worker count; on macOS that uses threads, while other platforms keep process-based parallelism.</li>
+<li><code>test/integration/query_performance_test.rb</code> enforces the home, category and listing SQL budgets described above.</li>
+<li><code>test/system/responsive_test.rb</code> checks public and authenticated screens at 390 px and 768 px for horizontal overflow, including home, category, search, listing, store, cart, checkout, conversations, seller and admin pages. It also keeps a desktop navigation check at 1440 px.</li>
+<li>System tests clear Devise cookies through both Chrome DevTools and WebDriver so a signed-in session cannot leak into the next test.</li>
 </ul>
 <h3>SEO and security</h3>
 <ul>
@@ -482,17 +492,19 @@ footer {
 <li><code>ListingPolicy</code> lets owners edit/delete their listings and moderators/admins approve or reject. <code>ListingPolicy::Scope</code> hides non-visible listings from the public.</li>
 <li>Admin routes require <code>current_user.staff?</code>; non-staff visitors are redirected to the home page with a translated alert.</li>
 </ul>
-<h3>Demo data and image credits (Phase 8)</h3>
+<h3>Demo data and image credits (Phases 8 and 9A)</h3>
 <ul>
 <li><code>Demo::ImageLibrary</code> downloads stock photos per demo query. Openverse is keyless; Unsplash, Pexels and Pixabay are used only when <code>UNSPLASH_ACCESS_KEY</code>, <code>PEXELS_API_KEY</code> or <code>PIXABAY_API_KEY</code> is configured. Requests use the generic <code>PCMarketDemoSeeder/1.0</code> user agent, timeouts, at most two workers and a 300 ms polite delay.</li>
-<li>Results are filtered to CC0, Public Domain Mark, CC BY and CC BY-SA, JPEG, PNG or WebP and at least 800 px wide. Downloads are validated with Vips, resized to a 1600 px longest side as JPEG q82, de-duplicated by SHA256 and cached under <code>storage/demo_images/&lt;query_slug&gt;/</code>. The committed manifest stores query, file, source, source URL, creator, licence, licence URL, dimensions, checksum and category mapping.</li>
+<li>Phase 9A screens relevance before download. Queries are literal product names with broader fallbacks, Openverse rows must match positive title/tag keywords and must not match negative ones, and photograph/wide-or-square results are preferred. The reviewed denylist lives in <code>db/seeds/demo/image_denylist.txt</code> and matches either the source URL or the stored file name. Labelled contact sheets are written under <code>tmp/qa/</code> for manual QA.</li>
+<li>Results are filtered to CC0, Public Domain Mark, CC BY and CC BY-SA, JPEG, PNG or WebP and at least 800 px wide. Downloads are validated with Vips, resized to a 1600 px longest side as JPEG q82, de-duplicated by SHA256 and cached under <code>storage/demo_images/&lt;query_slug&gt;/</code>. The committed manifest stores query, file, source, source URL, creator, licence, licence URL, dimensions, checksum and category mapping; denylisted entries are removed both from downloads and from the manifest.</li>
 <li><code>Demo::ImageLibrary.used_entries</code> intersects manifest entries with blob metadata for the credits page. Every demo blob carries <code>source</code>, <code>source_url</code>, <code>creator</code>, <code>license</code> and <code>license_url</code>; listing galleries render a small &quot;Photo: creator / licence&quot; caption when present.</li>
 <li><code>bin/rails demo:images</code> refreshes the cache and manifest. A network failure exits gracefully and seeds fall back to the placeholder illustration.</li>
 <li><code>Demo::Seed</code> is idempotent and tagged through user emails on <code>@demo.pcmarket.test</code>. It uses <code>Faker::Config.random = Random.new(42)</code> with the Spanish locale, creates 12 professional stores with valid Spanish CIFs and generated SVG-to-PNG logo badges, 40 individual sellers, 60 buyers, ~600 listings across all leaf categories, ~1,500 favourites, ~300 follows, ~80 saved searches, ~120 conversations with messages and offers, ~250 orders with events and disputes, ~180 reviews, notifications, open reports, newsletter subscribers, feature requests and sell offers.</li>
 <li>Listings are generated from real component catalogues (<code>Demo::Catalog</code>), fill every effective <code>FilterDefinition</code> for their category, use plausible euro prices and condition multipliers, compute gaming-PC <code>game_fps</code> with the PC Finder tier table, and reuse existing blobs across listings (no duplicate uploads) with ordered position metadata.</li>
+<li>Phase 9A stops appending the condition to titles and instead uses <code>Demo::Seed.title_for</code>. Short catalogue names receive a natural Spanish category, brand, model or capacity qualifier until they satisfy <code>Listing::MIN_TITLE_LENGTH</code>; the condition is never used. Prices are rounded to retail-friendly endings, original prices follow the same rule, and descriptions use translated filter labels plus complete FPS sentences.</li>
 <li><code>Current.seeding</code> suppresses <code>Notifier</code>, message/notification broadcasts, follower and saved-search jobs and mail delivery during the seed. Counter caches are recalculated with SQL at the end. <code>DEMO_SCALE=0.05</code> supports the smoke test; <code>DEMO_IMAGES=0</code> forces placeholders without network.</li>
-<li><code>bin/rails demo:reset</code> removes only demo users, stores, listings, orders, conversations, social rows, marketing rows and their Active Storage blobs, then reseeds.</li>
-<li>New tests: <code>test/services/demo/image_library_test.rb</code> (WebMock parsing, licence and size filtering, missing keys, network fallback, checksum de-duplication), <code>test/seeds/demo_seed_test.rb</code> (scaled seed and idempotency without images) and <code>test/integration/credits_page_test.rb</code>.</li>
+<li><code>bin/rails demo:reset</code> removes only demo users, stores, listings, orders, conversations, social rows, marketing rows and their Active Storage blobs, then reseeds. A full-scale development reset with images creates 600 listings and 2,367 image attachments; every generated title is valid.</li>
+<li>New tests: <code>test/services/demo/image_library_test.rb</code> (WebMock parsing, relevance rejection, denylist, contact sheets, licence and size filtering, missing keys, network fallback, checksum de-duplication), <code>test/services/demo/catalog_test.rb</code> (all 304 static and generated PC title templates against <code>Listing</code> validations), <code>test/seeds/demo_seed_test.rb</code> (scaled seed, content quality and idempotency without images) and <code>test/integration/credits_page_test.rb</code>.</li>
 </ul>
 </section>
 <section class="card code-map">
@@ -740,16 +752,21 @@ db/seeds.rb                                 loader
 db/seeds/*.rb                               taxonomy and reference data
 db/seeds/demo.rb                            development demo entry point
 db/seeds/demo/image_manifest.json           committed photo attribution manifest
+db/seeds/demo/image_denylist.txt            reviewed irrelevant-photo denylist
 lib/tasks/demo.rake                         demo:images, demo:seed, demo:reset
-app/services/demo/image_library.rb          stock downloads, vips resize, SHA256 dedupe
+app/services/demo/image_library.rb          relevance screening, denylist, downloads, vips resize
 app/services/demo/catalog.rb                Spanish product, store and location catalogue
-app/services/demo/seed.rb                   idempotent demo marketplace seed
+app/services/demo/seed.rb                   idempotent seed + valid title generation
 app/services/demo/reset.rb                  targeted demo cleanup + blob purge
-app/models/current.rb                       Current.seeding side-effect guard
+app/models/current.rb                       per-request settings/category cache + seeding guard
 app/views/pages/credits.html.erb            photo attribution page
-test/services/demo/image_library_test.rb    importer parsing and fallbacks
-test/seeds/demo_seed_test.rb                scaled seed smoke test
+test/services/demo/image_library_test.rb    relevance, denylist, parsing and fallback tests
+test/services/demo/catalog_test.rb          title-template validation across the catalogue
+test/seeds/demo_seed_test.rb                scaled seed, content quality and idempotency
 test/integration/credits_page_test.rb       credits page rendering
+test/integration/query_performance_test.rb  home/category/listing SQL budgets
+test/system/responsive_test.rb              public/auth overflow checks at 390/768 px
+test/test_helper.rb                         worker selection and test environment setup
 script/search_explain.rb                    5k listing EXPLAIN ANALYZE
 test/integration/                           home, SEO, search pages, auth, performance
 test/services/listing_search_test.rb
@@ -793,10 +810,12 @@ test/seeds_test.rb
 <li>Message safety detection is heuristic; moderation review is still manual.</li>
 <li>Sell to PCMarket labels are informational: no carrier API issues prepaid labels yet, and payouts are recorded manually by administrators.</li>
 <li>PC Finder estimated FPS is a tier fallback when a listing has no <code>game_fps</code> data; the table needs periodic updates as new GPUs launch.</li>
-<li>The demo image manifest is curated, not exhaustive: rerun <code>bin/rails demo:images</code> to refresh it, and re-check licences before reusing photos outside the demo marketplace.</li>
+<li>The demo image manifest is curated, not exhaustive: rerun <code>bin/rails demo:images</code>, review the contact sheets under <code>tmp/qa/</code>, extend <code>db/seeds/demo/image_denylist.txt</code> when needed, and re-check licences before reusing photos outside the demo marketplace.</li>
 <li>Optional stock providers are exercised only when their API keys are set; Openverse alone is enough for the committed manifest.</li>
-<li>The demo seed skips when demo users exist. Use <code>bin/rails demo:reset</code> to rebuild it after changing the generator.</li>
+<li>The demo seed skips when demo users exist. Use <code>bin/rails demo:reset</code> to rebuild it after changing the generator; the full-scale reset is verified with images on.</li>
 <li>Demo photos live on local disk under <code>storage/demo_images</code>; there is no S3 upload path for the cache in this phase.</li>
+<li>macOS defaults to a single test worker for stability. <code>PARALLEL_WORKERS</code> can speed up local runs, but threaded parallel tests still share fixtures and PostgreSQL, so heavier overrides may deadlock.</li>
+<li>The listing-page query budget has little headroom (currently 34 against a limit of 35); new eager loads or view queries need an explicit budget review.</li>
 </ul>
 </section>
 </main>

@@ -11,7 +11,8 @@ class HomeController < ApplicationController
     return [] if ids.empty?
 
     found = Listing.visible
-                   .includes(:store, :category, :region, :user, { images_attachments: :blob })
+                   .includes(:store, :category, :region, :user,
+                             { images_attachments: { blob: { variant_records: { image_attachment: :blob } } } })
                    .where(id: ids).index_by(&:id)
     ids.filter_map { |id| found[id] }
   end

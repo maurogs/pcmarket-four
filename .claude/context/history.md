@@ -912,3 +912,78 @@ idempotent and fast.
 `test/services/demo/image_library_test.rb`, `test/seeds/demo_seed_test.rb`,
 `test/integration/credits_page_test.rb`,
 `.claude/context/{project,project.es}.md`.
+
+## 2026-11-22 — Phase 9A: demo image relevance, seed quality and test stability
+
+### What changed
+
+- Demo image search now uses literal product queries with fallbacks, rejects
+  unrelated Openverse rows using positive and negative title/tag keywords,
+  prefers photographs with wide or square aspect ratios, honours the committed
+  `db/seeds/demo/image_denylist.txt`, and writes labelled contact sheets under
+  `tmp/qa` for manual QA. The committed manifest was regenerated for the new
+  query set.
+- Demo seed listings no longer append the condition to titles, prices are
+  rounded to realistic retail endings (0/5/9/.99), original prices use the same
+  rounding and always exceed the sale price, and descriptions use translated
+  `FilterDefinition` labels plus complete FPS sentences.
+- Removed N+1 queries by preloading nested image blobs/variant records,
+  store/user/category/region relations and reviewer stores across the home feed,
+  search, listing detail, similar listings, store listings and recently viewed
+  listings. Category root slugs and setting snapshots are cached per request,
+  and `Listing#ordered_images` reuses loaded associations.
+- Split the old `phase2`/`phase3b` locale files into domain files (`account`,
+  `auth`, `conversations`, `favorites`, `reports`, `saved_searches`, `search`,
+  `stores`) and added the new keys to all six locales.
+- Tightened the responsive shell: cards, result grids, header actions, cookie
+  banner, category headers and label tabs no longer force horizontal overflow.
+  The responsive system test now covers public and authenticated screens at
+  390px and 768px and detects elements crossing the viewport.
+- Fixed the macOS test hang: the suite no longer forks after ruby-vips has
+  initialised Objective-C. macOS defaults to one worker, while `PARALLEL_WORKERS`
+  remains an explicit override; non-macOS still uses all processor workers.
+  System tests now clear Devise cookies through both CDP and WebDriver so a
+  signed-in session cannot leak into the next test.
+
+### Why
+
+The demo needed credible product photography, believable listing copy and a
+responsive marketplace shell. The test runner also had to survive macOS image
+libraries and keep system-test sessions isolated rather than hanging or failing
+on ordering. The test database was recreated once to clear rows left behind by
+the earlier aborted forked run before the final green runs.
+
+### Test results
+
+- `bin/rails test`: 506 runs, 3,502 assertions, 0 failures, 0 errors, 0 skips.
+- `bin/rails test:system`: 9 runs, 145 assertions, 0 failures, 0 errors,
+  0 skips.
+- Query budgets: home 29 (< 40), category 21 (< 30), listing 34 (< 35).
+- `bin/rubocop` on 16 changed Ruby files: no offenses.
+
+### Files touched
+
+`app/controllers/{home,listings}_controller.rb`, `app/models/{category,current,listing,setting}.rb`,
+`app/services/{home_feed,listing_search}.rb`,
+`app/services/demo/{image_library,seed}.rb`, `app/views/**`,
+`config/locales/*.{es,en,fr,de,it,pt}.yml`, `db/seeds/demo/image_manifest.json`,
+`db/seeds/demo/image_denylist.txt`, `test/test_helper.rb`,
+`test/application_system_test_case.rb`,
+`test/integration/query_performance_test.rb`,
+`test/services/demo/image_library_test.rb`, `test/seeds/demo_seed_test.rb`,
+`test/system/responsive_test.rb`,
+`.claude/context/{project,project.es}.html`.
+
+### Follow-up fix: short demo titles at full scale
+
+Stopping the condition suffix exposed catalogue names below the 10-character
+minimum (`Antec C8`, `Hyte Y60`, `PSP 3000`, `HP 250 G9`). Those names now carry
+a natural model, platform or category qualifier, and `Demo::Seed.title_for`
+adds a Spanish category/brand/model qualifier for any future short name without
+ever using the condition. A cheap catalogue test audits all 304 static and
+generated PC title templates against `Listing` title validations.
+
+`bin/rails demo:reset` now completes at full scale in development with images:
+600 listings, 2,367 attachments, and every title between 10 and 57 characters.
+`bin/rails test` is green with 508 runs, 5,336 assertions, 0 failures, 0 errors
+and 0 skips.

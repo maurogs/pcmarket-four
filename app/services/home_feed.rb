@@ -1,5 +1,8 @@
 class HomeFeed
-  ATTACHMENTS = [ :store, :category, { images_attachments: :blob } ].freeze
+  ATTACHMENTS = [
+    :store, :user, :category, :region,
+    { images_attachments: { blob: { variant_records: { image_attachment: :blob } } } }
+  ].freeze
 
   def initialize(locale: I18n.locale)
     @locale = locale
@@ -38,7 +41,7 @@ class HomeFeed
 
   def reviews
     @reviews ||= Review.where(published: true, rating: 5)
-                       .includes(:store, :reviewer)
+                       .includes(:store, reviewer: :store)
                        .order(created_at: :desc)
                        .limit(8)
                        .to_a
