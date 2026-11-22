@@ -38,7 +38,8 @@ class Setting < ApplicationRecord
     "dpo_email" => "privacidad@pcmarket.test",
     "legal_email" => "legal@pcmarket.test",
     "support_phone" => "+34 900 000 000",
-    "support_hours" => "L-V 9:00-18:00 CET"
+    "support_hours" => "L-V 9:00-18:00 CET",
+    "api_min_app_version" => "1.0.0"
   }.freeze
 
   GROUPS = {
@@ -55,7 +56,7 @@ class Setting < ApplicationRecord
     "content" => %w[announcement_bar_text blocked_words],
     "company" => %w[company_legal_name company_tax_id company_address company_registry
                     contact_email dpo_email legal_email support_phone support_hours],
-    "communication" => %w[support_email]
+    "communication" => %w[support_email api_min_app_version]
   }.freeze
 
   FEATURE_FLAGS = %w[

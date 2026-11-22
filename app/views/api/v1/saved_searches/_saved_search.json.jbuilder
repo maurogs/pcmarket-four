@@ -1,0 +1,13 @@
+json.id saved_search.id
+json.name saved_search.name
+json.query saved_search.query
+json.category_id saved_search.category_id
+json.category_name saved_search.category&.name
+json.min_price_cents saved_search.min_price_cents
+json.max_price_cents saved_search.max_price_cents
+json.filters saved_search.spec_filters
+json.notify saved_search.notify?
+json.frequency saved_search.frequency
+json.last_notified_at saved_search.last_notified_at&.iso8601
+json.created_at saved_search.created_at.iso8601
+json.updated_at saved_search.updated_at.iso8601

@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
   before_action :set_default_meta_tags
   before_action :enforce_maintenance_mode
   before_action :complete_pending_favorite, if: :user_signed_in?
+  before_action :require_terms_acceptance, if: :user_signed_in?
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   helper_method :menu_categories, :primary_menu_categories, :more_menu_categories,
@@ -81,6 +82,21 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def require_terms_acceptance
+    return if current_user.terms_accepted_at.present?
+    return if terms_acceptance_exempt?
+
+    redirect_to new_terms_acceptance_path
+  end
+
+  def terms_acceptance_exempt?
+    controller_path == "users/terms_acceptances" ||
+      (devise_controller? && controller_path == "devise/sessions") ||
+      controller_path == "legal_pages" ||
+      controller_path.start_with?("api", "active_storage") ||
+      request.path.start_with?("/assets")
+  end
 
   def switch_locale(&action)
     locale = resolved_locale

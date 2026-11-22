@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= @title %></title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #475569;
+      --border: #e2e8f0; --brand: #0f766e; --code: #f1f5f9;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #09090b; --card: #18181b; --text: #f4f4f5; --muted: #a1a1aa; --border: #27272a; --brand: #2dd4bf; --code: #111113; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    header { max-width: 1080px; margin: 0 auto; padding: 44px 24px 12px; }
+    header p { margin: 6px 0 0; color: var(--muted); }
+    main { max-width: 1080px; margin: 0 auto; padding: 12px 24px 64px; }
+    section { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; margin-bottom: 18px; }
+    h1 { margin: 0; font-size: 30px; letter-spacing: -.02em; }
+    h2 { margin: 0 0 12px; font-size: 18px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+    tr:last-child td { border-bottom: 0; }
+    code { background: var(--code); border: 1px solid var(--border); border-radius: 6px; padding: 1px 5px; font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .method { display: inline-block; min-width: 60px; border-radius: 999px; padding: 2px 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .get { background: rgba(16,185,129,.16); color: #047857; }
+    .post { background: rgba(59,130,246,.16); color: #1d4ed8; }
+    .patch, .put { background: rgba(245,158,11,.18); color: #b45309; }
+    .delete { background: rgba(244,63,94,.16); color: #be123c; }
+    a { color: var(--brand); }
+    .deprecated { opacity: .6; text-decoration: line-through; }
+    @media (max-width: 640px) { header { padding-top: 28px; } section { padding: 16px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><%= @title %></h1>
+    <p><%= @spec.dig("info", "description") %></p>
+    <p>Version <%= @spec.dig("info", "version") %> · <a href="/api/v1/openapi.yaml">openapi.yaml</a></p>
+  </header>
+  <main>
+    <% @groups.each do |tag, paths| %>
+      <section>
+        <h2><%= tag %></h2>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Path</th><th>Summary</th></tr>
+          </thead>
+          <tbody>
+            <% paths.each do |path, operations| %>
+              <% operations.each do |method, operation| %>
+                <tr class="<%= 'deprecated' if operation['deprecated'] %>">
+                  <td><span class="method <%= method %>"><%= method %></span></td>
+                  <td><code><%= path %></code></td>
+                  <td><%= operation["summary"] %></td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </section>
+    <% end %>
+  </main>
+</body>
+</html>

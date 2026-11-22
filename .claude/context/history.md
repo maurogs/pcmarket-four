@@ -730,3 +730,108 @@ buy back parts through a controlled, auditable and feature-flagged channel.
 `test/services/buyback/quote_test.rb`,
 `test/integration/{pc_finder,sell_page,sell_to_us}_test.rb`,
 `.claude/context/{project,project.es}.md`.
+
+## 2026-11-22 — Phase 7C: versioned JSON API for mobile apps
+
+### What changed
+
+- Added `/api/v1` outside the locale scope with `Api::V1::BaseController`
+  (`ActionController::API`, Pundit, bearer auth, locale negotiation, maintenance
+  guard, translated success and error envelopes, rescued domain exceptions).
+- Upgraded `ApiToken` to SHA-256 digests (`token_digest`), one-time token
+  display, 90-day expiry and hourly `last_used_at` refreshes; migrated existing
+  rows. Added JSON sessions, revoke, registration, password reset and Google
+  tokeninfo sign-in.
+- Added `/me` profile, locale and notification preferences, GDPR export and soft
+  deletion, plus `/me/devices` with a new `devices` table for future push.
+- Added catalogue endpoints (categories, listings CRUD/images/submission/
+  pause/sale/favourites, stores, reviews, follows, saved searches, PC Finder,
+  help and legal content) reusing `ListingSearch`, `ListingForm`, Pundit,
+  `PcFinder::Recommender` and `Api::CategoryTree`.
+- Added cart, checkout options and checkout endpoints; extracted
+  `Cart::Mutations` so the web and API share cart rules, and reused
+  `CartSummary`, `Checkout::Form` and `Checkout::PlaceOrder`.
+- Added buyer order actions and seller sale actions on top of the guarded order
+  transitions; added conversations, messages, offers, offer responses, blocks,
+  notifications and reports, reusing `ConversationStarter`, `OfferResponse` and
+  `Notifier`.
+- Added Rack::Attack token/IP/login limits, dynamic rack-cors origins from
+  `API_CORS_ORIGINS`, public `max-age=60` caching and ETag conditional GETs.
+- Added `docs/api/openapi.yaml` (every v1 path plus Listing, Category, Store,
+  Order, Conversation, Message, Error and Pagination schemas),
+  `docs/api/README.md`, the served `/api/v1/openapi.yaml` and the
+  self-contained `/api/docs` page.
+- Added the `api_min_app_version` setting (default `1.0.0`) and its admin
+  labels in six locales.
+- Added API integration tests for auth, envelope, locale, CORS, throttling,
+  conditional GET, catalogue, checkout, order actions, messaging, notifications,
+  devices, reports and documentation.
+
+### Why
+
+Phase 7C opens the marketplace to native mobile clients without duplicating
+business rules: the API is a thin JSON surface over the same services,
+policies and state machines that power the web application.
+
+### Files touched
+
+`Gemfile`, `Gemfile.lock`, `config/routes.rb`,
+`config/initializers/{rack_attack,cors}.rb`, `config/environments/test.rb`,
+`config/locales/api.{es,en,fr,de,it,pt}.yml`,
+`config/locales/admin.{es,en,fr,de,it,pt}.yml`,
+`db/migrate/20261122120001_add_token_digest_to_api_tokens.rb`,
+`db/migrate/20261122120002_create_devices.rb`, `db/schema.rb`,
+`app/models/{api_token,device,setting,user}.rb`,
+`app/controllers/api/v1/**`, `app/controllers/api/docs_controller.rb`,
+`app/services/{api/pagination,api/category_tree,cart/mutations,
+google_token_verifier,google_sign_in}.rb`,
+`app/helpers/api/v1/serialization_helper.rb`,
+`app/views/api/v1/**`, `app/views/api/docs/show.html.erb`,
+`app/controllers/cart_items_controller.rb`, `docs/api/{openapi.yaml,README.md}`,
+`test/test_helper.rb`, `test/support/api_test_helper.rb`,
+`test/integration/api/v1/**`, `test/system/messaging_flow_test.rb`
+(system-test navigation wait), `.claude/context/{project,project.es}.md`.
+
+## 2026-11-22 — Phase 7C security and legal hardening
+
+### What changed
+
+- Added `GoogleEmailVerification` as the shared Google email rule for web
+  OmniAuth and the JSON API. `email_verified` must be boolean true or `"true"`.
+- `User.from_omniauth` now refuses to link an existing email or create an
+  account when Google has not verified the address; the OmniAuth callback
+  redirects to sign-in with the translated `errors.omniauth_email_unverified`
+  alert in all six locales.
+- New OAuth users no longer receive `terms_accepted_at`. Added the locale-scoped
+  singular `terms_acceptance` resource and `Users::TermsAcceptancesController`
+  with terms/privacy links, a required checkbox and optional marketing opt-in.
+- Added `ApplicationController#require_terms_acceptance`, exempting the
+  acceptance screen, Devise sessions, legal pages, Active Storage/assets and API
+  controllers. Authenticated API requests without accepted terms return 403
+  `terms_not_accepted`, except `POST /api/v1/me/terms_acceptance`,
+  `GET /api/v1/config` and `GET /api/v1/legal_pages/:slug`.
+- Added `Api::V1::Me::TermsAcceptancesController`, its route and OpenAPI path.
+- Added web and API tests for unverified rejection, nil terms on OAuth creation,
+  first-login acceptance, exemptions and invalid acceptance; updated user model
+  tests with verified `raw_info`.
+
+### Why
+
+Google account linking and legal acceptance must be explicit: only verified
+Google emails may map to accounts, and first-time OAuth users must actively
+accept the terms before using the marketplace or API.
+
+### Files touched
+
+`app/services/{google_email_verification,google_token_verifier}.rb`,
+`app/models/user.rb`, `app/controllers/users/omniauth_callbacks_controller.rb`,
+`app/controllers/users/terms_acceptances_controller.rb`,
+`app/views/users/terms_acceptances/new.html.erb`,
+`app/controllers/application_controller.rb`,
+`app/controllers/api/v1/base_controller.rb`,
+`app/controllers/api/v1/me/terms_acceptances_controller.rb`,
+`config/routes.rb`, `config/locales/{errors,phase2,api}.{es,en,fr,de,it,pt}.yml`,
+`docs/api/openapi.yaml`, `test/models/user_test.rb`,
+`test/integration/oauth_terms_test.rb`,
+`test/integration/api/v1/terms_acceptance_test.rb`,
+`.claude/context/{project,project.es}.md`.

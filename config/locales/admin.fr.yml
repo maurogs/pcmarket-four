@@ -1113,6 +1113,9 @@ fr:
         support_email:
           label: Support email
           help: Receives dispute and support notifications.
+        api_min_app_version:
+          label: Version minimale de l'app
+          help: Les anciennes versions de l'app reçoivent un avis de mise à jour.
         company_legal_name:
           label: Raison sociale
           help: Nom légal affiché dans les textes légaux.

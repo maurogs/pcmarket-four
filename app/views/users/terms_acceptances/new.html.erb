@@ -1,0 +1,46 @@
+<% content_for :title, t("auth.terms_acceptance.title") %>
+
+<div class="page-container py-10 sm:py-14">
+  <div class="mx-auto max-w-xl">
+    <div class="surface p-6 sm:p-8">
+      <h1 class="font-heading text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
+        <%= t("auth.terms_acceptance.title") %>
+      </h1>
+      <p class="mt-2 text-sm text-slate-600 dark:text-zinc-400">
+        <%= t("auth.terms_acceptance.subtitle") %>
+      </p>
+
+      <%= form_with url: terms_acceptance_path, method: :post, class: "mt-6 space-y-4" do %>
+        <label class="flex cursor-pointer items-start gap-2 text-sm text-slate-600 dark:text-zinc-300">
+          <%= check_box_tag "terms_accepted", "1", false,
+                            id: "terms_accepted",
+                            class: "mt-0.5 size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800",
+                            required: true %>
+          <span>
+            <%= t("auth.sign_up.terms") %>
+            <%= link_to t("auth.sign_up.terms_link"), legal_page_path("terms"),
+                        class: "font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+            <%= t("auth.sign_up.and") %>
+            <%= link_to t("auth.sign_up.privacy_link"), legal_page_path("privacy"),
+                        class: "font-semibold text-brand-700 hover:underline dark:text-brand-300" %>
+          </span>
+        </label>
+
+        <label class="flex cursor-pointer items-start gap-2 text-sm text-slate-600 dark:text-zinc-300">
+          <%= check_box_tag "accepts_marketing", "1", current_user.accepts_marketing?,
+                            id: "accepts_marketing",
+                            class: "mt-0.5 size-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500 dark:border-zinc-600 dark:bg-zinc-800" %>
+          <span>
+            <%= t("auth.terms_acceptance.marketing") %>
+            <span class="block text-xs text-slate-500 dark:text-zinc-400">
+              <%= t("auth.terms_acceptance.marketing_hint") %>
+            </span>
+          </span>
+        </label>
+
+        <%= submit_tag t("auth.terms_acceptance.submit"),
+                       class: ui_button_classes(variant: :primary, size: :lg, extra: "w-full") %>
+      <% end %>
+    </div>
+  </div>
+</div>

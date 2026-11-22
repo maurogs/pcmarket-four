@@ -1,4 +1,6 @@
 buyer_api_token:
   user: buyer
   token: buyer-api-token-123456
+  token_digest: <%= Digest::SHA256.hexdigest("buyer-api-token-123456") %>
   name: Integration
+  expires_at: <%= 30.days.from_now %>

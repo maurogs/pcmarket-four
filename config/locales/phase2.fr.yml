@@ -330,6 +330,14 @@ fr:
       marketing_hint: "Vous pouvez vous désinscrire à tout moment."
       have_account: "Vous avez déjà un compte ?"
       sign_in: "Se connecter"
+    terms_acceptance:
+      title: "Acceptez les conditions pour continuer"
+      subtitle: "Avant d'utiliser PCMarket, consultez et acceptez nos conditions et notre politique de confidentialité."
+      marketing: "Recevoir des offres et des actualités"
+      marketing_hint: "Vous pouvez vous désabonner à tout moment."
+      submit: "Accepter et continuer"
+      required: "Vous devez accepter les conditions et la politique de confidentialité pour continuer."
+      accepted: "Merci. Votre compte est prêt."
     forgot:
       title: "Réinitialisez votre mot de passe"
       subtitle: "Nous vous enverrons un lien pour en créer un nouveau."

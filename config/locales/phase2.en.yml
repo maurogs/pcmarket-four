@@ -330,6 +330,14 @@ en:
       marketing_hint: "You can unsubscribe at any time."
       have_account: "Already have an account?"
       sign_in: "Sign in"
+    terms_acceptance:
+      title: "Accept the terms to continue"
+      subtitle: "Before using PCMarket, review and accept our terms and privacy policy."
+      marketing: "Send me offers and news"
+      marketing_hint: "You can unsubscribe at any time."
+      submit: "Accept and continue"
+      required: "You must accept the terms and privacy policy to continue."
+      accepted: "Thank you. Your account is ready."
     forgot:
       title: "Reset your password"
       subtitle: "We will email you a link to create a new one."

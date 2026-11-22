@@ -98,3 +98,5 @@ group :test do
   # Stub outbound HTTP in payment tests.
   gem "webmock"
 end
+
+gem "rack-cors", ">= 3.0"

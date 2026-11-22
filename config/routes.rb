@@ -24,6 +24,8 @@ Rails.application.routes.draw do
 
     root "home#index"
 
+    resource :terms_acceptance, only: %i[new create], module: :users
+
     resources :listings, path: "l", only: %i[index show new create edit update destroy] do
       resource :submission, only: :create, module: :listings
       resource :pause, only: %i[create destroy], module: :listings
@@ -200,6 +202,87 @@ Rails.application.routes.draw do
 
       resources :audit_logs, only: %i[index show]
       resources :placeholders, only: :show, param: :section
+    end
+  end
+
+  namespace :api do
+    get "docs" => "docs#show", as: :docs
+
+    namespace :v1, defaults: { format: :json } do
+      get "openapi.yaml" => "openapi#show", as: :openapi, defaults: { format: "yaml" }
+      get "config" => "config#show", as: :config
+
+      post "auth/sessions" => "auth/sessions#create", as: :auth_sessions
+      delete "auth/sessions" => "auth/sessions#destroy"
+      post "auth/registrations" => "auth/registrations#create", as: :auth_registrations
+      post "auth/passwords" => "auth/passwords#create", as: :auth_passwords
+      post "auth/google" => "auth/google#create", as: :auth_google
+
+      get "me" => "me#show", as: :me
+      patch "me" => "me#update"
+      put "me" => "me#update"
+      delete "me" => "me#destroy"
+      get "me/export" => "me#export", as: :me_export
+
+      resources :categories, only: %i[index show], param: :slug
+
+      resources :listings, only: %i[index show create update destroy], param: :slug do
+        resources :images, only: %i[create destroy], module: :listings
+        patch "images/positions" => "listings/images#positions", as: :image_positions
+        resource :submission, only: :create, module: :listings
+        resource :pause, only: %i[create destroy], module: :listings
+        resource :sale, only: :create, module: :listings
+        resource :favorite, only: %i[create destroy], module: :listings
+      end
+
+      resources :stores, only: :show, param: :slug do
+        resources :listings, only: :index, module: :stores
+        resources :reviews, only: :index, module: :stores
+        resource :follow, only: %i[create destroy], module: :stores
+      end
+
+      resource :cart, only: :show, controller: "cart"
+      resources :cart_items, only: %i[create update destroy]
+
+      get "checkout/options" => "checkout/options#show", as: :checkout_options
+      post "checkout" => "checkouts#create", as: :checkout
+
+      resources :conversations, only: %i[index show create] do
+        resources :messages, only: :create, module: :conversations
+        resources :offers, only: :create, module: :conversations
+        resource :read, only: :create, module: :conversations
+      end
+      resources :messages, only: [] do
+        resource :offer_response, only: :create, module: :messages
+      end
+      resources :blocks, only: %i[create destroy]
+
+      resources :notifications, only: %i[index update]
+      post "notifications/read_all" => "notifications/read_alls#create", as: :notifications_read_all
+
+      resources :reports, only: :create
+      resources :help_articles, only: %i[index show], param: :slug
+      resources :legal_pages, only: :show, param: :slug
+      get "pc_finder/results" => "pc_finder/results#index", as: :pc_finder_results
+
+      namespace :me do
+        resources :listings, only: :index
+        resources :favorites, only: :index
+        resources :saved_searches, only: %i[index create update destroy]
+        resources :devices, only: %i[create destroy]
+        resource :terms_acceptance, only: :create
+        resources :orders, only: %i[index show], param: :number do
+          resource :cancellation, only: :create, module: :orders
+          resource :delivery_confirmation, only: :create, module: :orders
+          resource :dispute, only: :create, module: :orders
+          resource :review, only: :create, module: :orders
+        end
+        resources :sales, only: %i[index show], param: :number, controller: "sales" do
+          resource :shipment, only: :create, module: :sales
+          resource :cancellation, only: :create, module: :sales
+          resource :pickup, only: :create, module: :sales
+        end
+      end
     end
   end
 end

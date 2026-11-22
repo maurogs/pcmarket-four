@@ -2,6 +2,14 @@
 
 ## Estado
 
+Fase 7C completada: API JSON versionada bajo `/api/v1` para las futuras apps
+iOS y Android, con tokens Bearer guardados como digest, endpoints de cuenta,
+catálogo, cesta, pago, pedidos, mensajería, notificaciones, dispositivos,
+contenido y descubrimiento que reutilizan los servicios existentes. La
+aplicación sirve un documento OpenAPI 3.1 y una página humana de documentación.
+La aplicación web no cambia y toda la suite, las pruebas de sistema y RuboCop
+están en verde.
+
 Fase 7B completada: cuestionario del buscador de PC con resultados
 recomendados, página pública «Cómo vender» y flujo de Véndenos tu equipo
 protegido por un flag, con precios de compra, pagos con IBAN cifrado y
@@ -29,6 +37,7 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
 | 6C | Catálogo, ajustes, países, contenido, marketing y auditoría | Completada |
 | 7A | Textos legales, confianza, sobre nosotros y centro de ayuda | Completada |
 | 7B | Buscador de PC, página de venta y Véndenos tu equipo | Completada |
+| 7C | API JSON versionada para apps móviles | Completada |
 
 ## Stack
 
@@ -705,6 +714,79 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
   marcas de oferta/aceptación/recepción/pago, `original_box`, `accessories`,
   `payout_iban` cifrado, `payout_account_name` y `admin_notes`.
 
+### API JSON versionada (fase 7C)
+
+- `Api::V1::BaseController < ActionController::API` vive fuera del ámbito de
+  idioma, incluye Pundit y autenticación HTTP por token, y centraliza el sobre
+  de éxito (`data` + `meta`) y el de error (`error.code`, `error.message`
+  traducido y `error.details`). Rescata `RecordNotFound`,
+  `Pundit::NotAuthorizedError`, `ParameterMissing`, `RecordInvalid` y
+  `RecordNotUnique`, y devuelve 503 en modo mantenimiento para quien no es
+  personal. El idioma sale de un parámetro `locale` validado o de
+  `Accept-Language`.
+- `ApiToken` guarda solo un digest SHA-256 en `token_digest`; el token en claro
+  se devuelve una única vez desde `ApiToken.issue!`. Caduca a los 90 días por
+  defecto, se busca por digest y actualiza `last_used_at` como máximo una vez
+  por hora. La migración rellena los digests existentes. El endpoint JSON de
+  sesión respeta lockable, confirmable y el estado suspendido/baneado de
+  Devise; el acceso con Google verifica el ID token mediante
+  `GoogleTokenVerifier` (tokeninfo) y `GoogleSignIn`.
+- `POST /auth/registrations` respeta `registrations_enabled` y la aceptación de
+  términos; `POST /auth/passwords` nunca revela si el correo existe. `/me`
+  cubre perfil, idioma y preferencias de notificación, exportación GDPR con
+  `UserDataExport` y borrado lógico.
+- Los endpoints de lectura reutilizan los servicios de dominio en lugar de
+  duplicar reglas: `ListingSearch` (filtros, facetas y chips activos),
+  `CartSummary`, `Checkout::Form` + `Checkout::PlaceOrder`,
+  `ConversationStarter`, `OfferResponse`, `Notifier`, las transiciones
+  protegidas de `Order`, `PcFinder::Recommender`, `Api::CategoryTree` y las
+  políticas Pundit. Las reglas de mutación de la cesta pasaron a
+  `Cart::Mutations`, compartidas con el controlador Turbo web.
+- El JSON se renderiza con vistas jbuilder en `app/views/api/v1/`, con parciales
+  compartidos de anuncio, pedido, conversación, mensaje, notificación y
+  paginación. Las imágenes exponen `url`, `thumb_url` (640x480 WebP) y
+  `large_url` (1600x1200 WebP) absolutas. Las colecciones usan 24 por página
+  (máximo 100); el buscador de PC mantiene 12 y las notificaciones 20. Los
+  mensajes van de más reciente a más antiguo con cursor `before`.
+- Las lecturas anónimas de categorías, anuncios, tiendas, configuración, ayuda
+  y páginas legales envían caché pública `max-age=60` y ETag/If-None-Match.
+  Rack::Attack limita la API a 300 peticiones cada 5 minutos por token, 60 cada
+  5 minutos por IP anónima y 10 intentos de acceso por minuto por IP y correo;
+  la respuesta limitada usa el sobre JSON de error. rack-cors solo permite los
+  orígenes de `API_CORS_ORIGINS`.
+- `docs/api/openapi.yaml` documenta todas las rutas `/api/v1` con esquemas de
+  Listing, Category, Store, Order, Conversation, Message, Error y Pagination.
+  Se sirve en `/api/v1/openapi.yaml` y `/api/docs` renderiza un índice de
+  endpoints autocontenido con CSS embebido y sin CDN.
+- La nueva tabla `devices` guarda tokens push iOS/Android (`platform`, `token`
+  único, `app_version`, `last_seen_at`) para un futuro envío push; todavía no se
+  llama a ningún proveedor. El ajuste `api_min_app_version` vale `1.0.0` por
+  defecto.
+
+### Identidad OAuth y aceptación de términos (endurecimiento de la fase 7C)
+
+- La verificación del correo de Google es compartida por el callback OmniAuth web
+  y la API JSON mediante `GoogleEmailVerification`; `email_verified` debe ser el
+  booleano true o la cadena `"true"`. `User.from_omniauth` no vincula ni crea
+  cuentas con direcciones no verificadas, y
+  `Users::OmniauthCallbacksController` redirige esos intentos al acceso con la
+  alerta traducida `errors.omniauth_email_unverified`.
+- Las cuentas OAuth nuevas ya no reciben `terms_accepted_at` automáticamente. El
+  recurso singular `users/terms_acceptances` muestra los enlaces de términos y
+  privacidad, una casilla obligatoria y la opción de marketing, y guarda la marca
+  temporal. `ApplicationController#require_terms_acceptance` redirige a los
+  usuarios con sesión iniciada y marca temporal nula, excepto la pantalla de
+  aceptación, las sesiones de Devise, las páginas legales, Active Storage/activos
+  y los controladores de la API.
+- Las peticiones autenticadas a `/api/v1` de usuarios sin términos aceptados
+  devuelven 403 `terms_not_accepted`, salvo
+  `POST /api/v1/me/terms_acceptance`, `GET /api/v1/config` y
+  `GET /api/v1/legal_pages/:slug`. El endpoint de aceptación registra
+  `terms_accepted_at` y la preferencia de marketing, y devuelve el perfil.
+- Las pruebas cubren el rechazo de correos no verificados, los términos nulos de
+  las cuentas OAuth nuevas, el flujo de aceptación web y API, las exenciones de
+  config y páginas legales, y las reglas actualizadas del modelo de usuario.
+
 ### Límites de rendimiento
 
 - `ListingSearch::INCLUDES` precarga tienda, categoría, región, usuario y
@@ -1137,7 +1219,15 @@ test/integration/{legal_pages,trust_and_about,help_centre}_test.rb
   endpoint de stream.
 - El acceso con Google solo se muestra cuando `GOOGLE_CLIENT_ID` y
   `GOOGLE_CLIENT_SECRET` están configurados.
-- Endpoints de API (ListingSearch ya está preparado para API).
+- El envío push no está implementado: los tokens de dispositivo se guardan
+  para una futura integración con un proveedor.
+- La API expone direcciones guardadas para el pago, pero aún no tiene CRUD de
+  direcciones; los clientes seguirán usando la web o un futuro
+  `/me/addresses`.
+- El OpenAPI se mantiene a mano; conviene añadir una prueba de contrato cuando
+  los clientes móviles empiecen a generar código a partir de él.
+- La API todavía no expone ajustes de vendedor, administración ni el flujo de
+  Véndenos tu equipo.
 - Sin indicador de escritura en las conversaciones (fuera de alcance de forma
   explícita).
 - La detección de seguridad de mensajes es heurística; la revisión de moderación

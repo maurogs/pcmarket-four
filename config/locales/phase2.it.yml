@@ -330,6 +330,14 @@ it:
       marketing_hint: "Puoi annullare l'iscrizione in qualsiasi momento."
       have_account: "Hai già un account?"
       sign_in: "Accedi"
+    terms_acceptance:
+      title: "Accetta i termini per continuare"
+      subtitle: "Prima di usare PCMarket, leggi e accetta i nostri termini e l'informativa sulla privacy."
+      marketing: "Ricevi offerte e novità"
+      marketing_hint: "Puoi annullare l'iscrizione in qualsiasi momento."
+      submit: "Accetta e continua"
+      required: "Devi accettare i termini e l'informativa sulla privacy per continuare."
+      accepted: "Grazie. Il tuo account è pronto."
     forgot:
       title: "Reimposta la password"
       subtitle: "Ti invieremo un link per crearne una nuova."

@@ -23,7 +23,8 @@ class UserTest < ActiveSupport::TestCase
     auth = OmniAuth::AuthHash.new(
       provider: "google_oauth2",
       uid: "google-uid-123",
-      info: { email: "oauth-user@example.com", first_name: "Olga", last_name: "OAuth" }
+      info: { email: "oauth-user@example.com", first_name: "Olga", last_name: "OAuth" },
+      extra: { raw_info: { email_verified: true } }
     )
 
     assert_difference -> { User.count }, 1 do
@@ -35,13 +36,15 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "google_oauth2", @user.provider
     assert_equal "google-uid-123", @user.uid
     assert @user.username.present?
+    assert_nil @user.terms_accepted_at
   end
 
   test "from_omniauth links an existing email" do
     auth = OmniAuth::AuthHash.new(
       provider: "google_oauth2",
       uid: "google-uid-456",
-      info: { email: users(:buyer).email, first_name: "Bruno", last_name: "Buyer" }
+      info: { email: users(:buyer).email, first_name: "Bruno", last_name: "Buyer" },
+      extra: { raw_info: { email_verified: "true" } }
     )
 
     assert_no_difference -> { User.count } do
@@ -50,6 +53,21 @@ class UserTest < ActiveSupport::TestCase
 
     assert_equal users(:buyer).id, @user.id
     assert_equal "google-uid-456", @user.uid
+  end
+
+  test "from_omniauth rejects an unverified Google email" do
+    auth = OmniAuth::AuthHash.new(
+      provider: "google_oauth2",
+      uid: "google-uid-unverified",
+      info: { email: users(:buyer).email, first_name: "Bruno", last_name: "Buyer" },
+      extra: { raw_info: { email_verified: false } }
+    )
+
+    assert_no_difference -> { User.count } do
+      assert_nil User.from_omniauth(auth)
+    end
+
+    assert_nil users(:buyer).reload.uid
   end
 
   test "soft_delete! keeps the record but marks it deleted" do

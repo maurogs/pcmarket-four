@@ -168,10 +168,11 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Contexto del proyecto</h1>
     <p class="lede">Arquitectura, decisiones y mapa de código</p>
-    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-22 00:37</p>
+    <p class="meta">Generado desde <code>project.es.md</code> · Actualizado 2026-11-22 01:10</p>
   </header>
   <main><section class="card status">
 <h2><span>Estado</span><span class="badge badge-success">Complete</span></h2>
+<p>Fase 7C completada: API JSON versionada bajo <code>/api/v1</code> para las futuras apps iOS y Android, con tokens Bearer guardados como digest, endpoints de cuenta, catálogo, cesta, pago, pedidos, mensajería, notificaciones, dispositivos, contenido y descubrimiento que reutilizan los servicios existentes. La aplicación sirve un documento OpenAPI 3.1 y una página humana de documentación. La aplicación web no cambia y toda la suite, las pruebas de sistema y RuboCop están en verde.</p>
 <p>Fase 7B completada: cuestionario del buscador de PC con resultados recomendados, página pública «Cómo vender» y flujo de Véndenos tu equipo protegido por un flag, con precios de compra, pagos con IBAN cifrado y operaciones de administración.</p>
 <p>Fase 7A completada: textos legales por país (ES, FR, GB, DE, IT, PT), página pública de confianza y seguridad, página sobre nosotros y centro de ayuda con buscador y valoración de artículos. Los ajustes de identidad de la empresa alimentan los marcadores de las páginas legales. El catálogo, los ajustes, los países, el contenido, el marketing y la auditoría de la fase 6C siguen intactos.</p>
 </section>
@@ -192,6 +193,7 @@ footer {
 <tr><td>6C</td><td>Catálogo, ajustes, países, contenido, marketing y auditoría</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>7A</td><td>Textos legales, confianza, sobre nosotros y centro de ayuda</td><td><span class="badge badge-success">Completada</span></td></tr>
 <tr><td>7B</td><td>Buscador de PC, página de venta y Véndenos tu equipo</td><td><span class="badge badge-success">Completada</span></td></tr>
+<tr><td>7C</td><td>API JSON versionada para apps móviles</td><td><span class="badge badge-success">Completada</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -407,6 +409,24 @@ footer {
 <li>Al pedir presupuesto se crea un <code>SellOffer</code> en estado <code>offered</code> con <code>offer_expires_at</code> a siete días. El usuario acepta con IBAN (checksum módulo 97 mediante <code>IbanValidator</code>) y titular, o rechaza. <code>payout_iban</code> usa cifrado de Active Record; <code>SellOfferNotifier</code> crea una notificación y encola un email de <code>SellOfferMailer</code> en el idioma del usuario para offered, accepted, declined, received, paid, rejected y expired.</li>
 <li><code>SellOfferExpiryJob</code> se ejecuta a diario en todos los entornos y caduca las ofertas sin respuesta. El <code>SellOffersController</code> de administración lista y muestra ofertas y las pasa a received, paid o rejected con notas, todo auditado. <code>BuybackPricesController</code> ofrece CRUD del catálogo de compra.</li>
 <li>Nuevo esquema: <code>buyback_prices</code>, y <code>sell_offers</code> gana <code>buyback_price_id</code>, marcas de oferta/aceptación/recepción/pago, <code>original_box</code>, <code>accessories</code>, <code>payout_iban</code> cifrado, <code>payout_account_name</code> y <code>admin_notes</code>.</li>
+</ul>
+<h3>API JSON versionada (fase 7C)</h3>
+<ul>
+<li><code>Api::V1::BaseController &lt; ActionController::API</code> vive fuera del ámbito de idioma, incluye Pundit y autenticación HTTP por token, y centraliza el sobre de éxito (<code>data</code> + <code>meta</code>) y el de error (<code>error.code</code>, <code>error.message</code> traducido y <code>error.details</code>). Rescata <code>RecordNotFound</code>, <code>Pundit::NotAuthorizedError</code>, <code>ParameterMissing</code>, <code>RecordInvalid</code> y <code>RecordNotUnique</code>, y devuelve 503 en modo mantenimiento para quien no es personal. El idioma sale de un parámetro <code>locale</code> validado o de <code>Accept-Language</code>.</li>
+<li><code>ApiToken</code> guarda solo un digest SHA-256 en <code>token_digest</code>; el token en claro se devuelve una única vez desde <code>ApiToken.issue!</code>. Caduca a los 90 días por defecto, se busca por digest y actualiza <code>last_used_at</code> como máximo una vez por hora. La migración rellena los digests existentes. El endpoint JSON de sesión respeta lockable, confirmable y el estado suspendido/baneado de Devise; el acceso con Google verifica el ID token mediante <code>GoogleTokenVerifier</code> (tokeninfo) y <code>GoogleSignIn</code>.</li>
+<li><code>POST /auth/registrations</code> respeta <code>registrations_enabled</code> y la aceptación de términos; <code>POST /auth/passwords</code> nunca revela si el correo existe. <code>/me</code> cubre perfil, idioma y preferencias de notificación, exportación GDPR con <code>UserDataExport</code> y borrado lógico.</li>
+<li>Los endpoints de lectura reutilizan los servicios de dominio en lugar de duplicar reglas: <code>ListingSearch</code> (filtros, facetas y chips activos), <code>CartSummary</code>, <code>Checkout::Form</code> + <code>Checkout::PlaceOrder</code>, <code>ConversationStarter</code>, <code>OfferResponse</code>, <code>Notifier</code>, las transiciones protegidas de <code>Order</code>, <code>PcFinder::Recommender</code>, <code>Api::CategoryTree</code> y las políticas Pundit. Las reglas de mutación de la cesta pasaron a <code>Cart::Mutations</code>, compartidas con el controlador Turbo web.</li>
+<li>El JSON se renderiza con vistas jbuilder en <code>app/views/api/v1/</code>, con parciales compartidos de anuncio, pedido, conversación, mensaje, notificación y paginación. Las imágenes exponen <code>url</code>, <code>thumb_url</code> (640x480 WebP) y <code>large_url</code> (1600x1200 WebP) absolutas. Las colecciones usan 24 por página (máximo 100); el buscador de PC mantiene 12 y las notificaciones 20. Los mensajes van de más reciente a más antiguo con cursor <code>before</code>.</li>
+<li>Las lecturas anónimas de categorías, anuncios, tiendas, configuración, ayuda y páginas legales envían caché pública <code>max-age=60</code> y ETag/If-None-Match. Rack::Attack limita la API a 300 peticiones cada 5 minutos por token, 60 cada 5 minutos por IP anónima y 10 intentos de acceso por minuto por IP y correo; la respuesta limitada usa el sobre JSON de error. rack-cors solo permite los orígenes de <code>API_CORS_ORIGINS</code>.</li>
+<li><code>docs/api/openapi.yaml</code> documenta todas las rutas <code>/api/v1</code> con esquemas de Listing, Category, Store, Order, Conversation, Message, Error y Pagination. Se sirve en <code>/api/v1/openapi.yaml</code> y <code>/api/docs</code> renderiza un índice de endpoints autocontenido con CSS embebido y sin CDN.</li>
+<li>La nueva tabla <code>devices</code> guarda tokens push iOS/Android (<code>platform</code>, <code>token</code> único, <code>app_version</code>, <code>last_seen_at</code>) para un futuro envío push; todavía no se llama a ningún proveedor. El ajuste <code>api_min_app_version</code> vale <code>1.0.0</code> por defecto.</li>
+</ul>
+<h3>Identidad OAuth y aceptación de términos (endurecimiento de la fase 7C)</h3>
+<ul>
+<li>La verificación del correo de Google es compartida por el callback OmniAuth web y la API JSON mediante <code>GoogleEmailVerification</code>; <code>email_verified</code> debe ser el booleano true o la cadena <code>&quot;true&quot;</code>. <code>User.from_omniauth</code> no vincula ni crea cuentas con direcciones no verificadas, y <code>Users::OmniauthCallbacksController</code> redirige esos intentos al acceso con la alerta traducida <code>errors.omniauth_email_unverified</code>.</li>
+<li>Las cuentas OAuth nuevas ya no reciben <code>terms_accepted_at</code> automáticamente. El recurso singular <code>users/terms_acceptances</code> muestra los enlaces de términos y privacidad, una casilla obligatoria y la opción de marketing, y guarda la marca temporal. <code>ApplicationController#require_terms_acceptance</code> redirige a los usuarios con sesión iniciada y marca temporal nula, excepto la pantalla de aceptación, las sesiones de Devise, las páginas legales, Active Storage/activos y los controladores de la API.</li>
+<li>Las peticiones autenticadas a <code>/api/v1</code> de usuarios sin términos aceptados devuelven 403 <code>terms_not_accepted</code>, salvo <code>POST /api/v1/me/terms_acceptance</code>, <code>GET /api/v1/config</code> y <code>GET /api/v1/legal_pages/:slug</code>. El endpoint de aceptación registra <code>terms_accepted_at</code> y la preferencia de marketing, y devuelve el perfil.</li>
+<li>Las pruebas cubren el rechazo de correos no verificados, los términos nulos de las cuentas OAuth nuevas, el flujo de aceptación web y API, las exenciones de config y páginas legales, y las reglas actualizadas del modelo de usuario.</li>
 </ul>
 <h3>Límites de rendimiento</h3>
 <ul>
@@ -711,7 +731,10 @@ test/integration/{legal_pages,trust_and_about,help_centre}_test.rb
 <li>Las pestañas de tienda renderizan el panel activo en línea para SEO y cargan las demás mediante Turbo Frame; se pueden añadir marcadores <code>loading=&quot;lazy&quot;</code> si los paneles crecen.</li>
 <li>&quot;Cargar más&quot; en móvil navega a la página siguiente dentro del frame de resultados en lugar de añadir; la adición infinita real puede añadirse con un endpoint de stream.</li>
 <li>El acceso con Google solo se muestra cuando <code>GOOGLE_CLIENT_ID</code> y <code>GOOGLE_CLIENT_SECRET</code> están configurados.</li>
-<li>Endpoints de API (ListingSearch ya está preparado para API).</li>
+<li>El envío push no está implementado: los tokens de dispositivo se guardan para una futura integración con un proveedor.</li>
+<li>La API expone direcciones guardadas para el pago, pero aún no tiene CRUD de direcciones; los clientes seguirán usando la web o un futuro <code>/me/addresses</code>.</li>
+<li>El OpenAPI se mantiene a mano; conviene añadir una prueba de contrato cuando los clientes móviles empiecen a generar código a partir de él.</li>
+<li>La API todavía no expone ajustes de vendedor, administración ni el flujo de Véndenos tu equipo.</li>
 <li>Sin indicador de escritura en las conversaciones (fuera de alcance de forma explícita).</li>
 <li>La detección de seguridad de mensajes es heurística; la revisión de moderación sigue siendo manual.</li>
 <li>Las etiquetas de Véndenos tu equipo son informativas: todavía no hay API de transportista que emita etiquetas prepagadas y los pagos se registran a mano desde administración.</li>

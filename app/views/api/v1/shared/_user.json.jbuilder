@@ -1,0 +1,17 @@
+json.id user.id
+json.email user.email
+json.username user.username
+json.first_name user.first_name
+json.last_name user.last_name
+json.full_name user.full_name
+json.phone user.phone
+json.locale user.locale
+json.country_code user.country_code
+json.region_id user.region_id
+json.city user.city
+json.role user.role
+json.status user.status
+json.staff user.staff?
+json.avatar_url api_avatar_url(user)
+json.notification_preferences user.notification_preferences
+json.created_at user.created_at.iso8601

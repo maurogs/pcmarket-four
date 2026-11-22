@@ -2,6 +2,9 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
 require "bcrypt"
+require "webmock/minitest"
+WebMock.disable_net_connect!(allow_localhost: true)
+require_relative "support/api_test_helper"
 
 module ActiveSupport
   class TestCase
@@ -11,7 +14,13 @@ module ActiveSupport
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 
-    setup { Rails.cache.clear }
+    setup do
+      Rails.cache.clear
+      Rack::Attack.reset!
+      Rack::Attack.enabled = false
+    end
+
+    teardown { Rack::Attack.enabled = false }
     # Add more helper methods to be used by all tests here...
   end
 end

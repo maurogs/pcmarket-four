@@ -142,6 +142,12 @@ export GOOGLE_CLIENT_SECRET=your-client-secret
 
 The callback URL is `/users/auth/google_oauth2/callback`.
 
+The JSON API verifies Google ID tokens against an explicit allowlist. Set
+`GOOGLE_CLIENT_IDS` to the comma-separated web, iOS and Android client IDs;
+`GOOGLE_CLIENT_ID` is still accepted for backwards compatibility. If neither
+variable is set, `POST /api/v1/auth/google` is disabled and returns
+`503 google_sign_in_unavailable`.
+
 ## Tests and quality checks
 
 ```bash

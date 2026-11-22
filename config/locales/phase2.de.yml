@@ -330,6 +330,14 @@ de:
       marketing_hint: "Du kannst dich jederzeit abmelden."
       have_account: "Du hast bereits ein Konto?"
       sign_in: "Anmelden"
+    terms_acceptance:
+      title: "Bedingungen akzeptieren, um fortzufahren"
+      subtitle: "Bevor Sie PCMarket nutzen, lesen und akzeptieren Sie unsere Bedingungen und Datenschutzerklärung."
+      marketing: "Angebote und Neuigkeiten erhalten"
+      marketing_hint: "Sie können sich jederzeit abmelden."
+      submit: "Akzeptieren und fortfahren"
+      required: "Sie müssen die Bedingungen und die Datenschutzerklärung akzeptieren, um fortzufahren."
+      accepted: "Danke. Ihr Konto ist bereit."
     forgot:
       title: "Passwort zurücksetzen"
       subtitle: "Wir senden dir einen Link, um ein neues zu erstellen."

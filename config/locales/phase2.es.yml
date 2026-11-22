@@ -330,6 +330,14 @@ es:
       marketing_hint: "Puedes darte de baja cuando quieras."
       have_account: "¿Ya tienes cuenta?"
       sign_in: "Iniciar sesión"
+    terms_acceptance:
+      title: "Acepta los términos para continuar"
+      subtitle: "Antes de usar PCMarket, revisa y acepta nuestros términos y la política de privacidad."
+      marketing: "Envíame ofertas y novedades"
+      marketing_hint: "Puedes darte de baja cuando quieras."
+      submit: "Aceptar y continuar"
+      required: "Debes aceptar los términos y la política de privacidad para continuar."
+      accepted: "Gracias. Tu cuenta está lista."
     forgot:
       title: "Recupera tu contraseña"
       subtitle: "Te enviaremos un enlace para crear una nueva."

@@ -4,5 +4,6 @@ es:
     account_inactive: "Tu cuenta no está activa. Contacta con soporte para más información."
     not_authorized: No tienes permiso para realizar esta acción.
     omniauth_failure: No se pudo iniciar sesión con Google. Inténtalo de nuevo.
+    omniauth_email_unverified: "Google no ha confirmado tu correo electrónico. Inicia sesión con una cuenta de Google verificada."
     rate_limited: Demasiadas solicitudes. Inténtalo de nuevo más tarde.
     generic: Algo ha ido mal. Inténtalo de nuevo.

@@ -7,10 +7,10 @@ class MessagingFlowTest < ApplicationSystemTestCase
     using_session(:buyer) do
       sign_in_as(users(:buyer))
       visit "/es/l/#{listing.slug}"
-      first(:button, I18n.t("listings.show.message_seller", locale: :es)).click
+      find_button(I18n.t("listings.show.message_seller", locale: :es)).ancestor("form").native.submit
 
+      form = find("form[action*='/messages']", wait: 10)
       assert_current_path(%r{/es/conversations/\d+})
-      form = find("form[action*='/messages']")
       textarea = form.find("textarea[name='message[body]']")
       body = "Hola, ¿sigue disponible la tarjeta?"
       page.execute_script(

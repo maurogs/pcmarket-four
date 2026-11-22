@@ -79,14 +79,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_231200) do
 
   create_table "api_tokens", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "token", null: false
+    t.string "token"
     t.string "name"
     t.datetime "last_used_at"
     t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "token_digest"
     t.index ["expires_at"], name: "index_api_tokens_on_expires_at"
     t.index ["token"], name: "index_api_tokens_on_token", unique: true
+    t.index ["token_digest"], name: "index_api_tokens_on_token_digest", unique: true
     t.index ["user_id"], name: "index_api_tokens_on_user_id"
   end
 
@@ -191,6 +193,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_231200) do
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_countries_on_code", unique: true
     t.index ["enabled"], name: "index_countries_on_enabled"
+  end
+
+  create_table "devices", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "platform", null: false
+    t.string "token", null: false
+    t.string "app_version"
+    t.datetime "last_seen_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token"], name: "index_devices_on_token", unique: true
+    t.index ["user_id", "platform"], name: "index_devices_on_user_id_and_platform"
+    t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
   create_table "favorites", force: :cascade do |t|
@@ -730,6 +745,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_231200) do
   add_foreign_key "conversations", "listings"
   add_foreign_key "conversations", "users", column: "buyer_id"
   add_foreign_key "conversations", "users", column: "seller_id"
+  add_foreign_key "devices", "users"
   add_foreign_key "favorites", "listings"
   add_foreign_key "favorites", "users"
   add_foreign_key "feature_requests", "listings"

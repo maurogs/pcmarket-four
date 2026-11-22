@@ -330,6 +330,14 @@ pt:
       marketing_hint: "Pode cancelar a subscrição a qualquer momento."
       have_account: "Já tem conta?"
       sign_in: "Iniciar sessão"
+    terms_acceptance:
+      title: "Aceita os termos para continuar"
+      subtitle: "Antes de usar a PCMarket, revê e aceita os nossos termos e a política de privacidade."
+      marketing: "Receber ofertas e novidades"
+      marketing_hint: "Podes cancelar a subscrição a qualquer momento."
+      submit: "Aceitar e continuar"
+      required: "Tens de aceitar os termos e a política de privacidade para continuar."
+      accepted: "Obrigado. A tua conta está pronta."
     forgot:
       title: "Repor a palavra-passe"
       subtitle: "Enviaremos um link para criar uma nova."

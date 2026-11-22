@@ -41,6 +41,7 @@ class User < ApplicationRecord
   has_many :saved_searches, dependent: :destroy, inverse_of: :user
   has_many :notifications, dependent: :destroy, inverse_of: :user
   has_many :api_tokens, dependent: :destroy, inverse_of: :user
+  has_many :devices, dependent: :destroy, inverse_of: :user
   has_many :sell_offers, dependent: :destroy, inverse_of: :user
   has_many :reviews, foreign_key: :reviewer_id, dependent: :destroy, inverse_of: :reviewer
   has_many :reports, foreign_key: :reporter_id, dependent: :destroy, inverse_of: :reporter
@@ -78,6 +79,8 @@ class User < ApplicationRecord
   scope :staff, -> { where(role: %i[moderator admin]) }
 
   def self.from_omniauth(auth)
+    return nil unless GoogleEmailVerification.verified_auth?(auth)
+
     info = auth.info
     user = find_by(provider: auth.provider, uid: auth.uid)
     return user if user
@@ -95,8 +98,7 @@ class User < ApplicationRecord
       first_name: info.first_name,
       last_name: info.last_name,
       password: Devise.friendly_token[0, 20],
-      confirmed_at: Time.current,
-      terms_accepted_at: Time.current
+      confirmed_at: Time.current
     )
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
     nil

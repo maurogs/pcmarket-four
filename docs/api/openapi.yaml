@@ -1,0 +1,1386 @@
+openapi: 3.1.0
+info:
+  title: PCMarket API
+  version: 1.0.0
+  description: Versioned JSON API for the PCMarket iOS and Android apps. Successful responses use a data/meta envelope; errors use a single error object with translated messages.
+servers:
+  - url: https://pcmarket.test/api/v1
+    description: Production
+  - url: http://localhost:3000/api/v1
+    description: Development
+tags:
+  - name: Meta
+    description: Configuration, documentation and reference data.
+  - name: Auth
+    description: Bearer token authentication and account recovery.
+  - name: Account
+    description: Current user profile, export, devices and saved searches.
+  - name: Catalogue
+    description: Categories, listings, stores, favourites and PC Finder.
+  - name: Cart
+    description: Cart and checkout.
+  - name: Orders
+    description: Buyer purchases and seller sales.
+  - name: Messaging
+    description: Conversations, messages, offers and blocks.
+  - name: Notifications
+    description: In-app notifications.
+  - name: Content
+    description: Help centre, legal pages and reports.
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/openapi.yaml:
+    get:
+      tags: [Meta]
+      summary: Download this OpenAPI document
+      security: []
+      responses:
+        "200":
+          description: OpenAPI 3.1 YAML
+          content:
+            application/yaml:
+              schema:
+                type: string
+  /api/v1/config:
+    get:
+      tags: [Meta]
+      summary: Client configuration, countries, locales and feature flags
+      security: []
+      responses:
+        "200":
+          description: Configuration payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+  /api/v1/auth/sessions:
+    post:
+      tags: [Auth]
+      summary: Sign in with email and password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                device_name:
+                  type: string
+      responses:
+        "201":
+          description: Bearer token issued once
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    delete:
+      tags: [Auth]
+      summary: Revoke the current token
+      responses:
+        "204":
+          description: Token revoked
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/v1/auth/registrations:
+    post:
+      tags: [Auth]
+      summary: Create an account
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, terms_accepted]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                country_code:
+                  type: string
+                terms_accepted:
+                  type: boolean
+                accepts_marketing:
+                  type: boolean
+      responses:
+        "201":
+          description: Account created
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/auth/passwords:
+    post:
+      tags: [Auth]
+      summary: Request password reset instructions
+      security: []
+      responses:
+        "202":
+          description: Instructions requested
+  /api/v1/auth/google:
+    post:
+      tags: [Auth]
+      summary: Sign in with a Google ID token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id_token]
+              properties:
+                id_token:
+                  type: string
+      responses:
+        "200":
+          description: Bearer token issued once
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          description: Google sign-in is not configured (no allowed client IDs)
+  /api/v1/me:
+    get:
+      tags: [Account]
+      summary: Current user
+      responses:
+        "200":
+          description: User profile
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    patch:
+      tags: [Account]
+      summary: Update profile, locale and notification preferences
+      responses:
+        "200":
+          description: Updated profile
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+    put:
+      tags: [Account]
+      summary: Update profile, locale and notification preferences
+      responses:
+        "200":
+          description: Updated profile
+    delete:
+      tags: [Account]
+      summary: Delete the account through the GDPR soft-delete service
+      responses:
+        "204":
+          description: Account anonymised
+  /api/v1/me/terms_acceptance:
+    post:
+      tags: [Account]
+      summary: Accept the terms and privacy policy for the current account
+      responses:
+        "200":
+          description: Terms accepted
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/me/export:
+    get:
+      tags: [Account]
+      summary: Export personal data (GDPR articles 15 and 20)
+      responses:
+        "200":
+          description: Data export
+  /api/v1/categories:
+    get:
+      tags: [Catalogue]
+      summary: Category tree with visible listing counts
+      security: []
+      responses:
+        "200":
+          description: Category tree
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Category"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+  /api/v1/categories/{slug}:
+    get:
+      tags: [Catalogue]
+      summary: Category detail with effective filters and options
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/Slug"
+      responses:
+        "200":
+          description: Category detail
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/v1/listings:
+    get:
+      tags: [Catalogue]
+      summary: Search listings (ListingSearch)
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PerPage"
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: min_price
+          in: query
+          schema:
+            type: string
+        - name: max_price
+          in: query
+          schema:
+            type: string
+        - name: condition
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: labels
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: tags
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: region_id
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: shipping
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [best_match, newest, price_asc, price_desc, popular]
+      responses:
+        "200":
+          description: Paginated listings with facets and active filters in meta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Listing"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+    post:
+      tags: [Catalogue]
+      summary: Create a listing (ListingForm)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                listing:
+                  type: object
+      responses:
+        "201":
+          description: Listing created
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/listings/{slug}:
+    get:
+      tags: [Catalogue]
+      summary: Listing detail
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/Slug"
+      responses:
+        "200":
+          description: Listing detail
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      tags: [Catalogue]
+      summary: Update a listing owned by the token user
+      parameters:
+        - $ref: "#/components/parameters/Slug"
+      responses:
+        "200":
+          description: Listing updated
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+    put:
+      tags: [Catalogue]
+      summary: Update a listing owned by the token user
+      parameters:
+        - $ref: "#/components/parameters/Slug"
+      responses:
+        "200":
+          description: Listing updated
+    delete:
+      tags: [Catalogue]
+      summary: Archive or destroy a listing
+      parameters:
+        - $ref: "#/components/parameters/Slug"
+      responses:
+        "204":
+          description: Listing removed
+  /api/v1/listings/{listing_slug}/images:
+    post:
+      tags: [Catalogue]
+      summary: Upload images (multipart files or direct-upload signed ids)
+      parameters:
+        - $ref: "#/components/parameters/ListingSlug"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+          application/json:
+            schema:
+              type: object
+              properties:
+                signed_id:
+                  type: string
+      responses:
+        "201":
+          description: Images attached
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/listings/{listing_slug}/images/{id}:
+    delete:
+      tags: [Catalogue]
+      summary: Remove an image
+      parameters:
+        - $ref: "#/components/parameters/ListingSlug"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Image removed
+  /api/v1/listings/{listing_slug}/images/positions:
+    patch:
+      tags: [Catalogue]
+      summary: Reorder images
+      parameters:
+        - $ref: "#/components/parameters/ListingSlug"
+      responses:
+        "200":
+          description: Images reordered
+  /api/v1/listings/{listing_slug}/submission:
+    post:
+      tags: [Catalogue]
+      summary: Submit a draft for review
+      parameters:
+        - $ref: "#/components/parameters/ListingSlug"
+      responses:
+        "202":
+          description: Submitted
+  /api/v1/listings/{listing_slug}/pause:
+    post:
+      tags: [Catalogue]
+      summary: Pause a published listing
+      parameters:
+        - $ref: "#/components/parameters/ListingSlug"
+      responses:
+        "200":
+          description: Paused
+    delete:
+      tags: [Catalogue]
+      summary: Resume a paused listing
+      parameters:
+        - $ref: "#/components/parameters/ListingSlug"
+      responses:
+        "200":
+          description: Resumed
+  /api/v1/listings/{listing_slug}/sale:
+    post:
+      tags: [Catalogue]
+      summary: Mark a listing as sold outside the marketplace
+      parameters:
+        - $ref: "#/components/parameters/ListingSlug"
+      responses:
+        "200":
+          description: Marked sold
+  /api/v1/listings/{listing_slug}/favorite:
+    post:
+      tags: [Catalogue]
+      summary: Add a listing to favourites
+      parameters:
+        - $ref: "#/components/parameters/ListingSlug"
+      responses:
+        "201":
+          description: Favourited
+    delete:
+      tags: [Catalogue]
+      summary: Remove a listing from favourites
+      parameters:
+        - $ref: "#/components/parameters/ListingSlug"
+      responses:
+        "204":
+          description: Removed
+  /api/v1/stores/{slug}:
+    get:
+      tags: [Catalogue]
+      summary: Store profile
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/Slug"
+      responses:
+        "200":
+          description: Store detail
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Store"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+  /api/v1/stores/{store_slug}/listings:
+    get:
+      tags: [Catalogue]
+      summary: Store listings
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/StoreSlug"
+      responses:
+        "200":
+          description: Store listings
+  /api/v1/stores/{store_slug}/reviews:
+    get:
+      tags: [Catalogue]
+      summary: Published store reviews
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/StoreSlug"
+      responses:
+        "200":
+          description: Reviews
+  /api/v1/stores/{store_slug}/follow:
+    post:
+      tags: [Catalogue]
+      summary: Follow a store
+      parameters:
+        - $ref: "#/components/parameters/StoreSlug"
+      responses:
+        "201":
+          description: Following
+    delete:
+      tags: [Catalogue]
+      summary: Unfollow a store
+      parameters:
+        - $ref: "#/components/parameters/StoreSlug"
+      responses:
+        "200":
+          description: Unfollowed
+  /api/v1/cart:
+    get:
+      tags: [Cart]
+      summary: Current user cart (CartSummary)
+      responses:
+        "200":
+          description: Cart groups, totals and warnings
+  /api/v1/cart_items:
+    post:
+      tags: [Cart]
+      summary: Add a listing to the cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [listing_id]
+              properties:
+                listing_id:
+                  type: integer
+                quantity:
+                  type: integer
+      responses:
+        "201":
+          description: Cart updated
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/cart_items/{id}:
+    patch:
+      tags: [Cart]
+      summary: Update cart item quantity (zero removes it)
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Cart updated
+    put:
+      tags: [Cart]
+      summary: Update cart item quantity
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Cart updated
+    delete:
+      tags: [Cart]
+      summary: Remove a cart item
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Cart updated
+  /api/v1/checkout/options:
+    get:
+      tags: [Cart]
+      summary: Payment methods, delivery options and addresses
+      responses:
+        "200":
+          description: Checkout options
+  /api/v1/checkout:
+    post:
+      tags: [Cart]
+      summary: Place orders (Checkout::PlaceOrder)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, payment_method, terms_accepted, withdrawal_acknowledged]
+              properties:
+                email:
+                  type: string
+                  format: email
+                payment_method:
+                  type: string
+                  enum: [bank_transfer, cash_on_pickup, stripe]
+                delivery:
+                  type: object
+                full_name:
+                  type: string
+                line1:
+                  type: string
+                city:
+                  type: string
+                postal_code:
+                  type: string
+                country_code:
+                  type: string
+                terms_accepted:
+                  type: boolean
+                withdrawal_acknowledged:
+                  type: boolean
+                checkout_token:
+                  type: string
+      responses:
+        "201":
+          description: Orders created and payment instructions returned
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/conversations:
+    get:
+      tags: [Messaging]
+      summary: Inbox
+      parameters:
+        - name: tab
+          in: query
+          schema:
+            type: string
+            enum: [chats, offers, archived, blocked]
+      responses:
+        "200":
+          description: Conversations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Conversation"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+    post:
+      tags: [Messaging]
+      summary: Start a conversation (ConversationStarter)
+      responses:
+        "201":
+          description: Conversation created
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/conversations/{id}:
+    get:
+      tags: [Messaging]
+      summary: Conversation with messages newest first (cursor before)
+      parameters:
+        - $ref: "#/components/parameters/Id"
+        - name: before
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Conversation and messages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Conversation"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+  /api/v1/conversations/{conversation_id}/messages:
+    post:
+      tags: [Messaging]
+      summary: Send a message
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [body]
+              properties:
+                body:
+                  type: string
+                  maxLength: 2000
+      responses:
+        "201":
+          description: Message created
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/conversations/{conversation_id}/offers:
+    post:
+      tags: [Messaging]
+      summary: Send an offer
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Offer created
+  /api/v1/conversations/{conversation_id}/read:
+    post:
+      tags: [Messaging]
+      summary: Mark a conversation as read
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Conversation marked read
+  /api/v1/messages/{message_id}/offer_response:
+    post:
+      tags: [Messaging]
+      summary: Accept, decline or counter an offer (OfferResponse)
+      parameters:
+        - name: message_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [decision]
+              properties:
+                decision:
+                  type: string
+                  enum: [accept, decline, counter]
+                amount:
+                  type: string
+      responses:
+        "200":
+          description: Offer updated
+  /api/v1/blocks:
+    post:
+      tags: [Messaging]
+      summary: Block a user
+      responses:
+        "201":
+          description: Blocked
+  /api/v1/blocks/{id}:
+    delete:
+      tags: [Messaging]
+      summary: Unblock a user
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Unblocked
+  /api/v1/notifications:
+    get:
+      tags: [Notifications]
+      summary: Notifications, unread first
+      responses:
+        "200":
+          description: Notifications
+  /api/v1/notifications/{id}:
+    patch:
+      tags: [Notifications]
+      summary: Mark one notification read
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Notification updated
+  /api/v1/notifications/read_all:
+    post:
+      tags: [Notifications]
+      summary: Mark every notification read
+      responses:
+        "201":
+          description: Notifications updated
+  /api/v1/reports:
+    post:
+      tags: [Content]
+      summary: Report a listing or conversation
+      responses:
+        "201":
+          description: Report created
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/help_articles:
+    get:
+      tags: [Content]
+      summary: Help centre articles
+      security: []
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Articles
+  /api/v1/help_articles/{slug}:
+    get:
+      tags: [Content]
+      summary: Help article
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/Slug"
+      responses:
+        "200":
+          description: Article
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/v1/legal_pages/{slug}:
+    get:
+      tags: [Content]
+      summary: Legal page for a country
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/Slug"
+        - name: country
+          in: query
+          schema:
+            type: string
+            example: ES
+      responses:
+        "200":
+          description: Legal page
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/v1/pc_finder/results:
+    get:
+      tags: [Catalogue]
+      summary: PC Finder recommendations
+      security: []
+      parameters:
+        - name: games
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: resolution
+          in: query
+          schema:
+            type: string
+            enum: [1080p, 1440p, 4k]
+        - name: fps
+          in: query
+          schema:
+            type: integer
+        - name: budget
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [best, price_asc, price_desc]
+      responses:
+        "200":
+          description: Scored listings
+  /api/v1/me/listings:
+    get:
+      tags: [Account]
+      summary: Seller listing board by status
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [all, draft, pending_review, published, rejected, paused, sold, archived]
+      responses:
+        "200":
+          description: Listings
+  /api/v1/me/favorites:
+    get:
+      tags: [Account]
+      summary: Favourites
+      responses:
+        "200":
+          description: Favourites
+  /api/v1/me/saved_searches:
+    get:
+      tags: [Account]
+      summary: Saved searches
+      responses:
+        "200":
+          description: Saved searches
+    post:
+      tags: [Account]
+      summary: Create a saved search from ListingSearch params
+      responses:
+        "201":
+          description: Saved search created
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/me/saved_searches/{id}:
+    patch:
+      tags: [Account]
+      summary: Update a saved search
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Saved search updated
+    put:
+      tags: [Account]
+      summary: Update a saved search
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Saved search updated
+    delete:
+      tags: [Account]
+      summary: Delete a saved search
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Saved search deleted
+  /api/v1/me/devices:
+    post:
+      tags: [Account]
+      summary: Register a push device token
+      responses:
+        "201":
+          description: Device registered
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/me/devices/{id}:
+    delete:
+      tags: [Account]
+      summary: Unregister a push device token
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Device removed
+  /api/v1/me/orders:
+    get:
+      tags: [Orders]
+      summary: Buyer orders
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [all, to_pay, in_progress, completed, cancelled]
+      responses:
+        "200":
+          description: Orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Order"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+  /api/v1/me/orders/{number}:
+    get:
+      tags: [Orders]
+      summary: Buyer order detail and timeline
+      parameters:
+        - $ref: "#/components/parameters/OrderNumber"
+      responses:
+        "200":
+          description: Order
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/v1/me/orders/{order_number}/cancellation:
+    post:
+      tags: [Orders]
+      summary: Cancel an unpaid order
+      parameters:
+        - $ref: "#/components/parameters/OrderNumber"
+      responses:
+        "200":
+          description: Order cancelled
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /api/v1/me/orders/{order_number}/delivery_confirmation:
+    post:
+      tags: [Orders]
+      summary: Confirm delivery
+      parameters:
+        - $ref: "#/components/parameters/OrderNumber"
+      responses:
+        "200":
+          description: Delivery confirmed
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /api/v1/me/orders/{order_number}/dispute:
+    post:
+      tags: [Orders]
+      summary: Open a dispute
+      parameters:
+        - $ref: "#/components/parameters/OrderNumber"
+      responses:
+        "200":
+          description: Dispute opened
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /api/v1/me/orders/{order_number}/review:
+    post:
+      tags: [Orders]
+      summary: Review a completed order
+      parameters:
+        - $ref: "#/components/parameters/OrderNumber"
+      responses:
+        "201":
+          description: Review created
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+  /api/v1/me/sales:
+    get:
+      tags: [Orders]
+      summary: Seller sales
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [to_ship, awaiting_payment, shipped, completed, cancelled, disputes]
+      responses:
+        "200":
+          description: Sales
+  /api/v1/me/sales/{number}:
+    get:
+      tags: [Orders]
+      summary: Seller sale detail
+      parameters:
+        - $ref: "#/components/parameters/OrderNumber"
+      responses:
+        "200":
+          description: Sale
+  /api/v1/me/sales/{sale_number}/shipment:
+    post:
+      tags: [Orders]
+      summary: Mark a sale shipped with carrier and tracking
+      parameters:
+        - $ref: "#/components/parameters/SaleNumber"
+      responses:
+        "200":
+          description: Shipped
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /api/v1/me/sales/{sale_number}/cancellation:
+    post:
+      tags: [Orders]
+      summary: Seller cancellation
+      parameters:
+        - $ref: "#/components/parameters/SaleNumber"
+      responses:
+        "200":
+          description: Cancelled
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /api/v1/me/sales/{sale_number}/pickup:
+    post:
+      tags: [Orders]
+      summary: Mark a local pickup ready
+      parameters:
+        - $ref: "#/components/parameters/SaleNumber"
+      responses:
+        "200":
+          description: Ready for pickup
+        "409":
+          $ref: "#/components/responses/Conflict"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PerPage:
+      name: per_page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 24
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    Slug:
+      name: slug
+      in: path
+      required: true
+      schema:
+        type: string
+    StoreSlug:
+      name: store_slug
+      in: path
+      required: true
+      schema:
+        type: string
+    ListingSlug:
+      name: listing_slug
+      in: path
+      required: true
+      schema:
+        type: string
+    OrderNumber:
+      name: order_number
+      in: path
+      required: true
+      schema:
+        type: string
+        example: PCM-2026-000123
+    SaleNumber:
+      name: sale_number
+      in: path
+      required: true
+      schema:
+        type: string
+        example: PCM-2026-000123
+  responses:
+    Unauthorized:
+      description: Missing, invalid or expired bearer token
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Forbidden:
+      description: The token user cannot perform this action
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Conflict:
+      description: The resource is not in a state that allows the action
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    ValidationFailed:
+      description: Validation failed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  schemas:
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        per_page:
+          type: integer
+        total:
+          type: integer
+        total_pages:
+          type: integer
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, details]
+          properties:
+            code:
+              type: string
+              example: not_found
+            message:
+              type: string
+              example: El recurso solicitado no existe.
+            details:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+    Money:
+      type: object
+      properties:
+        cents:
+          type: integer
+        currency:
+          type: string
+        formatted:
+          type: string
+    Listing:
+      type: object
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          $ref: "#/components/schemas/Money"
+        condition:
+          type: string
+        status:
+          type: string
+        quantity:
+          type: integer
+        specs:
+          type: object
+        labels:
+          type: array
+          items:
+            type: object
+        tags:
+          type: array
+          items:
+            type: object
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              thumb_url:
+                type: string
+              large_url:
+                type: string
+        category:
+          $ref: "#/components/schemas/Category"
+        store:
+          $ref: "#/components/schemas/Store"
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        name:
+          type: string
+        path:
+          type: array
+          items:
+            type: string
+        listings_count:
+          type: integer
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/Category"
+    Store:
+      type: object
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        verified:
+          type: boolean
+        rating_avg:
+          type: number
+        reviews_count:
+          type: integer
+        followers_count:
+          type: integer
+        logo_url:
+          type: string
+        banner_url:
+          type: string
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        number:
+          type: string
+        status:
+          type: string
+        fulfilment:
+          type: string
+        total:
+          $ref: "#/components/schemas/Money"
+        payment_method:
+          type: string
+        tracking_number:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+        timeline:
+          type: array
+          items:
+            type: object
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: integer
+        listing:
+          $ref: "#/components/schemas/Listing"
+        buyer:
+          type: object
+        seller:
+          type: object
+        unread_count:
+          type: integer
+        last_message:
+          $ref: "#/components/schemas/Message"
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/Message"
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+        conversation_id:
+          type: integer
+        sender_id:
+          type: integer
+        kind:
+          type: string
+          enum: [text, offer, system]
+        body:
+          type: string
+        offer_amount_cents:
+          type: integer
+        offer_status:
+          type: string
+        created_at:
+          type: string
+          format: date-time

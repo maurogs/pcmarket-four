@@ -2,6 +2,13 @@
 
 ## Status
 
+Phase 7C complete: a versioned JSON API under `/api/v1` for the future iOS and
+Android apps, with digest-backed bearer tokens, account, catalogue, cart,
+checkout, orders, messaging, notifications, devices, content and discovery
+endpoints that reuse the existing services. An OpenAPI 3.1 document is served
+by the app and documented with a human page. The web application is unchanged
+and the full suite, system tests and RuboCop are green.
+
 Phase 7B complete: the PC Finder quiz and recommendation results, the public
 "How selling works" page and the feature-flagged Sell to PCMarket trade-in
 flow with buyback prices, IBAN-encrypted payouts and admin operations.
@@ -42,6 +49,7 @@ read access.
 | 6C | Admin catalogue, settings, countries, content, marketing and audit | Complete |
 | 7A | Legal texts, trust, about and help centre | Complete |
 | 7B | PC Finder, selling page and Sell to PCMarket | Complete |
+| 7C | Versioned JSON API for mobile apps | Complete |
 
 ## Stack
 
@@ -756,6 +764,74 @@ read access.
   offer/acceptance/receipt/payment timestamps, `original_box`, `accessories`,
   encrypted `payout_iban`, `payout_account_name` and `admin_notes`.
 
+### Versioned JSON API (Phase 7C)
+
+- `Api::V1::BaseController < ActionController::API` lives outside the locale
+  scope, includes Pundit and HTTP token authentication, and provides the shared
+  success envelope (`data` + `meta`) and error envelope
+  (`error.code`, translated `error.message`, `error.details`). It rescues
+  `RecordNotFound`, `Pundit::NotAuthorizedError`, `ParameterMissing`,
+  `RecordInvalid` and `RecordNotUnique`, and returns 503 in maintenance mode for
+  non-staff. Locale comes from a validated `locale` param or `Accept-Language`.
+- `ApiToken` now stores only a SHA-256 digest in `token_digest`; the raw token is
+  returned once by `ApiToken.issue!`. Tokens default to a 90-day expiry, are
+  looked up by digest and refresh `last_used_at` at most once per hour. The
+  migration backfills digests for existing rows. Devise lockable, confirmable
+  and suspended/banned status are enforced by the JSON session endpoint;
+  Google sign-in verifies the ID token through `GoogleTokenVerifier` (tokeninfo)
+  and `GoogleSignIn`.
+- `POST /auth/registrations` respects `registrations_enabled` and terms
+  acceptance; `POST /auth/passwords` never reveals whether an email exists.
+  `/me` supports profile, locale and notification preferences, GDPR export
+  through `UserDataExport` and soft deletion.
+- Read endpoints reuse the domain services rather than duplicating rules:
+  `ListingSearch` (filters, facets, active chips), `CartSummary`,
+  `Checkout::Form` + `Checkout::PlaceOrder`, `ConversationStarter`,
+  `OfferResponse`, `Notifier`, guarded `Order` transitions, `PcFinder::
+  Recommender`, `Api::CategoryTree` and Pundit policies. Cart mutation rules
+  moved to `Cart::Mutations`, shared with the web Turbo controller.
+- JSON is rendered with jbuilder views under `app/views/api/v1/`, including
+  shared listing, order, conversation, message, notification and pagination
+  partials. Images expose absolute `url`, `thumb_url` (640x480 WebP) and
+  `large_url` (1600x1200 WebP) variants. Collections default to 24 per page
+  (100 max); PC Finder keeps 12 and notifications 20. Messages are newest first
+  with a `before` cursor.
+- Anonymous category, listing, store, config, help and legal reads send public
+  `max-age=60` caching and `ETag`/`If-None-Match` conditional GETs.
+  Rack::Attack limits API traffic to 300 requests per 5 minutes per token, 60
+  per 5 minutes per anonymous IP and 10 login attempts per minute per IP and
+  email; the throttled response uses the JSON error envelope. rack-cors allows
+  only the origins listed in `API_CORS_ORIGINS`.
+- `docs/api/openapi.yaml` documents every `/api/v1` path with Listing,
+  Category, Store, Order, Conversation, Message, Error and Pagination schemas.
+  It is served at `/api/v1/openapi.yaml`, while `/api/docs` renders a
+  self-contained endpoint index with embedded CSS and no CDN.
+- The new `devices` table stores iOS/Android push tokens (`platform`, unique
+  `token`, `app_version`, `last_seen_at`) for future push delivery; no push
+  provider is called yet. `Setting api_min_app_version` defaults to `1.0.0`.
+
+### OAuth identity and terms acceptance (Phase 7C hardening)
+
+- Google email verification is shared by the web OmniAuth callback and the JSON
+  API through `GoogleEmailVerification`; `email_verified` must be boolean true or
+  the string `"true"`. `User.from_omniauth` refuses to link or create accounts
+  for unverified addresses, and `Users::OmniauthCallbacksController` redirects
+  those attempts to sign-in with the translated `errors.omniauth_email_unverified`
+  alert.
+- New OAuth accounts no longer receive an automatic `terms_accepted_at`. The
+  `users/terms_acceptances` singular resource shows the terms and privacy links,
+  a required checkbox and an optional marketing opt-in, then records the
+  timestamp. `ApplicationController#require_terms_acceptance` redirects signed-in
+  users whose timestamp is nil, exempting the acceptance screen, Devise sessions,
+  legal pages, Active Storage/assets and API controllers.
+- Authenticated `/api/v1` requests from users without accepted terms return 403
+  `terms_not_accepted`, except `POST /api/v1/me/terms_acceptance`,
+  `GET /api/v1/config` and `GET /api/v1/legal_pages/:slug`. The acceptance
+  endpoint records `terms_accepted_at` and the marketing preference, then
+  returns the profile.
+- Tests cover unverified rejection, nil terms for new OAuth users, the acceptance
+  flow on web and API, config/legal exemptions, and the updated user model rules.
+
 ### Performance guardrails
 
 - `ListingSearch::INCLUDES` preloads store, category, region, user and image
@@ -1088,7 +1164,14 @@ test/seeds_test.rb
   endpoint.
 - Google sign-in is shown only when `GOOGLE_CLIENT_ID` and
   `GOOGLE_CLIENT_SECRET` are configured.
-- API endpoints (ListingSearch is already API-ready).
+- Push delivery is not implemented: device tokens are stored for a future
+  provider integration.
+- The API exposes saved addresses for checkout but has no address CRUD
+  endpoints yet; clients keep using the web or a future `/me/addresses`.
+- OpenAPI is maintained by hand; add a contract test when the mobile clients
+  start generating code from it.
+- The API does not expose seller settings, admin or the Sell to PCMarket offer
+  flow yet.
 - No typing indicator in conversations (explicitly out of scope).
 - Message safety detection is heuristic; moderation review is still manual.
 - Sell to PCMarket labels are informational: no carrier API issues prepaid

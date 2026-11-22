@@ -22,6 +22,9 @@ Rails.application.configure do
   config.consider_all_requests_local = true
   config.cache_store = :memory_store
 
+  # Rack::Attack throttles are exercised explicitly by the API test suite.
+  config.after_initialize { Rack::Attack.enabled = false }
+
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable
 
