@@ -110,6 +110,8 @@ es:
         other: "%{formatted} personas lo han guardado"
       published_on: "Publicado el %{date}"
       unpublished: "Sin publicar"
+      photo_prefix: "Foto:"
+      photo_license_unknown: "licencia no indicada"
       condition: "Estado"
       overview_title: "Resumen y especificaciones"
       description_title: "Descripción"

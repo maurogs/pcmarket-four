@@ -110,6 +110,8 @@ fr:
         other: "%{formatted} personnes l'ont enregistrée"
       published_on: "Publiée le %{date}"
       unpublished: "Non publiée"
+      photo_prefix: "Photo :"
+      photo_license_unknown: "licence non indiquée"
       condition: "État"
       overview_title: "Aperçu et caractéristiques"
       description_title: "Description"

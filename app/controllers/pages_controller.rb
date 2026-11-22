@@ -29,6 +29,14 @@ class PagesController < ApplicationController
     )
   end
 
+  def credits
+    @credits = Demo::ImageLibrary.used_entries
+    set_meta_tags(
+      title: t("demo_credits.title"),
+      description: t("demo_credits.meta_description")
+    )
+  end
+
   private
 
   def set_page_key

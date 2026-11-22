@@ -22,6 +22,7 @@ class Notifier
   class << self
     def call(user, kind, params: {}, url: nil)
       return nil if user.blank?
+      return nil if Current.seeding
 
       notification = user.notifications.create!(kind: kind.to_s, params: params, url: url)
       enqueue_email(user, notification)

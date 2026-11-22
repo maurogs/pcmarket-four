@@ -390,3 +390,13 @@ pt:
         subject: "A sua oferta por %{item} expirou"
         title: "Oferta expirada"
         body: "A oferta de %{amount} pelo seu %{item} expirou. Pode pedir uma nova estimativa."
+
+  demo_credits:
+    title: "Créditos das imagens"
+    meta_description: "Fotografias de produtos utilizadas nos dados de demonstração da PCMarket e as respetivas licenças."
+    intro: "As fotografias dos anúncios de demonstração provêm de bancos de imagens com licenças abertas. Cada imagem mantém a autoria e a licença indicadas pela fonte."
+    empty: "Ainda não existem imagens de demonstração registadas."
+    source_label: "Fonte"
+    license_label: "Licença"
+    creator_unknown: "Autor desconhecido"
+    back_home: "Voltar ao início"

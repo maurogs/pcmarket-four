@@ -47,7 +47,7 @@ class Conversation < ApplicationRecord
   end
 
   def self.broadcast_inbox_badge(user)
-    return if user.blank?
+    return if user.blank? || Current.seeding
 
     user.broadcast_replace_to(
       [ user, :inbox ],

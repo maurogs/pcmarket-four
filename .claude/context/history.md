@@ -835,3 +835,80 @@ accept the terms before using the marketplace or API.
 `test/integration/oauth_terms_test.rb`,
 `test/integration/api/v1/terms_acceptance_test.rb`,
 `.claude/context/{project,project.es}.md`.
+
+## 2026-11-22 — Phase 8 realistic demo data and image credits
+
+### What changed
+
+- Added `Demo::ImageLibrary`, a keyless Openverse importer with optional
+  Unsplash, Pexels and Pixabay sources. It filters licences and image sizes,
+  validates downloads with Vips, resizes to 1600 px JPEG q82, de-duplicates by
+  SHA256, caches files under `storage/demo_images/` and writes/updates the
+  committed `db/seeds/demo/image_manifest.json`.
+- Generated the committed manifest with 281 real photos across 30 English
+  queries (gaming PCs, components, monitors, peripherals, laptops, phones,
+  tablets, consoles, VR, webcams, microphones and desk setups).
+- Added `Demo::Catalog` (real Spanish product models, stores and locations) and
+  `Demo::Seed`, an idempotent, scale-aware seeder tagged with
+  `@demo.pcmarket.test`. It creates 12 professional stores with valid CIFs and
+  generated logo badges, 40 individual sellers, 60 buyers, 600 listings across
+  every leaf category, ~1,500 favourites, ~300 follows, 80 saved searches, 120
+  conversations with offers, 250 orders and events, ~180 reviews, notifications,
+  reports, newsletter subscribers, feature requests and sell offers.
+- Listings fill every effective filter definition, use realistic condition and
+  euro pricing, compute PC Finder `game_fps`, reuse existing blobs across
+  listings, store attribution metadata and spread statuses/published dates.
+- Added `Current.seeding` and guards in `Notifier`, message and notification
+  broadcasts, listing alert jobs and `ApplicationMailer` so seeding does not
+  send email or broadcast Turbo streams. Counter caches are recalculated with
+  SQL after seeding.
+- Added `Demo::Reset` and `bin/rails demo:reset`, plus `demo:images`, `demo:seed`
+  and `DEMO_SCALE`/`DEMO_IMAGES` support in `lib/tasks/demo.rake`.
+- Added the public `/:locale/credits` page (linked from the footer) and a small
+  "Photo: creator / licence" caption on listing galleries. Credits are I18n
+  strings in all six locales.
+- Added WebMock unit tests for the importer, a scaled seed smoke/idempotency
+  test and a credits page integration test. Updated README demo commands and
+  optional API keys.
+
+### Why
+
+The marketplace needs realistic screenshots, moderation queues, order
+histories and messaging conversations without copying production data or
+shipping unlicensed photos. Attribution is part of the licence, so the manifest
+and credits page are first-class, and the seed must remain deterministic,
+idempotent and fast.
+
+### Seed summary (development, scale 1, images cached)
+
+| Record | Count |
+|---|---|
+| Demo users | 112 |
+| Professional stores | 12 |
+| Individual sellers | 40 |
+| Buyers | 60 |
+| Listings | 600 |
+| Listing images | ~2,400 attachments over 280 used photos (281 cached) |
+| Favourites / follows | ~1,470 / ~290 |
+| Saved searches | 80 |
+| Conversations / messages | 120 / ~480 |
+| Orders / events | 250 / ~1,030 |
+| Reviews | 180 |
+| Notifications | 350 |
+| Open reports | 15 |
+| Newsletter subscribers | 200 |
+| Feature requests / sell offers | 4 / 4 |
+
+### Files touched
+
+`app/services/demo/{image_library,catalog,seed,reset}.rb`,
+`app/models/current.rb`, `app/models/{listing,message,conversation,notification}.rb`,
+`app/services/notifier.rb`, `app/mailers/application_mailer.rb`,
+`app/controllers/pages_controller.rb`, `app/views/pages/credits.html.erb`,
+`app/views/listings/show.html.erb`, `app/views/shared/_footer.html.erb`,
+`config/routes.rb`, `config/locales/{layout,pages,phase2}.{es,en,fr,de,it,pt}.yml`,
+`db/seeds.rb` loader, `db/seeds/demo.rb`, `db/seeds/demo/image_manifest.json`,
+`lib/tasks/demo.rake`, `.gitignore`, `README.md`,
+`test/services/demo/image_library_test.rb`, `test/seeds/demo_seed_test.rb`,
+`test/integration/credits_page_test.rb`,
+`.claude/context/{project,project.es}.md`.

@@ -19,6 +19,8 @@ class Notification < ApplicationRecord
   private
 
   def broadcast_badge
+    return if Current.seeding
+
     broadcast_replace_to(
       user, :notifications,
       target: "notifications-badge",

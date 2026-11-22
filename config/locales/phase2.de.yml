@@ -110,6 +110,8 @@ de:
         other: "%{formatted} Personen haben das gespeichert"
       published_on: "Veröffentlicht am %{date}"
       unpublished: "Nicht veröffentlicht"
+      photo_prefix: "Foto:"
+      photo_license_unknown: "Lizenz nicht angegeben"
       condition: "Zustand"
       overview_title: "Überblick und Ausstattung"
       description_title: "Beschreibung"

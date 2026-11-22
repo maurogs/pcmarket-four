@@ -110,6 +110,8 @@ it:
         other: "%{formatted} persone l'hanno salvato"
       published_on: "Pubblicato il %{date}"
       unpublished: "Non pubblicato"
+      photo_prefix: "Foto:"
+      photo_license_unknown: "licenza non indicata"
       condition: "Condizioni"
       overview_title: "Panoramica e specifiche"
       description_title: "Descrizione"

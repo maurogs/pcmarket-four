@@ -390,3 +390,13 @@ es:
         subject: "Tu oferta por %{item} ha caducado"
         title: "Oferta caducada"
         body: "La oferta de %{amount} por tu %{item} ha caducado. Puedes pedir una nueva estimación."
+
+  demo_credits:
+    title: "Créditos de imágenes"
+    meta_description: "Fotografías de producto utilizadas en los datos de demostración de PCMarket y sus licencias."
+    intro: "Las fotografías de los anuncios de demostración proceden de bancos de imágenes con licencias abiertas. Cada imagen mantiene la autoría y la licencia indicadas por su fuente."
+    empty: "Todavía no hay imágenes de demostración registradas."
+    source_label: "Fuente"
+    license_label: "Licencia"
+    creator_unknown: "Autor desconocido"
+    back_home: "Volver al inicio"

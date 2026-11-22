@@ -2,6 +2,15 @@
 
 ## Estado
 
+Fase 8 completada: datos de demostración realistas e idempotentes con
+fotografía de producto bajo licencias abiertas y almacenada en caché.
+`bin/rails demo:images` descarga y valida las fotos y escribe el manifiesto
+versionado `db/seeds/demo/image_manifest.json`; `Demo::Seed` crea tiendas,
+vendedores, compradores, anuncios en todas las categorías hoja, conversaciones,
+ofertas, pedidos, reseñas, notificaciones, denuncias y registros de marketing;
+`/:locale/credits` atribuye cada foto. La semilla se ejecuta en desarrollo (o
+con `DEMO_SEED=1`), admite `DEMO_SCALE` y se omite si ya existen usuarios demo.
+
 Fase 7C completada: API JSON versionada bajo `/api/v1` para las futuras apps
 iOS y Android, con tokens Bearer guardados como digest, endpoints de cuenta,
 catálogo, cesta, pago, pedidos, mensajería, notificaciones, dispositivos,
@@ -38,6 +47,7 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
 | 7A | Textos legales, confianza, sobre nosotros y centro de ayuda | Completada |
 | 7B | Buscador de PC, página de venta y Véndenos tu equipo | Completada |
 | 7C | API JSON versionada para apps móviles | Completada |
+| 8 | Datos demo realistas, fotos de stock y créditos de imágenes | Completada |
 
 ## Stack
 
@@ -953,6 +963,54 @@ países, el contenido, el marketing y la auditoría de la fase 6C siguen intacto
 - Esquema nuevo: `order_notes` (`order_id`, `author_id`, `body`), `orders
   .refund_reference` y `reviews.seller_reply_visible`.
 
+### Datos demo y créditos de imágenes (Fase 8)
+
+- `Demo::ImageLibrary` descarga fotos de stock por consulta. Openverse no
+  necesita clave; Unsplash, Pexels y Pixabay solo se usan si están configuradas
+  `UNSPLASH_ACCESS_KEY`, `PEXELS_API_KEY` o `PIXABAY_API_KEY`. Las peticiones
+  usan el agente genérico `PCMarketDemoSeeder/1.0`, timeouts, como máximo dos
+  trabajadores y una pausa cortés de 300 ms.
+- Los resultados se filtran a CC0, Public Domain Mark, CC BY y CC BY-SA, JPEG,
+  PNG o WebP y al menos 800 px de ancho. Cada descarga se valida con Vips, se
+  redimensiona a 1600 px de lado mayor como JPEG q82, se deduplica por SHA256 y
+  se guarda en `storage/demo_images/<query_slug>/`. El manifiesto versionado
+  guarda consulta, archivo, fuente, URL de origen, autor, licencia, URL de
+  licencia, dimensiones, checksum y categorías.
+- `Demo::ImageLibrary.used_entries` cruza las entradas del manifiesto con los
+  metadatos de los blobs para la página de créditos. Cada blob demo lleva
+  `source`, `source_url`, `creator`, `license` y `license_url`; las galerías de
+  anuncios muestran una leyenda pequeña «Foto: autor / licencia» cuando existe.
+- `bin/rails demo:images` refresca la caché y el manifiesto. Si falla la red, la
+  tarea termina sin error y la semilla recurre a la imagen de marcador de
+  posición.
+- `Demo::Seed` es idempotente y etiqueta los registros mediante correos en
+  `@demo.pcmarket.test`. Usa `Faker::Config.random = Random.new(42)` con idioma
+  español y crea 12 tiendas profesionales con CIF español válido y logotipos
+  SVG convertidos a PNG, 40 vendedores particulares, 60 compradores, ~600
+  anuncios en todas las categorías hoja, ~1.500 favoritos, ~300 seguidores,
+  ~80 búsquedas guardadas, ~120 conversaciones con mensajes y ofertas, ~250
+  pedidos con eventos y disputas, ~180 reseñas, notificaciones, denuncias
+  abiertas, suscriptores de newsletter, solicitudes de destacado y ofertas de
+  venta.
+- Los anuncios se generan desde catálogos reales de componentes
+  (`Demo::Catalog`), rellenan todos los `FilterDefinition` efectivos de su
+  categoría, usan precios plausibles en euros y multiplicadores por estado,
+  calculan `game_fps` de los PCs gaming con la tabla del buscador de PC y
+  reutilizan blobs existentes entre anuncios (sin subidas duplicadas) con
+  metadatos de posición ordenados.
+- `Current.seeding` desactiva `Notifier`, las difusiones de mensajes y
+  notificaciones, los jobs de seguidores y búsquedas y el envío de correo
+  durante la semilla. Las cachés de contadores se recalculan con SQL al final.
+  `DEMO_SCALE=0.05` permite la prueba de humo; `DEMO_IMAGES=0` fuerza los
+  marcadores sin red.
+- `bin/rails demo:reset` elimina solo usuarios, tiendas, anuncios, pedidos,
+  conversaciones, filas sociales y de marketing demo y sus blobs de Active
+  Storage, y vuelve a sembrar.
+- Pruebas nuevas: `test/services/demo/image_library_test.rb` (WebMock de
+  parseo, filtrado de licencia y tamaño, claves ausentes, caída de red y
+  deduplicación por checksum), `test/seeds/demo_seed_test.rb` (semilla reducida
+  e idempotencia sin imágenes) y `test/integration/credits_page_test.rb`.
+
 ## Mapa de código
 
 ```
@@ -1140,6 +1198,18 @@ config/initializers/security_headers.rb
 config/locales/                             textos de UI en seis idiomas (+ archivos por dominio)
 db/seeds.rb                                 cargador
 db/seeds/*.rb                               taxonomía y datos de referencia
+db/seeds/demo.rb                            punto de entrada de la semilla demo
+db/seeds/demo/image_manifest.json           manifiesto versionado de atribución de fotos
+lib/tasks/demo.rake                         demo:images, demo:seed, demo:reset
+app/services/demo/image_library.rb          descarga, redimensionado vips y deduplicación SHA256
+app/services/demo/catalog.rb                catálogo español de productos, tiendas y ubicaciones
+app/services/demo/seed.rb                   semilla idempotente del mercado demo
+app/services/demo/reset.rb                  limpieza selectiva de datos demo y blobs
+app/models/current.rb                       protección Current.seeding para efectos secundarios
+app/views/pages/credits.html.erb            página de atribución de fotos
+test/services/demo/image_library_test.rb    parseo y fallbacks del importador
+test/seeds/demo_seed_test.rb                prueba de humo de la semilla reducida
+test/integration/credits_page_test.rb       renderizado de créditos
 db/seeds/legal/*.rb                         textos legales por país
 db/seeds/help_articles.rb                   18 artículos de ayuda
 app/services/trust_stats.rb                 agregados cacheados de confianza
@@ -1238,3 +1308,12 @@ test/integration/{legal_pages,trust_and_about,help_centre}_test.rb
 - Los FPS estimados del buscador de PC usan la tabla de gamas cuando el anuncio
   no tiene `game_fps`; la tabla necesita actualizaciones periódicas con cada
   nueva GPU.
+- El manifiesto de imágenes demo es una selección, no exhaustiva: hay que
+  ejecutar `bin/rails demo:images` para refrescarlo y revisar las licencias
+  antes de reutilizar las fotos fuera del mercado demo.
+- Los proveedores de stock opcionales solo se prueban cuando hay claves; con
+  Openverse basta para el manifiesto versionado.
+- La semilla demo se omite si ya existen usuarios demo. Usa
+  `bin/rails demo:reset` para reconstruirla tras cambiar el generador.
+- Las fotos demo viven en disco bajo `storage/demo_images`; esta fase no tiene
+  una ruta de subida a S3 para la caché.

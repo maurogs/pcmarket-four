@@ -110,6 +110,8 @@ pt:
         other: "%{formatted} pessoas guardaram este anúncio"
       published_on: "Publicado a %{date}"
       unpublished: "Não publicado"
+      photo_prefix: "Foto:"
+      photo_license_unknown: "licença não indicada"
       condition: "Estado"
       overview_title: "Visão geral e especificações"
       description_title: "Descrição"

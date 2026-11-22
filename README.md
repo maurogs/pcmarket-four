@@ -4,10 +4,10 @@ PCMarket is a marketplace for new and second-hand technology: gaming PCs,
 workstations, components, peripherals, laptops, phones, tablets, consoles and
 accessories. Spain only at launch.
 
-This repository contains **Phase 2**: the complete taxonomy, design system,
-global layout, home page and SEO infrastructure. Listing search, listing
-detail, store and checkout pages are routed with translated placeholders and
-will be built in the next phase.
+This repository contains **Phase 8**: the complete marketplace with discovery,
+listing creation, checkout and payments, order lifecycle, messaging, admin
+operations, legal and help content, the PC Finder, and a versioned JSON API.
+Phase 8 adds a realistic, image-backed demo data set.
 
 ## Stack
 
@@ -45,18 +45,45 @@ the files in `db/seeds/` in dependency order:
    assignments.
 6. `games.rb` — supported game catalogue.
 7. `legal_pages.rb` — seeded legal pages.
-8. `demo.rb` — development admin, demo seller, store and listings.
+8. `help_articles.rb` — help-centre articles.
+9. `buyback_prices.rb` — GPU and CPU trade-in catalogue.
+10. `demo.rb` — the full development demo data set.
 
-Outside production the seed also creates an administrator:
-
-- Email: `admin@pcmarket.test`
-- Password: `Password123!`
-
-In development it also creates a demo seller (`seller@pcmarket.test`) with a
-verified store and a handful of published and sold listings.
+The demo seed creates an administrator (`admin@pcmarket.test`), a moderator
+(`moderator@pcmarket.test`), professional stores, individual sellers, buyers,
+listings, conversations, orders, reviews, notifications and marketing records.
+Every demo account uses the password `Password123!` and demo users are tagged
+with the `@demo.pcmarket.test` email domain. The seed is idempotent.
 
 `bin/rails db:reset` rebuilds the database from scratch, loads the schema and
-runs the seeds.
+runs the seeds (including demo data in development).
+
+## Demo data and images
+
+```bash
+bin/rails demo:images   # download and cache openly licensed photos
+bin/rails demo:seed     # idempotent demo seed
+bin/rails demo:reset    # delete demo records and their blobs, then reseed
+```
+
+`demo:images` stores resized JPEGs under `storage/demo_images/` (gitignored) and
+writes the committed attribution manifest at `db/seeds/demo/image_manifest.json`.
+The app serves credits at `/:locale/credits`, linked from the footer.
+
+Openverse is used without a key. The other providers are optional and are only
+called when their key is present:
+
+```bash
+export UNSPLASH_ACCESS_KEY=...
+export PEXELS_API_KEY=...
+export PIXABAY_API_KEY=...
+```
+
+`DEMO_SCALE` (for example `0.05`) creates a smaller seed for smoke tests;
+`DEMO_IMAGES_PER_QUERY` overrides the default target of 10 photos per query.
+`DEMO_IMAGES=0` skips images and uses the placeholder illustration, which is
+also the automatic fallback when the network or the cached library is
+unavailable.
 
 ## Localisation
 
@@ -165,7 +192,9 @@ cookie consent, newsletter subscription/confirmation and admin access control.
 
 ```bash
 bin/rails db:drop db:create db:migrate   # rebuild the development database
-bin/rails db:seed                        # seed reference data
+bin/rails db:seed                        # seed reference + demo data
+bin/rails demo:images                    # refresh the image cache and manifest
+bin/rails demo:reset                     # recreate demo data from scratch
 bin/rails routes                         # inspect routes
 bin/rails tailwindcss:build              # compile Tailwind once
 ```

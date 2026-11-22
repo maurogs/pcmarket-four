@@ -114,6 +114,7 @@ Rails.application.routes.draw do
 
     get "legal/:slug" => "legal_pages#show", as: :legal_page
     get "trust" => "pages#trust", as: :trust
+    get "credits" => "pages#credits", as: :credits
     resources :help_articles, only: %i[index show], path: "help", param: :slug do
       resource :feedback, only: :create, controller: "help_article_feedbacks"
     end

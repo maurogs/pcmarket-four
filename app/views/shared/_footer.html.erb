@@ -77,6 +77,7 @@
           <%= link_to t("layout.footer.privacy"), legal_page_path("privacy", country: legal_country_param), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
           <%= link_to t("layout.footer.cookies"), legal_page_path("cookies", country: legal_country_param), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
           <%= link_to t("layout.footer.legal_notice"), legal_page_path("legal_notice", country: legal_country_param), class: "hover:text-brand-700 dark:hover:text-brand-300" %>
+          <%= link_to t("layout.footer.image_credits"), credits_path, class: "hover:text-brand-700 dark:hover:text-brand-300" %>
           <button type="button" data-action="cookie-consent#open"
                   class="underline decoration-dotted underline-offset-4 hover:text-brand-700 dark:hover:text-brand-300">
             <%= t("layout.footer.cookie_preferences") %>

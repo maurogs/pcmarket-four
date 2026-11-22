@@ -390,3 +390,13 @@ de:
         subject: "Dein Angebot für %{item} ist abgelaufen"
         title: "Angebot abgelaufen"
         body: "Das Angebot über %{amount} für dein %{item} ist abgelaufen. Du kannst eine neue Schätzung anfordern."
+
+  demo_credits:
+    title: "Bildnachweise"
+    meta_description: "Produktfotos in den PCMarket-Demodaten und ihre Lizenzen."
+    intro: "Die Fotos der Demo-Anzeigen stammen aus Bilddatenbanken mit offenen Lizenzen. Jedes Bild behält die von der Quelle angegebene Urheberangabe und Lizenz."
+    empty: "Es sind noch keine Demo-Bilder erfasst."
+    source_label: "Quelle"
+    license_label: "Lizenz"
+    creator_unknown: "Unbekannter Urheber"
+    back_home: "Zur Startseite"

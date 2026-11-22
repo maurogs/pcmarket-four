@@ -110,6 +110,8 @@ en:
         other: "%{formatted} people saved this"
       published_on: "Published on %{date}"
       unpublished: "Not published"
+      photo_prefix: "Photo:"
+      photo_license_unknown: "licence not stated"
       condition: "Condition"
       overview_title: "Overview and specs"
       description_title: "Description"

@@ -134,6 +134,8 @@ class Message < ApplicationRecord
   end
 
   def broadcast_message
+    return if Current.seeding
+
     broadcast_append_to(
       conversation,
       target: "conversation-messages",

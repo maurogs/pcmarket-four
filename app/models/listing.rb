@@ -334,11 +334,15 @@ class Listing < ApplicationRecord
   private
 
   def dispatch_publish_alerts
+    return if Current.seeding
+
     NotifyFollowersJob.perform_later(id)
     SavedSearchAlertJob.perform_later(id)
   end
 
   def dispatch_price_drop_alert
+    return if Current.seeding
+
     previous_price, current_price = previous_changes["price_cents"]
     return unless previous_price.to_i > current_price.to_i
 

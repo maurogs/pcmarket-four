@@ -168,10 +168,11 @@ footer {
     <p class="eyebrow">PCMarket</p>
     <h1>PCMarket — Project Context</h1>
     <p class="lede">Architecture, decisions and code map</p>
-    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-22 01:10</p>
+    <p class="meta">Generated from <code>project.md</code> · Updated 2026-11-22 01:40</p>
   </header>
   <main><section class="card status">
 <h2><span>Status</span><span class="badge badge-success">Complete</span></h2>
+<p>Phase 8 complete: a realistic, idempotent demo marketplace powered by cached, openly licensed product photography. <code>bin/rails demo:images</code> downloads and validates photos and writes the committed <code>db/seeds/demo/image_manifest.json</code>; <code>Demo::Seed</code> creates stores, sellers, buyers, listings across every leaf category, conversations, offers, orders, reviews, notifications, reports and marketing records; <code>/:locale/credits</code> attributes every photo. The demo seed runs in development (or with <code>DEMO_SEED=1</code>), supports <code>DEMO_SCALE</code>, and is skipped when demo users already exist.</p>
 <p>Phase 7C complete: a versioned JSON API under <code>/api/v1</code> for the future iOS and Android apps, with digest-backed bearer tokens, account, catalogue, cart, checkout, orders, messaging, notifications, devices, content and discovery endpoints that reuse the existing services. An OpenAPI 3.1 document is served by the app and documented with a human page. The web application is unchanged and the full suite, system tests and RuboCop are green.</p>
 <p>Phase 7B complete: the PC Finder quiz and recommendation results, the public &quot;How selling works&quot; page and the feature-flagged Sell to PCMarket trade-in flow with buyback prices, IBAN-encrypted payouts and admin operations.</p>
 <p>Phase 7A complete: per-country legal texts (ES, FR, GB, DE, IT, PT), a public trust and safety page, an about page and a searchable help centre with article feedback. Company identity settings feed legal placeholders. Phase 6C admin catalogue, settings, countries, content, marketing and audit screens replace all remaining admin placeholders and remain intact. Phase 6B admin operations for orders, payments, disputes, reports and review moderation remain intact. Phase 6A admin foundation (dashboard, listing moderation, users, stores, audit log and impersonation) is unchanged. Phase 5 internal chat with conversations, unread counters and real-time messages, offers with accepted-offer cart pricing, blocks and message safety warnings; follower notifications, instant and daily saved-search alerts and favourite price-drop alerts are intact. Phase 4B order lifecycle (paid, shipped, delivered, completed, cancelled, disputed, refunded), seller fulfilment screens, buyer delivery confirmation/disputes/reviews, order notifications with email fan-out and real-time badge updates remain intact. Discovery (Phase 2B), listing creation (Phase 3A) and checkout/payments (Phase 4A) are unchanged.</p>
@@ -195,6 +196,7 @@ footer {
 <tr><td>7A</td><td>Legal texts, trust, about and help centre</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>7B</td><td>PC Finder, selling page and Sell to PCMarket</td><td><span class="badge badge-success">Complete</span></td></tr>
 <tr><td>7C</td><td>Versioned JSON API for mobile apps</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>8</td><td>Realistic demo data, stock photos and image credits</td><td><span class="badge badge-success">Complete</span></td></tr>
 </tbody></table></div>
 </section>
 <section class="card ">
@@ -480,6 +482,18 @@ footer {
 <li><code>ListingPolicy</code> lets owners edit/delete their listings and moderators/admins approve or reject. <code>ListingPolicy::Scope</code> hides non-visible listings from the public.</li>
 <li>Admin routes require <code>current_user.staff?</code>; non-staff visitors are redirected to the home page with a translated alert.</li>
 </ul>
+<h3>Demo data and image credits (Phase 8)</h3>
+<ul>
+<li><code>Demo::ImageLibrary</code> downloads stock photos per demo query. Openverse is keyless; Unsplash, Pexels and Pixabay are used only when <code>UNSPLASH_ACCESS_KEY</code>, <code>PEXELS_API_KEY</code> or <code>PIXABAY_API_KEY</code> is configured. Requests use the generic <code>PCMarketDemoSeeder/1.0</code> user agent, timeouts, at most two workers and a 300 ms polite delay.</li>
+<li>Results are filtered to CC0, Public Domain Mark, CC BY and CC BY-SA, JPEG, PNG or WebP and at least 800 px wide. Downloads are validated with Vips, resized to a 1600 px longest side as JPEG q82, de-duplicated by SHA256 and cached under <code>storage/demo_images/&lt;query_slug&gt;/</code>. The committed manifest stores query, file, source, source URL, creator, licence, licence URL, dimensions, checksum and category mapping.</li>
+<li><code>Demo::ImageLibrary.used_entries</code> intersects manifest entries with blob metadata for the credits page. Every demo blob carries <code>source</code>, <code>source_url</code>, <code>creator</code>, <code>license</code> and <code>license_url</code>; listing galleries render a small &quot;Photo: creator / licence&quot; caption when present.</li>
+<li><code>bin/rails demo:images</code> refreshes the cache and manifest. A network failure exits gracefully and seeds fall back to the placeholder illustration.</li>
+<li><code>Demo::Seed</code> is idempotent and tagged through user emails on <code>@demo.pcmarket.test</code>. It uses <code>Faker::Config.random = Random.new(42)</code> with the Spanish locale, creates 12 professional stores with valid Spanish CIFs and generated SVG-to-PNG logo badges, 40 individual sellers, 60 buyers, ~600 listings across all leaf categories, ~1,500 favourites, ~300 follows, ~80 saved searches, ~120 conversations with messages and offers, ~250 orders with events and disputes, ~180 reviews, notifications, open reports, newsletter subscribers, feature requests and sell offers.</li>
+<li>Listings are generated from real component catalogues (<code>Demo::Catalog</code>), fill every effective <code>FilterDefinition</code> for their category, use plausible euro prices and condition multipliers, compute gaming-PC <code>game_fps</code> with the PC Finder tier table, and reuse existing blobs across listings (no duplicate uploads) with ordered position metadata.</li>
+<li><code>Current.seeding</code> suppresses <code>Notifier</code>, message/notification broadcasts, follower and saved-search jobs and mail delivery during the seed. Counter caches are recalculated with SQL at the end. <code>DEMO_SCALE=0.05</code> supports the smoke test; <code>DEMO_IMAGES=0</code> forces placeholders without network.</li>
+<li><code>bin/rails demo:reset</code> removes only demo users, stores, listings, orders, conversations, social rows, marketing rows and their Active Storage blobs, then reseeds.</li>
+<li>New tests: <code>test/services/demo/image_library_test.rb</code> (WebMock parsing, licence and size filtering, missing keys, network fallback, checksum de-duplication), <code>test/seeds/demo_seed_test.rb</code> (scaled seed and idempotency without images) and <code>test/integration/credits_page_test.rb</code>.</li>
+</ul>
 </section>
 <section class="card code-map">
 <h2><span>Code map</span></h2>
@@ -724,6 +738,18 @@ config/initializers/security_headers.rb
 config/locales/                             six-language UI strings (+ domain files)
 db/seeds.rb                                 loader
 db/seeds/*.rb                               taxonomy and reference data
+db/seeds/demo.rb                            development demo entry point
+db/seeds/demo/image_manifest.json           committed photo attribution manifest
+lib/tasks/demo.rake                         demo:images, demo:seed, demo:reset
+app/services/demo/image_library.rb          stock downloads, vips resize, SHA256 dedupe
+app/services/demo/catalog.rb                Spanish product, store and location catalogue
+app/services/demo/seed.rb                   idempotent demo marketplace seed
+app/services/demo/reset.rb                  targeted demo cleanup + blob purge
+app/models/current.rb                       Current.seeding side-effect guard
+app/views/pages/credits.html.erb            photo attribution page
+test/services/demo/image_library_test.rb    importer parsing and fallbacks
+test/seeds/demo_seed_test.rb                scaled seed smoke test
+test/integration/credits_page_test.rb       credits page rendering
 script/search_explain.rb                    5k listing EXPLAIN ANALYZE
 test/integration/                           home, SEO, search pages, auth, performance
 test/services/listing_search_test.rb
@@ -767,6 +793,10 @@ test/seeds_test.rb
 <li>Message safety detection is heuristic; moderation review is still manual.</li>
 <li>Sell to PCMarket labels are informational: no carrier API issues prepaid labels yet, and payouts are recorded manually by administrators.</li>
 <li>PC Finder estimated FPS is a tier fallback when a listing has no <code>game_fps</code> data; the table needs periodic updates as new GPUs launch.</li>
+<li>The demo image manifest is curated, not exhaustive: rerun <code>bin/rails demo:images</code> to refresh it, and re-check licences before reusing photos outside the demo marketplace.</li>
+<li>Optional stock providers are exercised only when their API keys are set; Openverse alone is enough for the committed manifest.</li>
+<li>The demo seed skips when demo users exist. Use <code>bin/rails demo:reset</code> to rebuild it after changing the generator.</li>
+<li>Demo photos live on local disk under <code>storage/demo_images</code>; there is no S3 upload path for the cache in this phase.</li>
 </ul>
 </section>
 </main>

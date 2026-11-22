@@ -104,6 +104,27 @@
         </dialog>
       </section>
 
+      <% photo = images.first&.blob&.metadata&.to_h || {} %>
+      <% if photo["creator"].present? %>
+        <p class="mt-2 text-[11px] leading-4 text-slate-500 dark:text-zinc-500">
+          <%= t("listings.show.photo_prefix") %>
+          <% if photo["source_url"].present? %>
+            <%= link_to photo["creator"], photo["source_url"], target: "_blank",
+                        rel: "noopener noreferrer", class: "underline decoration-dotted underline-offset-2" %>
+          <% else %>
+            <%= photo["creator"] %>
+          <% end %>
+          /
+          <% if photo["license_url"].present? %>
+            <%= link_to photo["license"].presence || t("listings.show.photo_license_unknown"),
+                        photo["license_url"], target: "_blank", rel: "noopener noreferrer",
+                        class: "underline decoration-dotted underline-offset-2" %>
+          <% else %>
+            <%= photo["license"].presence || t("listings.show.photo_license_unknown") %>
+          <% end %>
+        </p>
+      <% end %>
+
       <div class="mt-6 flex flex-wrap items-center gap-2">
         <span class="<%= ui_badge_classes(tone: listing_condition_tone(@listing)) %>"
               title="<%= listing_condition_tooltip(@listing) %>">

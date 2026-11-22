@@ -390,3 +390,13 @@ it:
         subject: "La tua offerta per %{item} è scaduta"
         title: "Offerta scaduta"
         body: "L'offerta di %{amount} per il tuo %{item} è scaduta. Puoi richiedere una nuova stima."
+
+  demo_credits:
+    title: "Crediti immagini"
+    meta_description: "Fotografie di prodotto utilizzate nei dati dimostrativi di PCMarket e le relative licenze."
+    intro: "Le fotografie degli annunci dimostrativi provengono da banche immagini con licenze aperte. Ogni immagine mantiene l’attribuzione e la licenza indicate dalla fonte."
+    empty: "Non sono ancora state registrate immagini dimostrative."
+    source_label: "Fonte"
+    license_label: "Licenza"
+    creator_unknown: "Autore sconosciuto"
+    back_home: "Torna alla home"

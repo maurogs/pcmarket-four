@@ -2,6 +2,15 @@
 
 ## Status
 
+Phase 8 complete: a realistic, idempotent demo marketplace powered by cached,
+openly licensed product photography. `bin/rails demo:images` downloads and
+validates photos and writes the committed `db/seeds/demo/image_manifest.json`;
+`Demo::Seed` creates stores, sellers, buyers, listings across every leaf
+category, conversations, offers, orders, reviews, notifications, reports and
+marketing records; `/:locale/credits` attributes every photo. The demo seed
+runs in development (or with `DEMO_SEED=1`), supports `DEMO_SCALE`, and is
+skipped when demo users already exist.
+
 Phase 7C complete: a versioned JSON API under `/api/v1` for the future iOS and
 Android apps, with digest-backed bearer tokens, account, catalogue, cart,
 checkout, orders, messaging, notifications, devices, content and discovery
@@ -50,6 +59,7 @@ read access.
 | 7A | Legal texts, trust, about and help centre | Complete |
 | 7B | PC Finder, selling page and Sell to PCMarket | Complete |
 | 7C | Versioned JSON API for mobile apps | Complete |
+| 8 | Realistic demo data, stock photos and image credits | Complete |
 
 ## Stack
 
@@ -873,6 +883,50 @@ read access.
 - Admin routes require `current_user.staff?`; non-staff visitors are redirected
   to the home page with a translated alert.
 
+### Demo data and image credits (Phase 8)
+
+- `Demo::ImageLibrary` downloads stock photos per demo query. Openverse is
+  keyless; Unsplash, Pexels and Pixabay are used only when
+  `UNSPLASH_ACCESS_KEY`, `PEXELS_API_KEY` or `PIXABAY_API_KEY` is configured.
+  Requests use the generic `PCMarketDemoSeeder/1.0` user agent, timeouts, at
+  most two workers and a 300 ms polite delay.
+- Results are filtered to CC0, Public Domain Mark, CC BY and CC BY-SA, JPEG,
+  PNG or WebP and at least 800 px wide. Downloads are validated with Vips,
+  resized to a 1600 px longest side as JPEG q82, de-duplicated by SHA256 and
+  cached under `storage/demo_images/<query_slug>/`. The committed manifest
+  stores query, file, source, source URL, creator, licence, licence URL,
+  dimensions, checksum and category mapping.
+- `Demo::ImageLibrary.used_entries` intersects manifest entries with blob
+  metadata for the credits page. Every demo blob carries `source`,
+  `source_url`, `creator`, `license` and `license_url`; listing galleries render
+  a small "Photo: creator / licence" caption when present.
+- `bin/rails demo:images` refreshes the cache and manifest. A network failure
+  exits gracefully and seeds fall back to the placeholder illustration.
+- `Demo::Seed` is idempotent and tagged through user emails on
+  `@demo.pcmarket.test`. It uses `Faker::Config.random = Random.new(42)` with
+  the Spanish locale, creates 12 professional stores with valid Spanish CIFs
+  and generated SVG-to-PNG logo badges, 40 individual sellers, 60 buyers,
+  ~600 listings across all leaf categories, ~1,500 favourites, ~300 follows,
+  ~80 saved searches, ~120 conversations with messages and offers, ~250 orders
+  with events and disputes, ~180 reviews, notifications, open reports,
+  newsletter subscribers, feature requests and sell offers.
+- Listings are generated from real component catalogues (`Demo::Catalog`),
+  fill every effective `FilterDefinition` for their category, use plausible
+  euro prices and condition multipliers, compute gaming-PC `game_fps` with the
+  PC Finder tier table, and reuse existing blobs across listings (no duplicate
+  uploads) with ordered position metadata.
+- `Current.seeding` suppresses `Notifier`, message/notification broadcasts,
+  follower and saved-search jobs and mail delivery during the seed. Counter
+  caches are recalculated with SQL at the end. `DEMO_SCALE=0.05` supports the
+  smoke test; `DEMO_IMAGES=0` forces placeholders without network.
+- `bin/rails demo:reset` removes only demo users, stores, listings, orders,
+  conversations, social rows, marketing rows and their Active Storage blobs,
+  then reseeds.
+- New tests: `test/services/demo/image_library_test.rb` (WebMock parsing,
+  licence and size filtering, missing keys, network fallback, checksum
+  de-duplication), `test/seeds/demo_seed_test.rb` (scaled seed and idempotency
+  without images) and `test/integration/credits_page_test.rb`.
+
 ## Code map
 
 ```
@@ -1117,6 +1171,18 @@ config/initializers/security_headers.rb
 config/locales/                             six-language UI strings (+ domain files)
 db/seeds.rb                                 loader
 db/seeds/*.rb                               taxonomy and reference data
+db/seeds/demo.rb                            development demo entry point
+db/seeds/demo/image_manifest.json           committed photo attribution manifest
+lib/tasks/demo.rake                         demo:images, demo:seed, demo:reset
+app/services/demo/image_library.rb          stock downloads, vips resize, SHA256 dedupe
+app/services/demo/catalog.rb                Spanish product, store and location catalogue
+app/services/demo/seed.rb                   idempotent demo marketplace seed
+app/services/demo/reset.rb                  targeted demo cleanup + blob purge
+app/models/current.rb                       Current.seeding side-effect guard
+app/views/pages/credits.html.erb            photo attribution page
+test/services/demo/image_library_test.rb    importer parsing and fallbacks
+test/seeds/demo_seed_test.rb                scaled seed smoke test
+test/integration/credits_page_test.rb       credits page rendering
 script/search_explain.rb                    5k listing EXPLAIN ANALYZE
 test/integration/                           home, SEO, search pages, auth, performance
 test/services/listing_search_test.rb
@@ -1178,3 +1244,12 @@ test/seeds_test.rb
   labels yet, and payouts are recorded manually by administrators.
 - PC Finder estimated FPS is a tier fallback when a listing has no `game_fps`
   data; the table needs periodic updates as new GPUs launch.
+- The demo image manifest is curated, not exhaustive: rerun `bin/rails
+  demo:images` to refresh it, and re-check licences before reusing photos
+  outside the demo marketplace.
+- Optional stock providers are exercised only when their API keys are set;
+  Openverse alone is enough for the committed manifest.
+- The demo seed skips when demo users exist. Use `bin/rails demo:reset` to
+  rebuild it after changing the generator.
+- Demo photos live on local disk under `storage/demo_images`; there is no S3
+  upload path for the cache in this phase.
