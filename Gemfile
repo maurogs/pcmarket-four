@@ -47,7 +47,7 @@ gem "omniauth-rails_csrf_protection"
 gem "pundit"
 
 # Pagination, search, trees and slugs
-gem "pagy", "~> 9.0"
+gem "pagy", "~> 43.8"
 gem "pg_search"
 gem "ancestry"
 gem "friendly_id"
